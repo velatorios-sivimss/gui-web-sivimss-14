@@ -13,7 +13,7 @@ import {LazyLoadEvent} from "primeng/api";
 import {ActivatedRoute} from "@angular/router";
 import {DetallePagoService} from "../../services/detalle-pago.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
@@ -25,6 +25,7 @@ import {ModalModificarPagosComponent} from "../modal-modificar-pagos/modal-modif
 import {of} from "rxjs";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+
 
 @Component({
   selector: 'app-detalle-servicios-funerarios',
@@ -80,7 +81,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     let respuesta = this.route.snapshot.data['respuesta'];
     this.metodosPago = mapearArregloTipoDropdown(respuesta[this.POSICION_METODO_PAGO].datos,
       'metodoPago', 'idMetodoPago');
-
+    if(validarUsuarioLogueado())return
     this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
   }
 
@@ -273,5 +274,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     });
   }
 
+  validarEstatusDetallePago(estatus: any): boolean {
+    return !estatus?.toUpperCase().includes('CANCELADO');
+  }
 
 }

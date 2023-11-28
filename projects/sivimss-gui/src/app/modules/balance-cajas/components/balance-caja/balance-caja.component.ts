@@ -180,8 +180,9 @@ export class BalanceCajaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.balanceCaja = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
-        this.totalIngresos = respuesta.datos.content[0].totalIngreso ?? 0;
-        this.totalImporte = respuesta.datos.content[0].totalImporte ?? 0;
+        const [registro] = respuesta.datos.content;
+        this.totalIngresos = registro ? registro.totalIngreso : 0;
+        this.totalImporte = registro ? registro?.totalImporte : 0;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -199,8 +200,9 @@ export class BalanceCajaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.balanceCaja = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
-        this.totalIngresos = respuesta.datos.content[0].totalIngreso ?? 0;
-        this.totalImporte = respuesta.datos.content[0].totalImporte ?? 0;
+        const [registro] = respuesta.datos.content;
+        this.totalIngresos = registro ? registro.totalIngreso : 0;
+        this.totalImporte = registro ? registro?.totalImporte : 0;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);

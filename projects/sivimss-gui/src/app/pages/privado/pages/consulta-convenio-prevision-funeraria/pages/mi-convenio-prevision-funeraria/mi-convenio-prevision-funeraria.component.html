@@ -1,0 +1,109 @@
+<div class="container-sivimss px-5 registro-en-linea my-5">
+    <app-titulo-principal titulo="MI CONVENIO DE PREVISIÓN FUNERARIA">
+        <app-btn-regresar routerLink="../"></app-btn-regresar>
+    </app-titulo-principal>
+    <div class="border-panel mb-5">
+        <h2 class="subtitulo-base">Datos generales del convenio</h2>
+        <div class="row mb-3">
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Folio del convenio</span>
+                <span class="texto-base font-normal">A6SD5746287</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Estatus del convenio</span>
+                <span class="texto-base font-normal">Vigente</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">RFC</span>
+                <span class="texto-base font-normal">00</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">CURP</span>
+                <span class="texto-base font-normal">00</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Fecha de nacimiento</span>
+                <span class="texto-base font-normal">00</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Nombre</span>
+                <span class="texto-base font-normal">nombre</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Primer apellido</span>
+                <span class="texto-base font-normal">Apellido</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Segundo apellido</span>
+                <span class="texto-base font-normal">Apellido</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Sexo</span>
+                <span class="texto-base font-normal">Masculino</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Entidad Federativa</span>
+                <span class="texto-base font-normal">CDMX</span>
+            </div>
+        </div>
+    </div>
+    <div class="border-panel mb-5">
+        <h2 class="subtitulo-base">Beneficiarios</h2>
+        <p-table styleClass="mt-5 mb-8" [value]="nombres" [resizableColumns]="true" [columnResizeMode]="'expand'">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Primer apellido</th>
+                    <th scope="col">Segundo apellido</th>
+                    <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-convenio>
+                <tr>
+                    <td>{{convenio.nombre}}</td>
+                    <td>{{convenio.primerApellido}}</td>
+                    <td>{{convenio.segundoApellido}}</td>
+                    <td style="border-left: 1px solid #b0b0b0;">
+                        <div class="contenedor-celda-iconos">
+                            <a (click)="abrirModalDetalleBeneficiarios($event)">
+                                <i class="pi pi-eye"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <div class="border-panel mb-5">
+        <div class="row mb-3">
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Previsión funeraria</span>
+                <span class="texto-base font-normal">Por persona</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Tipo de paquete</span>
+                <span class="texto-base font-normal">Básico</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Cuota de recuperación</span>
+                <span class="texto-base font-normal">$00,000.00</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Fecha de contratación</span>
+                <span class="texto-base font-normal">00-00-0000</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Fercha de renovación</span>
+                <span class="texto-base font-normal">00-00-0000</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 flex justify-content-end">
+            <button class="btn btn-primary btn-md" routerLink="comprobante-de-pago">Ver comprobante de pago</button>
+            <button class="btn btn-primary btn-md ml-5" (click)="abrirModalRenovarConvenio($event)">Renovar convenio</button>
+        </div>
+    </div>
+</div>

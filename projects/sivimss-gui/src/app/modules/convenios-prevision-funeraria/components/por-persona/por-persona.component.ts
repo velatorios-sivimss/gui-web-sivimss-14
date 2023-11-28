@@ -146,6 +146,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     });
     this.beneficiarioRef.onClose.subscribe((beneficiario: BeneficiarioInterface) => {
       if(beneficiario){
+        beneficiario.posicion = this.beneficiarios.length;
         this.beneficiarios.push(beneficiario);
       }
     });
@@ -198,7 +199,9 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
 
     this.modificarBeneficiarioRef.onClose.subscribe((beneficiario: BeneficiarioInterface) => {
       if(beneficiario){
-        const index = this.beneficiarios.findIndex((item: BeneficiarioInterface) => item.curp === beneficiario.curp);
+
+        // const index = this.beneficiarios.findIndex((item: BeneficiarioInterface) => item.curp === beneficiario.curp);
+        const index = this.beneficiarios.findIndex((item: BeneficiarioInterface) => item.posicion === beneficiario.posicion);
         this.beneficiarios[index] = beneficiario;
       }
     })
@@ -507,9 +510,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           documentacion:{
             validaIneContratante:false,
             validaCurp:false,
-            validaRfc:false,
-            validaActaNacimientoBeneficiario:false,
-            validaIneBeneficiario:false
+            validaRfc:false
           }
         }
       )

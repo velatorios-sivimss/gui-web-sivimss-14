@@ -8,6 +8,17 @@
         <form class="mt-5" [formGroup]="modificarBeneficiarioForm">
           <div class="row mb-3">
             <div class="col-md-4">
+              <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
+              <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa la curp" maxlength="18"
+                alphanumericOnly trimmer (blur)="validarCurpRenapo();">
+              <span class="campo-obligatorio"
+                *ngIf="mbf.curp?.errors?.required && (mbf.curp?.dirty || mbf.curp?.touched)">
+                Este campo es obligatorio *.</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
               <label class="control-label" for="nombre">Nombre:</label>
               <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre"
                 maxlength="50" lettersOnly trimmer>
@@ -35,6 +46,15 @@
 
           <div class="row mb-3">
             <div class="col-md-4">
+              <label class="control-label" for="fechaNac">Fecha nacimiento:</label>
+              <p-calendar id="fechaNac" formControlName="fechaNac" styleClass="form-control"
+                          (onSelect)="calcularEdad()" (change)="calcularEdad()"
+                          [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+              </p-calendar>
+              <span class="campo-obligatorio"
+                    *ngIf="mbf?.fechaNac?.errors?.required && (mbf?.fechaNac?.dirty || mbf?.fechaNac?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-4">
               <label class="control-label" for="edad">Edad:</label>
               <input id="edad" class="form-control" formControlName="edad" placeholder="Ingresa la edad" maxlength="3"
                 numbersOnly trimmer>
@@ -48,14 +68,6 @@
                 placeholder="Selecciona parentesco" [options]="catParentesco"></p-dropdown>
               <span class="campo-obligatorio"
                 *ngIf="mbf.parentesco?.errors?.required && (mbf.parentesco?.dirty || mbf.parentesco?.touched)">
-                Este campo es obligatorio *.</span>
-            </div>
-            <div class="col-md-4">
-              <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
-              <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa la curp" maxlength="18"
-                alphanumericOnly trimmer (blur)="validarCurpRenapo();">
-              <span class="campo-obligatorio"
-                *ngIf="mbf.curp?.errors?.required && (mbf.curp?.dirty || mbf.curp?.touched)">
                 Este campo es obligatorio *.</span>
             </div>
           </div>
@@ -86,56 +98,61 @@
             </div>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-8">
-              <div class="flex">
-                <p-checkbox inputId="actaNacimiento" formControlName="actaNacimiento" styleClass="mr-3"
-                  [binary]="true"></p-checkbox>
-                <label [for]="'actaNacimiento'" class="control-label"><strong>Copia acta de nacimiento del beneficiario
-                    si es
-                    menor de edad</strong></label>
+          <div *ngIf="busquedaListBeneficiarios.tipoPlan === 1">
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <div class="flex">
+                  <p-checkbox inputId="actaNacimiento" formControlName="actaNacimiento" styleClass="mr-3"
+                    [binary]="true"></p-checkbox>
+                  <label [for]="'actaNacimiento'" class="control-label"><strong>Copia acta de nacimiento del beneficiario
+                      si es
+                      menor de edad</strong></label>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <div class="flex">
+                  <p-checkbox inputId="ineBeneficiario" formControlName="ineBeneficiario" styleClass="mr-3"
+                    [binary]="true"></p-checkbox>
+                  <label [for]="'ineBeneficiario'" class="control-label"><strong>Copia del INE del beneficiario si es
+                      mayor de
+                      edad</strong></label>
+                </div>
               </div>
             </div>
           </div>
-          <div class="row mb-3">
-            <div class="col-md-8">
-              <div class="flex">
-                <p-checkbox inputId="ineBeneficiario" formControlName="ineBeneficiario" styleClass="mr-3"
-                  [binary]="true"></p-checkbox>
-                <label [for]="'ineBeneficiario'" class="control-label"><strong>Copia del INE del beneficiario si es
-                    mayor de
-                    edad</strong></label>
+
+          <div *ngIf="busquedaListBeneficiarios.tipoPlan !== 1">
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <div class="flex">
+                  <p-checkbox inputId="comprobanteEstudios" formControlName="comprobanteEstudios" styleClass="mr-3"
+                    [binary]="true"></p-checkbox>
+                  <label [for]="'comprobanteEstudios'" class="control-label"><strong>Comprobante de estudios del
+                      beneficiario si es
+                      mayor de 18 años y estudia</strong></label>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-8">
-              <div class="flex">
-                <p-checkbox inputId="comprobanteEstudios" formControlName="comprobanteEstudios" styleClass="mr-3"
-                  [binary]="true"></p-checkbox>
-                <label [for]="'comprobanteEstudios'" class="control-label"><strong>Comprobante de estudios del
-                    beneficiario si es
-                    mayor de 18 años y estudia</strong></label>
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <div class="flex">
+                  <p-checkbox inputId="actaMatrimonio" formControlName="actaMatrimonio" styleClass="mr-3"
+                    [binary]="true"></p-checkbox>
+                  <label [for]="'actaMatrimonio'" class="control-label"><strong>Acta de matrimonio (Beneficiario
+                      Espos@)</strong></label>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-8">
-              <div class="flex">
-                <p-checkbox inputId="actaMatrimonio" formControlName="actaMatrimonio" styleClass="mr-3"
-                  [binary]="true"></p-checkbox>
-                <label [for]="'actaMatrimonio'" class="control-label"><strong>Acta de matrimonio (Beneficiario
-                    Espos@)</strong></label>
-              </div>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-8">
-              <div class="flex">
-                <p-checkbox inputId="declaracionConcubinato" formControlName="declaracionConcubinato" styleClass="mr-3"
-                  [binary]="true"></p-checkbox>
-                <label [for]="'declaracionConcubinato'" class="control-label"><strong>Declaración de
-                    concubinato</strong></label>
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <div class="flex">
+                  <p-checkbox inputId="declaracionConcubinato" formControlName="declaracionConcubinato" styleClass="mr-3"
+                    [binary]="true"></p-checkbox>
+                  <label [for]="'declaracionConcubinato'" class="control-label"><strong>Declaración de
+                      concubinato</strong></label>
+                </div>
               </div>
             </div>
           </div>

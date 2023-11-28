@@ -79,6 +79,7 @@ export interface Beneficiario {
   comprobanteEstudios?: boolean | null;
   actaMatrimonio?: boolean | null;
   declaracionConcubinato?: boolean | null;
+  fechaNac?: string | null;
 }
 
 export interface BeneficiarioSeleccionado {
@@ -103,6 +104,7 @@ export interface BeneficiarioSeleccionado {
   idPersona?: number | null;
   tipoConvenioDesc?: string | null;
   activo?: boolean | null;
+  fechaNac?: string | null;
 }
 
 export interface BusquedaBeneficiarios {
@@ -143,6 +145,7 @@ export interface ObtenerCatalogo {
 export interface CatalogoDatosGenerales {
   idValidacionDoc?: number;
   rfcAfiliado?: boolean;
+  delegacion?: string;
   velatorio?: string;
   contratante?: string;
   ineAfiliado?: boolean;
@@ -151,7 +154,8 @@ export interface CatalogoDatosGenerales {
 }
 
 export interface VerificarDocumentacion {
-  idValidacionDoc?: number;
+  idConvenio?: number | null;
+  idValidacionDoc?: number | null;
   ineAfiliado?: number | null;
   curp?: number | null;
   rfc?: number | null;

@@ -154,31 +154,22 @@ export class ModificarContratantesComponent implements OnInit {
   }
 
   obtenerCP(): void {
-    if (!this.df.cp?.value) return;
+    if (!this.df.cp.value) { return }
     this.loaderService.activar();
-    let datos: TipoCatalogo = {
-      idCatalogo: 3,
-      cp: +this.df.cp?.value,
+    this.contratantesService.consutaCP(this.df.cp.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
+        this.df.estado.setValue(respuesta.datos[0].municipio.entidadFederativa.nombre);
+        this.df.municipio.setValue(respuesta.datos[0].municipio.nombre);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
+        console.error("ERROR: ", error);
+      }
     }
-    this.contratantesService.consultarCatalogo(datos)
-      .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          const { datos } = respuesta;
-          if (datos.length === 0 || !datos) {
-            this.limpiarCP();
-            return;
-          }
-          const { estado, municipio } = datos[0];
-          this.colonias = datos.map((d: ValorCP) => ({ value: d.colonia, label: d.colonia }));
-          this.df.municipio.patchValue(municipio);
-          this.df.estado.patchValue(estado);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
-          console.error("ERROR: ", error);
-        }
-      });
+    )
   }
 
   limpiarCP(): void {

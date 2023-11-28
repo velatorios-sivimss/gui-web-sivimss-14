@@ -21,10 +21,14 @@ interface SolicitudCancelacion {
 })
 export class CancelarSolicitudPagoComponent implements OnInit {
 
+  readonly CAPTURA_CANCELAR_PAGO: number = 1;
+  readonly RESUMEN_CANCELAR_PAGO: number = 2;
+
   cancelarPagoForm!: FormGroup;
   pagoSeleccionado!: SolicitudPago;
 
-  mensajeConfirmacion: boolean = false;
+  motivoCancelacion: string = '';
+  pasoCancelarPago: number = 1;
 
   constructor(
     public config: DynamicDialogConfig,
@@ -40,15 +44,19 @@ export class CancelarSolicitudPagoComponent implements OnInit {
   ngOnInit(): void {
     if (this.config?.data) {
       this.pagoSeleccionado = this.config.data;
-      console.log(this.pagoSeleccionado)
     }
     this.inicializarModificarPagoForm();
   }
 
   inicializarModificarPagoForm(): void {
     this.cancelarPagoForm = this.formBulder.group({
-      motivo: [{value: null, disabled: false}, [Validators.maxLength(70), Validators.required]],
+      motivo: [{value: null, disabled: false}, [Validators.maxLength(100), Validators.required]],
     });
+  }
+
+  aceptarCancelacion(): void {
+    this.pasoCancelarPago = this.RESUMEN_CANCELAR_PAGO;
+    this.motivoCancelacion = this.cancelarPagoForm.get('motivo')?.value;
   }
 
   confirmarCancelacionPago(): void {

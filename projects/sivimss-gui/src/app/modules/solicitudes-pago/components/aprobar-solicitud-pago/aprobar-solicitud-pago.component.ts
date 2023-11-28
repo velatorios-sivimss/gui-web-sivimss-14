@@ -10,6 +10,7 @@ import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/aler
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
+import {forkJoin, Observable} from "rxjs";
 
 interface SolicitudCancelacion {
   idSolicitud: number
@@ -35,7 +36,8 @@ export class AprobarSolicitudPagoComponent implements OnInit {
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private alertaService: AlertaService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     if (this.config?.data) {
@@ -47,18 +49,18 @@ export class AprobarSolicitudPagoComponent implements OnInit {
 
   inicializarAprobarPagoForm(): void {
     this.aprobarPagoForm = this.formBulder.group({
-      cveFolioGastos: [{value: null, disabled: false}, [Validators.maxLength(70), Validators.required]],
+      cveFolioGastos: [{value: null, disabled: false}, [Validators.maxLength(100), Validators.required]],
     });
   }
 
   obtenerSolicPago(idSolicitud: number): void {
-    this.cargadorService.activar();
     this.solicitudesPagoService.detalleSolicitudPago(idSolicitud)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.solicitudPagoSeleccionado = respuesta.datos[0];
           this.listaPartidaPresupuestal(this.solicitudPagoSeleccionado.cveFolioGastos);
+          this.partidaPresupuestalMultiplesFolios(this.solicitudPagoSeleccionado.foliosFactura);
           this.convertirImporte(this.solicitudPagoSeleccionado.impTotal);
         },
         error: (error: HttpErrorResponse): void => {
@@ -69,7 +71,7 @@ export class AprobarSolicitudPagoComponent implements OnInit {
   }
 
   listaPartidaPresupuestal(folioGastos: string): void {
-    this.cargadorService.activar();
+    if (!folioGastos) return;
     this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
@@ -87,20 +89,35 @@ export class AprobarSolicitudPagoComponent implements OnInit {
   }
 
   confirmarAprobacionPago(): void {
-    this.cargadorService.activar();
     const solicitud: SolicitudCancelacion = this.generarSolicitud();
     this.solicitudesPagoService.aprobarSolicitudPago(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Tu solicitud de pago ha sido aprobada exitosamente.');
-        this.referencia.close(true);
+        this.referencia.close();
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
+  }
+
+  partidaPresupuestalMultiplesFolios(foliosGastos: string): void {
+    if (!foliosGastos) return;
+    const folios: string[] = foliosGastos.split(',');
+    const observablesFolios: Observable<HttpRespuesta<any>>[] = folios.map(folio => this.obtenerPartidaPresupuestal(folio.trim()));
+    forkJoin(observablesFolios).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta): void => {
+        this.partidaPresupuestal = respuesta.map(response => response.datos).flat();
+      },
+      error: (error): void => {
+        console.error('Error:', error);
+      }
+    })
   }
 
   generarSolicitud(): SolicitudCancelacion {
@@ -116,6 +133,10 @@ export class AprobarSolicitudPagoComponent implements OnInit {
 
   cancelar(): void {
     this.referencia.close(false);
+  }
+
+  obtenerPartidaPresupuestal(parametro: string): Observable<any> {
+    return this.solicitudesPagoService.buscarPartidaPresupuestal(parametro)
   }
 
   get ref() {

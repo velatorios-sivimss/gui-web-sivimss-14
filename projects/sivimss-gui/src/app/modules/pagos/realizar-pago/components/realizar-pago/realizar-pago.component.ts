@@ -13,7 +13,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {
-  mapearArregloTipoDropdown,
+  mapearArregloTipoDropdown, obtenerFechaYHoraActual,
   obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado,
   validarUsuarioLogueado
 } from "../../../../../utils/funciones";
@@ -183,7 +183,8 @@ export class RealizarPagoComponent implements OnInit {
   guardarPDF(): void {
     const solicitud: SolicitudDescargaArchivo = this.crearSolicituDescarga();
     this.cargadorService.activar();
-    this.descargaArchivosService.descargarArchivo(this.realizarPagoService.descargarListado(solicitud)).pipe(
+    const opciones = {nombreArchivo: `Realizar Pago ${obtenerFechaYHoraActual()}`}
+    this.descargaArchivosService.descargarArchivo(this.realizarPagoService.descargarListado(solicitud), opciones).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
@@ -201,7 +202,7 @@ export class RealizarPagoComponent implements OnInit {
   guardarExcel(): void {
     const solicitud: SolicitudDescargaArchivo = this.crearSolicituDescarga('xls');
     this.cargadorService.activar();
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: `Realizar Pago ${obtenerFechaYHoraActual()}`, ext: "xlsx"}
     this.descargaArchivosService.descargarArchivo(this.realizarPagoService.descargarListado(solicitud), configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
@@ -233,8 +234,8 @@ export class RealizarPagoComponent implements OnInit {
       idFlujoPagos = 3;
     }
     return {
-      fechaFin: this.filtroForm.get('periodoInicio')?.value,
-      fechaInicio: this.filtroForm.get('periodoFin')?.value,
+      fechaFin: this.filtroForm.get('periodoFin')?.value,
+      fechaInicio: this.filtroForm.get('periodoInicio')?.value,
       folio,
       idFlujoPagos,
       idVelatorio: this.filtroForm.get('velatorio')?.value,

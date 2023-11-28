@@ -96,7 +96,8 @@
   </div>
   <div class="flex justify-content-end mb-3">
     <button type="button" class="ml-4 mt-3 btn btn-danger btn-md" routerLink="../">Cancelar</button>
-    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md" [disabled]="!formulario.valid" (click)="mostrarModalAgregarODE = true">Guardar</button>
+    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md" [disabled]="!formulario.valid || bloquearCampoArticulos"
+    (click)="mostrarModalAgregarODE = true">Guardar</button>
   </div>
 </form>
 

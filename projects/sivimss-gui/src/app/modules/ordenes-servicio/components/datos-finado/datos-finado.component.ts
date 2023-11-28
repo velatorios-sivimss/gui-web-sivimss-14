@@ -337,6 +337,7 @@ export class DatosFinadoComponent implements OnInit {
     this.cambiarValidacionMatricula();
     this.esExtremidad(datosEtapaFinado.datosFinado.esParaExtremidad);
     this.esObito(datosEtapaFinado.datosFinado.esObito);
+    this.colonias =  [{label:datosEtapaFinado.direccion.colonia, value:datosEtapaFinado.direccion.colonia}] || []
   }
 
   consultarCURP(): void {
@@ -733,6 +734,7 @@ export class DatosFinadoComponent implements OnInit {
     this.altaODS.idContratantePf = this.idContratante;
     if (!datosEtapaFinado.datosFinado.esParaExtremidad) {
       this.finado.rfc = null;
+      this.finado.matricula = datosEtapaFinado.datosFinado.matricula;
       this.finado.curp = datosEtapaFinado.datosFinado.curp;
       this.finado.nss = datosEtapaFinado.datosFinado.nss;
       this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;
@@ -744,8 +746,8 @@ export class DatosFinadoComponent implements OnInit {
       this.finado.fechaNac = moment(
         datosEtapaFinado.datosFinado.tipoOrden
       ).format('yyyy-MM-DD');
-      this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
-      this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
+      this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
+      this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
       this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion ? moment(
         datosEtapaFinado.datosFinado.fechaDefuncion
       ).format('yyyy-MM-DD') : null;

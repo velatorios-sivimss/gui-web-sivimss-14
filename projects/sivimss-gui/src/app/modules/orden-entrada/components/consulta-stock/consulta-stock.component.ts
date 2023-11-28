@@ -89,8 +89,8 @@ export class ConsultaStockComponent implements OnInit {
   inicializarFormulario(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.formulario = this.formBuilder.group({
-      nivel: [{ value: +usuario.idOficina, disabled: false }],
-      velatorio: [{ value: +usuario.idVelatorio, disabled: false }],
+      nivel: [{ value: +usuario.idOficina, disabled: true }],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }],
       ordenEntrada: [{ value: null, disabled: false }],
       categoria: [{ value: null, disabled: false }],
       asignacion1: [{ value: null, disabled: false }],
@@ -247,24 +247,19 @@ export class ConsultaStockComponent implements OnInit {
     }
     this.loaderService.activar();
     const busqueda = this.mapearDatosReporte(tipoReporte);
-    this.descargaArchivosService.descargarArchivo(this.ordenEntradaService.generarReporteStock(busqueda), configuracionArchivo).pipe(
+    this.ordenEntradaService.generarReporteStock(busqueda).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe({
-      next: (respuesta: any) => {
-        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        this.mostrarModalConfirmacion = true;
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error);
-        const mensaje = this.alertas?.filter((msj: any) => {
-          return msj.idMensaje == error?.error?.mensaje;
-        })
-        if (mensaje) {
-          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
-        } else {
-          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
-        }
-      },
+    )
+    .subscribe((blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = tipoReporte == "xls" ? "documento"+"."+"xlsx" : "documento"+"."+"pdf";
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
     });
   }
 
@@ -291,12 +286,11 @@ export class ConsultaStockComponent implements OnInit {
     if (idTipoAsignacion === null && asignacion1 && asignacion1[0] === 0) {
       idTipoAsignacion = "1,3";
     }
+    let ordenEntrada = this.catalogoOrdenesEntradaCompleto.filter((o) => o.NUM_FOLIO === this.formulario.get("ordenEntrada")?.value);
     let categoria = this.catalogoCategoriasCompleto.filter((c) => c.DES_CATEGORIA_ARTICULO === this.formulario.get("categoria")?.value);
-
-
     return {
       idVelatorio: this.formulario.get("velatorio")?.value === "" ? null : this.formulario.get("velatorio")?.value,
-      idOrdenEntrada: this.formulario.get("ordenEntrada")?.value,
+      idOrdenEntrada: ordenEntrada.length > 0 ? ordenEntrada[0].ID_ODE : null,
       idCategoriaArticulo: categoria.length > 0 ? categoria[0].ID_CATEGORIA_ARTICULO : null,
       idTipoAsignacionArt: idTipoAsignacion,
       tipoReporte: tipoReporteSeleccionado,

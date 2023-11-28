@@ -30,11 +30,11 @@
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Vehículo</span>
-          <span class="texto-base">{{vehiculo.DES_MARCA}} {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</span>
+          <span class="texto-base">{{vehiculo.REF_MARCA}} {{vehiculo.REF_SUBMARCA}} {{vehiculo.REF_MODELO}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Placas</span>
-          <span class="texto-base">{{vehiculo.DES_PLACAS}}</span>
+          <span class="texto-base">{{vehiculo.REF_PLACAS}}</span>
         </div>
       </div>
       <hr class="hr-accordion-content">
@@ -157,15 +157,15 @@
                   <div class="row grid">
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base ml-4">Placas</label>
-                      <span class="ml-4">{{vehiculo.DES_PLACAS}}</span>
+                      <span class="ml-4">{{vehiculo.REF_PLACAS}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Marca</label>
-                      <span>{{vehiculo.DES_MARCA}}</span>
+                      <span>{{vehiculo.REF_MARCA}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Año</label>
-                      <span>{{vehiculo.DES_MODELO}}</span>
+                      <span>{{vehiculo.REF_MODELO}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Kilometraje</label>
@@ -197,19 +197,19 @@
                     <div class="col-3">
                       <div class="table-panel-column ">
                         <label class="flex flex-column etiqueta-base">Notas</label>
-                        <span>{{solicitudRegistro.DES_NOTAS}}</span>
+                        <span>{{solicitudRegistro.REF_NOTAS}}</span>
                       </div>
                     </div>
                     <div class="col-3" *ngIf="solicitudRegistro.DES_MTTO_TIPO === 'Preventivo'">
                       <div class="table-panel-column ">
                         <label>Mantenimiento preventivo</label>
-                        <span>{{solicitudRegistro.DES_MTTO_MODALIDAD}}</span>
+                        <span>{{solicitudRegistro.REF_MTTO_MODALIDAD}}</span>
                       </div>
                     </div>
                     <div class="col-3" *ngIf="solicitudRegistro.DES_MTTO_TIPO === 'Preventivo' && solicitudRegistro.DES_MODALIDAD === 'Semestral'">
                       <div class="table-panel-column ">
                         <label class="ml-4">Mantenimiento preventivo detalle</label>
-                        <span class="ml-4">{{solicitudRegistro.DES_MTTO_MODALIDAD_DET}}</span>
+                        <span class="ml-4">{{solicitudRegistro.REF_MTTO_MODALIDAD_DET}}</span>
                       </div>
                     </div>
                   </div>
@@ -224,15 +224,15 @@
                   <div class="row grid">
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base ml-4">Placas</label>
-                      <span class="ml-4">{{vehiculo.DES_PLACAS}}</span>
+                      <span class="ml-4">{{vehiculo.REF_PLACAS}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Marca</label>
-                      <span>{{vehiculo.DES_MARCA}}</span>
+                      <span>{{vehiculo.REF_MARCA}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Año</label>
-                      <span>{{vehiculo.DES_MODELO}}</span>
+                      <span>{{vehiculo.REF_MODELO}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Kilometraje</label>
@@ -255,19 +255,19 @@
                     </div>
                     <div class="col table-panel-column" *ngIf="registro.DES_MTTO_TIPO === 'Preventivo'">
                       <label class="flex flex-column etiqueta-base">Mantenimiento</label>
-                      <span>{{registro.DES_MTTO_MODALIDAD}}</span>
+                      <span>{{registro.REF_MTTO_MODALIDAD}}</span>
                     </div>
                     <div class="col table-panel-column" *ngIf="registro.DES_MTTO_TIPO === 'Preventivo' && registro.DES_MODALIDAD === 'Semestral'">
                       <label class="ml-4">Mantenimiento preventivo detalle</label>
-                      <span class="ml-4">{{registro.DES_MTTO_MODALIDAD_DET}}</span>
+                      <span class="ml-4">{{registro.REF_MTTO_MODALIDAD_DET}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Notas</label>
-                      <span>{{registro.DES_NOTAS}}</span>
+                      <span>{{registro.REF_NOTAS}}</span>
                     </div>
                     <div class="col table-panel-column"  *ngIf="registro.DES_MTTO_TIPO === 'Correctivo'">
                       <label class="flex flex-column etiqueta-base">Número de contrato</label>
-                      <span>{{registro.DES_NUMCONTRATO}}</span>
+                      <span>{{registro.REF_NUMCONTRATO}}</span>
                     </div>
                     <div class="col table-panel-column"  *ngIf="registro.DES_MTTO_TIPO === 'Preventivo'">
                       <label class="flex flex-column etiqueta-base">Número de contrato</label>
@@ -275,7 +275,7 @@
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Nombre de proveedor</label>
-                      <span>{{registro.NOM_PROVEEDOR || registro.DES_NOMBRE_PROVEEDOR}}</span>
+                      <span>{{registro.REF_PROVEEDOR || registro.REF_NOMBRE_PROVEEDOR}}</span>
                     </div>
                     <div class="col table-panel-column" *ngIf="registro.DES_MTTO_TIPO === 'Correctivo'">
                       <label class="flex flex-column etiqueta-base">Taller</label>
@@ -318,8 +318,8 @@
 <p-dialog header="Modificar" [(visible)]="modificarModal" *ngIf="vehiculo">
   <div class="border-panel mb-4 w-440 bg-g">
     <div class="row flex justify-content-center">
-      {{vehiculo.ID_VEHICULO}} - {{vehiculo.DES_MARCA | uppercase }}
-      {{vehiculo.DES_SUBMARCA | uppercase}} {{vehiculo.DES_MODELO | uppercase}}
+      {{vehiculo.ID_VEHICULO}} - {{vehiculo.REF_MARCA | uppercase }}
+      {{vehiculo.REF_SUBMARCA | uppercase}} {{vehiculo.REF_MODELO | uppercase}}
     </div>
   </div>
   <div class=" border-panel w-440">

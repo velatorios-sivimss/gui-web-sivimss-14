@@ -14,6 +14,7 @@ import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuest
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as moment from 'moment';
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-generar-orden-formato',
@@ -34,6 +35,8 @@ export class GenerarOrdenFormatoComponent implements OnInit {
   public catalogoVelatorios: TipoDropdown[] = [];
   public esModificacion: any;
   public ordenSeleccionada: any;
+  public idProveedor!: number;
+  public idServicio!: number;
 
   constructor(
     public config: DynamicDialogConfig,
@@ -53,9 +56,10 @@ export class GenerarOrdenFormatoComponent implements OnInit {
     this.esModificacion = this.route.snapshot.paramMap.get('esModificacion');
     this.esModificacion =  JSON.parse(this.esModificacion);
     this.ordenSeleccionada = this.generarOrdenSubrogacionService.ordenSeleccionada;
-    this.cargarVelatorios(true);
     this.inicializarCatalogos();
     this.inicializarEditForm();
+    this.cargarVelatorios(true);
+    if(this.esModificacion)this.consultarDetalle(this.ordenSeleccionada.idHojaSubrogacion);
   }
 
   inicializarEditForm(): void {
@@ -67,23 +71,29 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       hora: new FormControl({ value: new Date(), disabled: true }, []),
       delegacion: new FormControl({ value: +usuario.idDelegacion, disabled: true }, []),
       velatorio: new FormControl({ value: +usuario.idVelatorio, disabled: true }, []),
-      razonSocial: new FormControl({ value: this.ordenSeleccionada.proveedor, disabled: true }, []),
+      razonSocial: new FormControl({ value: null, disabled: true }, []),
       numOrden: new FormControl({ value: this.ordenSeleccionada.folioOds, disabled: true }, []),
       fechaOrden: new FormControl({ value: this.ordenSeleccionada.fechaOds.replaceAll("-","/"), disabled: true }, []),
       nombreFinado: new FormControl({ value: this.ordenSeleccionada.nombreFinado, disabled: true }, []),
-      tipoTraslado: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoTranslado == "Oficial" ? "true" : "false" : null , disabled: false }, [Validators.required]),
-      servicios: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoServicio ? this.ordenSeleccionada.tipoServicio : null : null, disabled: this.esModificacion ? true : false }, [Validators.required]),
-      especificaciones: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.especificaciones : null, disabled: false }, []),
+      tipoTraslado: new FormControl({ value: null , disabled: false }, [Validators.required]),
+      servicios: new FormControl({ value: null, disabled: this.esModificacion ? true : false }, [Validators.required]),
+      especificaciones: new FormControl({ value: null, disabled: false }, []),
       lugarOrigen: new FormControl({ value: null, disabled: true }, []),
       lugarDestino: new FormControl({ value: null, disabled: true }, []),
       distancia: new FormControl({ value: null, disabled: true }, []),
-      nombreOperador: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.nombreOperador : null, disabled: false }, [Validators.required]),
-      nombreAcompanante: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.nombreAcompaniante : null, disabled: false }, []),
-      numCarroza: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.numCarroza : null, disabled: false }, [Validators.required]),
-      numPlacas: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.numPlacas : null, disabled: false }, []),
-      horaPartida: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.horaPartida : null, disabled: false }, []),
-      diaPartida: new FormControl({ value: this.esModificacion ? new Date(this.ordenSeleccionada.diaPartida) : null, disabled: false }, [])
+      nombreOperador: new FormControl({ value: null, disabled: false }, [Validators.required]),
+      nombreAcompanante: new FormControl({ value: null, disabled: false }, []),
+      numCarroza: new FormControl({ value: null, disabled: false }, [Validators.required]),
+      numPlacas: new FormControl({ value: null, disabled: false }, []),
+      horaPartida: new FormControl({ value: null, disabled: false }, []),
+      diaPartida: new FormControl({ value: null, disabled: false }, [])
     });
+  }
+
+  validarCadenaFechaVacia(cadenaFecha:string):Date | null{
+    if(cadenaFecha === '') return null
+    const [anio, mes, dia] = cadenaFecha.split('-')
+    return  new Date(+anio + '/' + +mes + '/' + +dia);
   }
 
   inicializarCatalogos(): void {
@@ -121,9 +131,11 @@ export class GenerarOrdenFormatoComponent implements OnInit {
   }
 
   onChangeServicio(event: any) {
-    console.log("idServicio Seleccionado: ", event);
     let idServicioSeleccionado = event.value;
     let servicio = this.catalogoServiciosConAtributos.filter( (s: any) => s.idServicio === idServicioSeleccionado);
+    this.idProveedor = servicio[0].idProveedor;
+    this.idServicio = servicio[0].idServicio;
+    this.ef.razonSocial.setValue(servicio[0].nombreProveedor)
     if (servicio.length > 0 ) {
       this.editForm.get('lugarOrigen')?.setValue(servicio[0].origen);
       this.editForm.get('lugarDestino')?.setValue(servicio[0].destino);
@@ -133,6 +145,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
 
   guardarOrden() {
     let orden = this.mapearOrden();
+    console.log("Despues ", orden);
     if (this.esModificacion) {
       orden.idHojaSubrogacion = this.ordenSeleccionada.idHojaSubrogacion;
       this.generarOrdenSubrogacionService.actualizarOrden(orden).subscribe({
@@ -156,7 +169,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.error("ERROR: ", error);
-          this.alertaService.mostrar(TipoAlerta.Error, "Error al guardar la información " + this.ordenSeleccionada.idHojaSubrogacion + ". Intenta nuevamente.");
+          this.alertaService.mostrar(TipoAlerta.Error, "Error al guardar la información. Intenta nuevamente.");
         }
       });
     }
@@ -164,32 +177,76 @@ export class GenerarOrdenFormatoComponent implements OnInit {
 
   mapearOrden(): any {
     let servicio = this.catalogoServicios.filter((s) => s.value === this.editForm.get("servicios")?.value);
+    console.log("ANTES " ,this.editForm.value);
     return {
       idOrdenServicio: this.ordenSeleccionada.idOds,
       idDelegacion: this.editForm.get("delegacion")?.value,
       idVelatorio: this.editForm.get("velatorio")?.value,
-      idProveedor: this.ordenSeleccionada.idProveedor,
+      idProveedor: this.idProveedor,
       fecGeneracionHoja: this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
       tipoTraslado: this.editForm.get("tipoTraslado")?.value ? "Oficial" : "Particular",
       idFinado: this.ordenSeleccionada.idFinado,
       origen: this.editForm.get("lugarOrigen")?.value,
       destino: this.editForm.get("lugarDestino")?.value,
       distanciaRecorrer: this.editForm.get("distancia")?.value,
-      idServicio: this.esModificacion ? this.ordenSeleccionada.idServicio : servicio.length > 0 ? servicio[0].value : null,
-      especificaciones: this.editForm.get("especificaciones")?.value,
+      idServicio: this.idServicio,
+      especificaciones: this.editForm.get("especificaciones")?.value ?? "",
       nombreOperador: this.editForm.get("nombreOperador")?.value,
       carrozaNum: this.editForm.get("numCarroza")?.value,
-      numeroPlacas: this.editForm.get("numPlacas")?.value,
-      diaPartida: this.datePipe.transform(new Date(this.editForm.get("diaPartida")?.value), 'yyyy-MM-dd'),
-      horaPartida: moment(this.editForm.get('horaPartida')?.value).format('HH:mm:ss'),
-      nomAcompaniante: this.editForm.get("nombreAcompanante")?.value
+      numeroPlacas: this.editForm.get("numPlacas")?.value ?? "",
+      diaPartida: this.obtenerDiaPartida(this.editForm.get("diaPartida")?.value),
+      horaPartida: this.obtenerHoraPartida(this.editForm.get("horaPartida")?.value),
+      nomAcompaniante: this.editForm.get("nombreAcompanante")?.value ?? ""
     }
+  }
+
+  obtenerDiaPartida(diaPartida:Date){
+    return diaPartida ? moment(diaPartida).format('YYYY-MM-DD') : null;
+  }
+
+  obtenerHoraPartida(horaPartida:Date){
+    return horaPartida ? moment(horaPartida).format('HH:mm:ss') : null;
   }
 
   formatearHora(cadenaHora: string) {
     const fecha = new Date(); // Fecha ficticia, solo para obtener la hora
     const horaCompleta = new Date(fecha.toDateString() + ' ' + cadenaHora);
     return this.datePipe.transform(horaCompleta, 'HH:mm:ss');
+  }
+
+  consultarDetalle(orden:string): void {
+    this.loaderService.activar()
+    this.generarOrdenSubrogacionService.detalleSubrogacion(+orden).pipe(
+      finalize(()=>this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.ef.razonSocial.setValue(respuesta.datos[0].proveedor);
+        this.ef.tipoTraslado.setValue(respuesta.datos[0].tipoTraslado == "Oficial" ? true : false);
+        this.ef.servicios.setValue(respuesta.datos[0].servicio);
+        this.ef.especificaciones.setValue(respuesta.datos[0].especificaciones);
+        this.ef.lugarOrigen.setValue(respuesta.datos[0].origen);
+        this.ef.lugarDestino.setValue(respuesta.datos[0].destino);
+        this.ef.distancia.setValue(respuesta.datos[0].distancia);
+        this.ef.nombreOperador.setValue(respuesta.datos[0].operador);
+        this.ef.nombreAcompanante.setValue(respuesta.datos[0].acompaniante);
+        this.ef.numCarroza.setValue(respuesta.datos[0].carroza);
+        this.ef.numPlacas.setValue(respuesta.datos[0].placas);
+        this.ef.horaPartida.setValue(this.parseoHora(respuesta.datos[0].horaPArtida));
+        this.ef.diaPartida.setValue(this.validarCadenaFechaVacia(respuesta.datos[0].diaPartida));
+        this.idProveedor = respuesta.datos[0].idProveedor;
+        this.idServicio = respuesta.datos[0].idServicio;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, "Error al guardar la información. Intenta nuevamente.");
+      }
+    })
+  }
+
+  parseoHora(tiempo: string): any {
+    const fechaActual = moment().format('YYYY-MM-DD');
+    const [anio, mes, dia] = fechaActual.split('-')
+    const [horas, minutos,segundos] = tiempo.split(':')
+    return  new Date(+anio, +mes, +dia, +horas, +minutos, +segundos)
   }
 
   get ef() {

@@ -919,7 +919,7 @@ export class CaracteristicasPresupuestoSFComponent
       detalle.cantidad = Number(datos.cantidad);
       detalle.idArticulo = parseInt(datos.idArticulo);
       detalle.desmotivo = datos.desmotivo;
-      detalle.activo = 1;
+      detalle.activo = null;
       detalle.idProveedor = datos.idProveedor ?? null;
       detalle.idServicio =
         datos.idServicio == '' ? null : Number(datos.idServicio);
@@ -950,6 +950,7 @@ export class CaracteristicasPresupuestoSFComponent
         traslado.totalKilometros = datos.kilometraje ?? null;
         detalle.servicioDetalleTraslado = traslado ?? null;
       }
+      detalle.activo =  datos.utilizarArticulo ? (datos.utilizarArticulo.includes("true") ? 1 : 0) : null;
       this.detallePaquete.push(detalle);
     });
 

@@ -139,19 +139,19 @@
           </ng-template>
           <ng-template pTemplate="body" let-item>
             <tr>
-              <td>{{ item.DES_PLACAS }}</td>
-              <td>{{ item.DES_MARCA }}</td>
-              <td>{{ item.DES_MODELO }}</td>
+              <td>{{ item.REF_PLACAS }}</td>
+              <td>{{ item.REF_MARCA }}</td>
+              <td>{{ item.REF_MODELO }}</td>
               <td>{{ item.NUM_KILOMETRAJE_SOL }}</td>
               <td>{{ item.DES_MTTO_TIPO }}</td>
-              <td>{{ item.DES_MTTO_MODALIDAD_DET }}</td>
+              <td>{{ item.REF_MTTO_MODALIDAD_DET }}</td>
               <td>{{ item.DES_MODALIDAD }}</td>
               <td>{{ item.DES_MTTOESTADO }}</td>
               <td>{{ item.DES_NOTAS_SOL }}</td>
-              <td>{{ item.DES_NUMCONTRATO }}</td>
+              <td>{{ item.REF_NUMCONTRATO }}</td>
               <td>{{ item.DES_NOMBRE_TALLER }}</td>
               <td>{{ item.FEC_MTTO_SOL }}</td>
-              <td>{{ item.NOM_PROVEEDOR }}</td>
+              <td>{{ item.REF_PROVEEDOR }}</td>
               <td>{{ item.MON_COSTO_MTTO }}</td>
             </tr>
           </ng-template>
@@ -204,7 +204,7 @@
           <ng-template pTemplate="body" let-item>
             <tr>
               <td>{{ item.FEC_REGISTRO }}</td>
-              <td>{{ item.DES_PLACAS }}</td>
+              <td>{{ item.REF_PLACAS }}</td>
               <td>{{ item.DES_NIVEL_ACEITE }}</td>
               <td>{{ item.DES_NIVEL_AGUA }}</td>
               <td>{{ item.DES_NIVEL_NEUMADELA }}</td>
@@ -285,7 +285,7 @@
               <div class="col-md-4">
                 <div class="table-panel-column">
                   <label>Placa</label>
-                  <span>{{registroSeleccionado.DES_PLACAS}}</span>
+                  <span>{{registroSeleccionado.REF_PLACAS}}</span>
                 </div>
               </div>
               <div class="col-md-4">

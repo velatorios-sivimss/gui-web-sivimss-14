@@ -36,16 +36,20 @@ export interface DetalleSolicitudPago {
   concepto: string;
   numContrato: string;
   observaciones: string;
-
+  folioSolicitud: string;
+  nomUnidadOpe: string;
+  nomResponsable: string;
   cveFolioGastos: string;
   fechaInicial: string;
   fechaFinal: string;
   ejercicioFiscal: number;
   idDelegacion: number;
   idUnidadOperativa: number;
-
+  refUnidadOpe: string;
   solicitadoPor: string;
   cantidadLetra: string;
+  beneficiario?: string;
+  foliosFactura: string;
 }
 
 export interface CrearSolicitudPago {

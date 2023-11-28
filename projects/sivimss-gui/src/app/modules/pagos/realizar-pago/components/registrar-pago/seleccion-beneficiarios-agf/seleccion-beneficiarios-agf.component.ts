@@ -44,8 +44,8 @@ export class SeleccionBeneficiariosAgfComponent {
     this.activatedRoute.queryParams.pipe(
     ).subscribe(params => {
         const {datos_agf, datos_pago} = params;
-        this.datos_agf = JSON.parse(atob(datos_agf));
-        this.datos_pago = JSON.parse(atob(datos_pago));
+        this.datos_agf = JSON.parse(window.atob(datos_agf));
+        this.datos_pago = JSON.parse(window.atob(datos_pago));
       }
     );
   }
@@ -71,7 +71,7 @@ export class SeleccionBeneficiariosAgfComponent {
     this.realizarPagoService.guardarAGF(this.datos_agf).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
-        void this.route.navigate(['../../pago-orden-servicio'], {relativeTo: this.activatedRoute})
+        void this.route.navigate(['../../../pago-orden-servicio'], {relativeTo: this.activatedRoute})
       },
       error: (error: HttpErrorResponse): void => {
         const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'

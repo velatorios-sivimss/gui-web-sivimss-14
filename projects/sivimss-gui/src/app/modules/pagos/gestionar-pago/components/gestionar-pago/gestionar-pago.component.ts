@@ -6,7 +6,7 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
 import {
-  mapearArregloTipoDropdown, obtenerNivelUsuarioLogueado,
+  mapearArregloTipoDropdown, obtenerFechaYHoraActual, obtenerNivelUsuarioLogueado,
   obtenerVelatorioUsuarioLogueado,
   validarUsuarioLogueado
 } from "../../../../../utils/funciones";
@@ -243,7 +243,8 @@ export class GestionarPagoComponent implements OnInit {
   guardarPDF(): void {
     this.cargadorService.activar();
     const solicitud = this.crearSolicituDescarga();
-    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado(solicitud)).pipe(
+    const opciones = {nombreArchivo: `Gestionar Pago ${obtenerFechaYHoraActual()}`}
+    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado(solicitud), opciones).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
@@ -258,7 +259,7 @@ export class GestionarPagoComponent implements OnInit {
 
   guardarExcel(): void {
     this.cargadorService.activar();
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: `Gestionar Pago ${obtenerFechaYHoraActual()}`, ext: "xlsx"}
     const solicitud = this.crearSolicituDescarga('xls');
     this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado(solicitud), configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
@@ -273,9 +274,9 @@ export class GestionarPagoComponent implements OnInit {
     });
   }
 
-  crearSolicituDescarga(tipoReporte: string = 'pdf')  {
+  crearSolicituDescarga(tipoReporte: string = 'pdf') {
     return {
-      ... this.generarSolicitudFiltros(),
+      ...this.generarSolicitudFiltros(),
       tipoReporte
     }
   }

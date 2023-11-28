@@ -843,7 +843,8 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   validacionFormulario(): boolean {
-    if (this.dd || this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete) {
+    if (this.paqueteSeleccionadoDD ||  this.paqueteSeleccionado ||
+        this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete) {
       const drop:any = this.dd;
       if(drop == 3){
         return this.selecionaTipoOtorgamiento != null ? false: true;
@@ -1034,7 +1035,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
       detalle.cantidad = Number(datos.cantidad);
       detalle.idArticulo = parseInt(datos.idArticulo);
       detalle.desmotivo = datos.desmotivo;
-      detalle.activo = 1;
+      detalle.activo = null;
       detalle.idProveedor =
         // datos.idProveedor ?? null;
         (datos.idProveedor == '' || datos.idProveedor == null) ? null : Number(datos.idProveedor);
@@ -1067,6 +1068,11 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
         traslado.totalKilometros = datos.kilometraje ?? null;
         detalle.servicioDetalleTraslado = traslado ?? null;
       }
+      detalle.activo =  datos.utilizarArticulo ?
+        (typeof datos.utilizarArticulo == "string" ?
+            datos.utilizarArticulo.includes("true") ? 1 : 0 :
+            datos.utilizarArticulo ? 1 : 0
+        ) : null;
       this.detallePaquete.push(detalle);
     });
 

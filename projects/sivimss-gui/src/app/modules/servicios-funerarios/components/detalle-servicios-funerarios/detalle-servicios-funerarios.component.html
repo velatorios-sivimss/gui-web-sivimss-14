@@ -14,11 +14,14 @@
             <span class="font-bold">{{detalleServicio.estatusPlan}}</span>
           </div>
         </div>
-        <a class="ml-5 cursor-pointer" (click)="overlayPanelHeader.toggle($event)">
-          <img
-            src="assets/images/imagen-icono-barras-horizontales.svg"
-            alt="icono barras horizontales">
-        </a>
+        <div *ngIf="validarEstatusDetallePago(detalleServicio.estatusPlan)">
+          <a *ngIf="validarEstatusDetallePago(detalleServicio.estatusPlan)" class="ml-5 cursor-pointer" onCloseOnNavigation
+             (click)="overlayPanelHeader.toggle($event)">
+            <img *ngIf="validarEstatusDetallePago(detalleServicio.estatusPlan)"
+              src="assets/images/imagen-icono-barras-horizontales.svg"
+              alt="icono barras horizontales">
+          </a>
+        </div>
       </div>
     </ng-template>
   </app-table-panel>
@@ -182,7 +185,7 @@
 <p-overlayPanel #overlayPanelHeader>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion onCloseOnNavigation titulo="Realizar pago"
+      <app-overlay-panel-opcion titulo="Realizar pago"
                                 (click)="abrirModalRealizarPago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

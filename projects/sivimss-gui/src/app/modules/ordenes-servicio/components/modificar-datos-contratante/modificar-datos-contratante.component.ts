@@ -545,7 +545,6 @@ export class ModificarDatosContratanteComponent
     }
     this.idContratante = Number(datos.contratante.idContratante);
     this.idPersona = datos.contratante.idPersona;
-
     this.cambiarValidacion();
     this.cambiarTipoSexo();
     this.cambiarNacionalidad();
@@ -1100,7 +1099,7 @@ export class ModificarDatosContratanteComponent
         edad: null,
         sexo: Number(finado.sexo),
         otroTipoSexo: finado.otroSexo,
-        nacionalidad: finado.nacionalidad,
+        nacionalidad: finado.idPais == null ? 1 : 2,
         lugarNacimiento:
           finado.idEstado == null ? null : Number(finado.idEstado),
         paisNacimiento: finado.idPais == null ? null : Number(finado.idPais),

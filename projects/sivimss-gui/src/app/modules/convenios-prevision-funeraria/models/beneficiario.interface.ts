@@ -40,4 +40,5 @@ export interface BeneficiarioInterface {
   otraEnfermedad?: string,
   validaActaNacimientoBeneficiario?:boolean,
   validaIneBeneficiario?:boolean,
+  posicion?: number
 }

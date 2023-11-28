@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Observable, of} from "rxjs";
+import {Observable, Observer, of} from "rxjs";
 import {catchError, switchMap} from "rxjs/operators";
 import {OpcionesArchivos} from "../models/opciones-archivos.interface";
 
@@ -12,7 +12,7 @@ export class DescargaArchivosService {
   readonly excel_nom = "Excel workbook";
 
   base64_2Blob(base64: string, contentType: string): Blob {
-    const byteCharacters: string = atob(base64);
+    const byteCharacters: string = window.atob(base64);
     const byteNumbers: any[] = new Array(byteCharacters.length);
     for (let i: number = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -66,8 +66,64 @@ export class DescargaArchivosService {
       catchError((error) => {
         if(error.toString().includes('The user aborted a request')) return of(false);
         console.log(error.toString())
-        throw 'Error al guardar el archivo.';
+        throw new Error('Error al guardar el archivo.');
       })
     );
+  }
+
+  descargarArchivoShowSaveFilePicker(archivo$: Observable<Blob>, options: OpcionesArchivos = {}): Observable<boolean> {
+    const nombreArchivo: string = options.nombreArchivo ?? "documento";
+    const ext: "pdf" | "xlsx" | "csv" = options.ext ?? "pdf";
+    const configuracion: SaveFilePickerOptions = {
+      suggestedName: `${nombreArchivo}.${ext}`,
+      types: [
+        {
+          description: ext === "pdf" ? this.pdf_nom : this.excel_nom,
+          accept: ext === "pdf" ? this.pdf_ext : this.excel_ext
+        },
+      ],
+    };
+    
+    return Observable.create((observer: Observer<boolean>) => {
+      const guardarArchivoEnNavegador = (archivoBlob: Blob) => {
+        const downloadURL: string = window.URL.createObjectURL(archivoBlob);
+        const link: HTMLAnchorElement = document.createElement('a');
+        link.href = downloadURL;
+        link.download = `${nombreArchivo}.${ext}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        observer.next(true);
+        observer.complete();
+      };
+  
+      archivo$.subscribe({
+        next: (archivoBlob: Blob) => {
+          // Firefox
+          if (typeof window.showSaveFilePicker === 'undefined') {
+            guardarArchivoEnNavegador(archivoBlob);
+          } else {
+            // (Chrome, Edge)
+            window.showSaveFilePicker(configuracion).then((fileHandle: FileSystemFileHandle) => {
+              fileHandle.createWritable().then((writable: FileSystemWritableFileStream) => {
+                writable.write(archivoBlob);
+                writable.close();
+                observer.next(true);
+                observer.complete();
+              });
+            });
+          }
+        },
+        error: (error) => {
+          if (error.toString().includes('The user aborted a request')) {
+            observer.next(false);
+            observer.complete();
+          } else {
+            console.log(error.toString());
+            observer.error(new Error('Error al guardar el archivo.'));
+          }
+        }
+      });
+    });
   }
 }

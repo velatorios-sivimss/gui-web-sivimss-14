@@ -57,7 +57,7 @@ export class RenovarConvenioBeneficiariosComponent {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.busquedaListBeneficiarios = respuesta[this.POSICION_BENEFICIARIOS].datos;
     this.beneficiarios = this.busquedaListBeneficiarios.beneficiarios ?? [];
-    this.datosGenerales = respuesta[this.POSICION_DATOS_GRALES].datos[0];
+    this.datosGenerales = respuesta[this.POSICION_DATOS_GRALES].datos[0] ?? [];
     this.datosGenerales.fecha = moment().format('DD/MM/YYYY');
   }
 
@@ -203,7 +203,7 @@ export class RenovarConvenioBeneficiariosComponent {
       nombre: beneficiario.nombre,
       apellidoP: beneficiario.primerApellido,
       apellidoM: beneficiario.segundoApellido,
-      fechaNac: beneficiario.edad ? moment().subtract(beneficiario.edad, 'years').format('YYYY-MM-DD') : null,
+      fechaNac: moment(beneficiario.fechaNac, 'DD/MM/YYYY').format('YYYY-MM-DD'),
       curp: beneficiario.curp,
       rfc: beneficiario.rfc,
       correoE: beneficiario.email,
@@ -229,7 +229,7 @@ export class RenovarConvenioBeneficiariosComponent {
       nombre: beneficiario.nombre,
       apellidoP: beneficiario.primerApellido,
       apellidoM: beneficiario.segundoApellido,
-      fechaNac: moment().subtract(beneficiario.edad, 'years').format('YYYY-MM-DD'),
+      fechaNac: moment(beneficiario.fechaNac, 'DD/MM/YYYY').format('YYYY-MM-DD'),
       curp: beneficiario.curp,
       rfc: beneficiario.rfc,
       correoE: beneficiario.email,

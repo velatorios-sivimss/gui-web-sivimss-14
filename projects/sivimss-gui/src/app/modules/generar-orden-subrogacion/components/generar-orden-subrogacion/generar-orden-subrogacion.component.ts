@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { OverlayPanel } from "primeng/overlaypanel";
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
@@ -24,6 +24,7 @@ import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/fu
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { PrevisualizacionArchivoComponent } from '../previsualizacion-archivo/previsualizacion-archivo.component';
 import { DatePipe } from '@angular/common';
+import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
 
 @Component({
   selector: 'app-generar-orden-subrogacion',
@@ -103,8 +104,9 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   inicializarFormulario(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +usuario.idOficina, disabled: false }, []],
-      velatorio: [{ value: +usuario.idVelatorio, disabled: false }, []],
+      nivel: [{ value: +usuario.idOficina, disabled: true }, []],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina != 1}, []],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, []],
       folio: new FormControl({ value: null, disabled: false }, []),
       proveedor: new FormControl({ value: null, disabled: false }, []),
       fecha: new FormControl({ value: null, disabled: false }, []),
@@ -133,6 +135,22 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
+  }
+  cambiarDelegacion(): void {
+    this.loaderService.activar();
+    this.generarOrdenSubrogacionService.obtenerCatalogoVelatoriosPorDelegacion(this.f.delegacion.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      {
+        next: (respuesta: HttpRespuesta<any>) => {
+          this.catalogoVelatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
+            {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
+        },
+        error: (error:HttpErrorResponse) => {
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      }
+    )
   }
 
   validarNombre(posicion: number): void {
@@ -204,7 +222,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error al consultar la información.");
       }
     });
   }
@@ -234,7 +252,6 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     this.generarOrdenSubrogacionService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          // this.ordenes = [];
           this.ordenes = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements;
         },
@@ -287,6 +304,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
           respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
           { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
         );
+        configuracionArchivo.nombreArchivo = "Orden De Subrogación";
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.loaderService.desactivar())
         ).subscribe({
@@ -319,7 +337,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   // }
 
   vistaPreviaOrdenSubrogacion(): void {
-    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Formato de actividades' };
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Orden de subrogación de servicios' };
     this.loaderService.activar();
     let datos = {
       idHojaSubrogacion: this.ordenSeleccionada.idHojaSubrogacion
@@ -411,6 +429,10 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     this.cargarVelatorios(true);
     this.inicializarFormulario();
     this.paginar();
+  }
+
+  validarRegistro(orden:any): boolean {
+    return !(orden.puedeRegistrar.includes('false') && orden.idHojaSubrogacion === '');
   }
 
   get f() {

@@ -66,7 +66,7 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
 
   obtenerCatalogoVelatorios(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams().append("servicio", this._catVelatorios);
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/0`, {params});
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/`, {params});
   }
 
   obtenerCatalogoUnidadesAdmon(): Observable<HttpRespuesta<any>> {

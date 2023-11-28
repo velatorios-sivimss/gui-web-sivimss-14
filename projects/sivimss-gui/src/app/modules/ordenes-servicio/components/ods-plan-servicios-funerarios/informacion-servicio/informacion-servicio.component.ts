@@ -279,6 +279,7 @@ export class InformacionServicioSFComponent implements OnInit {
         ],
       }),
     });
+    this.colonias = [{label:datos.colonia, value: datos.colonia}];
   }
 
   changePromotor(validacion: string): void {
@@ -640,7 +641,6 @@ export class InformacionServicioSFComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
             const errorMsg: string =
@@ -655,9 +655,9 @@ export class InformacionServicioSFComponent implements OnInit {
             return;
           }
           this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-          this.descargarEntradaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-          this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-
+          if(this.altaODS.idEstatus != 1){
+            this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+          }
           const ExitoMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
               parseInt(respuesta.mensaje)
@@ -669,8 +669,9 @@ export class InformacionServicioSFComponent implements OnInit {
             );
           } else {
             this.alertaService.mostrar(
-              TipoAlerta.Exito,
-              'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
+              TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(49) ||
+              'Se ha guardado exitosamente la pre-orden. El contratante debe acudir al Velatorio correspondiente' +
+              ' para concluir con la contratación del servicio.'
             );
           }
           this.router.navigate(["ordenes-de-servicio"]);
@@ -717,30 +718,6 @@ export class InformacionServicioSFComponent implements OnInit {
     } )
   }
 
-  descargarEntradaDonaciones(idODS: number, idEstatus: number): void {
-    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
-    this.gestionarOrdenServicioService.generarArchivoEntradaDonaciones(idODS,idEstatus).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
-        let link = this.renderer.createElement('a');
-
-        const file = new Blob(
-          [this.descargaArchivosService.base64_2Blob(
-            respuesta.datos,
-            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
-        const url = window.URL.createObjectURL(file);
-        link.setAttribute('download', 'documento');
-        link.setAttribute('href', url);
-        link.click();
-        link.remove();
-      },
-      error:(error: HttpErrorResponse) => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
-      }
-    });
-
-  }
   descargarControlSalidaDonaciones(idODS: number, idEstatus: number): void {
     const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.gestionarOrdenServicioService.generarArchivoSalidaDonaciones(idODS,idEstatus).subscribe({
@@ -781,7 +758,6 @@ export class InformacionServicioSFComponent implements OnInit {
     this.lugarCremacion.fecha.disable();
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
-    // this.inhumacion.agregarPanteon.disable();
     this.cortejo.gestionadoPorPromotor.disable();
     this.cortejo.fecha.disable();
     this.cortejo.hora.disable();

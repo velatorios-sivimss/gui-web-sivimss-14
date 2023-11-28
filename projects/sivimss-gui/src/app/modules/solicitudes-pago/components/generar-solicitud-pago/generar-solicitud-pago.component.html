@@ -31,7 +31,7 @@
         <div class="formgroup-inline">
           <div class="field">
             <input id="folioFiscalBtn" class="form-control" formControlName="folioFiscal"
-                   placeholder="Ingresar folio" [maxlength]="36"
+                   placeholder="Ingresar folio" [maxlength]="36" [minlength]="36"
                    oninput="this.value = this.value.toUpperCase().trim()"
                    appRegexFolioFiscal>
             <span class="campo-obligatorio"
@@ -53,8 +53,9 @@
       </div>
       <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
         <label class="control-label" for="importe">Importe Total<span class="req">*</span>:</label>
-        <input id="importe" class="form-control" formControlName="importe" placeholder="Importe Total"
-               (blur)="convertirImporte()" [maxlength]="7" numbersOnly>
+        <p-inputNumber id="importe" class="form-control" formControlName="importe" placeholder="Importe Total"
+                       (blur)="convertirImporte()" [maxlength]="13" [minFractionDigits]="2" mode="currency"
+                       currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
               *ngIf="fc?.importe?.errors?.required && (fc?.importe?.dirty || fc?.importe?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -73,8 +74,11 @@
             <td>{{partida.partidaPres}}</td>
             <td>{{partida.cuentaContable}}</td>
             <td>
-              <input [(ngModel)]="partida.importeTotal" class="form-control" [ngModelOptions]="{standalone: true}"
-                     (blur)="reAjustarImporte()" numbersOnly>
+              <p-inputNumber [(ngModel)]="partida.importeTotal" class="form-control"
+                             [ngModelOptions]="{standalone: true}"
+                             (onInput)="reAjustarImporte($event)" [min]="0"
+                             mode="currency" currency="USD" locale="en-US" [maxlength]="13"
+                             [minFractionDigits]="2"></p-inputNumber>
             </td>
           </tr>
         </ng-template>
@@ -131,8 +135,9 @@
     <div class="row mb-3" *ngIf="[3].includes(tipoSolicitud)">
       <div class="col-md-12">
         <label class="control-label" for="importeCol12">Importe Total<span class="req">*</span>:</label>
-        <input id="importeCol12" class="form-control" formControlName="importe" placeholder="Importe Total"
-               (blur)="convertirImporte()" [maxlength]="7" numbersOnly>
+        <p-inputNumber id="importeCol12" class="form-control" formControlName="importe" placeholder="Importe Total"
+                       [maxlength]="13" [min]="0" mode="currency" currency="USD" locale="en-US">
+        </p-inputNumber>
         <span class="campo-obligatorio"
               *ngIf="fc?.importe?.errors?.required && (fc?.importe?.dirty || fc?.importe?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -330,8 +335,9 @@
       </div>
       <div class="col-6 mb-3" *ngIf="[1].includes(tipoSolicitud)">
         <label class="control-label" for="importecol6">Importe Total<span class="req">*</span>:</label>
-        <input id="importecol6" class="form-control" formControlName="importe" (blur)="convertirImporte()"
-              (focus)="resetImporte()"  placeholder="Importe Total" [maxlength]="7" numbersOnly>
+        <p-inputNumber id="importecol6" class="form-control" formControlName="importe" [min]="0"
+                       mode="currency" currency="USD" locale="en-US" (onInput)="modificarImporteLocal($event)"
+                       placeholder="Importe Total" [maxlength]="13" [minFractionDigits]="2"></p-inputNumber>
         <span class="campo-obligatorio"
               *ngIf="fc?.importe?.errors?.required && (fc?.importe?.dirty || fc?.importe?.touched)">Este campo es obligatorio *.</span>
       </div>

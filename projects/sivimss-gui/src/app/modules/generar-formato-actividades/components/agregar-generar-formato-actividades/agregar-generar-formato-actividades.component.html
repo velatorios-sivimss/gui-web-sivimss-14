@@ -1,7 +1,7 @@
 <app-titulo-principal titulo="Generar formato de actividades"></app-titulo-principal>
 
 <div class="border-panel panel-custom">
-  <h1 class="subtitulo-base-lg">INFORME DE PROMOCIÓN Y DIFUSIÓN</h1>
+  <h1 class="subtitulo-base-lg test-engi">INFORME DE PROMOCIÓN Y DIFUSIÓN</h1>
 </div>
 
 <div class="border-panel">
@@ -39,8 +39,7 @@
       </div>
       <div class="col-md-6">
         <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
-          dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="fechaActual"
-          (onSelect)="validarFechas()"></p-calendar>
+          dateFormat="dd/mm/yy" placeholder="Fecha final" (onSelect)="validarFechas()"></p-calendar>
         <span class="campo-obligatorio"
           *ngIf="apf.fechaFinal?.errors?.required && (apf.fechaFinal?.dirty || apf.fechaFinal?.touched)">Este campo es
           obligatorio *.</span>
@@ -266,7 +265,7 @@
 </section>
 
 <p-dialog [(visible)]="mostrarModal" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}" [draggable]="false"
-  [resizable]="false" header="">
+  [resizable]="false" header="" [closable]="false">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{mensajeModal}}</span>
@@ -274,7 +273,8 @@
   </ng-template>
   <ng-template pTemplate="footer">
     <div class="flex justify-content-center">
-      <button class="btn btn-primary btn-md" (click)="mostrarModal = false">Aceptar</button>
+      <button class="btn btn-primary btn-md" *ngIf="mode === 'detail'" (click)="mostrarModal = false">Aceptar</button>
+      <button class="btn btn-primary btn-md" *ngIf="mode !== 'detail'" (click)="mostrarModal = false" [routerLink]="'/generar-formato-de-actividades'">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>

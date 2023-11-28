@@ -1,310 +1,314 @@
 <app-table-panel *ngIf="solicitudPagoSeleccionado">
-    <ng-template appCustomTemplate="left-header">
-        <div class="table-panel-header-column">
-            <span class="font-bold">Folio {{solicitudPagoSeleccionado.cveFolioGastos}}</span>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">Folio {{solicitudPagoSeleccionado.folioSolicitud}}</span>
+    </div>
+  </ng-template>
+  <ng-template appCustomTemplate="right-header">
+    <div class="table-panel-header-column">
+      <div class="flex flex-column">
+        <span class="ml-5">Estatus</span>
+        <div>
+          <span><b>{{solicitudPagoSeleccionado.desEstatusSolicitud}}</b></span>
         </div>
-    </ng-template>
-    <ng-template appCustomTemplate="right-header">
-        <div class="table-panel-header-column">
-            <div class="flex flex-column">
-                <span class="ml-5">Estatus</span>
-                <div>
-                    <span><b>{{solicitudPagoSeleccionado.desEstatusSolicitud}}</b></span>
-                </div>
-            </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-container *ngIf="tipoSolicitud">
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Tipo de solicitud</label>
+          <span>{{solicitudPagoSeleccionado.desTipoSolicitud}}</span>
         </div>
-    </ng-template>
-    <ng-container *ngIf="tipoSolicitud">
-        <div class="row table-panel-row">
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Tipo de solicitud</label>
-                    <span>{{solicitudPagoSeleccionado.desTipoSolicitud}}</span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Ejercicio fiscal</label>
-                    <span>{{solicitudPagoSeleccionado.ejercicioFiscal}}</span>
-                </div>
-            </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Ejercicio fiscal</label>
+          <span>{{solicitudPagoSeleccionado.ejercicioFiscal}}</span>
         </div>
-        <div class="row table-panel-row">
-            <div class="col-md-6" *ngIf="[2,3,4,6].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Folio fiscal de la factura de gastos</label>
-                    <span>{{solicitudPagoSeleccionado.cveFolioGastos}}</span>
-                </div>
-            </div>
-            <div class="col-md-6" *ngIf="[5].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Folio fiscal de la factura de gastos</label>
-                    <span>{{solicitudPagoSeleccionado.cveFolioGastos}}</span>
-                </div>
-            </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6" *ngIf="[2,3,4,6].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Folio fiscal de la factura de gastos</label>
+          <span *ngIf="solicitudPagoSeleccionado.cveFolioGastos">{{solicitudPagoSeleccionado.cveFolioGastos}}</span>
+          <span *ngIf="!solicitudPagoSeleccionado.cveFolioGastos">{{solicitudPagoSeleccionado.foliosFactura}}</span>
         </div>
-        <div class="row table-panel-row">
-            <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Fecha de elaboración</label>
-                    <span>{{solicitudPagoSeleccionado.fecElabora}}</span>
-                </div>
-            </div>
-            <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Importe Total</label>
-                    <span>{{solicitudPagoSeleccionado.impTotal}}</span>
-                </div>
-            </div>
+      </div>
+      <div class="col-md-6" *ngIf="[5].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Folio fiscal de la factura de gastos</label>
+          <span *ngIf="solicitudPagoSeleccionado.cveFolioGastos">{{solicitudPagoSeleccionado.cveFolioGastos}}</span>
+          <span *ngIf="!solicitudPagoSeleccionado.cveFolioGastos">{{solicitudPagoSeleccionado.foliosFactura}}</span>
         </div>
-        <div class="row mx-1 mb-3" *ngIf="[2,4].includes(tipoSolicitud)">
-            <p-table [value]="partidaPresupuestal" [pageLinks]="3">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th scope="col" class="font-bold">Partida presupuestal</th>
-                        <th scope="col" class="font-bold">Cuentas contables</th>
-                        <th scope="col" class="font-bold">Importe Total</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-partida>
-                    <tr>
-                        <td> {{partida.partidaPres}} </td>
-                        <td> {{partida.cuentaContable}} </td>
-                        <td> {{partida.importeTotal}} </td>
-                    </tr>
-                </ng-template>
-            </p-table>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Fecha de elaboración</label>
+          <span>{{solicitudPagoSeleccionado.fecElabora}}</span>
         </div>
-        <div class="row mx-1 mb-3" *ngIf="[3,5,6].includes(tipoSolicitud)">
-            <p-table [value]="partidaPresupuestal" [pageLinks]="3">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th scope="col" class="font-bold">Partida presupuestal</th>
-                        <th scope="col" class="font-bold">Cuentas contables</th>
-                        <th scope="col" class="font-bold"></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-partida>
-                    <tr>
-                        <td> {{partida.partidaPres}} </td>
-                        <td> {{partida.cuentaContable}} </td>
+      </div>
+      <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Importe Total</label>
+          <span>{{solicitudPagoSeleccionado.impTotal | currency}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row mx-2 mb-3 mt-2" *ngIf="[2,4].includes(tipoSolicitud)">
+      <p-table [value]="partidaPresupuestal" [pageLinks]="3" *ngIf="partidaPresupuestal.length > 0">
+        <ng-template pTemplate="header">
+          <tr>
+            <th scope="col" class="font-bold">Partida presupuestal</th>
+            <th scope="col" class="font-bold">Cuentas contables</th>
+            <th scope="col" class="font-bold">Importe Total</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-partida>
+          <tr>
+            <td> {{partida.partidaPres}} </td>
+            <td> {{partida.cuentaContable}} </td>
+            <td> {{partida.importeTotal | currency}} </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="row mx-2 mb-3 mt-2" *ngIf="[3,5,6].includes(tipoSolicitud)">
+      <p-table [value]="partidaPresupuestal" [pageLinks]="3" *ngIf="partidaPresupuestal.length > 0">
+        <ng-template pTemplate="header">
+          <tr>
+            <th scope="col" class="font-bold">Partida presupuestal</th>
+            <th scope="col" class="font-bold">Cuentas contables</th>
+            <th scope="col" class="font-bold">Importe Total</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-partida>
+          <tr>
+            <td> {{partida.partidaPres}} </td>
+            <td> {{partida.cuentaContable}} </td>
+            <td> {{partida.importeTotal | currency}} </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="row table-panel-row" *ngIf="[3].includes(tipoSolicitud)">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Importe Total</label>
+          <span>{{solicitudPagoSeleccionado.impTotal | currency}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="row ml-6" *ngIf="solicitudPagoSeleccionado.idUnidadOperativa">
+        <img src="../../../assets/images/imagen-icono-vector.svg" alt="i" class="imagen-usuario">
+        <label class="ml-3 mt-2">Unidad operativa</label>
+      </div>
+      <div class="row ml-6" *ngIf="!solicitudPagoSeleccionado.idUnidadOperativa">
+        <img src="../../../assets/images/imagen-icono-vector.svg" alt="i" class="imagen-usuario">
+        <label class="ml-3 mt-2">Unidad administrativa</label>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Referencia unidad operativa / administrativa</label>
+          <span *ngIf="solicitudPagoSeleccionado.idUnidadOperativa">
+            {{solicitudPagoSeleccionado.refUnidadOpe}} - {{solicitudPagoSeleccionado.idUnidadOperativa}}</span>
+          <span
+            *ngIf="!solicitudPagoSeleccionado.idUnidadOperativa">{{solicitudPagoSeleccionado.desVelatorio | titlecase}}</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Solicitado por</label>
+          <span>{{solicitudPagoSeleccionado.nomResponsable | titlecase}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6" *ngIf="[1,5,6].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Fecha de elaboración</label>
+          <span>{{solicitudPagoSeleccionado.fecElabora}}</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Nombre del destinatario (Para)</label>
+          <span>{{solicitudPagoSeleccionado.nomDestinatario}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Nombre del remitente (De)</label>
+          <span>{{solicitudPagoSeleccionado.nomRemitente}}</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Referencia DT</label>
+          <span>{{solicitudPagoSeleccionado.referenciaTD}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6" *ngIf="[2,3,4,5,6].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Beneficiario</label>
+          <span *ngIf="solicitudPagoSeleccionado.nomBeneficiario">{{solicitudPagoSeleccionado.nomBeneficiario}}</span>
+          <span *ngIf="!solicitudPagoSeleccionado.nomBeneficiario">{{solicitudPagoSeleccionado.beneficiario}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row" *ngIf="[3].includes(tipoSolicitud)">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Fecha Inicial</label>
+          <span>{{solicitudPagoSeleccionado.fechaInicial}}</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Fecha Final</label>
+          <span>{{solicitudPagoSeleccionado.fechaFinal}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row" *ngIf="[1].includes(tipoSolicitud)">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Beneficiario</label>
+          <span>{{solicitudPagoSeleccionado.nomBeneficiario}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row" *ngIf="[1,4].includes(tipoSolicitud)">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Banco</label>
+          <span>{{solicitudPagoSeleccionado.banco}}</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Cuenta</label>
+          <span>{{solicitudPagoSeleccionado.cuenta}}</span>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Clave bancaria</label>
+          <span>{{solicitudPagoSeleccionado.claveBancaria}}</span>
+        </div>
+      </div>
+    </div>
 
-                    </tr>
-                </ng-template>
-            </p-table>
+    <div class="row table-panel-row">
+      <div class="col-md-6" *ngIf="[1,2,3,4].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Concepto</label>
+          <span>{{solicitudPagoSeleccionado.concepto}}</span>
         </div>
-        <div class="row table-panel-row" *ngIf="[3].includes(tipoSolicitud)">
-            <div class="col-md-12">
-                <div class="table-panel-column">
-                    <label>Importe Total</label>
-                    <span>{{solicitudPagoSeleccionado.impTotal}}</span>
-                </div>
-            </div>
+      </div>
+      <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Cantidad con letra</label>
+          <span>{{solicitudPagoSeleccionado.cantidadLetra + ' pesos' | titlecase }}</span>
         </div>
-        <div class="row table-panel-row">
-            <div class="row ml-6" *ngIf="solicitudPagoSeleccionado.idUnidadOperativa===1">
-                <img src="../../../assets/images/imagen-icono-vector.svg" alt="i" class="imagen-usuario">
-                <label class="ml-3 mt-2">Unidad operativa</label>
-            </div>
-            <div class="row ml-6" *ngIf="solicitudPagoSeleccionado.idUnidadOperativa!=1">
-                <img src="../../../assets/images/imagen-icono-vector.svg" alt="i" class="imagen-usuario">
-                <label class="ml-3 mt-2">Unidad administrativa</label>
-            </div>
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Referencia unidad operativa / administrativa</label>
-                    <span *ngIf="solicitudPagoSeleccionado.idUnidadOperativa===1">{{solicitudPagoSeleccionado.refeUnidadOpe}}</span>
-                    <span *ngIf="solicitudPagoSeleccionado.idUnidadOperativa!=1">{{solicitudPagoSeleccionado.desVelatorio}}</span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Solicitado por</label>
-                    <span>Isaac Aguirre</span>
-                </div>
-            </div>
-        </div>
-        <div class="row table-panel-row">
-            <div class="col-md-6" *ngIf="[1,5,6].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Fecha de elaboración</label>
-                    <span>{{solicitudPagoSeleccionado.fecElabora}}</span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Nombre del destinatario (Para)</label>
-                    <span>{{solicitudPagoSeleccionado.nomDestinatario}}</span>
-                </div>
-            </div>
-        </div>
-        <div class="row table-panel-row">
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Nombre del remitente (De)</label>
-                    <span>{{solicitudPagoSeleccionado.nomRemitente}}</span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Referencia DT</label>
-                    <span>{{solicitudPagoSeleccionado.referenciaTD}}</span>
-                </div>
-            </div>
-        </div>
-        <div class="row table-panel-row">
-            <div class="col-md-6" *ngIf="[2,3,4,5,6].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Beneficiario</label>
-                    <span>{{solicitudPagoSeleccionado.nomBeneficiario}}</span>
-                </div>
-            </div>
-        </div>
-        <div class="row table-panel-row" *ngIf="[3].includes(tipoSolicitud)">
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Fecha Inicial</label>
-                    <span>{{solicitudPagoSeleccionado.fechaInicial}}</span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Fecha Final</label>
-                    <span>{{solicitudPagoSeleccionado.fechaFinal}}</span>
-                </div>
-            </div>
-        </div>
-        <div class="row table-panel-row" *ngIf="[1].includes(tipoSolicitud)">
-            <div class="col-md-12">
-                <div class="table-panel-column">
-                    <label>Beneficiario</label>
-                    <span>{{solicitudPagoSeleccionado.nomBeneficiario}}</span>
-                </div>
-            </div>
-        </div>
-        <div class="row table-panel-row" *ngIf="[1,4].includes(tipoSolicitud)">
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Banco</label>
-                    <span>{{solicitudPagoSeleccionado.banco}}</span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Cuenta</label>
-                    <span>{{solicitudPagoSeleccionado.cuenta}}</span>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="table-panel-column">
-                    <label>Clave bancaria</label>
-                    <span>{{solicitudPagoSeleccionado.claveBancaria}}</span>
-                </div>
-            </div>
-        </div>
+      </div>
 
-        <div class="row table-panel-row">
-            <div class="col-md-6" *ngIf="[1,2,3,4].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Concepto</label>
-                    <span>{{solicitudPagoSeleccionado.concepto}}</span>
-                </div>
-            </div>
-            <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Cantidad con letra</label>
-                    <span>{{solicitudPagoSeleccionado.cantidadLetra}}</span>
-                </div>
-            </div>
+      <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Número de contrato</label>
+          <span>{{solicitudPagoSeleccionado.numContrato}}</span>
+        </div>
+      </div>
+      <div class="col-md-6" *ngIf="[1].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Importe Total</label>
+          <span>{{solicitudPagoSeleccionado.impTotal | currency }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-12" *ngIf="[1].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Cantidad con letra</label>
+          <span>{{solicitudPagoSeleccionado.cantidadLetra + ' pesos'  | titlecase}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row" *ngIf="[5,6].includes(tipoSolicitud)">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Banco</label>
+          <span>{{solicitudPagoSeleccionado.banco}}</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Cuenta</label>
+          <span>{{solicitudPagoSeleccionado.cuenta}}</span>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Clave bancaria</label>
+          <span>{{solicitudPagoSeleccionado.claveBancaria}}</span>
+        </div>
+      </div>
 
-            <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Número de contrato</label>
-                    <span>{{solicitudPagoSeleccionado.numContrato}}</span>
-                </div>
-            </div>
-            <div class="col-md-6" *ngIf="[1].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Importe Total</label>
-                    <span>{{solicitudPagoSeleccionado.impTotal}}</span>
-                </div>
-            </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Concepto</label>
+          <span>{{solicitudPagoSeleccionado.concepto}}</span>
         </div>
+      </div>
+      <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+        <div class="table-panel-column">
+          <label>Cantidad con letra</label>
+          <span>{{solicitudPagoSeleccionado.cantidadLetra + ' pesos'  | titlecase}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row" *ngIf="[5].includes(tipoSolicitud)">
+      <div class="col-md-12">
         <div class="row table-panel-row">
-            <div class="col-md-12" *ngIf="[1].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Cantidad con letra</label>
-                    <span>{{solicitudPagoSeleccionado.cantidadLetra}}</span>
-                </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Fecha Inicial</label>
+              <span>{{solicitudPagoSeleccionado.fechaInicial | date: 'YYYY-MM-dd' }} </span>
             </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Fecha Final</label>
+              <span>{{solicitudPagoSeleccionado.fechaFinal | date: 'YYYY-MM-dd'}}</span>
+            </div>
+          </div>
         </div>
-        <div class="row table-panel-row" *ngIf="[5,6].includes(tipoSolicitud)">
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Banco</label>
-                    <span>{{solicitudPagoSeleccionado.banco}}</span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="table-panel-column">
-                    <label>Cuenta</label>
-                    <span>{{solicitudPagoSeleccionado.cuenta}}</span>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="table-panel-column">
-                    <label>Clave bancaria</label>
-                    <span>{{solicitudPagoSeleccionado.claveBancaria}}</span>
-                </div>
-            </div>
+      </div>
+    </div>
+    <div class="row table-panel-row" *ngIf="solicitudPagoSeleccionado.observaciones">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Observaciones</label>
+          <span>{{solicitudPagoSeleccionado.observaciones}}</span>
+        </div>
+      </div>
+    </div>
 
-        </div>
-        <div class="row table-panel-row">
-
-            <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Concepto</label>
-                    <span>{{solicitudPagoSeleccionado.concepto}}</span>
-                </div>
-            </div>
-            <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
-                <div class="table-panel-column">
-                    <label>Cantidad con letra</label>
-                    <span>{{solicitudPagoSeleccionado.cantidadLetra}}</span>
-                </div>
-            </div>
-        </div>
-        <div class="row table-panel-row">
-            <div class="col-md-12" *ngIf="[5].includes(tipoSolicitud)">
-                <div class="row table-panel-row">
-                    <div class="col-md-6">
-                        <div class="table-panel-column">
-                            <label>Fecha Inicial</label>
-                            <span>{{solicitudPagoSeleccionado.fechaInicial | date: 'YYYY-MM-dd' }} </span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="table-panel-column">
-                            <label>Fecha Final</label>
-                            <span>{{solicitudPagoSeleccionado.fechaFinal | date: 'YYYY-MM-dd'}}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row table-panel-row">
-            <div class="col-md-12">
-                <div class="table-panel-column">
-                    <label>Observaciones</label>
-                    <span>{{solicitudPagoSeleccionado.observaciones}}</span>
-                </div>
-            </div>
-        </div>
-
-    </ng-container>
+  </ng-container>
 </app-table-panel>
 <div class="flex justify-content-end mt-4">
-    <button class="ml-4 btn btn-primary btn-md" (click)="aceptar()">
+  <button class="ml-4 btn btn-primary btn-md" (click)="aceptar()">
     Aceptar
   </button>
 </div>

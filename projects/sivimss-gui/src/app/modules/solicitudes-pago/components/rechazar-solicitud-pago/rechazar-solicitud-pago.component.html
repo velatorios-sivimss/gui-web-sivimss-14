@@ -1,39 +1,366 @@
-<ng-container>
-    <form [formGroup]="rechazarPagoForm">
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <label class="control-label" for="motivoRechazo">Motivo de rechazo<span class="req">*</span>:</label>
-                <input id="motivoRechazo" class="form-control" formControlName="motivoRechazo" placeholder="Ingresa el motivo del rechazo" maxlength="50">
-                <span class="campo-obligatorio" *ngIf="ref.motivoRechazo?.errors?.required && (ref.motivoRechazo?.dirty || ref.motivoRechazo?.touched)">Este campo es obligatorio *.</span>
-            </div>
+<ng-container [ngSwitch]="pasoRechazarPago">
+  <ng-container *ngSwitchCase="CAPTURA_RECHAZAR_PAGO">
+    <app-table-panel *ngIf="pagoSeleccionado">
+      <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+          <span class="font-bold">Folio {{pagoSeleccionado.folioSolicitud}}</span>
         </div>
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <span class="mensaje-inferior-campo-obligatorio">
+      </ng-template>
+      <ng-template appCustomTemplate="right-header">
+        <div class="table-panel-header-column">
+          <div class="flex flex-column">
+            <span class="ml-5">Estatus</span>
+            <div>
+              <span><b>{{pagoSeleccionado.desEstatusSolicitud}}</b></span>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-container *ngIf="tipoSolicitud">
+        <div class="row table-panel-row">
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Tipo de solicitud</label>
+              <span>{{pagoSeleccionado.desTipoSolicitud}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Ejercicio fiscal</label>
+              <span>{{pagoSeleccionado.ejercicioFiscal}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-6" *ngIf="[2,3,4,6].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Folio fiscal de la factura de gastos</label>
+              <span *ngIf="pagoSeleccionado.cveFolioGastos">{{pagoSeleccionado.cveFolioGastos}}</span>
+              <span *ngIf="!pagoSeleccionado.cveFolioGastos">{{pagoSeleccionado.foliosFactura}}</span>
+            </div>
+          </div>
+          <div class="col-md-6" *ngIf="[5].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Folio fiscal de la factura de gastos</label>
+              <span *ngIf="pagoSeleccionado.cveFolioGastos">{{pagoSeleccionado.cveFolioGastos}}</span>
+              <span *ngIf="!pagoSeleccionado.cveFolioGastos">{{pagoSeleccionado.foliosFactura}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Fecha de elaboración</label>
+              <span>{{pagoSeleccionado.fecElabora}}</span>
+            </div>
+          </div>
+          <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Importe Total</label>
+              <span>{{pagoSeleccionado.impTotal | currency}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row mx-2 mb-3 mt-2" *ngIf="[2,4].includes(tipoSolicitud)">
+          <p-table [value]="partidaPresupuestal" [pageLinks]="3">
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col" class="font-bold">Partida presupuestal</th>
+                <th scope="col" class="font-bold">Cuentas contables</th>
+                <th scope="col" class="font-bold">Importe Total</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-partida>
+              <tr>
+                <td> {{partida.partidaPres}} </td>
+                <td> {{partida.cuentaContable}} </td>
+                <td> {{partida.importeTotal | currency}} </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="row mx-2 mb-3 mt-2" *ngIf="[3,5,6].includes(tipoSolicitud)">
+          <p-table [value]="partidaPresupuestal" [pageLinks]="3">
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col" class="font-bold">Partida presupuestal</th>
+                <th scope="col" class="font-bold">Cuentas contables</th>
+                <th scope="col" class="font-bold">Importe Total</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-partida>
+              <tr>
+                <td> {{partida.partidaPres}} </td>
+                <td> {{partida.cuentaContable}} </td>
+                <td> {{partida.importeTotal | currency}} </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="row table-panel-row" *ngIf="[3].includes(tipoSolicitud)">
+          <div class="col-md-12">
+            <div class="table-panel-column">
+              <label>Importe Total</label>
+              <span>{{pagoSeleccionado.impTotal | currency}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="row ml-6" *ngIf="pagoSeleccionado.idUnidadOperativa">
+            <img src="../../../assets/images/imagen-icono-vector.svg" alt="i" class="imagen-usuario">
+            <label class="ml-3 mt-2">Unidad operativa</label>
+          </div>
+          <div class="row ml-6" *ngIf="!pagoSeleccionado.idUnidadOperativa">
+            <img src="../../../assets/images/imagen-icono-vector.svg" alt="i" class="imagen-usuario">
+            <label class="ml-3 mt-2">Unidad administrativa</label>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Referencia unidad operativa / administrativa</label>
+              <span *ngIf="pagoSeleccionado.idUnidadOperativa">
+            {{pagoSeleccionado.refUnidadOpe}} - {{pagoSeleccionado.idUnidadOperativa}}</span>
+              <span
+                *ngIf="!pagoSeleccionado.idUnidadOperativa">{{pagoSeleccionado.desVelatorio | titlecase}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Solicitado por</label>
+              <span>{{pagoSeleccionado.nomResponsable | titlecase}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-6" *ngIf="[1,5,6].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Fecha de elaboración</label>
+              <span>{{pagoSeleccionado.fecElabora}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Nombre del destinatario (Para)</label>
+              <span>{{pagoSeleccionado.nomDestinatario}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Nombre del remitente (De)</label>
+              <span>{{pagoSeleccionado.nomRemitente}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Referencia DT</label>
+              <span>{{pagoSeleccionado.referenciaTD}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-6" *ngIf="[2,3,4,5,6].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Beneficiario</label>
+              <span *ngIf="pagoSeleccionado.nomBeneficiario">{{pagoSeleccionado.nomBeneficiario}}</span>
+              <span *ngIf="!pagoSeleccionado.nomBeneficiario">{{pagoSeleccionado.beneficiario}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row" *ngIf="[3].includes(tipoSolicitud)">
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Fecha Inicial</label>
+              <span>{{pagoSeleccionado.fechaInicial}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Fecha Final</label>
+              <span>{{pagoSeleccionado.fechaFinal}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row" *ngIf="[1].includes(tipoSolicitud)">
+          <div class="col-md-12">
+            <div class="table-panel-column">
+              <label>Beneficiario</label>
+              <span>{{pagoSeleccionado.nomBeneficiario}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row" *ngIf="[1,4].includes(tipoSolicitud)">
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Banco</label>
+              <span>{{pagoSeleccionado.banco}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Cuenta</label>
+              <span>{{pagoSeleccionado.cuenta}}</span>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="table-panel-column">
+              <label>Clave bancaria</label>
+              <span>{{pagoSeleccionado.claveBancaria}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row table-panel-row">
+          <div class="col-md-6" *ngIf="[1,2,3,4].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Concepto</label>
+              <span>{{pagoSeleccionado.concepto}}</span>
+            </div>
+          </div>
+          <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Cantidad con letra</label>
+              <span>{{pagoSeleccionado.cantidadLetra + ' pesos' | titlecase }}</span>
+            </div>
+          </div>
+
+          <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Número de contrato</label>
+              <span>{{pagoSeleccionado.numContrato}}</span>
+            </div>
+          </div>
+          <div class="col-md-6" *ngIf="[1].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Importe Total</label>
+              <span>{{pagoSeleccionado.impTotal | currency }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-12" *ngIf="[1].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Cantidad con letra</label>
+              <span>{{pagoSeleccionado.cantidadLetra + ' pesos'  | titlecase}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row" *ngIf="[5,6].includes(tipoSolicitud)">
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Banco</label>
+              <span>{{pagoSeleccionado.banco}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Cuenta</label>
+              <span>{{pagoSeleccionado.cuenta}}</span>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="table-panel-column">
+              <label>Clave bancaria</label>
+              <span>{{pagoSeleccionado.claveBancaria}}</span>
+            </div>
+          </div>
+
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Concepto</label>
+              <span>{{pagoSeleccionado.concepto}}</span>
+            </div>
+          </div>
+          <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+            <div class="table-panel-column">
+              <label>Cantidad con letra</label>
+              <span>{{pagoSeleccionado.cantidadLetra + ' pesos'  | titlecase}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row" *ngIf="[5].includes(tipoSolicitud)">
+          <div class="col-md-12">
+            <div class="row table-panel-row">
+              <div class="col-md-6">
+                <div class="table-panel-column">
+                  <label>Fecha Inicial</label>
+                  <span>{{pagoSeleccionado.fechaInicial | date: 'YYYY-MM-dd' }} </span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="table-panel-column">
+                  <label>Fecha Final</label>
+                  <span>{{pagoSeleccionado.fechaFinal | date: 'YYYY-MM-dd'}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row" *ngIf="pagoSeleccionado.observaciones">
+          <div class="col-md-12">
+            <div class="table-panel-column">
+              <label>Observaciones</label>
+              <span>{{pagoSeleccionado.observaciones}}</span>
+            </div>
+          </div>
+        </div>
+
+      </ng-container>
+    </app-table-panel>
+    <form [formGroup]="rechazarPagoForm">
+      <div class="row mb-3 mt-3">
+        <div class="col-md-12">
+          <label class="control-label" for="motivoRechazo">Motivo de rechazo<span class="req">*</span>:</label>
+          <input id="motivoRechazo" class="form-control" formControlName="motivoRechazo"
+                 placeholder="Ingresa el motivo del rechazo" maxlength="100">
+          <span class="campo-obligatorio"
+                *ngIf="ref.motivoRechazo?.errors?.required && (ref.motivoRechazo?.dirty || ref.motivoRechazo?.touched)">Este campo es obligatorio *.</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <span class="mensaje-inferior-campo-obligatorio">
             *Campos obligatorios
           </span>
-            </div>
         </div>
+      </div>
     </form>
-</ng-container>
-<div class="mb-3 mt-3 row text-center" *ngIf="mensajeConfirmacion">
-    ¿Estás seguro de rechazar la solicitud de pago?
-</div>
-<div class="row mb-3" *ngIf="!mensajeConfirmacion">
-    <div class="col-md-12 flex justify-content-end align-items-center">
+    <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-end align-items-center">
         <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-        <button class="ml-6 btn btn-md btn-primary" [disabled]="rechazarPagoForm.invalid" (click)="mensajeConfirmacion = !mensajeConfirmacion">
-            Confirmar Rechazo
+        <button class="ml-6 btn btn-md btn-primary" [disabled]="rechazarPagoForm.invalid"
+                (click)="aceptarRechazo()">
+          Confirmar Rechazo
         </button>
+      </div>
     </div>
-</div>
-<div class="row mb-3" *ngIf="mensajeConfirmacion">
-    <div class="col-md-12 flex justify-content-end align-items-center">
-        <button class="ml-4 btn btn-danger btn-md" (click)="mensajeConfirmacion = !mensajeConfirmacion">
-            Cancelar
-        </button>
-        <button class="ml-6 btn btn-md btn-primary" (click)="confirmarRechazoPago();" *appValidaRol="['SOLICITAR_PAGO','MODIFICAR']">
-            Aceptar
-        </button>
+  </ng-container>
+  <ng-container *ngSwitchCase="RESUMEN_RECHAZAR_PAGO">
+    <app-table-panel class="mb-3">
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="table-panel-column">
+            <label class="control-label">Motivo de rechazo</label>
+            <span class="font-bold">{{motivoRechazo}}</span>
+          </div>
+        </div>
+      </div>
+    </app-table-panel>
+    <div class="mb-3 mt-3 row text-center">
+      ¿Estás seguro de rechazar la solicitud de pago?
     </div>
-</div>
+    <div class="row mb-3 mt-3">
+      <div class="col-md-12 flex justify-content-end align-items-center">
+        <button class="ml-4 btn btn-danger btn-md" (click)="pasoRechazarPago = CAPTURA_RECHAZAR_PAGO">
+          Cancelar
+        </button>
+        <button class="ml-6 btn btn-md btn-primary" (click)="confirmarRechazoPago();"
+                *appValidaRol="['SOLICITAR_PAGO','MODIFICAR']">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

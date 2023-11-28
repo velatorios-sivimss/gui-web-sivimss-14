@@ -182,10 +182,6 @@ export class ModificarInformacionServicioSFComponent
     let fechaVelacion;
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio, mes, dia] = fechaActual.split('-')
-    // let horaVelacion:string;
-    // if(typeof datos.horaVelacion){
-    //   datos.horaVelacion.inclu
-    // }
 
     if (typeof datos.horaVelacion == "string") {
       const [horas, minutos] = datos.horaVelacion.split(':')
@@ -282,7 +278,7 @@ export class ModificarInformacionServicioSFComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor, disabled: true},
+          {value: datos.gestionadoPorPromotor ?? false, disabled: true},
           [Validators.required],
         ],
         promotor: [
@@ -298,11 +294,6 @@ export class ModificarInformacionServicioSFComponent
     this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
-    // if(Number(this.altaODS.finado.idTipoOrden) < 3){
-    //   this.cortejo.gestionadoPorPromotor.disable();
-    // }else{
-    //   this.cortejo.gestionadoPorPromotor.enable();
-    // }
   }
 
   ngAfterContentChecked(): void {
@@ -647,18 +638,15 @@ export class ModificarInformacionServicioSFComponent
     this.altaODS.idEstatus = 1;
     this.llenarDatos();
     this.guardarODS(0)
-    // Number(this.estatusUrl) == 1 ? this.guardarODS(0) : this.guardarODSComplementaria(0);
   }
 
   guardarODS(consumoTablas: number): void {
-    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
     this.loaderService.activar();
     this.generarODSSF.actualizarODSSF(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         {
           next: (respuesta: HttpRespuesta<any>) => {
-            const datos = respuesta.datos;
             if (respuesta.error) {
               this.salas = [];
               const errorMsg: string =
@@ -672,14 +660,10 @@ export class ModificarInformacionServicioSFComponent
 
               return;
             }
-            this.descargarEntradaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
             this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-            this.descargarOrdenServicio(
-              respuesta.datos.idOrdenServicio,
-              respuesta.datos.idEstatus
-            );
-
-
+            if(this.altaODS.idEstatus != 1){
+              this.descargarOrdenServicio(respuesta.datos.idOrdenServicio,respuesta.datos.idEstatus);
+            }
             if (this.altaODS.idEstatus == 2) {
               const ExitoMsg: string =
                 this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -691,8 +675,9 @@ export class ModificarInformacionServicioSFComponent
               );
             } else {
               this.alertaService.mostrar(
-                TipoAlerta.Exito,
-                'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
+                TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(49) ||
+                'Se ha guardado exitosamente la pre-orden. El contratante debe acudir al Velatorio correspondiente para' +
+                ' concluir con la contratación del servicio.'
               );
             }
 
@@ -713,17 +698,24 @@ export class ModificarInformacionServicioSFComponent
       );
   }
 
-  guardarODSComplementaria(consumoTablas: number): void {
-    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
-    if (this.altaODS.idEstatus == 1) {
 
-    }
+  parseoFecha(fecha: string): any {
+    const [dia, mes, anio] = fecha.split('/')
+    return  new Date(anio + '/' + mes + '/' + dia);
+  }
+
+  parseoHora(fecha: string, tiempo: string): any {
+    const [dia, mes, anio] = fecha.split('/')
+    const [horas, minutos] = tiempo.split(':')
+    return  new Date(+anio, +mes, +dia, +horas, +minutos)
+  }
+
+  guardarODSComplementaria(consumoTablas: number): void {
     this.loaderService.activar();
     this.gestionarOrdenServicioService.generarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
             const errorMsg: string =
@@ -804,32 +796,44 @@ export class ModificarInformacionServicioSFComponent
     this.informacionServicio.fechaCortejo =
       formulario.cortejo.fecha == null
         ? null
-        : moment(formulario.cortejo.fecha).format('yyyy-MM-DD');
+        : moment(
+          typeof formulario.cortejo.fecha === "string" ? this.parseoFecha(formulario.cortejo.fecha) : formulario.cortejo.fecha
+        ).format('yyyy-MM-DD');
 
     this.informacionServicio.fechaCremacion =
       formulario.lugarCremacion.fecha == null
         ? null
-        : moment(formulario.lugarCremacion.fecha).format('yyyy-MM-DD');
+        : moment(
+          typeof formulario.lugarCremacion.fecha === "string" ? this.parseoFecha(formulario.lugarCremacion.fecha) : formulario.lugarCremacion.fecha
+        ).format('yyyy-MM-DD');
 
     this.informacionServicio.fechaRecoger =
       formulario.recoger.fecha == null
         ? null
-        : moment(formulario.recoger.fecha).format('yyyy-MM-DD');
+        : moment(
+          typeof formulario.recoger.fecha === "string" ? this.parseoFecha(formulario.recoger.fecha) : formulario.recoger.fecha
+        ).format('yyyy-MM-DD');
 
     this.informacionServicio.horaRecoger =
       formulario.recoger.hora == null
         ? null
-        : moment(formulario.recoger.hora).format('HH:mm');
+        : moment(
+          typeof formulario.recoger.hora === "string" ? this.parseoHora(formulario.recoger.fecha,formulario.recoger.hora) : formulario.recoger.hora
+        ).format('HH:mm');
 
     this.informacionServicio.horaCortejo =
       formulario.cortejo.hora == null
         ? null
-        : moment(formulario.cortejo.hora).format('HH:mm');
+        : moment(
+          typeof formulario.cortejo.hora === "string" ? this.parseoHora(formulario.cortejo.fecha,formulario.cortejo.hora) : formulario.cortejo.hora
+        ).format('HH:mm');
 
     this.informacionServicio.horaCremacion =
       formulario.lugarCremacion.hora == null
         ? null
-        : moment(formulario.lugarCremacion.hora).format('HH:mm');
+        : moment(
+          typeof formulario.lugarCremacion.hora === "string" ? this.parseoHora(formulario.lugarCremacion.fecha,formulario.lugarCremacion.hora) : formulario.lugarCremacion.hora
+        ).format('HH:mm');
 
     this.informacionServicio.idPanteon = this.idPanteon;
     this.informacionServicio.idPromotor = formulario.cortejo.promotor;
@@ -853,22 +857,30 @@ export class ModificarInformacionServicioSFComponent
     this.informacionServicioVelacion.fechaInstalacion =
       formulario.instalacionServicio.fecha == null
         ? null
-        : moment(formulario.instalacionServicio.fecha).format('yyyy-MM-DD');
+        : moment(
+          typeof formulario.instalacionServicio.fecha === "string" ? this.parseoFecha(formulario.instalacionServicio.fecha) : formulario.instalacionServicio.fecha
+        ).format('yyyy-MM-DD');
 
     this.informacionServicioVelacion.fechaVelacion =
       formulario.lugarVelacion.fecha == null
         ? null
-        : moment(formulario.lugarVelacion.fecha).format('yyyy-MM-DD');
+        : moment(
+          typeof formulario.lugarVelacion.fecha === "string" ?this.parseoFecha(formulario.lugarVelacion.fecha) : formulario.lugarVelacion.fecha
+        ).format('yyyy-MM-DD');
 
     this.informacionServicioVelacion.horaInstalacion =
       formulario.instalacionServicio.hora == null
         ? null
-        : moment(formulario.instalacionServicio.hora).format('HH:mm');
+        : moment(
+          typeof formulario.instalacionServicio.hora === "string" ? this.parseoHora(formulario.instalacionServicio.fecha,formulario.instalacionServicio.hora) : formulario.instalacionServicio.hora
+        ).format('HH:mm');
 
     this.informacionServicioVelacion.horaVelacion =
       formulario.lugarVelacion.hora == null
         ? null
-        : moment(formulario.lugarVelacion.hora).format('HH:mm');
+        : moment(
+          typeof formulario.lugarVelacion.hora === "string" ? this.parseoHora(formulario.lugarVelacion.fecha,formulario.lugarVelacion.hora) : formulario.lugarVelacion.hora
+        ).format('HH:mm');
 
     this.informacionServicioVelacion.idCapilla =
       formulario.lugarVelacion.capilla;
@@ -969,30 +981,6 @@ export class ModificarInformacionServicioSFComponent
       });
   }
 
-  descargarEntradaDonaciones(idODS: number, idEstatus: number): void {
-    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
-    this.gestionarOrdenServicioService.generarArchivoEntradaDonaciones(idODS,idEstatus).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
-        let link = this.renderer.createElement('a');
-
-        const file = new Blob(
-          [this.descargaArchivosService.base64_2Blob(
-            respuesta.datos,
-            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
-        const url = window.URL.createObjectURL(file);
-        link.setAttribute('download', 'documento');
-        link.setAttribute('href', url);
-        link.click();
-        link.remove();
-      },
-      error:(error: HttpErrorResponse) => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
-      }
-    });
-
-  }
   descargarControlSalidaDonaciones(idODS: number, idEstatus: number): void {
     const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.gestionarOrdenServicioService.generarArchivoSalidaDonaciones(idODS,idEstatus).subscribe({
@@ -1021,9 +1009,6 @@ export class ModificarInformacionServicioSFComponent
     this.altaODS.idEstatus = 2;
     this.llenarDatos();
     this.guardarODS(1)
-    // Number(this.estatusUrl)==1 ? this.guardarODS(1) : this.guardarODSComplementaria(1);
-
-    // this.guardarODS(1);
   }
 
   regresar() {

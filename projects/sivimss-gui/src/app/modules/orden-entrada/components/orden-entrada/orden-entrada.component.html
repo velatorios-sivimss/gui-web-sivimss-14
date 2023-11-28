@@ -1,7 +1,7 @@
 <div class="flex">
   <app-titulo-principal style="width: 100%" titulo="Orden de entrada / Consulta orden de entrada"></app-titulo-principal>
 </div>
-<p-tabView>
+<p-tabView [(activeIndex)]="index">
   <p-tabPanel [header]="menu[0]">
     <app-consulta-orden-entrada></app-consulta-orden-entrada>
   </p-tabPanel>

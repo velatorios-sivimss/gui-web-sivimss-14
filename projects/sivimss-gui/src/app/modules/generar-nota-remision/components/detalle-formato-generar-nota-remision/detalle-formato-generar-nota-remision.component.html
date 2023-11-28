@@ -31,7 +31,7 @@
           <div class="mb-6">
             <div class="float-left table-panel-column">
               <label class="control-label">Versión del documento:</label>
-              <span>{{datos.versionDocumento}}</span>
+              <span>1.2</span>
             </div>
             <div class="float-right table-panel-column">
               <label class="control-label">Fecha:</label>
@@ -149,8 +149,10 @@
         </section>
 
         <span class="etiqueta-conformidad">Estoy conforme con los servicios otorgados, los cuales fueron de acuerdo al
-          contrato de previsión funeraria No. {{datos.folioConvenio}} celebrado con fecha {{datos.fechaConvenio}} a favor del finado en su calidad de
-          (beneficiario/titular) del servicio</span>
+          contrato de previsión funeraria No. {{datos.folioConvenio}}
+          celebrado con fecha {{datos.fechaODS | date:'dd/MM/YYYY'}} a favor del finado en su calidad de
+          (beneficiario/titular) del servicio
+        </span>
 
         <section class="flex mt-7">
           <div class="parte-nombre">

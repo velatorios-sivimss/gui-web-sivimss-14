@@ -97,12 +97,12 @@
           <label class="control-label">Tipo de traslado<span class="req">*</span>:</label>
           <div class="flex">
             <div class="flex align-items-center mx-2">
-              <p-radioButton id="tipoTrasladoOficial" name="tipoTraslado" value="true" formControlName="tipoTraslado"
+              <p-radioButton id="tipoTrasladoOficial" name="tipoTraslado" [value]="true" formControlName="tipoTraslado"
                 inputId="oficial"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'tipoTraslado'">Oficial</label>
             </div>
             <div class="flex align-items-center mx-2">
-              <p-radioButton id="tipoTrasladoParticular" name="tipoTraslado" value="false"
+              <p-radioButton id="tipoTrasladoParticular" name="tipoTraslado" [value]="false"
                 formControlName="tipoTraslado" inputId="particular"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'tipoTraslado'">Particular</label>
             </div>
@@ -201,7 +201,7 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="numPlacas">Número de placas:</label>
-        <input id="numPlacas" class="form-control" formControlName="numPlacas" maxlength="5" placeholder="Ingresa placas">
+        <input id="numPlacas" class="form-control" formControlName="numPlacas" maxlength="10" placeholder="Ingresa placas">
       </div>
     </div>
 

@@ -57,9 +57,9 @@ export class Reportes implements OnInit {
   promotores: TipoDropdown[] = [];
   velatorios: TipoDropdown[] = [];
   tipoODS: TipoDropdown[] = [
-    {value: 1, label: 'servicio normal'},
-    {value: 2, label: 'siniestros de previsión funeraria'},
-    {value: 3, label: 'ambos'}
+    {value: 1, label: 'Servicio normal'},
+    {value: 2, label: 'Siniestros de previsión funeraria'},
+    {value: 3, label: 'Ambos'}
   ];
   tipoReporte: TipoDropdown[] = [
     {value: 1, label: 'Reportes'},
@@ -189,6 +189,7 @@ export class Reportes implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         respuesta.datos.push({"idVelatorio": null, "nomVelatorio": "Todos"})
         this.velatorios = mapearArregloTipoDropdown(respuesta.datos, "nomVelatorio", "idVelatorio");
+        this.seleccionarValidaciones();
       },
       error: (error: HttpErrorResponse): void => {
         this.mensajesSistemaService.mostrarMensajeError(error);
@@ -210,9 +211,7 @@ export class Reportes implements OnInit {
   }
 
   limpiarFiltros(): void {
-    this.cambiarDelegacion(true);
     this.ff.idEstatusODS.clearValidators();
-
     this.exportar = [];
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormDir.resetForm({
@@ -220,6 +219,7 @@ export class Reportes implements OnInit {
       delegacion: obtenerDelegacionUsuarioLogueado(usuario),
       velatorio: obtenerVelatorioUsuarioLogueado(usuario)
     });
+    this.cambiarDelegacion(true);
   }
 
   exportarReporte(): void {
@@ -235,13 +235,15 @@ export class Reportes implements OnInit {
       9	Concentrado de Servicios Pago Anticipado
     */
     if (!this.validarFiltros()) return;
-    if (this.ff.fechaIni.value > this.ff.fechaFin.value) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
-      return;
+    if(this.ff.fechaIni.value != null && this.ff.fechaFin.value!= null){
+      if (this.ff.fechaIni.value >= this.ff.fechaFin.value) {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+        return;
+      }
     }
     this.loaderService.activar();
     const filtros = this.consultarFiltros(this.ff.reporte.value);
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: NOMBRE_REPORTES[this.ff.reporte.value - 1]};
+    const configuracionArchivo: any = {nombreArchivo: NOMBRE_REPORTES[this.ff.reporte.value - 1]};
     const tipoReporte = this.nombreEndpoint.get(this.ff.reporte.value);
     if (filtros.tipoReporte.includes("xls")) configuracionArchivo.ext = "xlsx";
     if (filtros.tipoReporte.includes("csv")) configuracionArchivo.ext = "csv";
@@ -254,21 +256,37 @@ export class Reportes implements OnInit {
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
           {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
-        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-          finalize(() => this.loaderService.desactivar())
-        ).subscribe({
-          next: (repuesta): void => {
-            //TODO verificar si se necesita agregar mensaje de confirmación
-          },
-          error: (error): void => {
-            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-          }
-        })
+        const url = window.URL.createObjectURL(file);
+        const a = document.createElement('a');
+        a.href = url;
+        console.log(configuracionArchivo.nombreArchivo +'.'+ this.validarExtension(configuracionArchivo.ext));
+        a.download = configuracionArchivo.nombreArchivo +'.'+ this.validarExtension(configuracionArchivo.ext);
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        // this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+        //   finalize(() => this.loaderService.desactivar())
+        // ).subscribe({
+        //   next: (repuesta): void => {
+        //     //TODO verificar si se necesita agregar mensaje de confirmación
+        //   },
+        //   error: (error): void => {
+        //     this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+        //   }
+        // })
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64));
       }
     });
+  }
+
+  validarExtension(extension:string | undefined) : string {
+    if(extension)return extension
+    return'pdf'
   }
 
   validarFiltros(): boolean {
@@ -534,6 +552,10 @@ export class Reportes implements OnInit {
   }
 
   iniciarComisionesPromotores(): void {
+    this.ff.mes.setValidators(Validators.required);
+    this.ff.anio.setValidators(Validators.required);
+    this.ff.mes.updateValueAndValidity();
+    this.ff.anio.updateValueAndValidity();
     this.loaderService.activar();
     this.reporteOrdenServicioService.consultarODSComisionPromotor(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -548,11 +570,6 @@ export class Reportes implements OnInit {
   }
 
   iniciarServiciosVelatorios(): void {
-    this.ff.mes.setValue(Validators.required);
-    this.ff.anio.setValue(Validators.required);
-    this.ff.mes.updateValueAndValidity();
-    this.ff.anio.updateValueAndValidity();
-
     this.loaderService.activar();
     this.reporteOrdenServicioService.consultarODSServiciosVelatorios(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
       finalize(() => this.loaderService.desactivar())

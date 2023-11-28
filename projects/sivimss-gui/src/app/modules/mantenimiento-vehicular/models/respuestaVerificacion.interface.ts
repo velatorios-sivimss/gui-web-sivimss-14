@@ -1,7 +1,7 @@
 export interface RespuestaVerificacion {
   DES_DELEGACION: string,
-  DES_MARCA: string,
-  DES_MODELO: string,
+  REF_MARCA: string,
+  REF_MODELO: string,
   DES_MTTOESTADO: string,
   DES_NIVEL_ACEITE: string,
   DES_NIVEL_AGUA: string,
@@ -14,7 +14,7 @@ export interface RespuestaVerificacion {
   DES_NIVEL_NEUMATRASE: string,
   DES_NUMMOTOR: string,
   DES_NUMSERIE: string,
-  DES_PLACAS: string,
+  REF_PLACAS: string,
   DES_USO: string,
   FEC_ALTA: string,
   ID_CALNEUDELANTEROS: number,
@@ -35,5 +35,5 @@ export interface RespuestaVerificacion {
   IND_ACTIVO: boolean,
   IND_ESTATUS: boolean,
   DES_VELATORIO: string,
-  DES_SUBMARCA: string
+  REF_SUBMARCA: string
 }

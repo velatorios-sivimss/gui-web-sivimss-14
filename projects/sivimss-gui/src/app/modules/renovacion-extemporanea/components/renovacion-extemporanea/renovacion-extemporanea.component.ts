@@ -51,6 +51,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   busquedaRealizada: boolean = false;
   mostrarModalConfirmacion: boolean = false;
   mensajeConfirmacion: string = "";
+  cargaInicial: boolean = true;
 
   rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
@@ -104,9 +105,11 @@ export class RenovacionExtemporaneaComponent implements OnInit {
 
   paginar(event: LazyLoadEvent): void {
     if (validarUsuarioLogueado()) return;
-    if (event) {
+    if (event && !this.cargaInicial) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
+      this.paginarConFiltros();
     }
+    this.cargaInicial = false;
   }
 
   paginarConFiltros(): void {
@@ -145,7 +148,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
         return {
           idDelegacion: !this.ff.idDelegacion.value || this.ff.idDelegacion.getRawValue() === '' ? null : this.ff.idDelegacion.getRawValue(),
           idVelatorio: !this.ff.idVelatorio.value || this.ff.idVelatorio.getRawValue() === '' ? null : this.ff.idVelatorio.getRawValue(),
-          numConvenio: !this.ff.numConvenio.value || this.ff.numConvenio.getRawValue() === '' ? null : +this.ff.numConvenio.getRawValue(),
+          numConvenio: !this.ff.numConvenio.value || this.ff.numConvenio.getRawValue() === '' ? null : this.ff.numConvenio.getRawValue(),
           folio: !this.ff.folio.value || this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
           rfc: !this.ff.rfc.value || this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
         }

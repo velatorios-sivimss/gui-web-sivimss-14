@@ -206,13 +206,13 @@
       <div *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
         <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation
                                   (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')"
+        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada') &&  ordenServicioSeleccionada.idTipoOrden != 4"
                                   (click)="descargarContratoServInmediatos()"
                                   titulo="Descargar Contrato de servicios inmediatos"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion
           *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden') || ordenServicioSeleccionada.estatus?.includes('Generada')"
           (click)="descargarOrdenServicio()" titulo="Descargar Orden de servicio"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="mostrarDescargaEntradas" titulo="Aceptación y control de ataúdes de donación"
+        <app-overlay-panel-opcion *ngIf="validaControlSalidaDonacion()" titulo="Aceptación y control de ataúdes de donación"
                                   (click)="descargarEntradas()"></app-overlay-panel-opcion>
       </div>
     </app-overlay-panel-opciones>

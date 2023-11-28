@@ -92,7 +92,7 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
-    this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
+    this.catalogoDelegaciones = [{ value: -1, label: 'Todos' }, ...respuesta[this.POSICION_CATALOGOS_DELEGACIONES]];
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
@@ -100,11 +100,16 @@ export class GenerarHojaConsignacionComponent implements OnInit {
       this.catalogoVelatorios = [];
       this.filtroForm.get('velatorio')?.patchValue("");
     }
-    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    this.catalogoVelatorios = [{ value: -1, label: 'Todos' }];
+    let idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
+    if (idDelegacion === -1) {
+      idDelegacion = null;
+    }
     this.generarHojaConsignacionService.velatoriosPorDelegacion(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+        let catalogoVelatoriosTmp = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+        this.catalogoVelatorios = [...this.catalogoVelatorios, ...catalogoVelatoriosTmp];
         this.cargarProveedores();
       },
       error: (error: HttpErrorResponse): void => {
@@ -115,8 +120,11 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   }
 
   cargarProveedores(): void {
-    const idVelatorio = this.filtroForm.get('velatorio')?.value;
+    let idVelatorio = this.filtroForm.get('velatorio')?.value;
     if (!idVelatorio) return;
+    if (idVelatorio === -1) {
+      idVelatorio = null;
+    }
     this.generarHojaConsignacionService.obtenerCatalogos({ idCatalogo: 1, idVelatorio }).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoProveedores = mapearArregloTipoDropdown(respuesta.datos, "proveedor", "idProveedor");
@@ -179,8 +187,10 @@ export class GenerarHojaConsignacionComponent implements OnInit {
 
   datosPromotoresFiltros(): BuscarGenerarHojaConsignacion {
     return {
-      idDelegacion: this.ff.delegacion.getRawValue() === '' ? null : this.ff.delegacion.getRawValue(),
-      idVelatorio: this.ff.velatorio.getRawValue() === '' ? null : this.ff.velatorio.getRawValue(),
+      idDelegacion:
+        this.ff.delegacion.getRawValue() === '' || this.ff.delegacion.getRawValue() === -1 ? null : this.ff.delegacion.getRawValue(),
+      idVelatorio:
+        this.ff.velatorio.getRawValue() === '' || this.ff.velatorio.getRawValue() === -1 ? null : this.ff.velatorio.getRawValue(),
       idProveedor: this.ff.proveedor.getRawValue() === '' ? null : this.ff.proveedor.getRawValue(),
       folio: this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
       fecInicio:
@@ -268,8 +278,10 @@ export class GenerarHojaConsignacionComponent implements OnInit {
 
   filtrosArchivos(tipoReporte: string) {
     return {
-      idDelegacion: this.ff.delegacion.getRawValue() === '' ? null : this.ff.delegacion.getRawValue(),
-      idVelatorio: this.ff.velatorio.getRawValue() === '' ? null : this.ff.velatorio.getRawValue(),
+      idDelegacion:
+        this.ff.delegacion.getRawValue() === '' || this.ff.delegacion.getRawValue() === -1 ? null : this.ff.delegacion.getRawValue(),
+      idVelatorio:
+        this.ff.velatorio.getRawValue() === '' || this.ff.velatorio.getRawValue() === -1 ? null : this.ff.velatorio.getRawValue(),
       idProveedor: this.ff.proveedor.getRawValue() === '' ? null : this.ff.proveedor.getRawValue(),
       folio: this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
       fecInicio:

@@ -126,19 +126,41 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   }
 
   validarCURP(): void {
+    if(this.f.curp.value.includes('XEXX010101HNEXXXA4')){ this.limpiarDatosBeneficario(); return};
+    if(this.f.curp.value.includes('XEXX010101MNEXXXA8')){this.limpiarDatosBeneficario(); return};
     if (this.beneficiarioForm.controls.curp?.errors?.pattern){
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
       return;
     }
     if(!this.f.curp.value) return;
+    this.limpiarDatosBeneficario();
     this.loaderService.activar();
     this.agregarConvenioPFService.consultaCURPRFC("",this.f.curp.value).pipe(
       finalize(()=>this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta:HttpRespuesta<any>): void => {
-        if(respuesta.datos.desEstatusCURP.includes('Baja por Defunción')){
-          this.curpDesactivado = true;
-          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+        if(respuesta.datos.length > 0){
+          const fecha = this.validarSeparadorFecha(respuesta.datos[0].fechaNacimiento)
+          this.f.fechaNacimiento.setValue(new Date(fecha[2] + '/' + fecha[1] + '/' + fecha[0]));
+          this.f.nombre.setValue(respuesta.datos[0].nomPersona);
+          this.f.primerApellido.setValue(respuesta.datos[0].primerApellido);
+          this.f.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
+          this.f.correoElectronico.setValue(respuesta.datos[0].correo.includes('null') ? null : respuesta.datos[0].correo);
+          this.f.telefono.setValue(respuesta.datos[0].telefono.includes('null') ? null : respuesta.datos[0].telefono);
+          this.calcularEdad();
+        }else{
+          if(respuesta.datos.curp != ""){
+            const fecha = this.validarSeparadorFecha(respuesta.datos.fechaNacimiento)
+            this.f.fechaNacimiento.setValue(new Date(fecha[2] + '/' + fecha[1] + '/' + fecha[0]));
+            this.f.nombre.setValue(respuesta.datos.nomPersona);
+            this.f.primerApellido.setValue(respuesta.datos.primerApellido);
+            this.f.segundoApellido.setValue(respuesta.datos.segundoApellido);
+            this.f.correoElectronico.setValue(respuesta.datos.correo);
+            this.f.telefono.setValue(respuesta.datos.telefono);
+            this.calcularEdad();
+          }else {
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+          }
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -150,7 +172,33 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
     });
   }
 
+  validarSeparadorFecha(fechaString: string): any {
+    if(fechaString.includes('/')){
+      let [dia,mes,anio] = fechaString.split('/');
+      if(dia.length == 3){
+        [dia,mes,anio] = [anio,mes,dia]
+      }
+      return [dia,mes,anio];
+    }
+    let [diaD,mesD,anioD] = fechaString.split('/');
+    if(diaD.length == 3){
+      [diaD,mesD,anioD] = [anioD,mesD,diaD]
+    }
+    return [diaD,mesD,anioD];
+  }
+
+  limpiarDatosBeneficario(): void {
+    this.f.fechaNacimiento.patchValue(null);
+    this.f.nombre.patchValue(null);
+    this.f.edad.patchValue(null);
+    this.f.primerApellido.patchValue(null);
+    this.f.segundoApellido.patchValue(null);
+    this.f.correoElectronico.patchValue(null);
+    this.f.telefono.patchValue(null);
+  }
+
   validarRFC(): void {
+    if(!this.f.rfc.value) return;
     this.f.rfc.clearValidators();
     this.f.rfc.updateValueAndValidity();
     if(this.f.rfc.value.includes('XAXX010101000'))return;

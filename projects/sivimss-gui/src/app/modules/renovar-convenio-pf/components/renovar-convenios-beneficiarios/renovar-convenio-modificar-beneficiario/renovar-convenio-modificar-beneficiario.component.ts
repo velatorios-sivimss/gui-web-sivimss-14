@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { Beneficiario, BeneficiarioSeleccionado } from '../../../models/convenio.interface';
+import { Beneficiario, BeneficiarioSeleccionado, BusquedaListBeneficiarios } from '../../../models/convenio.interface';
 import { PATRON_CORREO, PATRON_CURP, PATRON_RFC } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { finalize } from 'rxjs';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-renovar-convenio-modificar-beneficiario',
@@ -19,6 +20,8 @@ import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/me
 })
 export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
   @Input() beneficiarioSeleccionado!: BeneficiarioSeleccionado;
+
+  @Input() busquedaListBeneficiarios!: BusquedaListBeneficiarios;
 
   @Input() numBeneficiario: number = 0;
 
@@ -48,10 +51,11 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
 
   inicializarModificarBeneficiarioForm(): void {
     this.modificarBeneficiarioForm = this.formBuilder.group({
-      nombre: [{ value: null, disabled: false }, [Validators.maxLength(50)]],
-      primerApellido: [{ value: null, disabled: false }, [Validators.maxLength(50)]],
-      segundoApellido: [{ value: null, disabled: false }, [Validators.maxLength(50)]],
-      edad: [{ value: null, disabled: false }, [Validators.maxLength(3)]],
+      nombre: [{ value: null, disabled: true }, [Validators.maxLength(50)]],
+      primerApellido: [{ value: null, disabled: true }, [Validators.maxLength(50)]],
+      segundoApellido: [{ value: null, disabled: true }, [Validators.maxLength(50)]],
+      fechaNac: [{ value: null, disabled: true }, []],
+      edad: [{ value: null, disabled: true }, []],
       parentesco: [{ value: null, disabled: false }, []],
       curp: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(18), Validators.pattern(PATRON_CURP)]],
       rfc: [{ value: null, disabled: false }, [Validators.pattern(PATRON_RFC)]],
@@ -95,7 +99,7 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
 
   guardar() {
     if (this.modificarBeneficiarioForm.valid) {
-      this.actualizarBeneficiario.emit(this.modificarBeneficiarioForm.value);
+      this.actualizarBeneficiario.emit(this.modificarBeneficiarioForm.getRawValue());
     } else {
       this.modificarBeneficiarioForm.markAllAsTouched();
       const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(24);
@@ -104,7 +108,20 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
   }
 
   validarCurpRenapo(): void {
+    if (this.mbf.curp.value.includes('XEXX010101HNEXXXA4')) { this.limpiarDatosBeneficario(); return };
+    if (this.mbf.curp.value.includes('XEXX010101MNEXXXA8')) { this.limpiarDatosBeneficario(); return };
+    this.modificarBeneficiarioForm.patchValue({
+      nombre: null,
+      primerApellido: null,
+      segundoApellido: null,
+      fechaNac: null,
+      edad: null,
+    });
     if (this.mbf.curp.invalid) return;
+    this.mbf.nombre.disable();
+    this.mbf.primerApellido.disable();
+    this.mbf.segundoApellido.disable();
+    this.mbf.fechaNac.disable();
     this.loaderService.activar();
     this.usuarioService.consultarCurpRenapo(this.mbf.curp.value).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -115,6 +132,13 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
           this.mbf.curp.setErrors({ 'incorrect': true });
         } else {
           this.mbf.curp.setErrors(null);
+          this.modificarBeneficiarioForm.patchValue({
+            nombre: respuesta.datos?.nombre,
+            primerApellido: respuesta.datos?.apellido1,
+            segundoApellido: respuesta.datos?.apellido2,
+            fechaNac: respuesta.datos?.fechNac,
+          });
+          this.calcularEdad();
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -122,6 +146,24 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
         this.mbf.curp.setErrors({ 'incorrect': true });
       }
     });
+  }
+
+  limpiarDatosBeneficario(): void {
+    this.mbf.nombre.patchValue(null);
+    this.mbf.primerApellido.patchValue(null);
+    this.mbf.segundoApellido.patchValue(null);
+    this.mbf.fechaNac.patchValue(null);
+    this.mbf.edad.patchValue(null);
+    this.mbf.parentesco.patchValue(null);
+    this.mbf.rfc.patchValue(null);
+    this.mbf.email.patchValue(null);
+    this.mbf.telefono.patchValue(null);
+
+    this.mbf.nombre.enable();
+    this.mbf.primerApellido.enable();
+    this.mbf.segundoApellido.enable();
+    this.mbf.fechaNac.enable();
+
   }
 
   validarRfc() {
@@ -142,6 +184,23 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
     if (this.mbf.email.invalid) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'Tu correo electrónico no es válido.');
     }
+  }
+
+  calcularEdad() {
+    let fecha: string;
+    if (typeof this.mbf?.fechaNac?.value === 'object') {
+      fecha = moment(this.mbf?.fechaNac.value).format('YYYY/MM/DD');
+    } else {
+      fecha = moment(this.mbf?.fechaNac.value, 'DD/MM/YYYY').format('YYYY/MM/DD');
+    }
+    const hoy = new Date();
+    const cumpleanos = new Date(fecha);
+    let edad = hoy.getFullYear() - cumpleanos.getFullYear();
+    const m = hoy.getMonth() - cumpleanos.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+      edad--;
+    }
+    this.mbf.edad.patchValue(edad);
   }
 
   get mbf() {

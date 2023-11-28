@@ -33,6 +33,7 @@ import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../usuarios/services/usuario.service';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
 import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module
     DialogModule,
     ValidaRolModule,
     BtnRegresarModule,
+    CalendarModule,
   ],
   providers: [
     RenovarConvenioPfService,

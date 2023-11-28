@@ -87,4 +87,13 @@ export class GenerarOrdenSubrogacionService extends BaseService<HttpRespuesta<an
       , datosReporte, { responseType: 'blob' as 'json' });
   }
 
+  obtenerCatalogoVelatoriosPorDelegacion(delegacion: number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/velatorios/${delegacion}`);
+  }
+
+  detalleSubrogacion(idHojaSubrogacion: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-subrogacion`,
+      {idHojaSubrogacion: idHojaSubrogacion});
+  }
+
 }

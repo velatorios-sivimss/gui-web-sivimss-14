@@ -179,6 +179,8 @@ export class RegistroOtorgamientoServiciosComponent implements OnInit {
       idHistorialServicio: registroOtorgamientoServicios.idHistorialServicio,
       servicio: registroOtorgamientoServicios.nombreServicio,
       desNotas: registroOtorgamientoServicios.desNotas,
+      indCertificado: registroOtorgamientoServicios.indCertificado
+
     };
     this.registroOtorgamientoSeleccionado = datos;
     this.overlayPanel.toggle(event);

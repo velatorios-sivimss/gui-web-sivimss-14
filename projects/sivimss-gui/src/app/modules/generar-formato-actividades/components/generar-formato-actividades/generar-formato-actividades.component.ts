@@ -60,7 +60,6 @@ export class GenerarFormatoActividadesComponent implements OnInit {
   public detalleRef!: DynamicDialogRef;
   public filtroForm!: FormGroup;
   public promotoresFiltrados: TipoDropdown[] = [];
-  public fechaActual: Date = new Date();
 
   constructor(
     private route: ActivatedRoute,
@@ -88,8 +87,8 @@ export class GenerarFormatoActividadesComponent implements OnInit {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: +usuario?.idOficina, disabled: true}],
-      delegacion: [{value: +usuario?.idDelegacion, disabled: +usuario?.idOficina >= 2}, []],
-      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario?.idOficina === 3}, []],
+      delegacion: [{value: usuario?.idDelegacion ? +usuario?.idDelegacion : null, disabled: +usuario?.idOficina >= 2}, []],
+      velatorio: [{value: +usuario?.idVelatorio ? +usuario?.idVelatorio : null, disabled: +usuario?.idOficina === 3}, []],
       nombrePromotor: [{value: null, disabled: false}],
       folio: new FormControl({value: null, disabled: false}, []),
       fecInicio: new FormControl({value: null, disabled: false}, []),

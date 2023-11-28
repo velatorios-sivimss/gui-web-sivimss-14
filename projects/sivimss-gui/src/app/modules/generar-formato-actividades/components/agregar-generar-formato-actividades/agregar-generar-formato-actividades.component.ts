@@ -23,6 +23,7 @@ import { ConfirmationService, LazyLoadEvent } from 'primeng/api';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { PrevisualizacionArchivoComponent } from '../previsualizacion-archivo/previsualizacion-archivo.component';
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 
 @Component({
   selector: 'app-agregar-generar-formato-actividades',
@@ -37,7 +38,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   readonly POSICION_CATALOGO_VELATORIO: number = 2;
   readonly POSICION_CATALOGOS_ENTIDADES: number = 3;
 
-  public idFormatoRegistro: number = 0;
+  public idFormatoRegistro: number | null = 0;
   public numPaginaActual: number = 0;
   public cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   public totalElementos: number = 0;
@@ -56,7 +57,6 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   public agregarGenerarFormatoActividadesForm!: FormGroup;
   public agregarActividadForm!: FormGroup;
   public mostrarModal: boolean = false;
-  public fechaActual: Date = new Date();
   public agregandoRegistro: boolean = false;
   public descVelatorio: string = '';
   public numActividades: number | null = null;
@@ -84,7 +84,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
-      this.idFormatoRegistro = +params['id'];
+      this.idFormatoRegistro = params['id'] ? +params['id'] : null;
     });
     if (this.url.path().includes('detalle')) {
       this.mode = 'detail';
@@ -94,23 +94,13 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     this.breadcrumbService.actualizar(GENERAR_FORMATO_BREADCRUMB);
     this.inicializarAgregarActividadesForm();
     this.cargarCatalogo();
-    if (this.idFormatoRegistro) {
-      this.obtenerDatosFormato();
-      this.obtenerActividades();
-    } else {
-      this.apf.velatorio.setValidators(Validators.required);
-      this.apf.velatorio.updateValueAndValidity();
-      this.apf.fechaInicio.setValidators(Validators.required);
-      this.apf.fechaInicio.updateValueAndValidity();
-      this.apf.fechaFinal.setValidators(Validators.required);
-      this.apf.fechaFinal.updateValueAndValidity();
-    }
   }
 
   inicializarAgregarActividadesForm() {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.agregarGenerarFormatoActividadesForm = this.formBuilder.group({
       folio: new FormControl({ value: null, disabled: true }, []),
-      velatorio: new FormControl({ value: null, disabled: this.mode !== 'create' }, []),
+      velatorio: new FormControl({ value: +usuario?.idVelatorio, disabled: this.mode !== 'create' || +usuario?.idOficina === 3 }, []),
       descVelatorio: new FormControl({ value: null, disabled: this.mode !== 'create' }, []),
       fechaInicio: new FormControl({ value: null, disabled: this.mode !== 'create' }, []),
       fechaFinal: new FormControl({ value: null, disabled: this.mode !== 'create' }, []),
@@ -134,6 +124,18 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_VELATORIO].datos, "velatorio", "idVelatorio");
     this.entidadFederativa = respuesta[this.POSICION_CATALOGOS_ENTIDADES];
+    if (this.idFormatoRegistro) {
+      this.obtenerDatosFormato();
+      this.obtenerActividades();
+    } else {
+      this.apf.velatorio.setValidators(Validators.required);
+      this.apf.velatorio.updateValueAndValidity();
+      this.apf.fechaInicio.setValidators(Validators.required);
+      this.apf.fechaInicio.updateValueAndValidity();
+      this.apf.fechaFinal.setValidators(Validators.required);
+      this.apf.fechaFinal.updateValueAndValidity();
+      this.consultarPromotores();
+    }
   }
 
   agregarRegistro() {
@@ -171,7 +173,6 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     if (this.actividades.length > 0) {
       this.onRowEditCancel(this.actividades[0]);
     }
-    this.obtenerActividades();
   }
 
   cerrarDialogo() {
@@ -202,55 +203,60 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   }
 
   obtenerActividades() {
-    this.loaderService.activar();
-    this.actividades = [];
-    this.generarFormatoActividadesService.obtenerActividades(this.idFormatoRegistro, this.numPaginaActual, this.cantElementosPorPagina).pipe(
-      finalize(() => {
-        this.loaderService.desactivar()
-      })
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos && respuesta.datos?.content) {
-          respuesta.datos.content?.forEach((element: GenerarFormatoActividadesBusqueda) => {
-            element.hrInicio = moment(element.hrInicio, 'HH:mm:ss').format('HH:mm');
-            element.hrFin = moment(element.hrFin, 'HH:mm:ss').format('HH:mm');
-          });
-          this.actividades = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
+    if (this.idFormatoRegistro) {
+      this.loaderService.activar();
+      this.actividades = [];
+      this.generarFormatoActividadesService.obtenerActividades(this.idFormatoRegistro, this.numPaginaActual, this.cantElementosPorPagina).pipe(
+        finalize(() => {
+          this.loaderService.desactivar()
+        })
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos?.content) {
+            respuesta.datos.content?.forEach((element: GenerarFormatoActividadesBusqueda) => {
+              element.hrInicio = moment(element.hrInicio, 'HH:mm:ss').format('HH:mm');
+              element.hrFin = moment(element.hrFin, 'HH:mm:ss').format('HH:mm');
+            });
+            this.actividades = respuesta.datos.content;
+            this.totalElementos = respuesta.datos.totalElements;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-      }
-    });
+      });
+    }
   }
 
   obtenerDatosFormato() {
-    this.loaderService.activar();
-    this.numActividades = 0;
-    this.generarFormatoActividadesService.obtenerDetalleFormato(this.idFormatoRegistro).pipe(
-      finalize(() => {
-        this.loaderService.desactivar()
-      })
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos && respuesta.datos?.length > 0) {
-          this.agregarGenerarFormatoActividadesForm.patchValue({
-            folio: respuesta.datos[0].folio,
-            descVelatorio: respuesta.datos[0].Velatorio,
-            velatorio: +respuesta.datos[0].Velatorio.split('')[0],
-            fechaInicio: moment(respuesta.datos[0].fecInicio).format('DD/MM/YYYY'),
-            fechaFinal: moment(respuesta.datos[0].fecFin).format('DD/MM/YYYY'),
-          });
-          this.idFormato = respuesta.datos[0].idFormato;
-          this.numActividades = respuesta.datos[0].numActividades;
-          this.consultarPromotores();
+    if (this.idFormatoRegistro) {
+      this.loaderService.activar();
+      this.numActividades = 0;
+      this.generarFormatoActividadesService.obtenerDetalleFormato(this.idFormatoRegistro).pipe(
+        finalize(() => {
+          this.loaderService.desactivar()
+        })
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos && respuesta.datos?.length > 0) {
+            let velatorioObj = this.catalogoVelatorios.find((item: TipoDropdown) => item.label === respuesta.datos[0].Velatorio)
+            this.agregarGenerarFormatoActividadesForm.patchValue({
+              folio: respuesta.datos[0].folio,
+              descVelatorio: respuesta.datos[0].Velatorio,
+              velatorio: velatorioObj?.value,
+              fechaInicio: moment(respuesta.datos[0].fecInicio).format('DD/MM/YYYY'),
+              fechaFinal: moment(respuesta.datos[0].fecFin).format('DD/MM/YYYY'),
+            });
+            this.idFormato = respuesta.datos[0].idFormato;
+            this.numActividades = respuesta.datos[0].numActividades;
+            this.consultarPromotores();
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-      }
-    });
+      });
+    }
   }
 
   agregarActividad(actividad: GenerarFormatoActividadesBusqueda) {
@@ -406,7 +412,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
-        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+        const ERROR: string = 'Error al guardar la información. Intenta nuevamente.';
         this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     });

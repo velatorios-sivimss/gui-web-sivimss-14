@@ -11,14 +11,21 @@
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-          placeholder="Selecciona el velatorio">
+        <label class="control-label" for="delegacion">Delegaci&oacute;n</label>
+        <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
+                    [options]="catalogoDelegaciones" placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()"
+                    [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
     </div>
 
     <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+          placeholder="Selecciona el velatorio">
+        </p-dropdown>
+      </div>
       <div class="col-md-6">
         <label class="control-label" for="folio">Folio de la ODS:</label>
         <p-autoComplete id="folio" class="form-control" formControlName="folio" (keyup)="validarNombre(0)"
@@ -28,6 +35,9 @@
           [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
         </p-autoComplete>
       </div>
+    </div>
+
+    <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="proveedor">Proveedor:</label>
         <p-autoComplete id="proveedor" class="form-control" formControlName="proveedor" (keyup)="validarNombreProveedor(0)"
@@ -37,9 +47,6 @@
           [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
         </p-autoComplete>
       </div>
-    </div>
-
-    <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="fecha">Fecha:</label>
         <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [minDate]="fechaRango" [maxDate]="fechaActual" [showIcon]="true" dateFormat="dd/mm/yy"
@@ -76,9 +83,9 @@
         <td> {{orden.folioOds}}</td>
         <td> {{orden.proveedor}}</td>
         <td> {{orden.nombreFinado}}</td>
-        <td> {{orden.tipoServicio}}</td>
+        <td> {{orden.idHojaSubrogacion != '' ? orden.tipoServicio : ''}}</td>
         <td>
-          <div class="contenedor-celda-iconos">
+          <div class="contenedor-celda-iconos"  *ngIf="validarRegistro(orden)">
             <a> </a>
             <a (click)="abrirPanel($event, orden)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
@@ -120,7 +127,11 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Generar orden de subrogación" (click)="generarOrdenSubrogacion(false);" *ngIf="ordenSeleccionada.puedeRegistrar === 'true'">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *appValidaRol="['HOJA_SUBROGACION','MODIFICACION']" titulo="Modificar" (click)="generarOrdenSubrogacion(true);"></app-overlay-panel-opcion>
+      <div *appValidaRol="['HOJA_SUBROGACION','MODIFICAR']">
+        <app-overlay-panel-opcion   *ngIf="ordenSeleccionada.idHojaSubrogacion != '' && ordenSeleccionada.idHojaSubrogacion != null"
+           titulo="Modificar" (click)="generarOrdenSubrogacion(true);">
+        </app-overlay-panel-opcion>
+      </div>
       <app-overlay-panel-opcion *ngIf="ordenSeleccionada.idHojaSubrogacion != '' && ordenSeleccionada.idHojaSubrogacion != null" titulo="Ver" (click)="vistaPreviaOrdenSubrogacion()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

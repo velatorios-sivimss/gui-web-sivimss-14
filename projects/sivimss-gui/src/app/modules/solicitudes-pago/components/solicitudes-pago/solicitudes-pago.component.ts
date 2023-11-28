@@ -1,5 +1,5 @@
 import {SolicitudPago} from '../../models/solicitud-pagos.interface';
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterContentChecked, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from 'projects/sivimss-gui/src/app/utils/constantes';
@@ -50,7 +50,7 @@ interface SolicitudReporte {
   styleUrls: ['./solicitudes-pago.component.scss'],
   providers: [DialogService, DescargaArchivosService]
 })
-export class SolicitudesPagoComponent implements OnInit {
+export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
 
   @ViewChild(FormGroupDirective)
   private filtroFormDir!: FormGroupDirective;
@@ -99,7 +99,8 @@ export class SolicitudesPagoComponent implements OnInit {
     private solicitudesPagoService: SolicitudesPagoService,
     private cargadorService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private changeDetector: ChangeDetectorRef,
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -108,6 +109,10 @@ export class SolicitudesPagoComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.inicializarFiltroForm();
     this.cargarCatalogos();
+  }
+
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 
   private cargarCatalogos(): void {
@@ -180,6 +185,7 @@ export class SolicitudesPagoComponent implements OnInit {
 
   abrirDetalleSolicitudPago(solicitudPagoSeleccionado: ListadoSolicitudPago): void {
     this.solicitudPagoSeleccionado = solicitudPagoSeleccionado;
+    this.cargadorService.activar();
     this.cancelarRef = this.dialogService.open(
       VerDetalleSolicitudPagoComponent,
       {
@@ -215,6 +221,7 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirModalAprobarSolicitudPago(): void {
+    this.cargadorService.activar();
     this.aceptarRef = this.dialogService.open(
       AprobarSolicitudPagoComponent,
       {
@@ -224,10 +231,11 @@ export class SolicitudesPagoComponent implements OnInit {
       },
     );
 
-    this.aceptarRef.onClose.subscribe(() => this.seleccionarPaginacion());
+    this.aceptarRef.onClose.subscribe(() => this.limpiar());
   }
 
   abrirModalRechazarSolicitudPago(): void {
+    this.cargadorService.activar();
     this.rechazarRef = this.dialogService.open(
       RechazarSolicitudPagoComponent,
       {
@@ -268,15 +276,15 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   crearSolicitudFiltros(tipoReporte: "pdf" | "xls" = "pdf"): FiltrosSolicitudPago {
-    const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
-    const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
-    const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
+    const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('YYYY-MM-DD') : null;
+    const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('YYYY-MM-DD') : null;
+    const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folio")?.value : null;
     return {
       idNivel: this.filtroFormSolicitudesPago.get("nivel")?.value,
       idDelegacion: this.filtroFormSolicitudesPago.get("delegacion")?.value,
       idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
-      fecIniODS: fechaInicial,
-      fecFinODS: fechaFinal,
+      fecInicial:fechaInicial,
+      fecFinal: fechaFinal,
       ejercicioFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
       idTipoSolicitud: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
       folioSolicitud: folio,
@@ -360,7 +368,7 @@ export class SolicitudesPagoComponent implements OnInit {
       idTipoSolicitud: this.solicitudPagoSeleccionado.idTipoSolicitid,
       idUnidadOperativa: this.solicitudPagoSeleccionado.idUnidadOperartiva ?? null,
       idVelatorio: this.solicitudPagoSeleccionado.idVelatorio ?? null,
-      cantidadLetra: convertirNumeroPalabra(this.solicitudPagoSeleccionado.importe),
+      cantidadLetra: convertirNumeroPalabra(this.solicitudPagoSeleccionado.importe) + ' pesos',
       tipoReporte
     }
   }

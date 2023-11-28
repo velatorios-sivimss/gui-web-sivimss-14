@@ -58,7 +58,7 @@
                 </div>
                 <div class="col-md-6">
                   <label class="control-label" for="folioNota">Remisión de servicios:</label>
-                  <input id="folioNota" class="form-control" formControlName="folioNota" placeholder="">
+                  <input id="folioNota" class="form-control" [disabled]="true" placeholder="Sin Asignar">
                 </div>
               </div>
 
@@ -167,7 +167,7 @@
 
           <span class="etiqueta-conformidad">Estoy conforme con los servicios otorgados, los cuales fueron de acuerdo al
             contrato de previsión funeraria No. {{notaRemisionReporte.folioConvenio}}
-            celebrado con fecha {{notaRemisionReporte.fechaConvenio | date :  "dd/MM/y" }} a favor del finado en su calidad de
+            celebrado con fecha {{notaRemisionReporte.fechaODS | date :  "dd/MM/y" }} a favor del finado en su calidad de
             (beneficiario/titular) del servicio</span>
 
           <section class="flex mt-7">

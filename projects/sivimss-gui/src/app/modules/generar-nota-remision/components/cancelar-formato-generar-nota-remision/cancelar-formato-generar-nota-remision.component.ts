@@ -1,14 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ModalNotaRemisionComponent } from '../modal/modal-nota-remision/modal-nota-remision.component';
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { GenerarNotaRemisionService } from '../../services/generar-nota-remision.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ArticulosServicios, DetalleNotaRemision } from '../../models/nota-remision.interface';
-import { mensajes } from '../../../reservar-salas/constants/mensajes';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {ModalNotaRemisionComponent} from '../modal/modal-nota-remision/modal-nota-remision.component';
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {GenerarNotaRemisionService} from '../../services/generar-nota-remision.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {ArticulosServicios, DetalleNotaRemision} from '../../models/nota-remision.interface';
+import {mensajes} from '../../../reservar-salas/constants/mensajes';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-cancelar-formato-generar-nota-remision',
@@ -40,7 +41,9 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
     private readonly router: Router,
     private alertaService: AlertaService,
     private generarNotaRemisionService: GenerarNotaRemisionService,
-  ) { }
+    private mensajesSistemaService: MensajesSistemaService
+  ) {
+  }
 
   ngOnInit(): void {
     this.cargarCatalogos();
@@ -60,25 +63,25 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
     this.servicios = respuesta[this.POSICION_SERVICIOS]?.datos;
   }
 
-  inicializarCancelarRemisionForm() {
+  inicializarCancelarRemisionForm(): void {
     this.cancelarRemisionForm = this.formBuilder.group({
-      motivoCancelacion: [{ value: null, disabled: false }, [Validators.maxLength(50), Validators.required]]
+      motivoCancelacion: [{value: null, disabled: false}, [Validators.maxLength(50), Validators.required]]
     });
   }
 
-  regresar() {
-    void this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+  regresar(): void {
+    void this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute});
   }
 
   abrirModalCancelandoNotaRemision(): void {
     this.creacionRef = this.dialogService.open(ModalNotaRemisionComponent, {
       header: "Aviso",
       width: "920px",
-      data: { mensaje: 'Cancelando nota de remisión' },
+      data: {mensaje: 'Cancelando nota de remisión'},
     });
   }
 
-  cancelarNotaRemision() {
+  cancelarNotaRemision(): void {
     if (!this.confirmarCancelacion) {
       this.confirmarCancelacion = true;
     } else {
@@ -91,30 +94,20 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
       this.generarNotaRemisionService.cancelarNotaRemision(obj).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           this.creacionRef.close();
-          const mensaje = this.alertas?.filter((msj: any) => {
-            return msj.idMensaje == respuesta.mensaje;
-          });
-          if (mensaje && mensaje.length > 0) {
-            this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
-          }
-          void this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+          this.alertaService.mostrar(TipoAlerta.Exito, 'Nota de remisión cancelada exitosamente');
+          void this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute});
         },
-        error: (error: HttpErrorResponse) => {
-          console.error("ERROR: ", error);
-          const mensaje = this.alertas.filter((msj: any) => {
-            return msj.idMensaje == error?.error?.mensaje;
-          })
-          if (mensaje && mensaje.length > 0) {
-            this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-          }
+        error: (error: HttpErrorResponse): void => {
+          const ERROR: string  = 'Error al guardar la información de la nota de remisión. Intenta nuevamente.'
+          this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
           this.creacionRef.close();
         }
       });
     }
   }
 
-  btnAceptarDetalle() {
-    void this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+  btnAceptarDetalle(): void {
+    void this.router.navigate(['../'], {relativeTo: this.activatedRoute});
   }
 
   get f() {

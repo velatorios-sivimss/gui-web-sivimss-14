@@ -115,7 +115,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
       concepto: [{value: null, disabled: false}],
       importe: [{value: null, disabled: false}],
       importeLetra: [{value: null, disabled: true}],
-      observaciones: [{value: null, disabled: false}, [Validators.required]],
+      observaciones: [{value: null, disabled: false}],
       numeroContrato: [{value: null, disabled: false}],
       banco: [{value: null, disabled: true}],
       cuenta: [{value: null, disabled: true}],
@@ -137,7 +137,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('banco')?.setValue(registro?.banco);
     this.solicitudPagoForm.get('cuenta')?.setValue(registro?.cuenta);
     this.solicitudPagoForm.get('claveBancaria')?.setValue(registro?.cveBancaria);
-    if ([5,6].includes(this.tipoSolicitud))  this.solicitudPagoForm.get('numeroContrato')?.setValue(registro?.numeroContrato);
+    if ([5, 6].includes(this.tipoSolicitud)) this.solicitudPagoForm.get('numeroContrato')?.setValue(registro?.numeroContrato);
   }
 
   crearSolicitudPago(): void {
@@ -172,7 +172,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
   cambiarTipoUnidad(tipoUnidad: number): void {
     this.solicitudPagoForm.get('referenciaUnidad')?.setValue(null);
     this.solicitudPagoForm.get('solicitadoPor')?.setValue(null);
-    this.unidades = tipoUnidad === 1 ? this.recuperarUnidadesOperacionales() : this.recuperarUnidadesAdministrativas();
+    this.unidades = +tipoUnidad === 1 ? this.recuperarUnidadesOperacionales() : this.recuperarUnidadesAdministrativas();
   }
 
   cancelar(): void {
@@ -206,7 +206,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
       fechaElabora: this.validarFecha(this.solicitudPagoForm.get('fechaElaboracion')?.value),
       impTotal: impTotal.toString().replace('$ ', ''),
       observaciones: this.solicitudPagoForm.get('observaciones')?.value,
-      idProveedor: [1, 4, 5].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
+      idProveedor: [1, 4, 5, 6].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
       beneficiario: [2, 3].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
     }
   }
@@ -216,20 +216,26 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     return moment(fecha).format('DD/MM/YYYY')
   }
 
+  modificarImporteLocal(event: any): void {
+    this.solicitudPagoForm.patchValue({
+      importe: event.value >= 0 && event.value <= 10000000 ? event.value : this.solicitudPagoForm.value.amount
+    });
+    this.convertirImporte();
+  }
+
   convertirImporte(): void {
     this.solicitudPagoForm.get('importeLetra')?.setValue('');
     const importe = this.solicitudPagoForm.get('importe')?.value;
     if (!importe) return;
     importe.toString().replace('$ ', '');
-    const importeLetra: string = convertirNumeroPalabra(+importe);
-    this.solicitudPagoForm.get('importe')?.setValue(`$ ${importe}`);
+    const importeLetra: string = convertirNumeroPalabra(importe);
     this.solicitudPagoForm.get('importeLetra')?.setValue(importeLetra[0].toUpperCase() + importeLetra.substring(1) + ' pesos');
   }
 
   seleccionarResponsable(): void {
     const tipoUnidad = this.solicitudPagoForm.get('unidadSeleccionada')?.value;
     const idUnidad = this.solicitudPagoForm.get('referenciaUnidad')?.value;
-    if (tipoUnidad === 1) {
+    if (+tipoUnidad === 1) {
       const responsable: string = this.catalogoUnidades.find(cu => cu.idSubdireccion === idUnidad)?.nomResponsable ?? '';
       this.solicitudPagoForm.get('solicitadoPor')?.setValue(responsable);
       return;
@@ -329,6 +335,12 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     const folio = this.solicitudPagoForm.get("folioFiscal")?.value;
     const tipoSolicitud = this.solicitudPagoForm.get("tipoSolicitud")?.value;
     if (!folio) return;
+    if (folio.length !== 36) {
+      const ERROR: string = 'El folio fiscal no es válido.\n' +
+        'Verifica tu información.';
+      this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR);
+      return
+    }
     if ([3, 5, 6].includes(tipoSolicitud)) {
       this.buscarFacturaAgregar(folio);
       return;
@@ -455,9 +467,9 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     });
   }
 
-  reAjustarImporte(): void {
+  reAjustarImporte(event: any): void {
     const importe: string = this.partidaPresupuestal[0].importeTotal ?? 0;
-    this.solicitudPagoForm.get('importe')?.setValue(importe);
+    this.solicitudPagoForm.get('importe')?.setValue(event.value);
     this.convertirImporte();
   }
 
@@ -467,9 +479,12 @@ export class GenerarSolicitudPagoComponent implements OnInit {
       this.mostrarMensajeSolicitudCorrecta();
       return;
     }
+    this.cargadorService.activar();
     const cveFolios: string[] = this.partidaPresupuestal.map(r => r.idPartida.toString());
     const solicitud = {idSolicitud: id, cveFolios}
-    this.solicitudesPagoService.guardarFoliosSolicitud(solicitud).subscribe({
+    this.solicitudesPagoService.guardarFoliosSolicitud(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
       next: (): void => {
         this.mostrarMensajeSolicitudCorrecta();
       },
@@ -485,9 +500,4 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     this.referencia.close();
   }
 
-  resetImporte(): void {
-    const importe = this.solicitudPagoForm.get('importe')?.value;
-    if (!importe) return;
-    this.solicitudPagoForm.get('importe')?.setValue(importe.substring(2));
-  }
 }

@@ -694,8 +694,9 @@ export class InformacionServicioComponent implements OnInit {
             );
           } else {
             this.alertaService.mostrar(
-              TipoAlerta.Exito,
-              'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
+              TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(49) ||
+              'Se ha guardado exitosamente la pre-orden. El contratante debe acudir al Velatorio correspondiente para' +
+              ' concluir con la contratación del servicio.'
             );
           }
           this.router.navigate(["ordenes-de-servicio"]);

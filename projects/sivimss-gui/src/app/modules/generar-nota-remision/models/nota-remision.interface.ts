@@ -21,6 +21,7 @@ export interface ConsultaNotaRemision {
   idNota: number | null;
   idOrden: number | null;
 }
+
 export interface DetalleNotaRemision {
   versionDocumento?: string;
   fechaNota?: string;
@@ -39,6 +40,7 @@ export interface DetalleNotaRemision {
   folioConvenio?: string;
   fechaConvenio?: string;
   motivo?: string;
+  fechaODS: string;
 }
 
 export interface ArticulosServicios {
@@ -70,6 +72,7 @@ export interface GenerarDatosReporte {
   folioConvenio?: string;
   fechaConvenio?: string;
   tipoReporte?: string;
+  fechaODS?: string;
 }
 
 export interface BusquedaFiltro {
@@ -80,4 +83,20 @@ export interface BusquedaFiltro {
   fecIniODS: string | null;
   fecFinODS: string | null;
   tipoReporte?: string;
+}
+
+export interface FiltrosBasicos {
+  idNivel: number,
+  idVelatorio: number | null,
+  idDelegacion: number | null
+}
+
+export interface SolicitudDescarga {
+  idNivel: number | null;
+  idDelegacion: number | null;
+  idVelatorio: number | null;
+  tipoReporte: 'pdf' | 'xls';
+  folioODS?: string | null;
+  fecIniODS?: string | null;
+  fecFinODS?: string | null;
 }
