@@ -34,6 +34,7 @@ import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.modul
 import { ConvenioHeaderComponent } from './shared/convenio-header/convenio-header.component';
 import { DatosPersonaComponent } from './shared/datos-persona/datos-persona.component';
 import { DatosBeneficiarioComponent } from './shared/datos-beneficiario/datos-beneficiario.component';
+import { DocumentacionBeneficiarioComponent } from './shared/documentacion-beneficiario/documentacion-beneficiario.component';
 
 //as
 @NgModule({
@@ -48,6 +49,7 @@ import { DatosBeneficiarioComponent } from './shared/datos-beneficiario/datos-be
     ConvenioHeaderComponent,
     DatosPersonaComponent,
     DatosBeneficiarioComponent,
+    DocumentacionBeneficiarioComponent,
   ],
     imports: [
         CalendarModule,
