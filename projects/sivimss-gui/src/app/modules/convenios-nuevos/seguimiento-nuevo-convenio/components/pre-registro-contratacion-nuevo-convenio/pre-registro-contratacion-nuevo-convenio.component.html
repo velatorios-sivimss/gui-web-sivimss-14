@@ -1,5 +1,9 @@
-<app-titulo-principal
-  titulo="Pre-registro para la contratación de Convenio de Previsión Funeraria"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Pre-registro para la contratación de Convenio de Previsión Funeraria"
+                        class="col"></app-titulo-principal>
+</div>
+<app-convenio-header [tipoContratacion]="'Por persona'" [numeroFolio]="'00001'"></app-convenio-header>
 
 <ng-container *ngIf="preRegistroSiguiente == false">
 
@@ -135,7 +139,6 @@
     </div>
   </div>
 </ng-container>
-
 <div class="section" *ngIf="preRegistroSiguiente == true">
   <div class="mb-8">
     <p-accordion styleClass="sivimss-accordion">
@@ -292,3 +295,4 @@
       </app-overlay-panel-opciones>
     </ng-template>
   </p-overlayPanel>
+</div>

@@ -31,6 +31,7 @@ import { ModificarBeneficiarioComponent } from './components/modificar-beneficia
 import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
 import {UtileriaModule} from "../../../shared/utileria/utileria.module";
 import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.module";
+import { ConvenioHeaderComponent } from './shared/convenio-header/convenio-header.component';
 
 //as
 @NgModule({
@@ -42,6 +43,7 @@ import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.modul
     ModificarPersonaComponent,
     DetalleBeneficiarioComponent,
     ModificarBeneficiarioComponent,
+    ConvenioHeaderComponent,
   ],
     imports: [
         CalendarModule,
