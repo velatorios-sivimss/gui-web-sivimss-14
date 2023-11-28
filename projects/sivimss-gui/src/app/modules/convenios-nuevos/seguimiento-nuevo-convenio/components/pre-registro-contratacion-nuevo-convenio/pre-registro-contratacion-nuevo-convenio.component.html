@@ -15,13 +15,18 @@
 
   <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
     <p-accordionTab header="Características del convenio">
-
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span>:</label>
+          <input id="tipoPaquete" class="form-control" placeholder="Inserta el tipo de paquete">
+        </div>
+      </div>
     </p-accordionTab>
   </p-accordion>
 
   <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
     <p-accordionTab header="Beneficiarios">
-
+      <app-datos-beneficiario></app-datos-beneficiario>
     </p-accordionTab>
   </p-accordion>
 

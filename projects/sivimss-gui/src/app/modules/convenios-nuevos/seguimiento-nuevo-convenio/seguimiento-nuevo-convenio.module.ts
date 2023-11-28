@@ -33,6 +33,7 @@ import {UtileriaModule} from "../../../shared/utileria/utileria.module";
 import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.module";
 import { ConvenioHeaderComponent } from './shared/convenio-header/convenio-header.component';
 import { DatosPersonaComponent } from './shared/datos-persona/datos-persona.component';
+import { DatosBeneficiarioComponent } from './shared/datos-beneficiario/datos-beneficiario.component';
 
 //as
 @NgModule({
@@ -46,6 +47,7 @@ import { DatosPersonaComponent } from './shared/datos-persona/datos-persona.comp
     ModificarBeneficiarioComponent,
     ConvenioHeaderComponent,
     DatosPersonaComponent,
+    DatosBeneficiarioComponent,
   ],
     imports: [
         CalendarModule,
