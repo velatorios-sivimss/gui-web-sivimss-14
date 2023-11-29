@@ -5,7 +5,7 @@ import {
   Output,
   AfterContentChecked,
   ChangeDetectorRef,
-  Renderer2,
+  Renderer2, ViewChild,
 } from '@angular/core';
 import {
   ModalAgregarPanteonComponent
@@ -48,6 +48,8 @@ import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface
 import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {PanteonInterace} from "../../../constants/panteon.interace";
+import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 
 @Component({
   selector: 'app-modificar-informacion-servicio-sf',
@@ -59,9 +61,11 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 export class ModificarInformacionServicioSFComponent
   implements OnInit, AfterContentChecked {
   @Output()
-  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
-  @Output()
-  confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
+  seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
+  // @Output()
+  // confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
+  @ViewChild('idCapilla') idCapilla: any;
+  @ViewChild('salaCambio') salaCambio: any;
 
   readonly POSICION_PAIS = 0;
   readonly POSICION_ESTADO = 1;
@@ -108,7 +112,9 @@ export class ModificarInformacionServicioSFComponent
   servicioExtremidad: boolean = false;
   confirmarPreOrden: boolean = false;
   confirmarGuardarPanteon: boolean = false;
+  existePanteon: boolean = false;
   colonias:TipoDropdown[] = [];
+  direcPanteon!: PanteonInterace;
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -177,11 +183,25 @@ export class ModificarInformacionServicioSFComponent
     this.buscarPromotor();
   }
 
+  validarExistenciaPanteon(datos:any): void {
+    this.existePanteon = !!datos.idPanteon
+    if(!this.existePanteon)return
+    this.direcPanteon = {
+      calle: datos.panteon.calle,
+      noExterior: datos.panteon.noExterior ?? null,
+      noInterior: datos.panteon.noInterior,
+      colonia: datos.panteon.colonia,
+      cp: datos.panteon.cp,
+      estado: datos.panteon.estado,
+      municipio: datos.panteon.municipio,
+    }
+  }
+
   llenarFormulario(datos: any): void {
-    this.idPanteon = datos.idPanteon;
     let fechaVelacion;
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio, mes, dia] = fechaActual.split('-')
+    this.validarExistenciaPanteon(datos);
 
     if (typeof datos.horaVelacion == "string") {
       const [horas, minutos] = datos.horaVelacion.split(':')
@@ -193,7 +213,6 @@ export class ModificarInformacionServicioSFComponent
     } else {
       fechaVelacion = datos.fechaVelacion;
     }
-
 
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
@@ -245,7 +264,7 @@ export class ModificarInformacionServicioSFComponent
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          {value: null, disabled: false}
+          {value: !!datos.idPanteon, disabled: datos.idPanteon}
         ],
       }),
       recoger: this.formBuilder.group({
@@ -278,7 +297,7 @@ export class ModificarInformacionServicioSFComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor ?? false, disabled: true},
+          {value: false, disabled: true},
           [Validators.required],
         ],
         promotor: [
@@ -336,7 +355,7 @@ export class ModificarInformacionServicioSFComponent
         fecha: [{value: null, disabled: false}, [Validators.required]],
         hora: [{value: null, disabled: false}, [Validators.required]],
         gestionadoPorPromotor: [
-          {value: null, disabled: false},
+          {value: false, disabled: true},
           [Validators.required],
         ],
         promotor: [{value: null, disabled: false}, [Validators.required]],
@@ -592,11 +611,21 @@ export class ModificarInformacionServicioSFComponent
       header: 'Agregar panteón',
       style: {maxWidth: '876px', width: '100%'},
     });
-    ref.onClose.subscribe((val: number) => {
-      if (val) {
-        this.idPanteon = val;
+    ref.onClose.subscribe((val: any) => {
+      if (val.idPanteon) {
+        this.existePanteon = true;
+        this.idPanteon = val.idPanteon;
         this.inhumacion.agregarPanteon.disable();
         this.confirmarGuardarPanteon = true
+        this.direcPanteon = {
+          calle: val.formularioPanteon.calle,
+          noExterior: val.formularioPanteon.noExterior ?? null,
+          noInterior: val.formularioPanteon.noInterior,
+          colonia: val.formularioPanteon.colonia,
+          cp: val.formularioPanteon.cp,
+          estado: val.formularioPanteon.estado,
+          municipio: val.formularioPanteon.municipio,
+        }
         return;
       }
       this.inhumacion.agregarPanteon.setValue(false);
@@ -635,9 +664,11 @@ export class ModificarInformacionServicioSFComponent
   }
 
   preorden(): void {
-    this.altaODS.idEstatus = 1;
     this.llenarDatos();
-    this.guardarODS(0)
+    this.altaODS.idEstatus = 1;
+    window.scrollTo(0, 0);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
+    // this.guardarODS(0)
   }
 
   guardarODS(consumoTablas: number): void {
@@ -776,6 +807,7 @@ export class ModificarInformacionServicioSFComponent
       horaCortejo: formulario.cortejo.hora,
       horaCremacion: formulario.lugarCremacion.hora,
       idPanteon: this.idPanteon,
+      panteon: this.direcPanteon,
       idPromotor: formulario.cortejo.promotor,
       idSala: formulario.lugarCremacion.sala,
       cp: formulario.lugarVelacion.cp,
@@ -889,6 +921,7 @@ export class ModificarInformacionServicioSFComponent
 
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
+    this.llenarDescripcionDropDown();
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datos);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -1006,9 +1039,11 @@ export class ModificarInformacionServicioSFComponent
   }
 
   generada(): void {
-    this.altaODS.idEstatus = 2;
     this.llenarDatos();
-    this.guardarODS(1)
+    this.altaODS.idEstatus = 2;
+    window.scrollTo(0, 0);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
+    // this.guardarODS(1)
   }
 
   regresar() {
@@ -1072,7 +1107,13 @@ export class ModificarInformacionServicioSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(2);
     this.llenarDatos();
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:2, detalle_orden_servicio: true});
+  }
+  llenarDescripcionDropDown(): void {
+    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    obj.informacion.capilla = this.idCapilla?.selectedOption?.label ?? null;
+    obj.informacion.sala = this.salaCambio?.selectedOption?.label ?? null;
+    localStorage.setItem("drop_down",JSON.stringify(obj));
   }
 }
