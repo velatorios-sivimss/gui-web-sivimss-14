@@ -4,7 +4,7 @@ import {
   OnInit,
   Output,
   AfterContentChecked,
-  ChangeDetectorRef,
+  ChangeDetectorRef, ViewChild,
 } from '@angular/core';
 
 import {SERVICIO_BREADCRUMB, SERVICIO_BREADCRUMB_SFPA} from '../../../constants/breadcrumb';
@@ -47,6 +47,8 @@ import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.int
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
+import * as moment from "moment"
 
 @Component({
   selector: 'app-modificar-datos-contratante-sf',
@@ -56,9 +58,13 @@ import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 export class ModificarDatosContratanteSFComponent
   implements OnInit, AfterContentChecked {
   @Output()
-  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
+  seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
   @Output()
   confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
+
+  @ViewChild('parentescoContratante') parentescoContratante: any;
+  @ViewChild('paisSeleccionado') paisSeleccionado: any
+  @ViewChild('lugarSeleccionado') lugarSeleccionado: any
 
   readonly POSICION_PAIS = 0;
   readonly POSICION_ESTADO = 1;
@@ -180,6 +186,8 @@ export class ModificarDatosContratanteSFComponent
     this.gestionarEtapasService.datosConsultaODS$.asObservable().subscribe(
       (datosConsultaODS) => (this.datosConsulta = datosConsultaODS)
     );
+
+    this.inicializarLocalStorage();
   }
 
 
@@ -544,6 +552,7 @@ export class ModificarDatosContratanteSFComponent
     }
     this.idContratante = Number(datos.contratante.idContratante);
     this.idPersona = datos.contratante.idPersona;
+    this.colonias = [{label:datos.contratante.cp.desColonia,value:datos.contratante.cp.desColonia}];
 
     this.cambiarValidacion();
     this.cambiarTipoSexo();
@@ -865,6 +874,36 @@ export class ModificarDatosContratanteSFComponent
       });
   }
 
+  inicializarLocalStorage(): void {
+    let obj = {
+      contratante: {
+        parentesco: null,
+        lugarNacimiento: null,
+        paisNacimiento: null,
+      },
+      finado: {
+        tipoOrden: null,
+        lugarNacimiento: null,
+        paisNacimiento: null,
+        clinicaAdscripcion: null,
+        unidadProcedencia: null,
+        tipoPension: null,
+
+      },
+      caracteristicas: {
+        paquete: null,
+        tipoOtorgamiento: null,
+      },
+      informacion: {
+        capilla: null,
+        sala: null,
+        promotor: null,
+      },
+      tablaPaquete:[]
+    }
+    localStorage.setItem("drop_down",JSON.stringify(obj));
+  }
+
   noEspaciosAlPrincipio(posicion: number) {
     const formName = [
       this.datosContratante.nombre,
@@ -963,7 +1002,8 @@ export class ModificarDatosContratanteSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(1);
+    // this.seleccionarEtapa.emit(1);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:1, detalle_orden_servicio: true});
     this.datosAlta();
   }
 
@@ -1019,14 +1059,17 @@ export class ModificarDatosContratanteSFComponent
     this.contratante.segundoApellido = datos.contratante.segundoApellido;
     this.contratante.sexo = datos.contratante.sexo;
     this.contratante.otroSexo = datos.contratante.primerApellido;
+    if(typeof datos.contratante.fechaNac == 'string'){
+      let [dia, mes, anio] = datos.contratante.fechaNac.split('/');
+      dia = dia.substr(0, 2);
+      const fecha = new Date(anio + "-" + mes + "-" + dia)
+      this.contratante.fechaNac = anio + "-" + mes + "-" + dia;
+    }else{
 
-    let [dia, mes, anio] = datos.contratante.fechaNac.split('/');
-    dia = dia.substr(0, 2);
-    const fecha = new Date(anio + "-" + mes + "-" + dia)
-    // this.contratante.fechaNac = moment(datos.contratante.fechaNac).format(
-    //   'yyyy-MM-DD'
-    // );
-    this.contratante.fechaNac = anio + "-" + mes + "-" + dia;
+      this.contratante.fechaNac = moment(datos.contratante.fechaNac).format('YYYY-MM-DD')
+        // anio + "-" + mes + "-" + dia;
+    }
+
     this.contratante.idPais = datos.contratante.idPais == 0 ? null : datos.contratante.idPais;
 
     this.contratante.idEstado = datos.contratante.idEstado;
@@ -1047,6 +1090,7 @@ export class ModificarDatosContratanteSFComponent
     this.altaODS.idVelatorio = null;
     this.altaODS.idOperador = null;
     this.contratante.cp = this.cp;
+    this.llenarDescripcionDropDown();
 
     this.gestionarEtapasService.datosContratante$.next(datosEtapaContratante);
 
@@ -1078,13 +1122,12 @@ export class ModificarDatosContratanteSFComponent
     let municipio = finado.cp?.desMunicipio ?? null;
     let estado = finado.cp?.desEstado ?? null;
     let idDomicilio = finado.cp?.idDomicilio ?? null;
-
     let datosEtapaFinado = {
       datosFinado: {
         folioConvenioPa: finado.folioConvenioPa,
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
-        idContratoPrevision: finado.idContratoPrevision,
+        idContratoPrevision: finado.idConvenioPrevision,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.idContratoPrevision,
         velatorioPrevision: finado.idVelatorioContratoPrevision,
@@ -1157,5 +1200,13 @@ export class ModificarDatosContratanteSFComponent
 
   get direccion() {
     return (this.form.controls['direccion'] as FormGroup).controls;
+  }
+
+  llenarDescripcionDropDown(): void {
+    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    obj.contratante.parentesco = this.parentescoContratante?.selectedOption?.label ?? null;
+    obj.contratante.lugarNacimiento = this.lugarSeleccionado?.selectedOption?.label ?? null;
+    obj.contratante.paisNacimiento = this.paisSeleccionado?.selectedOption?.label ?? null;
+    localStorage.setItem("drop_down",JSON.stringify(obj));
   }
 }

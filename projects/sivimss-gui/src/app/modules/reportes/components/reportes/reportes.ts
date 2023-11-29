@@ -57,9 +57,9 @@ export class Reportes implements OnInit {
   promotores: TipoDropdown[] = [];
   velatorios: TipoDropdown[] = [];
   tipoODS: TipoDropdown[] = [
-    {value: 1, label: 'servicio normal'},
-    {value: 2, label: 'siniestros de previsión funeraria'},
-    {value: 3, label: 'ambos'}
+    {value: 1, label: 'Servicio normal'},
+    {value: 2, label: 'Siniestros de previsión funeraria'},
+    {value: 3, label: 'Ambos'}
   ];
   tipoReporte: TipoDropdown[] = [
     {value: 1, label: 'Reportes'},

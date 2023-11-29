@@ -52,6 +52,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ActualizarOrdenServicioService} from '../../../services/actualizar-orden-servicio.service';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
+import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 
 @Component({
   selector: 'app-modificar-datos-caracteristicas-contratante-sf',
@@ -61,7 +62,7 @@ import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar
 export class ModificarDatosCaracteristicasContratanteSFComponent
   implements OnInit, AfterContentChecked {
   @Output()
-  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
+  seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
@@ -830,7 +831,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(1);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:1, detalle_orden_servicio: true});
   }
 
   validarSeleccionPaquete(): boolean {
@@ -916,11 +917,12 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(3);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:3, detalle_orden_servicio: true});
     this.datosAlta();
   }
 
   datosAlta(): void {
+    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
     let datosEtapaCaracteristicas = {
       observaciones: this.f.observaciones.value,
       notasServicio: this.f.notasServicio.value,
@@ -936,7 +938,9 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     this.gestionarEtapasService.datosEtapaCaracteristicas$.next(
       datosEtapaCaracteristicas
     );
-
+    obj.tablaPaquete = datosEtapaCaracteristicas.datosPaquetes;
+    obj.totalPaquete = this.total;
+    localStorage.setItem("drop_down",JSON.stringify(obj));
     this.datosPresupuesto.forEach((datos: any) => {
       let detalle: DetallePresupuestoInterface =
         {} as DetallePresupuestoInterface;

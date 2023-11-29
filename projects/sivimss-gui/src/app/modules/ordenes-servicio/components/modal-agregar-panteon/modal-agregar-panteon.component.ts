@@ -191,7 +191,23 @@ export class ModalAgregarPanteonComponent implements OnInit {
       finalize(()=>this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        this.ref.close(respuesta.datos[0].idPanteon);
+        this.ref.close(
+          {
+            idPanteon: respuesta.datos[0].idPanteon,
+            formularioPanteon: {
+              calle: this.f.calle.value,
+              colonia: this.f.colonia.value,
+              contacto: this.f.contacto.value,
+              cp: this.f.cp.value,
+              estado: this.f.estado.value,
+              municipio: this.f.municipio.value,
+              noExterior: this.f.noExterior.value,
+              noInterior: this.f.noInterior.value,
+              nombrePanteon: this.f.nombrePanteon.value,
+              telefono: this.f.telefono.value,
+            }
+          }
+        );
       },
       error: (error: HttpErrorResponse) => {
 
