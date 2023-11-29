@@ -64,6 +64,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
   public filtroForm!: FormGroup;
   public hoy: Date = new Date();
   public vistaBusqueda: boolean = true;
+  public busquedaRealizada: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -200,6 +201,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
 
   buscarArticulos(): void {
     this.loaderService.activar();
+    this.busquedaRealizada = false;
     this.articulos = [];
     this.generarHojaConsignacionService.buscarArticulos(this.datosProveedor())
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
@@ -215,6 +217,10 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
             this.articulos = respuesta.datos.artResponse ?? [];
             this.totalArticulo = respuesta.datos.totalArt ?? 0;
             this.totalCosto = respuesta.datos.totalCosto ?? '';
+          }
+
+          if (respuesta.mensaje === '45') {
+            this.busquedaRealizada = true;
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -312,6 +318,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
   }
 
   limpiar(): void {
+    this.busquedaRealizada = false;
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm.get('nivel')?.patchValue(+usuario?.idOficina);
