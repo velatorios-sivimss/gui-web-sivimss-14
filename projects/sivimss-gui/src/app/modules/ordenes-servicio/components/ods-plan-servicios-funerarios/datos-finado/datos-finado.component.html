@@ -117,7 +117,7 @@
         <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
         <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
                     placeholder="Ingresa lugar de nacimiento" [options]="estado" [filter]="true"
-                    filterBy="label"></p-dropdown>
+                    filterBy="label" #lugarNacimientoSelect></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="datosFinado.lugarNacimiento?.errors?.required && (datosFinado.lugarNacimiento?.dirty || datosFinado.lugarNacimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -125,7 +125,7 @@
         <label class="control-label" for="paisNacimiento">País de nacimiento<span class="req">*</span>:</label>
         <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
                     placeholder="Ingresa país de nacimiento" [options]="pais" [filter]="true"
-                    filterBy="label"></p-dropdown>
+                    filterBy="label" #paisNacimientoSelect></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="datosFinado.paisNacimiento?.errors?.required && (datosFinado.paisNacimiento?.dirty || datosFinado.paisNacimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -165,13 +165,14 @@
         <label class="control-label" for="clinicaAdscripcion">Clínica de adscripción:</label>
         <p-dropdown id="clinicaAdscripcion" class="form-control" formControlName="clinicaAdscripcion"
                     placeholder="Selecciona clínica de adscripción"
-                    [options]="unidadesMedicas" [filter]="true" filterBy="label"></p-dropdown>
+                    [options]="unidadesMedicas" [filter]="true" filterBy="label" (onChange)="changeUnidad()"
+         #clinicaSeleccionada></p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="unidadProcedencia">Unidad de procedencia<span class="req">*</span>:</label>
         <p-dropdown id="unidadProcedencia" class="form-control" formControlName="unidadProcedencia"
-                    placeholder="Selecciona unidad de procedencia" [options]="unidadesMedicas"
-                    (onChange)="changeUnidad()" [filter]="true" filterBy="label"></p-dropdown>
+                    placeholder="Selecciona unidad de procedencia" [options]="unidadesMedicas" (onChange)="changeUnidad()"
+                    #unidadSeleccionada [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="datosFinado.unidadProcedencia?.errors?.required && (datosFinado.unidadProcedencia?.dirty || datosFinado.unidadProcedencia?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -189,7 +190,7 @@
         <label class="control-label" for="tipoPension">Tipo de pensión:</label>
         <p-dropdown id="tipoPension" class="form-control" formControlName="tipoPension"
                     placeholder="Selecciona tipo de pensión" [options]="tipoPension" [filter]="true"
-                    filterBy="label"></p-dropdown>
+                    filterBy="label" #pensionSeleccionada></p-dropdown>
       </div>
     </div>
   </ng-container>

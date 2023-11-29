@@ -49,6 +49,7 @@ import { ModalDonarArticuloComponent } from '../../modal-donar-articulo/modal-do
 import { UsuarioEnSesion } from '../../../../../models/usuario-en-sesion.interface';
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
+import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 
 @Component({
   selector: 'app-caracteristicas-presupuesto-sf',
@@ -59,7 +60,7 @@ export class CaracteristicasPresupuestoSFComponent
   implements OnInit, AfterContentChecked
 {
   @Output()
-  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
+  seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
@@ -778,7 +779,7 @@ export class CaracteristicasPresupuestoSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(1);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:1, detalle_orden_servicio: true});
   }
 
   continuar() {
@@ -843,11 +844,12 @@ export class CaracteristicasPresupuestoSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(3);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:3, detalle_orden_servicio: true});
     this.datosAlta();
   }
 
   datosAlta(): void {
+    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
     let datosEtapaCaracteristicas = {
       observaciones: this.f.observaciones.value,
       notasServicio: this.f.notasServicio.value,
@@ -859,11 +861,12 @@ export class CaracteristicasPresupuestoSFComponent
       elementosEliminadosPaquete: this.elementosEliminadosPaquete,
       total: this.total,
     };
-
     this.gestionarEtapasService.datosEtapaCaracteristicas$.next(
       datosEtapaCaracteristicas
     );
-
+    obj.tablaPaquete = datosEtapaCaracteristicas.datosPaquetes;
+    obj.totalPaquete = this.total;
+    localStorage.setItem("drop_down",JSON.stringify(obj));
     this.datosPresupuesto.forEach((datos: any) => {
       let detalle: DetallePresupuestoInterface =
         {} as DetallePresupuestoInterface;

@@ -15,6 +15,9 @@ export class GenerarOrdenServicioSFComponent implements OnDestroy {
   readonly DATOS_DEL_FINADO = 1;
   readonly CARACTERISTICAS_DEL_PRESUPUESTO = 2;
   readonly INFORMACION_DEL_SERVICIO = 3;
+  readonly DETALLE_ORDEN_SERVICIO = 4
+  detalle_orden_servicio = true;
+
 
 
   contratanteSubscription$!: Subscription;
@@ -27,16 +30,17 @@ export class GenerarOrdenServicioSFComponent implements OnDestroy {
   }
 
 
-  obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {
+  obtenerIdEtapaSeleccionada(datos: any) {
     //Con esta etapa que se recibe ya se puede modificar su estado.
     //Al modificar el estado de la etapa su estilo se actualiza.
     // this.etapas.forEach((etapa: Etapa) => etapa.estado = EtapaEstado.Inactivo);
     // etapaSeleccionada.estado = EtapaEstado.Activo;
-    this.idEtapaSeleccionada = idEtapaSeleccionada;
+    this.detalle_orden_servicio = datos.detalle_orden_servicio;
+    this.idEtapaSeleccionada = datos.idEtapaSeleccionada;
   }
 
   ngOnDestroy(): void {
-
+    localStorage.removeItem('drop_down')
     const datosEtapaContratante = {
       datosContratante: {
         idPersona: null,
