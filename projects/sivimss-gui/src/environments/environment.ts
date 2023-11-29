@@ -18,6 +18,7 @@ export const environment = {
     // servicios_externos_reportes: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/reportes/',
     notificaciones:
       'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-notificaciones/v1/notificaciones/avisos',
+
     conveniosPF:
       'http://localhost:8001/mssivimss-ods-prefune-on/v1/convenio-pf',
   },
