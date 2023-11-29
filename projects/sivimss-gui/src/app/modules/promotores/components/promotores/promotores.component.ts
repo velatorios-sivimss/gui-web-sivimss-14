@@ -1,10 +1,10 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {OverlayPanel} from "primeng/overlaypanel";
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import { OverlayPanel } from "primeng/overlaypanel";
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
 import {
   BuscarCatalogo,
   BuscarPromotores,
@@ -12,20 +12,20 @@ import {
   Promotor,
   PromotoresBusqueda
 } from "../../models/promotores.interface";
-import {LazyLoadEvent} from "primeng/api";
-import {ActivatedRoute, Router} from '@angular/router';
-import {AgregarPromotoresComponent} from '../agregar-promotores/agregar-promotores.component';
-import {ModificarPromotoresComponent} from '../modificar-promotores/modificar-promotores.component';
-import {PROMOTORES_BREADCRUMB} from '../../constants/breadcrumb';
-import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import {HttpErrorResponse} from '@angular/common/http';
-import {PromotoresService} from '../../services/promotores.service';
-import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
-import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import {finalize} from 'rxjs';
+import { LazyLoadEvent } from "primeng/api";
+import { ActivatedRoute, Router } from '@angular/router';
+import { AgregarPromotoresComponent } from '../agregar-promotores/agregar-promotores.component';
+import { ModificarPromotoresComponent } from '../modificar-promotores/modificar-promotores.component';
+import { PROMOTORES_BREADCRUMB } from '../../constants/breadcrumb';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { PromotoresService } from '../../services/promotores.service';
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { finalize } from 'rxjs';
 
 interface HttpResponse {
   respuesta: string;
@@ -38,7 +38,7 @@ interface HttpResponse {
   styleUrls: ['./promotores.component.scss'],
   providers: [DialogService]
 })
-export class PromotoresComponent implements OnInit {
+export class PromotoresComponent implements OnInit, OnDestroy {
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
 
@@ -101,10 +101,10 @@ export class PromotoresComponent implements OnInit {
   inicializarFiltroForm() {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2}, []],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, []],
-      nombrePromotor: [{value: null, disabled: false}],
+      nivel: [{ value: +usuario.idOficina, disabled: true }],
+      delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
+      nombrePromotor: [{ value: null, disabled: false }],
     });
   }
 
@@ -150,20 +150,20 @@ export class PromotoresComponent implements OnInit {
     this.loaderService.activar();
     this.promotoresService.buscarPorFiltros(this.datosPromotoresFiltros(esFiltro), this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos) {
-          this.promotores = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-          this.realizoBusqueda = true;
-        } else {
-          this.promotores = [];
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.promotores = respuesta.datos.content;
+            this.totalElementos = respuesta.datos.totalElements;
+            this.realizoBusqueda = true;
+          } else {
+            this.promotores = [];
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   datosPromotoresFiltros(esFiltro: boolean): BuscarPromotores {
@@ -200,7 +200,7 @@ export class PromotoresComponent implements OnInit {
 
   abrirModalModificarPromotor() {
     this.detalleRef = this.dialogService.open(ModificarPromotoresComponent, {
-      data: {promotor: this.promotorSeleccionado},
+      data: { promotor: this.promotorSeleccionado },
       header: "Modificar promotor",
       width: "920px"
     });
@@ -311,6 +311,12 @@ export class PromotoresComponent implements OnInit {
 
   get ff() {
     return this.filtroForm.controls;
+  }
+
+  ngOnDestroy(): void {
+    if (this.detalleRef) {
+      this.detalleRef.destroy();
+    }
   }
 
 }
