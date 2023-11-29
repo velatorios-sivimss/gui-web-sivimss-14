@@ -11,6 +11,7 @@ export class ResumenBeneficiarioComponent implements OnInit {
   @Input() parentesco: string = 'Sin Información';
   @Input() curp: string = 'Sin Información';
   @Input() rfc: string = 'Sin Información';
+  @Input() correoElectronico: string = 'Sin Información';
   @Input() telefono: string = 'Sin Información';
 
   constructor() { }
