@@ -1,42 +1,45 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {DialogService} from "primeng/dynamicdialog";
-import {OverlayPanel} from "primeng/overlaypanel";
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { DialogService } from 'primeng/dynamicdialog';
+import { OverlayPanel } from 'primeng/overlaypanel';
+import { ModalEliminarPagoComponent } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-eliminar-pago/modal-eliminar-pago.component';
+import { ModalRealizarPagoComponent } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-realizar-pago/modal-realizar-pago.component';
 import {
-  ModalEliminarPagoComponent
-} from "projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-eliminar-pago/modal-eliminar-pago.component";
+  ServiciosFunerariosInterface,
+  DetallePago,
+} from '../../models/servicios-funerarios.interface';
+import { DIEZ_ELEMENTOS_POR_PAGINA } from '../../../../utils/constantes';
+import { LazyLoadEvent } from 'primeng/api';
+import { ActivatedRoute } from '@angular/router';
+import { DetallePagoService } from '../../services/detalle-pago.service';
+import { TipoDropdown } from '../../../../models/tipo-dropdown';
+import { mapearArregloTipoDropdown } from '../../../../utils/funciones';
+import { LoaderService } from '../../../../shared/loader/services/loader.service';
+import { finalize } from 'rxjs/operators';
+import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
-  ModalRealizarPagoComponent
-} from "projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-realizar-pago/modal-realizar-pago.component";
-import {ServiciosFunerariosInterface, DetallePago} from "../../models/servicios-funerarios.interface";
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
-import {LazyLoadEvent} from "primeng/api";
-import {ActivatedRoute} from "@angular/router";
-import {DetallePagoService} from "../../services/detalle-pago.service";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
-import {LoaderService} from "../../../../shared/loader/services/loader.service";
-import {finalize} from "rxjs/operators";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpErrorResponse} from "@angular/common/http";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
-import {DetalleServicios, PagosRealizados} from "../../models/detalle-servicios.interface";
-import {ModalModificarPagosComponent} from "../modal-modificar-pagos/modal-modificar-pagos.component";
-import {of} from "rxjs";
-import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
-import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+  AlertaService,
+  TipoAlerta,
+} from '../../../../shared/alerta/services/alerta.service';
+import { MensajesSistemaService } from '../../../../services/mensajes-sistema.service';
+import {
+  DetalleServicios,
+  PagosBitacora,
+  PagosRealizados,
+} from '../../models/detalle-servicios.interface';
+import { ModalModificarPagosComponent } from '../modal-modificar-pagos/modal-modificar-pagos.component';
+import { of } from 'rxjs';
+import { OpcionesArchivos } from '../../../../models/opciones-archivos.interface';
+import { DescargaArchivosService } from '../../../../services/descarga-archivos.service';
 
 
 @Component({
   selector: 'app-detalle-servicios-funerarios',
   templateUrl: './detalle-servicios-funerarios.component.html',
   styleUrls: ['./detalle-servicios-funerarios.component.scss'],
-  providers: [
-    DialogService,DescargaArchivosService
-  ]
+  providers: [DialogService, DescargaArchivosService],
 })
 export class DetalleServiciosFunerariosComponent implements OnInit {
-
   @Input() servicioFunerario: ServiciosFunerariosInterface[] = [];
 
   @ViewChild(OverlayPanel)
@@ -48,23 +51,29 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   readonly POSICION_METODO_PAGO: number = 0;
 
   detallePago: DetallePago[] = [];
-  detalleSeleccionado!: PagosRealizados;
+  detallePagoBitacora!: PagosBitacora;
+  PagosBitacora: PagosBitacora[] = [];
   metodosPago!: TipoDropdown[];
-
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   opcionRealizarPagos = true;
-  // totalPagado:number = 0;
+  noPagos: number = 0;
+  precio: number = 0;
 
-  detalleServicio!: DetalleServicios;
+  datosGenerales!: DetalleServicios;
   pagosRealizados!: PagosRealizados[];
+  item!: PagosRealizados;
 
   usuario = JSON.parse(localStorage.getItem('usuario') as string);
-  mensajeArchivoConfirmacion: string = "";
+  mensajeArchivoConfirmacion: string = '';
   mostrarModalConfirmacion: boolean = false;
   totalPagos: number = 0;
+  costoRestante: number = 0;
+  errorMsg =
+    ' Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
+  ocultarBitacora: boolean = false;
 
   constructor(
     private alertaService: AlertaService,
@@ -73,96 +82,49 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService,
     private route: ActivatedRoute,
-    private descargaArchivosService: DescargaArchivosService,
-  ) {
-  }
+    private descargaArchivosService: DescargaArchivosService
+  ) {}
 
   ngOnInit(): void {
     let respuesta = this.route.snapshot.data['respuesta'];
-    this.metodosPago = mapearArregloTipoDropdown(respuesta[this.POSICION_METODO_PAGO].datos,
-      'metodoPago', 'idMetodoPago');
-    if(validarUsuarioLogueado())return
+    this.metodosPago = mapearArregloTipoDropdown(
+      respuesta[this.POSICION_METODO_PAGO].datos,
+      'metodoPago',
+      'idMetodoPago'
+    );
+
     this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
   }
 
   consultarDetallePago(idPlanSfpa: number): void {
-    this.detallePagoService.obtenerDetallePago(+idPlanSfpa).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        this.detalleServicio = {
-          contratanteSubstituto: respuesta.datos.detallePlan.contratanteSubstituto,
-          desNumeroPagos: respuesta.datos.detallePlan.desNumeroPagos,
-          nombrePaquete: respuesta.datos.detallePlan.nombrePaquete,
-          estatusPlan: respuesta.datos.detallePlan.estatusPlan,
-          velatorio: respuesta.datos.detallePlan.velatorio,
-          numFolio: respuesta.datos.detallePlan.numFolio,
-          correo: respuesta.datos.detallePlan.correo,
-          estado: respuesta.datos.detallePlan.estado,
-          idPlan: respuesta.datos.detallePlan.idPlan,
-          total: respuesta.datos.detallePlan.total,
-          restante: respuesta.datos.detallePlan.restante ?? 0,
-          totalPagado: respuesta.datos.detallePlan.restante ?
-            Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante) :
-            0
-        }
-        this.totalPagos = Number(this.detalleServicio.desNumeroPagos);
-        this.pagosRealizados = respuesta.datos.pagos || [];
-        this.pagosRealizados.length < Number(this.detalleServicio.desNumeroPagos) ?
-          this.opcionRealizarPagos = true :
-          this.opcionRealizarPagos = false
-      },
-      error: (error: HttpErrorResponse) => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Info, errorMsg || 'El servicio no responde, no permite más llamadas.')
-      }
-    });
-
-  }
-
-
-  paginar(event: LazyLoadEvent): void {
-    setTimeout(() => {
-      this.detallePago = [
-        {
-          velatorio: "No. 14 San Luis Potosí y CD Valles",
-          pagos: "1/3",
-          fechaPago: "01/01/2022",
-          metodoPago: "Tarjeta de débito",
-          noReciboPago: 10293847456,
-          estatus: "Pagado",
-          monto: 11000
+    this.detallePagoService
+      .obtenerDetallePago(+idPlanSfpa)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error === false && respuesta.mensaje === 'Exito') {
+            this.datosGenerales = respuesta.datos.datosGenerales;
+            this.costoRestante = Number(this.datosGenerales.costoRestante);
+            this.precio = Number(this.datosGenerales.precio);
+            this.pagosRealizados = respuesta.datos.detallePago || [];
+            this.noPagos = this.pagosRealizados.length;
+          } else {
+            this.alertaService.mostrar(TipoAlerta.Info, this.errorMsg);
+            console.log(respuesta.mensaje);
+          }
         },
-        {
-          velatorio: "No. 14 San Luis Potosí y CD Valles",
-          pagos: "1/3",
-          fechaPago: "01/01/2022",
-          metodoPago: "Tarjeta de débito",
-          noReciboPago: 10293847456,
-          estatus: "Pagado",
-          monto: 11000
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+          this.alertaService.mostrar(
+            TipoAlerta.Info,
+            this.errorMsg || 'El servicio no responde, no permite más llamadas.'
+          );
         },
-        {
-          velatorio: "No. 14 San Luis Potosí y CD Valles",
-          pagos: "1/3",
-          fechaPago: "01/01/2022",
-          metodoPago: "Tarjeta de débito",
-          noReciboPago: 10293847456,
-          estatus: "Pagado",
-          monto: 11000
-        }
-      ];
-      this.totalElementos = this.detallePago.length;
-    }, 0)
+      });
   }
 
-
-  abrirPanelHeader(event: MouseEvent): void {
-    this.overlayPanelHeader.toggle(event);
-  }
-
-  abrirPanelBody(event: MouseEvent, detalleSeleccionado: PagosRealizados): void {
-    this.detalleSeleccionado = detalleSeleccionado;
+  abrirPanelBody(event: MouseEvent, detallePagoBitacora: PagosBitacora): void {
+    this.detallePagoBitacora = detallePagoBitacora;
     this.overlayPanelBody.toggle(event);
   }
 
@@ -172,12 +134,12 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       header: 'Realizar pago',
       style: {
         maxWidth: '876px',
-        width: '100%'
+        width: '100%',
       },
       data: {
         metodosPago: this.metodosPago,
-        detallePago: this.detalleServicio,
-        pagosRealizados: this.pagosRealizados
+        detallePago: this.datosGenerales,
+        item: this.item,
       },
     });
     ref.onClose.subscribe((val: boolean) => {
@@ -187,51 +149,56 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     });
   }
 
-  exportarArchivo(extension: string) : void {
+  exportarArchivo(extension: string): void {
     this.loaderService.activar();
     const configuracionArchivo: OpcionesArchivos = {};
-    if (extension == "xls") {
-      configuracionArchivo.ext = "xlsx"
+    if (extension == 'xls') {
+      configuracionArchivo.ext = 'xlsx';
     }
     const objetoReporte = this.generarObjetoReporte(extension);
-    this.detallePagoService.generarReporte(objetoReporte).pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe({
-      next:(respuesta: any) =>{
-        this.usuario;
-        const file: Blob = new Blob([respuesta], {type: 'application/pdf'});
-        const url: string = window.URL.createObjectURL(file);
-        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-          finalize(() => this.loaderService.desactivar())
-        ).subscribe(
-          {
-            next:(respuestaArchivo) => {
-              if (respuestaArchivo) {
-                this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-                this.mostrarModalConfirmacion = true;
-              }
-            },
-            error:(error) => {
-              this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-            }
-          }
-        )
-      },
-      error: (error:HttpErrorResponse) => {
-        console.error('Error al descargar reporte: ', error.message);
-      }
-    });
+    this.detallePagoService
+      .generarReporte(objetoReporte)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: any) => {
+          this.usuario;
+          const file: Blob = new Blob([respuesta], { type: 'application/pdf' });
+          const url: string = window.URL.createObjectURL(file);
+          this.descargaArchivosService
+            .descargarArchivo(of(file), configuracionArchivo)
+            .pipe(finalize(() => this.loaderService.desactivar()))
+            .subscribe({
+              next: (respuestaArchivo) => {
+                if (respuestaArchivo) {
+                  this.mensajeArchivoConfirmacion =
+                    this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                  this.mostrarModalConfirmacion = true;
+                }
+              },
+              error: (error) => {
+                console.log(error);
+                this.alertaService.mostrar(
+                  TipoAlerta.Error,
+                  this.mensajesSistemaService.obtenerMensajeSistemaPorId(64)
+                );
+              },
+            });
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al descargar reporte: ', error.message);
+        },
+      });
   }
 
-  generarObjetoReporte(tipoReporte:string): any {
+  generarObjetoReporte(tipoReporte: string): any {
     return {
       idPlan: +this.route.snapshot.queryParams.idPlanSfpa,
-      correoElectronico: this.detalleServicio.correo,
-      paquete: this.detalleServicio.nombrePaquete,
-      estado: this.detalleServicio.estado,
-      nombreContratante: this.detalleServicio.contratanteSubstituto,
-      tipoReporte:tipoReporte
-    }
+      correoElectronico: this.datosGenerales.correo,
+      paquete: this.datosGenerales.paquete,
+      estado: this.datosGenerales.estado,
+      nombreContratante: this.datosGenerales.nombre,
+      tipoReporte: tipoReporte,
+    };
   }
 
   abrirModalModificarPago(): void {
@@ -239,17 +206,22 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       header: 'Modificar pago',
       style: {
         maxWidth: '876px',
-        width: '100%'
+        width: '100%',
       },
       data: {
         metodosPago: this.metodosPago,
-        detallePago: this.detalleServicio,
-        detalleRegistro: this.detalleSeleccionado
+        detallePago: this.item,
+        detalleRegistro: this.detallePagoBitacora,
       },
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
-        this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
+        this.consultarDetallePago(
+          Number(this.route.snapshot.queryParams.idPlanSfpa)
+        );
+        setTimeout(() => {
+          this.buscarPagosBitacora(Number(this.item.idPagoSFPA));
+        }, 900);
       }
     });
   }
@@ -259,23 +231,58 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       header: 'Eliminar pago',
       style: {
         maxWidth: '876px',
-        width: '100%'
+        width: '100%',
       },
       data: {
-        detalleRegistro: this.detalleSeleccionado
+        idBitacora: this.detallePagoBitacora.idBitacora,
       },
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
         this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(193);
-        this.alertaService.mostrar(TipoAlerta.Exito, msg)
+        const msg: string =
+          this.mensajesSistemaService.obtenerMensajeSistemaPorId(193);
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
       }
     });
   }
 
-  validarEstatusDetallePago(estatus: any): boolean {
-    return !estatus?.toUpperCase().includes('CANCELADO');
+  abrirPanelNuevoPago(
+    emergente: any,
+    event: MouseEvent,
+    item: PagosRealizados
+  ): void {
+    this.item = item;
+    emergente.toggle(event);
   }
 
+  mostrarDetallePagos(detallePagoBitacora: PagosRealizados): void {
+    this.item = detallePagoBitacora;
+
+    this.buscarPagosBitacora(Number(detallePagoBitacora.idPagoSFPA));
+  }
+
+  buscarPagosBitacora(idPagoSFPA: number): void {
+    this.ocultarBitacora = true;
+    this.detallePagoService
+      .obtenerDetalleBitacoraPago(idPagoSFPA)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error === false && respuesta.mensaje === 'Exito') {
+            this.PagosBitacora = respuesta.datos;
+          } else {
+            this.alertaService.mostrar(TipoAlerta.Info, this.errorMsg);
+            console.log(respuesta.mensaje);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+          this.alertaService.mostrar(
+            TipoAlerta.Info,
+            this.errorMsg || 'El servicio no responde, no permite más llamadas.'
+          );
+        },
+      });
+  }
 }

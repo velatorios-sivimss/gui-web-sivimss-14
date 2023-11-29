@@ -51,4 +51,9 @@ export class DetallePagoService extends BaseService<HttpRespuesta<any>, any>{
     return this._http.post<any>(this._base + `${this._funcionalidad}/pago-anticipado-descargar-reporte/generarDocumento/pdf`,
       objeto, {headers, responseType: 'blob' as 'json'})
   }
+
+  obtenerDetalleBitacoraPago(idPagoSFPA: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base +
+      `${this._funcionalidad}/buscar-filtros/pago-anticipado-bitacora-pago`, {idPagoParcialidad: idPagoSFPA});
+  }
 }
