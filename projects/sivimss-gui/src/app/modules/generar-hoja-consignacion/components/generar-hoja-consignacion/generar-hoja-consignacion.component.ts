@@ -172,7 +172,7 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.generarHojaConsignacionService.buscarPorFiltros(this.datosPromotoresFiltros(), this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.datos) {
+          if (respuesta.datos || respuesta.mensaje === '45') {
             this.hojasConsignacion = respuesta.datos?.content ?? [];
             this.totalElementos = respuesta.datos?.totalElements ?? 0;
             this.busquedaRealizada = true;
