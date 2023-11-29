@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-resumen-beneficiario',
@@ -6,6 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./resumen-beneficiario.component.scss']
 })
 export class ResumenBeneficiarioComponent implements OnInit {
+  @Input() nombre: string = 'Sin Información';
+  @Input() edad: string = 'Sin Información';
+  @Input() parentesco: string = 'Sin Información';
+  @Input() curp: string = 'Sin Información';
+  @Input() rfc: string = 'Sin Información';
+  @Input() telefono: string = 'Sin Información';
 
   constructor() { }
 
