@@ -55,7 +55,8 @@ si esta preorden habilitar pago y deshabilitar la descarga de documento-->
         <app-overlay-panel-opciones>
             <app-overlay-panel-opcion titulo="Ver" onCloseOnNavigation
                 (click)="verPlanPreFune()"></app-overlay-panel-opcion>
-            <app-overlay-panel-opcion titulo="Descargar convenio"></app-overlay-panel-opcion>
+            <app-overlay-panel-opcion titulo="Descargar convenio"
+                (click)="descargarDocumento()"></app-overlay-panel-opcion>
             <app-overlay-panel-opcion titulo="Realizar pago" *ngIf="realizarPago"></app-overlay-panel-opcion>
         </app-overlay-panel-opciones>
     </ng-template>

@@ -6,4 +6,6 @@ export interface BusquedaPrevision {
   curp: string;
   idEstatus: number;
   tipoPrevision: number;
+  ciudadExpedicion: string;
+  fechaExpedicion: string;
 }

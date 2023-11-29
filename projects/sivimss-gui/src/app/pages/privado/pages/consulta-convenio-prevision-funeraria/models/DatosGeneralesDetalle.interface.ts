@@ -1,5 +1,5 @@
 export interface DatosGeneralesDetalle {
-  folioConvenio: string | any;
+  folioConvenio: string;
   idConvenio: number;
   curp: string;
   fechaNacimiento: string;
@@ -10,4 +10,5 @@ export interface DatosGeneralesDetalle {
   nombreAfiliado: string;
   primerApellido: string;
   segundoApellido: string;
+  estatus: string;
 }

@@ -33,6 +33,8 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   overlayPanel!: OverlayPanel;
   realizarPago: boolean = false;
   descargarConvenio: boolean = false;
+  errorSolicitud: string =
+    'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
 
   constructor(
     private consultaConveniosService: BusquedaConveniosPFServic,
@@ -58,10 +60,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
 
           if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
             console.log(respuesta.mensaje);
-            this.alertaService.mostrar(
-              TipoAlerta.Error,
-              'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
-            );
+            this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
             return;
           }
           let total = respuesta.datos.length;
@@ -76,19 +75,21 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
         error: (error: HttpErrorResponse) => {
           console.error(error);
 
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
-          );
+          this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
         },
       });
   }
 
   abrirPanel(event: MouseEvent, itemConvenio: BusquedaPrevision): void {
     this.itemConvenio = itemConvenio;
-    const idEstatus = itemConvenio.idEstatus;
-    this.descargarConvenio = idEstatus > 1;
-    this.realizarPago = idEstatus == 1;
+    let idEstatus = itemConvenio.idEstatus;
+    this.descargarConvenio = false;
+    this.realizarPago = false;
+    if (idEstatus == 2 || idEstatus == 4) {
+      this.descargarConvenio = true;
+    }
+    if (idEstatus == 1) this.realizarPago = true;
+
     this.overlayPanel.toggle(event);
   }
 
@@ -101,5 +102,30 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
         queryParams: { idpfs: this.itemConvenio.idConvenio },
       }
     );
+  }
+
+  descargarDocumento(): void {
+    this.loaderService.activar();
+    const parametros = {
+      tipoReporte: 'pdf',
+      ciudadExpedicion: this.itemConvenio.ciudadExpedicion,
+      fechaExpedicion: this.itemConvenio.fechaExpedicion,
+      idConvenio: this.itemConvenio.idConvenio,
+    };
+    this.consultaConveniosService
+      .descargarConvenio(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: any): void => {
+          console.log(respuesta);
+          const file = new Blob([respuesta], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(file);
+          window.open(url);
+        },
+        error: (error: HttpErrorResponse): void => {
+          this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
+          console.log(error);
+        },
+      });
   }
 }

@@ -31,4 +31,14 @@ export class BusquedaConveniosPFServic extends BaseService<
       this._base + '/detalle-convenio/' + idConvenio
     );
   }
+
+  descargarConvenio(parametros: any): Observable<Blob> {
+    return this._http.post<Blob>(
+      this._base + `/generarDocumentoNuevoPlan`,
+      parametros,
+      {
+        responseType: 'blob' as 'json',
+      }
+    );
+  }
 }

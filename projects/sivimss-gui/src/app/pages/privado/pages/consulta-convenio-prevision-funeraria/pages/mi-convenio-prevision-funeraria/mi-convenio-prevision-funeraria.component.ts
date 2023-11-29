@@ -14,6 +14,7 @@ import { finalize } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DatosGeneralesDetalle } from '../../models/DatosGeneralesDetalle.interface';
 import { Beneficiarios } from '../../models/Beneficiarios.interface';
+import { DatosGeneralesRenovacion } from '../../models/DatosGeneralesRenovacion.interface';
 
 @Component({
   selector: 'app-mi-convenio-prevision-funeraria',
@@ -24,6 +25,10 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   beneficiarios: Beneficiarios[] = [];
 
   datosGenerales: DatosGeneralesDetalle = {} as DatosGeneralesDetalle;
+  datosGeneralesRenovacion: DatosGeneralesRenovacion =
+    {} as DatosGeneralesRenovacion;
+  errorSolicitud: string =
+    'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
 
   constructor(
     private readonly dialogService: DialogService,
@@ -70,8 +75,10 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
             return;
           }
           try {
-            this.datosGenerales = respuesta.datos.datosGenerales[0] || [];
+            this.datosGenerales = respuesta.datos.datosGenerales[0] || {};
             this.beneficiarios = respuesta.datos.beneficiarios;
+            this.datosGeneralesRenovacion =
+              respuesta.datos.datosRenovacion[0] || {};
           } catch (error) {
             console.error(error);
           }
