@@ -100,7 +100,15 @@ export class GenerarHojaConsignacionComponent implements OnInit {
       this.catalogoVelatorios = [];
       this.filtroForm.get('velatorio')?.patchValue("");
     }
-    this.catalogoVelatorios = [{ value: -1, label: 'Todos' }];
+
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+
+    if (+usuario?.idOficina === 3) {
+      this.filtroForm.get('velatorio')?.patchValue(+usuario?.idVelatorio);
+    } else {
+      this.catalogoVelatorios = [{ value: -1, label: 'Todos' }];
+    }
+
     let idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
     if (idDelegacion === -1) {
@@ -172,7 +180,7 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.generarHojaConsignacionService.buscarPorFiltros(this.datosPromotoresFiltros(), this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.datos) {
+          if (respuesta.datos || respuesta.mensaje === '45') {
             this.hojasConsignacion = respuesta.datos?.content ?? [];
             this.totalElementos = respuesta.datos?.totalElements ?? 0;
             this.busquedaRealizada = true;
@@ -229,9 +237,10 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.busquedaRealizada = false;
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+
     this.filtroForm.get('nivel')?.patchValue(+usuario?.idOficina);
 
-    if (+ usuario?.idOficina >= 2) {
+    if (+usuario?.idOficina >= 2) {
       this.filtroForm.get('delegacion')?.patchValue(+usuario?.idDelegacion);
     }
 
