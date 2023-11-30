@@ -31,6 +31,7 @@ export class ModificarPagoComponent implements OnInit {
 
   registroPago!: DetallePago;
   pagoSeleccionado!: MetodoPago;
+  tipoPago: string = '';
 
   constructor(
     private router: Router,
@@ -60,6 +61,17 @@ export class ModificarPagoComponent implements OnInit {
 
   ngOnInit(): void {
     this.registroPago = this.activatedRoute.snapshot.data["respuesta"].datos;
+    this.tipoPago = this.obtenerTipoPago();
+  }
+
+  obtenerTipoPago(): string {
+    if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
+      return 'la ODS'
+    }
+    if (this.registroPago.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
+      return 'el Nuevo Convenio de Previsión Funeraria';
+    }
+    return 'la Renovación del Nuevo Convenio de Previsión Funeraria';
   }
 
   cancelarTipoPago(): void {
