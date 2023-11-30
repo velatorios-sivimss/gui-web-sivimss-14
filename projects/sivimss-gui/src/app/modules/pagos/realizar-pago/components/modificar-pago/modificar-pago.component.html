@@ -1,20 +1,8 @@
+<app-titulo-principal titulo="Modificar Pago"></app-titulo-principal>
 <app-table-panel>
   <ng-template appCustomTemplate="left-header">
     <div class="table-panel-header-column">
       <span class="activo">Folio {{registroPago.folio}}</span>
-    </div>
-  </ng-template>
-  <ng-template appCustomTemplate="right-header">
-    <div class="table-panel-header-column">
-      <div class="flex flex-column">
-        <span class="ml-5 font-14">Estatus</span>
-        <div class="contenedor-inputswitch">
-          <span class="font-bold font-14">{{registroPago.estatusPago}}</span>
-        </div>
-      </div>
-      <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
-        <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-      </a>
     </div>
   </ng-template>
 </app-table-panel>
@@ -24,7 +12,7 @@
       <div class="col">
         <span class="ml-5">Tipo de pago</span>
         <div class="contenedor-inputswitch">
-          <span class="font-bold">{{registroPago.tipoPago}}</span>
+          <span class="font-bold ml-3">{{registroPago.tipoPago}}</span>
         </div>
       </div>
     </div>
@@ -44,6 +32,10 @@
             <span>Importe</span>
             <b>{{pago.importe | currency}}</b>
           </div>
+          <div class="ml-7" *ngIf="['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)"></div>
+          <a class="ml-5 cursor-pointer" (click)="mostrarOverlay($event, pago)" *ngIf="!['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)">
+            <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+          </a>
         </div>
       </div>
     </ng-template>
@@ -59,7 +51,7 @@
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Fecha de pago</span>
-          <span class="texto-base">{{pago.fechaPago}}</span>
+          <span class="texto-base">{{pago.fechaPago | date:'dd/MM/YYYY'}}</span>
         </div>
       </div>
       <hr>
@@ -98,6 +90,7 @@
     </div>
   </div>
 </div>
+
 <div class="flex  mb-4 justify-content-end">
   <button class="ml-6 mt-3 btn btn-primary btn-md" [routerLink]="'./../..'">
     Regresar
@@ -107,12 +100,9 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion class="text-center" titulo="Ir a Pago" *ngIf="registroPago.estatusPago !== 'Pagado'"
-                                (click)="redireccionPago()">
+      <app-overlay-panel-opcion titulo="Cancelar" (click)="cancelarTipoPago()" onCloseOnNavigation>
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion class="text-center" titulo="Modificar método de pago"
-                                *ngIf="registroPago.estatusPago === 'Pagado'"
-                                [routerLink]="['../../modificar-metodo-de-pago', idPagoBitacora]">
+      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarTipoPago()" onCloseOnNavigation>
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
