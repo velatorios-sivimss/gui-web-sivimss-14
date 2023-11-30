@@ -273,9 +273,11 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.descargaArchivosService.descargarArchivo(this.generarHojaConsignacionService.generarReporteConsulta(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next: () => {
-        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        this.mostrarModalConfirmacion = true;
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
