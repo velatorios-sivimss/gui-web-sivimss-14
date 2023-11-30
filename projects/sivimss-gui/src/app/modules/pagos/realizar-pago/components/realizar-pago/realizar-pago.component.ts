@@ -20,7 +20,7 @@ import {
 import {Pago} from "../../modelos/pago.interface";
 import {FiltroBasico, FiltrosPago} from "../../modelos/filtrosPago.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, ActivatedRouteSnapshot, Router} from "@angular/router";
 import * as moment from "moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";

@@ -127,8 +127,8 @@
         </div>
         <div class="row mx-6 mb-3">
           <p-table styleClass="mb-8" [value]="detalleODS" [paginator]="detalleODS.length > 0"
-                   [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-                   [(first)]="numPaginaActual">
+                   [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementosOrdenes" [pageLinks]="3"
+                   [(first)]="numPaginaActualOrdenes" (onLazyLoad)="seleccionarPaginacionODS($event)">
 
             <ng-template pTemplate="header">
               <tr>
@@ -157,11 +157,11 @@
             </ng-template>
             <ng-template pTemplate="paginatorleft">
               <div class="paginator-template">
-                <span class="total-elements"> {{detalleODS.length}} de {{detalleODS.length}} </span>
+                <span class="total-elements"> {{detalleODS.length}} de {{totalElementosOrdenes}} </span>
               </div>
             </ng-template>
             <ng-template pTemplate="paginatorright">
-              <div id="total">
+              <div id="totalODS">
                 <span
                   class="total-table-text">Suma de los importes de las ODS contabilizadas en el mes consultado <b>{{ totalODS | currency:''}} </b></span>
               </div>
@@ -180,8 +180,8 @@
         </div>
         <div class="row mx-6 mb-3">
           <p-table styleClass="mb-8" [value]="detalleConveniosPF" [paginator]="detalleConveniosPF.length > 0"
-                   [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-                   [(first)]="numPaginaActual">
+                   [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementosConvenios" [pageLinks]="3"
+                   [(first)]="numPaginaActualConvenios" (onLazyLoad)="seleccionarPaginacionConvenios($event)">
 
             <ng-template pTemplate="header">
               <tr>
@@ -210,11 +210,11 @@
             </ng-template>
             <ng-template pTemplate="paginatorleft">
               <div class="paginator-template">
-                <span class="total-elements"> {{detalleConveniosPF.length}} de {{detalleConveniosPF.length}} </span>
+                <span class="total-elements"> {{detalleConveniosPF.length}} de {{totalElementosConvenios}} </span>
               </div>
             </ng-template>
             <ng-template pTemplate="paginatorright">
-              <div id="total">
+              <div id="totalConvenios">
                 <span
                   class="total-table-text">Suma de los importes de las previsiones funerarias contabilizadas en el mes consultado <b>{{ totalConveniosPF | currency:''}} </b></span>
               </div>
