@@ -48,7 +48,7 @@
     <div class="row mt-6" *appValidaRol="['GENERAR_HOJA_CONSIGNACION','CONSULTA']">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="limpiar();">Limpiar</button>
-        <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar();" [disabled]="filtroForm.invalid">Buscar</button>
       </div>
     </div>
   </form>
