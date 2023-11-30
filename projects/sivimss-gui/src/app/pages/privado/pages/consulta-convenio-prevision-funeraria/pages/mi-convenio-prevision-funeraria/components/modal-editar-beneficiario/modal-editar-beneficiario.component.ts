@@ -1,25 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import {
+  DialogService,
+  DynamicDialogConfig,
+  DynamicDialogRef,
+} from 'primeng/dynamicdialog';
+import { Beneficiarios } from '../../../../models/Beneficiarios.interface';
 
 @Component({
   selector: 'app-modal-editar-beneficiario',
   templateUrl: './modal-editar-beneficiario.component.html',
-  styleUrls: ['./modal-editar-beneficiario.component.scss']
+  styleUrls: ['./modal-editar-beneficiario.component.scss'],
 })
 export class ModalEditarBeneficiarioComponent implements OnInit {
-
+  beneficiarios: Beneficiarios = {} as Beneficiarios;
   form!: FormGroup;
 
   fechaActual = new Date();
 
-  dummyDropdown: { label: string; value: number }[] = [
-    { label: 'Opción 1', value: 1 },
-    { label: 'Opción 2', value: 2 },
-  ];
-
-  constructor(private readonly formBuilder: FormBuilder) {}
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly dialogService: DialogService,
+    public readonly config: DynamicDialogConfig,
+    private ref: DynamicDialogRef,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
+    this.beneficiarios = this.config.data['item'];
     this.form = this.crearForm();
   }
 
@@ -27,50 +36,50 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
     return this.formBuilder.group({
       nombre: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.nombreAfiliado,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       primerApellido: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.primerApellido,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       segundoApellido: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.segundoApellido,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       edad: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.edad,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       parentesco: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.parentesco,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       curp: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.curp,
+          disabled: true,
         },
         [Validators.required],
       ],
       rfc: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.rfc,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
@@ -83,28 +92,28 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
       ],
       fecha: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.fechaNacimiento,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       correoElectronico: [
         {
-          value: null,
+          value: this.beneficiarios.correo,
           disabled: false,
         },
         [Validators.nullValidator],
       ],
       velatorio: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.velatorio,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       telefono: [
         {
-          value: null,
+          value: this.beneficiarios.telefono,
           disabled: false,
         },
         [Validators.nullValidator],
@@ -154,5 +163,4 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
   get f() {
     return this.form.controls;
   }
-
 }

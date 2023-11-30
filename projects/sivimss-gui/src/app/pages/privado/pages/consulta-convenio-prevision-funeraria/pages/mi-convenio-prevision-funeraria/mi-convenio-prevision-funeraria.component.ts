@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ModalDetalleBeneficiariosComponent } from './components/modal-detalle-beneficiarios/modal-detalle-beneficiarios.component';
 import { ModalRenovarConvenioComponent } from './components/modal-renovar-convenio/modal-renovar-convenio.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DatosGeneralesDetalle } from '../../models/DatosGeneralesDetalle.interface';
 import { Beneficiarios } from '../../models/Beneficiarios.interface';
 import { DatosGeneralesRenovacion } from '../../models/DatosGeneralesRenovacion.interface';
+import { ModalRegistrarNuevoBeneficiarioComponent } from './components/modal-registrar-nuevo-beneficiario/modal-registrar-nuevo-beneficiario.component';
 
 @Component({
   selector: 'app-mi-convenio-prevision-funeraria',
@@ -23,6 +24,7 @@ import { DatosGeneralesRenovacion } from '../../models/DatosGeneralesRenovacion.
 })
 export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   beneficiarios: Beneficiarios[] = [];
+  ref!: DynamicDialogRef;
 
   datosGenerales: DatosGeneralesDetalle = {} as DatosGeneralesDetalle;
   datosGeneralesRenovacion: DatosGeneralesRenovacion =
@@ -45,14 +47,14 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
 
   abrirModalRenovarConvenio(event: MouseEvent): void {
     event.stopPropagation();
-    const ref = this.dialogService.open(ModalRenovarConvenioComponent, {
+    this.ref = this.dialogService.open(ModalRenovarConvenioComponent, {
       header: 'Renovar convenio',
       style: { maxWidth: '876px', width: '100%' },
       data: {
         dato1: null,
       },
     });
-    ref.onClose.subscribe((respuesta: any) => {});
+    this.ref.onClose.subscribe((respuesta: any) => {});
   }
 
   detalleConvenio() {
@@ -62,10 +64,6 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
-
-          console.log(respuesta.datos.datosGenerales[0]);
-
           if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
             console.log(respuesta.mensaje);
             this.alertaService.mostrar(
@@ -82,13 +80,9 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
           } catch (error) {
             console.error(error);
           }
-
-          console.log('----------------------------');
-          console.log(this.datosGenerales);
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
-
           this.alertaService.mostrar(
             TipoAlerta.Error,
             'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
@@ -98,17 +92,41 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   abrirModalDetalleBeneficiarios(event: MouseEvent, item: any): void {
-    console.log('{------------------------------}');
-    console.log(item);
     event.stopPropagation();
-    const ref = this.dialogService.open(ModalDetalleBeneficiariosComponent, {
+    this.ref = this.dialogService.open(ModalDetalleBeneficiariosComponent, {
       header: 'Detalle de los beneficiarios',
       style: { maxWidth: '876px', width: '100%' },
-      data: { valores: 'no se que paso' },
+      data: { item: item },
     });
 
-    ref.onClose.subscribe((respuesta: any) => {
+    this.ref.onClose.subscribe((respuesta: any) => {
       console.log(respuesta);
     });
+  }
+
+  abrirModalRegistroNuevoBeneficiario(event: MouseEvent) {
+    event.stopPropagation();
+
+    this.ref = this.dialogService.open(
+      ModalRegistrarNuevoBeneficiarioComponent,
+      {
+        header: 'Registrar nuevo beneficiaro',
+        style: { maxWidth: '876px', width: '100%' },
+        data: {
+          dato1: null,
+        },
+      }
+    );
+    this.ref.onClose.subscribe((respuesta: any) => {});
+  }
+
+  cerrarModal(): void {
+    this.ref.onClose;
+  }
+
+  ngOnDestroy() {
+    if (this.ref) {
+      this.ref.close();
+    }
   }
 }

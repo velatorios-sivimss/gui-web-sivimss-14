@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import {
+  DialogService,
+  DynamicDialogConfig,
+  DynamicDialogRef,
+} from 'primeng/dynamicdialog';
 import { ModalRegistrarNuevoBeneficiarioComponent } from '../modal-registrar-nuevo-beneficiario/modal-registrar-nuevo-beneficiario.component';
 import { ModalEditarBeneficiarioComponent } from '../modal-editar-beneficiario/modal-editar-beneficiario.component';
 import { ActivatedRoute } from '@angular/router';
@@ -15,43 +19,30 @@ export class ModalDetalleBeneficiariosComponent implements OnInit {
 
   constructor(
     private readonly dialogService: DialogService,
-    public ref: DynamicDialogRef,
+    public readonly config: DynamicDialogConfig,
+    private ref: DynamicDialogRef,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    //this.beneficiarios = this.route.snapshot.data['item'];
-    console.log('aeuasd noasndoasd ');
-    console.log(this.route.snapshot);
-    console.log(this.route.snapshot.data['valores']);
-  }
-
-  abrirModalRegistroNuevoBeneficiario(event: MouseEvent) {
-    event.stopPropagation();
-    this.ref.close();
-    const ref = this.dialogService.open(
-      ModalRegistrarNuevoBeneficiarioComponent,
-      {
-        header: 'Registrar nuevo beneficiaro',
-        style: { maxWidth: '876px', width: '100%' },
-        data: {
-          dato1: null,
-        },
-      }
-    );
-    ref.onClose.subscribe((respuesta: any) => {});
+    this.beneficiarios = this.config.data['item'];
   }
 
   abrirModalEditarBeneficiario(event: MouseEvent) {
     event.stopPropagation();
     this.ref.close();
-    const ref = this.dialogService.open(ModalEditarBeneficiarioComponent, {
+    this.ref = this.dialogService.open(ModalEditarBeneficiarioComponent, {
       header: 'Editar beneficiaro',
       style: { maxWidth: '876px', width: '100%' },
       data: {
-        dato1: null,
+        item: this.beneficiarios,
       },
     });
-    ref.onClose.subscribe((respuesta: any) => {});
+
+    this.ref.onClose.subscribe((respuesta: any) => {});
+  }
+
+  cerrarModal(): void {
+    this.ref.close();
   }
 }

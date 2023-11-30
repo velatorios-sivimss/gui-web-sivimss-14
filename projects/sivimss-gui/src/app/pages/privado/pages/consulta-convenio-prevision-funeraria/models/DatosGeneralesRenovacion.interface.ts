@@ -5,10 +5,10 @@ export interface DatosGeneralesRenovacion {
   tipoPaquete: string;
   periodoRenovacion: number;
   fecActual: string;
-  fecAlta: string;
+  fecContratacion: string;
   fecVigencia: number;
   titularFallecido: string;
   idEstatus: string;
-  tipoPrevision: string;
+  previsionFuneraria: string;
   diferenciaDias: number;
 }

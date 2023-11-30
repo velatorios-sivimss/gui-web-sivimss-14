@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-modal-registrar-nuevo-beneficiario',
@@ -7,6 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./modal-registrar-nuevo-beneficiario.component.scss'],
 })
 export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
+  ref!: DynamicDialogRef;
   form!: FormGroup;
 
   fechaActual = new Date();
@@ -152,5 +154,11 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
 
   get f() {
     return this.form.controls;
+  }
+
+  ngOnDestroy() {
+    if (this.ref) {
+      this.ref.close();
+    }
   }
 }
