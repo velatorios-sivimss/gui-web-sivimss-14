@@ -1,0 +1,109 @@
+<app-titulo-principal titulo="Modificar Pago"></app-titulo-principal>
+<app-table-panel>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="activo">Folio {{registroPago.folio}}</span>
+    </div>
+  </ng-template>
+</app-table-panel>
+<div class="bg-g">
+  <app-table-panel class="pb-3 bg-g">
+    <div class="row grid mt-2 mb-2">
+      <div class="col">
+        <span class="ml-5">Tipo de pago</span>
+        <div class="contenedor-inputswitch">
+          <span class="font-bold ml-3">{{registroPago.tipoPago}}</span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+</div>
+
+<h2 class="subtitulo pt-4 pb-4">Métodos de pago</h2>
+<p-accordion styleClass="sivimss-accordion sivimss-accordionColor">
+  <p-accordionTab *ngFor="let pago of registroPago.metodosPago">
+    <ng-template pTemplate="header">
+      <div class="sivimss-acoordion-header">
+        <div class="accordion-header-left font-bold font-14">
+          {{ pago.metodoPago }}
+        </div>
+        <div class="accordion-header-right">
+          <div class="estatus">
+            <span>Importe</span>
+            <b>{{pago.importe | currency}}</b>
+          </div>
+          <div class="ml-7" *ngIf="['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)"></div>
+          <a class="ml-5 cursor-pointer" (click)="mostrarOverlay($event, pago)" *ngIf="!['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)">
+            <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+          </a>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <div class="row grid">
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Número de autorización</span>
+          <span class="texto-base">{{pago.numAutorizacion}}</span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Nombre del banco</span>
+          <span class="texto-base">{{pago.nomBanco}}</span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Fecha de pago</span>
+          <span class="texto-base">{{pago.fechaPago | date:'dd/MM/YYYY'}}</span>
+        </div>
+      </div>
+      <hr>
+      <div class="row grid">
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Importe</span>
+          <span class="texto-base">{{pago.importe | currency}}</span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Total a pagar</span>
+          <span class="texto-base">{{registroPago.totalAPagar | currency}}</span>
+        </div>
+        <div class="col">
+        </div>
+      </div>
+    </ng-template>
+  </p-accordionTab>
+</p-accordion>
+<div class="row flex mb-4">
+  <div class="col-md-8 font-17 ">
+    Total a pagar para cubrir el total de la ODS:
+    <span class="font-bold activo">{{ registroPago.totalPorCubrir | currency }}</span>
+  </div>
+  <div class="col-md-4">
+    <div class="row grid">
+      <div class="col ">
+        <span class="flex flex-column etiqueta-base align-items-end">Total Pagado</span>
+        <span
+          class="flex flex-column texto-base align-items-end font-bold">{{registroPago.totalPagado | currency}}</span>
+      </div>
+      <div class="col">
+        <span class="flex flex-column etiqueta-base align-items-end">Total a pagar</span>
+        <span
+          class="flex flex-column texto-base align-items-end font-bold">{{registroPago.totalAPagar | currency}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex  mb-4 justify-content-end">
+  <button class="ml-6 mt-3 btn btn-primary btn-md" [routerLink]="'./../..'">
+    Regresar
+  </button>
+</div>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Cancelar" (click)="cancelarTipoPago()" onCloseOnNavigation>
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarTipoPago()" onCloseOnNavigation>
+      </app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

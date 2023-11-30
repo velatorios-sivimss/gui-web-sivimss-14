@@ -339,7 +339,7 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   modificarPago(): void {
-    void this.router.navigate(["./modificar-metodo-de-pago", this.pagoSeleccionado.idPagoBitacora],
+    void this.router.navigate(["./modificar-pago", this.pagoSeleccionado.idPagoBitacora],
       {relativeTo: this.activatedRoute});
   }
 }
