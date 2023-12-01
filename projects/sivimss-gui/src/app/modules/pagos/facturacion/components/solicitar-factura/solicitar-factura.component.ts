@@ -163,6 +163,7 @@ export class SolicitarFacturaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.registroContratante = respuesta.datos;
         this.datosContratanteForm.get('rfc')?.setValue(this.registroContratante!.rfc)
+        this.datosContratanteForm.get('correoElectronico')?.setValue(this.registroContratante!.correo)
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);

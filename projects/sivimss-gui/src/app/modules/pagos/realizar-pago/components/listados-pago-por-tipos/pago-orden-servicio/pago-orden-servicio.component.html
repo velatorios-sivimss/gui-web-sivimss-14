@@ -15,7 +15,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-pago>
     <tr>
-      <td>{{pago.fechaPago | date:'dd/MM/YYYY'}}</td>
+      <td>{{pago.fechaPago}}</td>
       <td>{{pago.folio}}</td>
       <td>{{pago.tipoPago}}</td>
       <td class="font-bold">{{pago.total | currency}}</td>
