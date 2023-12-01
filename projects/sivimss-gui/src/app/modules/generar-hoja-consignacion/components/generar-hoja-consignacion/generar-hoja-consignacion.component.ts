@@ -237,21 +237,12 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.busquedaRealizada = false;
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-
-    this.filtroForm.get('nivel')?.patchValue(+usuario?.idOficina);
-
-    if (+usuario?.idOficina >= 2) {
-      this.filtroForm.get('delegacion')?.patchValue(+usuario?.idDelegacion);
-    }
-
-    if (+usuario?.idOficina === 3) {
-      this.filtroForm.get('velatorio')?.patchValue(+usuario?.idVelatorio);
-    } else {
-      this.catalogoVelatorios = [];
-    }
+    this.inicializarFiltroForm();
     this.cargarVelatorios(true);
+    this.cargarCatalogos();
     this.hojasConsignacion = [];
     this.totalElementos = 0;
+    setTimeout(()=> this.filtroForm.get('velatorio')?.patchValue(+usuario?.idVelatorio),300)
   }
 
   validarAlMenosUnCampoConValor(group: FormGroup) {

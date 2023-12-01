@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { AutenticacionService } from "../../../services/autenticacion.service";
 import { FiltrosConvenio } from "../models/filtros-convenio.interface";
 import { ObtenerCatalogo } from "../models/convenios-prevision-funeraria.interface";
+import {PlantillaControlSalida} from "../../consulta-donaciones/models/generar-plantilla-interface";
 
 interface PeticionDescarga {
   tipoReporte: "pdf" | "xls"
@@ -110,6 +111,12 @@ export class ConsultaConveniosService extends BaseService<HttpRespuesta<any>, an
     const body: PeticionDescarga = { tipoReporte: "xls" }
     return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-servicio/generarDocumento/pdf`
       , body, { headers, responseType: 'blob' as 'json' });
+  }
+
+  reporteConvenioNuevo(plantailla:PlantillaControlSalida): Observable<Blob> {
+    return this._http.post<any>(
+      this._base + `${this._funcionalidad}/convenio-pf-generar-pdf/generarDocumento/pdf`, plantailla,
+      {responseType: 'blob' as any});
   }
 
 }
