@@ -174,7 +174,7 @@
   </ng-template>
 </p-overlayPanel>
 
-<p-dialog header="Registrar tipo de pago" [(visible)]="realizarPagoModal">
+<p-dialog header="Registrar tipo de pago" [(visible)]="realizarPagoModal" [modal]="true">
   <div class="w-740">
     <div class="row flex justify-content-center mb-4 ">
       <button type="button" class="btn btn-primary btn-lg btn-md w-500" [routerLink]="'./pago-orden-servicio'">
