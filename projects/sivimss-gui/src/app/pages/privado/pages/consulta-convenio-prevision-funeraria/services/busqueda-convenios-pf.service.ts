@@ -41,4 +41,11 @@ export class BusquedaConveniosPFServic extends BaseService<
       }
     );
   }
+
+  actualizarBeneficiario(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `/actualizar-beneficiario`,
+      parametros
+    );
+  }
 }

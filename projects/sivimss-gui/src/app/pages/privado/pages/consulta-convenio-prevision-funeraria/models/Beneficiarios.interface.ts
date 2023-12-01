@@ -13,4 +13,7 @@ export interface Beneficiarios {
   parentesco: string;
   correo: string;
   telefono: string;
+  documento: string;
+  actaNacimiento: string;
+  ine: string;
 }

@@ -32,7 +32,12 @@
 <div class="row mb-4">
     <div class="col-md-4 flex flex-column">
         <span class="etiqueta-base font-bold">Acta de nacimiento:</span>
-        <span class="texto-base font-normal">Acta.pdf</span>
+
+        <span class="texto-base font-normal"
+            *ngIf="beneficiarios.edad >= 18;else elseMayorEdad">{{beneficiarios.ine}}</span>
+        <ng-template #elseMayorEdad>
+            <span class="texto-base font-normal">{{beneficiarios.actaNacimiento}}</span>
+        </ng-template>
     </div>
     <div class="col-md-4 flex flex-column">
         <span class="etiqueta-base font-bold">Correo electrónico:</span>

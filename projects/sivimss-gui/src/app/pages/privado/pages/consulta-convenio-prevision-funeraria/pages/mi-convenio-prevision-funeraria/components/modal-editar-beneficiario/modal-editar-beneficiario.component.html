@@ -38,11 +38,14 @@
             <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa rfc">
         </div>
         <div class="col-md-4">
-            <label class="control-label" for="archivoXml">Acta de nacimiento:</label>
-            <div (click)="handleClick('archivoXml', 'xml')"><!--Adaptarlo a sus necesidades :) -->
-                <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml"
-                    ngf-max-size="2MB" (change)="addAttachment($event)">
-                <input id="archivoXml" class="form-control" formControlName="actaNacimiento" readonly>
+            <label class="control-label" for="actaNacimiento"
+                *ngIf="beneficiarios.edad; else elseMenorEdad">INE:</label>
+            <ng-template #elseMenorEdad> <label class="control-label" for="actaNacimiento">Acta de
+                    nacimieno:</label></ng-template>
+            <div (click)="handleClick('archivo')"><!--Adaptarlo a sus necesidades :) -->
+                <input class="hidden" type="file" id="upload-file" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
+                    ngf-max-size="5MB" (change)="addAttachment($event)">
+                <input id="actaNacimiento" class="form-control" formControlName="actaNacimiento" readonly>
                 <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
             </div>
         </div>
@@ -57,17 +60,24 @@
         <div class="col-md-4">
             <label class="control-label" for="correoElectronico">Correo electrónico:</label>
             <input id="correoElectronico" type="text" class="form-control" formControlName="correoElectronico"
-                placeholder="Ingresa correo electronico">
+                placeholder="Ingresa correo electronico" (blur)="validarCorreoElectronico()" maxlength="45">
+            <span class="campo-obligatorio"
+                *ngIf="f.correoElectronico?.errors?.required && (f.correoElectronico?.dirty || f.correoElectronico?.touched)">Este
+                campo es obligatorio *.</span>
+
         </div>
         <div class="col-md-4">
             <label class="control-label" for="velatorio">Velatorio:</label>
-            <input id="velatorio" type="text" class="form-control" formControlName="velatorio"
-                placeholder="Ingresa correo electronico">
+            <input id="velatorio" type="text" class="form-control" formControlName="velatorio">
         </div>
         <div class="col-md-4">
             <label class="control-label" for="telefono">Teléfono:</label>
             <input id="telefono" type="text" class="form-control" formControlName="telefono"
-                placeholder="Ingresa telefono">
+                placeholder="Ingresa teléfono" maxlength="10">
+            <span class="campo-obligatorio"
+                *ngIf="f.telefono?.errors?.required && (f.telefono?.dirty || f.telefono?.touched)">Este campo es
+                obligatorio *.</span>
+
         </div>
     </div>
 
@@ -77,8 +87,9 @@
                 *Campos obligatorios
             </span>
             <div class="flex justify-content-end align-items-center">
-                <button class="btn btn-gold btn-md">Cancelar</button>
-                <button class="btn btn-primary btn-md ml-5">Guardar</button>
+                <button class="btn btn-gold btn-md" type="button" (click)="cerrarModal()">Cancelar</button>
+                <button class="btn btn-primary btn-md ml-5" (click)="guardar()" type="submit"
+                    [disabled]="!form.valid">Guardar</button>
             </div>
         </div>
     </div>

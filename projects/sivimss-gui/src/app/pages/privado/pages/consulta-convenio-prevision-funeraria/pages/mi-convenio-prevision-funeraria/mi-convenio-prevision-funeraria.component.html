@@ -51,7 +51,8 @@
     </div>
     <div class="border-panel mb-5">
         <h2 class="subtitulo-base">Beneficiarios</h2>
-        <button class="btn btn-default btn-md ml-5" (click)="abrirModalRegistroNuevoBeneficiario($event)">Nuevo
+        <button class="btn btn-default btn-md ml-5" (click)="abrirModalRegistroNuevoBeneficiario($event)"
+            *ngIf="beneficiarios.length < 3">Nuevo
             beneficiario</button>
         <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true" [columnResizeMode]="'expand'">
             <ng-template pTemplate="header">
@@ -90,7 +91,8 @@
             </div>
             <div class="col-md-3 flex flex-column">
                 <span class="etiqueta-base font-bold">Cuota de recuperación</span>
-                <span class="texto-base font-normal">{{datosGeneralesRenovacion.cuotaRecuperacion}}</span>
+                <span class="texto-base font-normal">{{datosGeneralesRenovacion.cuotaRecuperacion |
+                    currency:'CAD':'symbol-narrow':'4.2-2' }}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Fecha de contratación</span>

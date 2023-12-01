@@ -24,37 +24,23 @@ import { ModalRegistrarNuevoBeneficiarioComponent } from './components/modal-reg
 })
 export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   beneficiarios: Beneficiarios[] = [];
-  ref!: DynamicDialogRef;
 
   datosGenerales: DatosGeneralesDetalle = {} as DatosGeneralesDetalle;
   datosGeneralesRenovacion: DatosGeneralesRenovacion =
     {} as DatosGeneralesRenovacion;
   errorSolicitud: string =
     'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
-
+  ref!: DynamicDialogRef;
   constructor(
-    private readonly dialogService: DialogService,
+    private dialogService: DialogService,
     private rutaActiva: ActivatedRoute,
     private consultaConveniosService: BusquedaConveniosPFServic,
     private alertaService: AlertaService,
-    private loaderService: LoaderService,
-    private router: Router
+    private loaderService: LoaderService
   ) {}
 
   ngOnInit(): void {
     this.detalleConvenio();
-  }
-
-  abrirModalRenovarConvenio(event: MouseEvent): void {
-    event.stopPropagation();
-    this.ref = this.dialogService.open(ModalRenovarConvenioComponent, {
-      header: 'Renovar convenio',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        dato1: null,
-      },
-    });
-    this.ref.onClose.subscribe((respuesta: any) => {});
   }
 
   detalleConvenio() {
@@ -94,13 +80,15 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   abrirModalDetalleBeneficiarios(event: MouseEvent, item: any): void {
     event.stopPropagation();
     this.ref = this.dialogService.open(ModalDetalleBeneficiariosComponent, {
-      header: 'Detalle de los beneficiarios',
+      header: 'Detalle del beneficiario',
       style: { maxWidth: '876px', width: '100%' },
       data: { item: item },
     });
 
     this.ref.onClose.subscribe((respuesta: any) => {
-      console.log(respuesta);
+      if (respuesta) {
+        item = respuesta;
+      }
     });
   }
 
@@ -113,11 +101,13 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
         header: 'Registrar nuevo beneficiaro',
         style: { maxWidth: '876px', width: '100%' },
         data: {
-          dato1: null,
+          idConvenio: this.datosGenerales.idConvenio,
         },
       }
     );
-    this.ref.onClose.subscribe((respuesta: any) => {});
+    this.ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta) console.log(respuesta);
+    });
   }
 
   cerrarModal(): void {
@@ -128,5 +118,17 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
     if (this.ref) {
       this.ref.close();
     }
+  }
+
+  abrirModalRenovarConvenio(event: MouseEvent): void {
+    event.stopPropagation();
+    this.ref = this.dialogService.open(ModalRenovarConvenioComponent, {
+      header: 'Renovar convenio',
+      style: { maxWidth: '876px', width: '100%' },
+      data: {
+        item: this.datosGeneralesRenovacion,
+      },
+    });
+    this.ref.onClose.subscribe((respuesta: any) => {});
   }
 }

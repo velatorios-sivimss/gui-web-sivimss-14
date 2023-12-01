@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { AlertaService } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { BusquedaConveniosPFServic } from '../../../../services/busqueda-convenios-pf.service';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { DatosGeneralesRenovacion } from '../../../../models/DatosGeneralesRenovacion.interface';
 
 @Component({
   selector: 'app-modal-registrar-nuevo-beneficiario',
@@ -8,19 +12,28 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
   styleUrls: ['./modal-registrar-nuevo-beneficiario.component.scss'],
 })
 export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
-  ref!: DynamicDialogRef;
   form!: FormGroup;
-
+  idConvenio: number = 0;
   fechaActual = new Date();
-
+  datosGeneralesRenovacion: DatosGeneralesRenovacion =
+    {} as DatosGeneralesRenovacion;
   dummyDropdown: { label: string; value: number }[] = [
     { label: 'Opción 1', value: 1 },
     { label: 'Opción 2', value: 2 },
   ];
 
-  constructor(private readonly formBuilder: FormBuilder) {}
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    public config: DynamicDialogConfig,
+    private readonly ref: DynamicDialogRef,
+    private alertaService: AlertaService,
+    private consultaConveniosService: BusquedaConveniosPFServic,
+    private loaderService: LoaderService
+  ) {}
 
   ngOnInit(): void {
+    this.idConvenio = this.config.data['idConvenio'];
+    console.log(this.idConvenio);
     this.form = this.crearForm();
   }
 
@@ -156,9 +169,11 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
     return this.form.controls;
   }
 
-  ngOnDestroy() {
-    if (this.ref) {
-      this.ref.close();
-    }
+  guardar(): void {
+    this.ref.close(this.datosGeneralesRenovacion);
+  }
+
+  cerrarModal(): void {
+    this.ref.close();
   }
 }

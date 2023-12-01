@@ -4,9 +4,7 @@ import {
   DynamicDialogConfig,
   DynamicDialogRef,
 } from 'primeng/dynamicdialog';
-import { ModalRegistrarNuevoBeneficiarioComponent } from '../modal-registrar-nuevo-beneficiario/modal-registrar-nuevo-beneficiario.component';
 import { ModalEditarBeneficiarioComponent } from '../modal-editar-beneficiario/modal-editar-beneficiario.component';
-import { ActivatedRoute } from '@angular/router';
 import { Beneficiarios } from '../../../../models/Beneficiarios.interface';
 
 @Component({
@@ -18,10 +16,9 @@ export class ModalDetalleBeneficiariosComponent implements OnInit {
   beneficiarios: Beneficiarios = {} as Beneficiarios;
 
   constructor(
-    private readonly dialogService: DialogService,
+    private dialogService: DialogService,
     public readonly config: DynamicDialogConfig,
-    private ref: DynamicDialogRef,
-    private route: ActivatedRoute
+    private ref: DynamicDialogRef
   ) {}
 
   ngOnInit(): void {
@@ -30,19 +27,23 @@ export class ModalDetalleBeneficiariosComponent implements OnInit {
 
   abrirModalEditarBeneficiario(event: MouseEvent) {
     event.stopPropagation();
-    this.ref.close();
-    this.ref = this.dialogService.open(ModalEditarBeneficiarioComponent, {
-      header: 'Editar beneficiaro',
+
+    const ref = this.dialogService.open(ModalEditarBeneficiarioComponent, {
+      header: 'Editar beneficiario',
       style: { maxWidth: '876px', width: '100%' },
       data: {
         item: this.beneficiarios,
       },
     });
 
-    this.ref.onClose.subscribe((respuesta: any) => {});
+    ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta) {
+        this.beneficiarios = respuesta;
+      }
+    });
   }
 
   cerrarModal(): void {
-    this.ref.close();
+    this.ref.close(this.beneficiarios);
   }
 }
