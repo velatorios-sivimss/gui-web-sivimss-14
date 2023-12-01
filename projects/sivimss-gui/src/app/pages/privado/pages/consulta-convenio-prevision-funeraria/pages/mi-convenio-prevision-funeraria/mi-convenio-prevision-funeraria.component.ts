@@ -17,6 +17,7 @@ import { Beneficiarios } from '../../models/Beneficiarios.interface';
 import { DatosGeneralesRenovacion } from '../../models/DatosGeneralesRenovacion.interface';
 import { ModalRegistrarNuevoBeneficiarioComponent } from './components/modal-registrar-nuevo-beneficiario/modal-registrar-nuevo-beneficiario.component';
 
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 @Component({
   selector: 'app-mi-convenio-prevision-funeraria',
   templateUrl: './mi-convenio-prevision-funeraria.component.html',
@@ -24,6 +25,7 @@ import { ModalRegistrarNuevoBeneficiarioComponent } from './components/modal-reg
 })
 export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   beneficiarios: Beneficiarios[] = [];
+  parentesco: any[] = [];
 
   datosGenerales: DatosGeneralesDetalle = {} as DatosGeneralesDetalle;
   datosGeneralesRenovacion: DatosGeneralesRenovacion =
@@ -41,6 +43,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
 
   ngOnInit(): void {
     this.detalleConvenio();
+    this.buscarParentesco();
   }
 
   detalleConvenio() {
@@ -102,6 +105,9 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
         style: { maxWidth: '876px', width: '100%' },
         data: {
           idConvenio: this.datosGenerales.idConvenio,
+          parentesco: this.parentesco,
+          idVelatorio: this.datosGenerales.idVelatorio,
+          velatorio: this.datosGenerales.velatorio,
         },
       }
     );
@@ -130,5 +136,36 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
       },
     });
     this.ref.onClose.subscribe((respuesta: any) => {});
+  }
+
+  buscarParentesco() {
+    this.consultaConveniosService
+      .parentesco()
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            console.log(respuesta.mensaje);
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+            );
+            return;
+          }
+
+          this.parentesco = mapearArregloTipoDropdown(
+            respuesta.datos,
+            'nombreParentesco',
+            'idParentesco'
+          );
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(
+            TipoAlerta.Error,
+            'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+          );
+        },
+      });
   }
 }

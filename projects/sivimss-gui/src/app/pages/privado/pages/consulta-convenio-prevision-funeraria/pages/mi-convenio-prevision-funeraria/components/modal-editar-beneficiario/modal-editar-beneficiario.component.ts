@@ -192,7 +192,6 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
   }
 
   guardar(): void {
-    console.log(this.form.valid);
     if (!this.form.valid) {
       return;
     }

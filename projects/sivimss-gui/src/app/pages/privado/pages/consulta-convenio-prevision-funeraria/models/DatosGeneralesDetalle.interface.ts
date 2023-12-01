@@ -11,4 +11,6 @@ export interface DatosGeneralesDetalle {
   primerApellido: string;
   segundoApellido: string;
   estatus: string;
+  idVelatorio: number;
+  velatorio: string;
 }

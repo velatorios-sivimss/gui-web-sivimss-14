@@ -21,20 +21,20 @@ export class BusquedaConveniosPFServic extends BaseService<
 
   consultarConvenios(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
-      this._base + `/mis-convenios`,
+      this._base + `convenio-pf/mis-convenios`,
       parametros
     );
   }
 
   detalleConvenio(idConvenio: string): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(
-      this._base + '/detalle-convenio/' + idConvenio
+      this._base + 'convenio-pf/detalle-convenio/' + idConvenio
     );
   }
 
   descargarConvenio(parametros: any): Observable<Blob> {
     return this._http.post<Blob>(
-      this._base + `/generarDocumentoNuevoPlan`,
+      this._base + `convenio-pf/generarDocumentoNuevoPlan`,
       parametros,
       {
         responseType: 'blob' as 'json',
@@ -44,8 +44,14 @@ export class BusquedaConveniosPFServic extends BaseService<
 
   actualizarBeneficiario(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
-      this._base + `/actualizar-beneficiario`,
+      this._base + `convenio-pf/actualizar-beneficiario`,
       parametros
+    );
+  }
+
+  parentesco(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      this._base + 'catalogo/parentesco'
     );
   }
 }

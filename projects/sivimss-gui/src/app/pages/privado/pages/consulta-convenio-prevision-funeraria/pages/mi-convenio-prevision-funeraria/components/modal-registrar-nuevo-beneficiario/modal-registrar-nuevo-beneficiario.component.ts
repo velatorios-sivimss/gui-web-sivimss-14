@@ -15,6 +15,9 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
   form!: FormGroup;
   idConvenio: number = 0;
   fechaActual = new Date();
+  parentesco: any[] = [];
+  idVelatorio!: number;
+  velatorio!: string;
   datosGeneralesRenovacion: DatosGeneralesRenovacion =
     {} as DatosGeneralesRenovacion;
   dummyDropdown: { label: string; value: number }[] = [
@@ -33,6 +36,9 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
 
   ngOnInit(): void {
     this.idConvenio = this.config.data['idConvenio'];
+    this.parentesco = this.config.data['parentesco'];
+    this.idVelatorio = this.config.data['idVelatorio'];
+    this.velatorio = this.config.data['velatorio'];
     console.log(this.idConvenio);
     this.form = this.crearForm();
   }
@@ -42,28 +48,28 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
       nombre: [
         {
           value: null,
-          disabled: false,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       primerApellido: [
         {
           value: null,
-          disabled: false,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       segundoApellido: [
         {
           value: null,
-          disabled: false,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       edad: [
         {
           value: null,
-          disabled: false,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
@@ -72,7 +78,7 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
           value: null,
           disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.required],
       ],
       curp: [
         {
@@ -93,35 +99,35 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
           value: null,
           disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.required],
       ],
       fecha: [
         {
           value: null,
-          disabled: false,
+          disabled: true,
         },
-        [Validators.nullValidator],
+        [Validators.required],
       ],
       correoElectronico: [
         {
           value: null,
           disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.required],
       ],
       velatorio: [
         {
-          value: null,
-          disabled: false,
+          value: this.config.data['velatorio'],
+          disabled: true,
         },
-        [Validators.nullValidator],
+        [Validators.required],
       ],
       telefono: [
         {
           value: null,
           disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.required],
       ],
     });
   }

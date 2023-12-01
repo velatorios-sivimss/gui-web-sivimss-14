@@ -1,6 +1,12 @@
 <form [formGroup]="form">
     <div class="row mb-3">
         <div class="col-md-4">
+            <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
+            <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa curp">
+            <span class="campo-obligatorio" *ngIf="f.curp?.errors?.required  && (f.curp?.dirty || f.curp?.touched)">Este
+                campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-4">
             <label class="control-label" for="nombre">Nombre:</label>
             <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
         </div>
@@ -9,30 +15,32 @@
             <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
                 placeholder="Ingresa primerApellido">
         </div>
+
+    </div>
+    <div class="row mb-3">
         <div class="col-md-4">
             <label class="control-label" for="segundoApellido">Segundo apellido:</label>
             <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
         </div>
-    </div>
-    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="control-label" for="fecha">Fecha:</label>
+            <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"
+                dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual"></p-calendar>
+        </div>
         <div class="col-md-4">
             <label class="control-label" for="edad">Edad:</label>
             <input id="edad" type="text" class="form-control" formControlName="edad" placeholder="Ingresa edad">
         </div>
+
+
+    </div>
+    <div class="row mb-3">
         <div class="col-md-4">
             <label class="control-label" for="parentesco">Parentesco<span class="req">*</span>:</label>
             <p-dropdown id="parentesco" class="form-control" formControlName="parentesco" appendTo="body"
-                placeholder="Selecciona parentesco" [options]="dummyDropdown" [filter]="true"
+                placeholder="Selecciona parentesco" [options]="parentesco" [filter]="true"
                 filterBy="label"></p-dropdown>
         </div>
-        <div class="col-md-4">
-            <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
-            <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa curp">
-            <span class="campo-obligatorio" *ngIf="f.curp?.errors?.required  && (f.curp?.dirty || f.curp?.touched)">Este
-                campo es obligatorio *.</span>
-        </div>
-    </div>
-    <div class="row mb-3">
         <div class="col-md-4">
             <label class="control-label" for="rfc">RFC:</label>
             <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa rfc">
@@ -46,11 +54,7 @@
                 <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
             </div>
         </div>
-        <div class="col-md-4">
-            <label class="control-label" for="fecha">Fecha:</label>
-            <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"
-                dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual"></p-calendar>
-        </div>
+
     </div>
 
     <div class="row mb-3">
@@ -61,9 +65,8 @@
         </div>
         <div class="col-md-4">
             <label class="control-label" for="velatorio">Velatorio:</label>
-            <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" appendTo="body"
-                placeholder="Selecciona velatorio" [options]="dummyDropdown" [filter]="true"
-                filterBy="label"></p-dropdown>
+            <input id="velatorio" type="text" class="form-control" formControlName="velatorio" placeholder=" ">
+
         </div>
         <div class="col-md-4">
             <label class="control-label" for="telefono">Teléfono:</label>
