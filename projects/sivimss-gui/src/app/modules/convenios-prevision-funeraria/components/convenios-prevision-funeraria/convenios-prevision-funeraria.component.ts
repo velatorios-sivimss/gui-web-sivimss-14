@@ -573,7 +573,7 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   generarReporteConvenioNuevo(): void {
-    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Convenio PF Nuevo" };
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Adenda de renovación anual" };
     this.cargadorService.activar();
     const datosBusqueda: ReporteConvenioPlanNuevo = {
       folio: this.convenioSeleccionado.folioConvenio,
