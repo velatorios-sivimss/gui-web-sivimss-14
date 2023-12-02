@@ -84,6 +84,7 @@ export class RealizarPagoComponent implements OnInit {
 
   realizarPagoModal: boolean = false;
   central!: boolean;
+  rol!: number;
 
   constructor(private breadcrumbService: BreadcrumbService,
               private formBuilder: FormBuilder,
@@ -96,6 +97,8 @@ export class RealizarPagoComponent implements OnInit {
               private descargaArchivosService: DescargaArchivosService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.rol = +usuario.idRol;
   }
 
   ngOnInit(): void {
