@@ -128,13 +128,19 @@
             </a>
             <div *ngIf="rol === 13; then admin; else notAdmin"></div>
             <ng-template #admin>
-              <a (click)="abrirPanel($event,pago)">
+              <a (click)="abrirPanel($event,pago)"
+                 *ngIf="habilitaIrPago.includes(pago.estatus) || habilitaIrPagoEstatus.includes(pago.estatusPago) ||
+                 habilitaModificar.includes(pago.estatus) || habilitaModificarPago.includes(pago.estatusPago); else emptyDivAdmin">
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
+              <ng-template #emptyDivAdmin>
+                <div class="pl-7"></div>
+              </ng-template>
             </ng-template>
             <ng-template #notAdmin>
               <a (click)="abrirPanel($event,pago)"
-                 *ngIf="habilitaIrPago.includes(pago.estatus) || habilitaIrPagoEstatus.includes(pago.estatusPago); else emptyDiv">
+                 *ngIf="habilitaIrPago.includes(pago.estatus) || habilitaIrPagoEstatus.includes(pago.estatusPago);
+                  else emptyDiv">
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
               <ng-template #emptyDiv>
