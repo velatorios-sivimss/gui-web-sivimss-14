@@ -126,7 +126,7 @@
             <a (click)="abrirModalDetallePago(pago)" [routerLink]="['./detalle-de-pago', pago.idPagoBitacora]">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
-            <div *ngIf="rol === 13; then admin; else notAdmin"></div>
+            <ng-container *ngIf="rol === 13; then admin; else notAdmin"></ng-container>
             <ng-template #admin>
               <a (click)="abrirPanel($event,pago)"
                  *ngIf="habilitaIrPago.includes(pago.estatus) || habilitaIrPagoEstatus.includes(pago.estatusPago) ||
@@ -134,7 +134,7 @@
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
               <ng-template #emptyDivAdmin>
-                <div class="pl-7"></div>
+                <a></a>
               </ng-template>
             </ng-template>
             <ng-template #notAdmin>
@@ -144,7 +144,7 @@
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
               <ng-template #emptyDiv>
-                <div class="pl-7"></div>
+                <a></a>
               </ng-template>
             </ng-template>
           </div>
