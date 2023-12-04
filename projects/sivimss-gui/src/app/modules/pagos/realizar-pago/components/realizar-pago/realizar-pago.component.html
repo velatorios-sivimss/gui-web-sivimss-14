@@ -126,9 +126,27 @@
             <a (click)="abrirModalDetallePago(pago)" [routerLink]="['./detalle-de-pago', pago.idPagoBitacora]">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
-            <a (click)="abrirPanel($event,pago)">
-              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-            </a>
+            <div *ngIf="rol === 13; then admin; else notAdmin"></div>
+            <ng-template #admin>
+              <a (click)="abrirPanel($event,pago)"
+                 *ngIf="habilitaIrPago.includes(pago.estatus) || habilitaIrPagoEstatus.includes(pago.estatusPago) ||
+                 habilitaModificar.includes(pago.estatus) || habilitaModificarPago.includes(pago.estatusPago); else emptyDivAdmin">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+              </a>
+              <ng-template #emptyDivAdmin>
+                <div class="pl-7"></div>
+              </ng-template>
+            </ng-template>
+            <ng-template #notAdmin>
+              <a (click)="abrirPanel($event,pago)"
+                 *ngIf="habilitaIrPago.includes(pago.estatus) || habilitaIrPagoEstatus.includes(pago.estatusPago);
+                  else emptyDiv">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+              </a>
+              <ng-template #emptyDiv>
+                <div class="pl-7"></div>
+              </ng-template>
+            </ng-template>
           </div>
         </td>
       </tr>
@@ -167,14 +185,16 @@
       <app-overlay-panel-opcion titulo="Ir a Pago" *ngIf="habilitaIrPago.includes(pagoSeleccionado.estatus) ||
         habilitaIrPagoEstatus.includes(pagoSeleccionado.estatusPago)" (click)="redireccionPago()">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) ||
+      <ng-container *ngIf="rol === 13">
+        <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) ||
         habilitaModificarPago.includes(pagoSeleccionado.estatusPago)" (click)="modificarPago()">
-      </app-overlay-panel-opcion>
+        </app-overlay-panel-opcion>
+      </ng-container>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
 
-<p-dialog header="Registrar tipo de pago" [(visible)]="realizarPagoModal">
+<p-dialog header="Registrar tipo de pago" [(visible)]="realizarPagoModal" [modal]="true">
   <div class="w-740">
     <div class="row flex justify-content-center mb-4 ">
       <button type="button" class="btn btn-primary btn-lg btn-md w-500" [routerLink]="'./pago-orden-servicio'">
