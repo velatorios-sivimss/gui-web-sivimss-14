@@ -330,7 +330,12 @@ export class SolicitarFacturaComponent implements OnInit {
       tipoFactura,
       tipoPersona: this.registroRFC!.tipoPersona,
       totalPagado: this.registroContratante!.totalPagado.toString(),
-      totalServicios: this.registroContratante!.totalServicios.toString()
+      totalServicios: this.registroContratante!.totalServicios.toString(),
+      finado: {
+        fecFinado: this.registroContratante!.finado.fecFinado,
+        idFinado: this.registroContratante!.finado.idFinado,
+        nomFinado: this.registroContratante!.finado.nomFinado
+      }
     }
   }
 
@@ -345,8 +350,8 @@ export class SolicitarFacturaComponent implements OnInit {
 
   crearObservacionesODS(): string {
     const folio = this.solicitudForm.get('folio')?.value
-    const finado = '';
-    const fechaFinado = '';
+    const finado: string = this.registroContratante?.finado.nomFinado ?? '';
+    const fechaFinado: string = this.registroContratante?.finado.fecFinado ?? '';
     const idMetodoPago = this.datosCFDIForm.get('metodoPago')?.value;
     const metodoPago: string = this.metodosPago.find(mP => mP.value === idMetodoPago)?.label ?? '';
     const idFormaPago = this.datosCFDIForm.get('formaPago')?.value;
