@@ -152,9 +152,8 @@ export class RealizarPagoComponent implements OnInit {
   limpiarFormulario(): void {
     if (!this.filtroPagoForm) return;
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    const nivel: number = obtenerNivelUsuarioLogueado(usuario);
-    const velatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
-    const DEFAULT: FiltroBasico = {nivel, velatorio}
+    const idVelatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
+    const DEFAULT: FiltroBasico = {idVelatorio}
     this.filtroFormDir.resetForm(DEFAULT);
     this.tipoFolio = null;
   }
@@ -259,8 +258,9 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   paginar(): void {
+    const filtros: FiltroBasico = this.crearSolicitudFiltrosBasica();
     this.cargadorService.activar();
-    this.realizarPagoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+    this.realizarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusqueda(respuesta),
       error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
@@ -287,6 +287,13 @@ export class RealizarPagoComponent implements OnInit {
       idVelatorio: velatorio === 0 ? null : velatorio,
       nomContratante: this.filtroPagoForm.get('nombreContratante')?.value,
       idFlujoPagos: this.tipoFolio
+    }
+  }
+
+  crearSolicitudFiltrosBasica(): FiltroBasico {
+    const velatorio = this.filtroPagoForm.get('velatorio')?.value
+    return {
+      idVelatorio: velatorio === 0 ? null : velatorio
     }
   }
 
