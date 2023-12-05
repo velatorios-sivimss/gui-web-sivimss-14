@@ -31,7 +31,7 @@ import {
 } from "../estatus-convenio-prevision-funeraria/estatus-convenio-prevision-funeraria.component";
 import { RenovarConvenioPfService } from '../../../renovar-convenio-pf/services/renovar-convenio-pf.service';
 import { ReporteAnexoDiez, ReporteConvenioPlanAnterior, ReporteConvenioPlanNuevo } from '../../../renovar-convenio-pf/models/convenio.interface';
-import {PlantillaConvenioInterface} from "../../models/plantilla-convenio.interface";
+import { PlantillaConvenioInterface } from "../../models/plantilla-convenio.interface";
 
 
 @Component({
@@ -559,7 +559,13 @@ export class ConsultaConveniosComponent implements OnInit {
 
 
   renovarConvenio(): void {
-    void this.router.navigate(['/convenios-prevision-funeraria/renovar-convenio-pf'], { relativeTo: this.activatedRoute });
+    void this.router.navigate(['/convenios-prevision-funeraria/renovar-convenio-pf'], {
+      queryParams: {
+        folio: this.convenioSeleccionado.folioConvenio,
+        tipoPlan: this.convenioSeleccionado.tipoPlan
+      },
+      relativeTo: this.activatedRoute
+    });
   }
 
   modificarConvenio(): void {
@@ -677,10 +683,10 @@ export class ConsultaConveniosComponent implements OnInit {
     const configuracionArchivo: OpcionesArchivos = {};
     const plantilla = this.generarDatosPlantilla();
     this.consultaConvenioService.reporteConvenioNuevo(plantilla).pipe(
-      finalize(()=>this.cargadorService.desactivar())
+      finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: any): void => {
-        const file = new Blob([respuesta], {type: 'application/pdf'});
+        const file = new Blob([respuesta], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(file);
         window.open(url);
       },
