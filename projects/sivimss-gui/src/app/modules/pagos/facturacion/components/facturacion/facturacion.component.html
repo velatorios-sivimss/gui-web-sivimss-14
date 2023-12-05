@@ -3,7 +3,7 @@
   <app-titulo-principal titulo="Facturación" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm">
+  <form [formGroup]="filtroForm" (submit)="buscar()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="velatorio">Velatorios:</label>
@@ -69,7 +69,7 @@
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
         <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">
-          Limpiar Filtros
+          Limpiar
         </button>
         <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar
         </button>

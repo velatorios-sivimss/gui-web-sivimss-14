@@ -163,6 +163,7 @@ export class SolicitarFacturaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.registroContratante = respuesta.datos;
         this.datosContratanteForm.get('rfc')?.setValue(this.registroContratante!.rfc)
+        this.datosContratanteForm.get('correoElectronico')?.setValue(this.registroContratante!.correo)
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
@@ -347,18 +348,18 @@ export class SolicitarFacturaComponent implements OnInit {
     const finado = '';
     const fechaFinado = '';
     const idMetodoPago = this.datosCFDIForm.get('metodoPago')?.value;
-    const metodoPago = this.metodosPago.find(mP => mP.value === idMetodoPago)?.label ?? '';
+    const metodoPago: string = this.metodosPago.find(mP => mP.value === idMetodoPago)?.label ?? '';
     const idFormaPago = this.datosCFDIForm.get('formaPago')?.value;
-    const formaPago = this.formasPago.find(fP => fP.value === idFormaPago)?.label ?? '';
+    const formaPago: string = this.formasPago.find(fP => fP.value === idFormaPago)?.label ?? '';
     return `${folio} ${finado} ${fechaFinado} ${metodoPago} ${formaPago}`;
   }
 
   crearObservacionesConvenio(): string {
     const folio = this.solicitudForm.get('folio')?.value
     const idMetodoPago = this.datosCFDIForm.get('metodoPago')?.value;
-    const metodoPago = this.metodosPago.find(mP => mP.value === idMetodoPago)?.label ?? '';
+    const metodoPago: string = this.metodosPago.find(mP => mP.value === idMetodoPago)?.label ?? '';
     const idFormaPago = this.datosCFDIForm.get('formaPago')?.value;
-    const formaPago = this.formasPago.find(fP => fP.value === idFormaPago)?.label ?? '';
+    const formaPago: string = this.formasPago.find(fP => fP.value === idFormaPago)?.label ?? '';
     return `${folio} ${metodoPago} ${formaPago}`;
   }
 

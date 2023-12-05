@@ -24,6 +24,8 @@ import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {CATALOGOS_DUMMIES} from '../../../articulos/constants/dummies';
 import {ModalComisionComponent} from '../modal-comision/modal-comision.component';
 import * as moment from "moment/moment";
+import {LazyLoadEvent} from "primeng/api";
+import {validarUsuarioLogueado} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-detalle-comision',
@@ -47,8 +49,8 @@ export class DetalleComisionComponent implements OnInit {
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
   totalElementos: number = 0;
   detallePromotor!: DetallePromotor;
-  detalleODS!: DetalleODS[];
-  detalleConveniosPF!: DetalleConvenioPF[];
+  detalleODS: DetalleODS[] = [];
+  detalleConveniosPF: DetalleConvenioPF[] = [];
   listaComisiones!: DetalleComisiones[];
   formComisiones!: FormGroup;
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
@@ -58,6 +60,13 @@ export class DetalleComisionComponent implements OnInit {
   totalConveniosPF: number = 0;
   minDate!: Date;
   maxDate!: Date;
+
+  numPaginaActualOrdenes: number = 0;
+  totalElementosOrdenes: number = 0;
+
+  numPaginaActualConvenios: number = 0;
+  totalElementosConvenios: number = 0;
+
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -69,7 +78,7 @@ export class DetalleComisionComponent implements OnInit {
     private cargadorService: LoaderService,
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
   }
 
@@ -77,7 +86,6 @@ export class DetalleComisionComponent implements OnInit {
     if (!this.detalleForm) {
       const respuesta = this.route.snapshot.data["respuesta"];
       this.detallePromotor = respuesta[this.POSICION_DETALLE_COMISION]?.datos[this.POSICION_DETALLE_COMISION];
-      this.detalleODS = respuesta[this.POSICION_DETALLE_ODS]?.datos?.content ?? [];
       this.detalleConveniosPF = respuesta[this.POSICION_DETALLE_CONVENIOS_PF]?.datos?.content ?? [];
       this.minDate = new Date();
       this.maxDate = new Date();
@@ -114,7 +122,58 @@ export class DetalleComisionComponent implements OnInit {
     });
   }
 
-  obtenerDetalleComision() {
+  seleccionarPaginacionODS(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
+    if (event) {
+      this.numPaginaActualOrdenes = Math.floor((event.first ?? 0) / (event.rows ?? 1));
+    }
+    this.paginarODS();
+  }
+
+  seleccionarPaginacionConvenios(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
+    if (event) {
+      this.numPaginaActualConvenios = Math.floor((event.first ?? 0) / (event.rows ?? 1));
+    }
+    this.paginarConvenios();
+  }
+
+  paginarODS(): void {
+    this.cargadorService.activar();
+    const idComision = +(this.route.snapshot.paramMap.get('id') ?? 0);
+    this.calculoComisionesService.obtenerDetalleODS(idComision, this.numPaginaActualOrdenes, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusquedaODS(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
+    });
+  }
+
+  paginarConvenios(): void {
+    this.cargadorService.activar();
+    const idComision = +(this.route.snapshot.paramMap.get('id') ?? 0);
+    this.calculoComisionesService.obtenerDetalleConveniosPF(idComision, this.numPaginaActualConvenios, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusquedaConvenios(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
+    });
+  }
+
+  private manejarRespuestaBusquedaConvenios(respuesta: HttpRespuesta<any>): void {
+    this.detalleConveniosPF = respuesta.datos.content ?? [];
+    this.totalElementosConvenios = respuesta.datos.totalElements;
+  }
+
+  private manejarRespuestaBusquedaODS(respuesta: HttpRespuesta<any>): void {
+    this.detalleODS = respuesta.datos.content ?? [];
+    this.totalElementosOrdenes = respuesta.datos.totalElements;
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
+  }
+
+  obtenerDetalleComision(): void {
     this.listaComisiones = [];
     if (this.detallePromotor.idPromotor) {
       const filtros: FiltroComisiones = this.filtrosCalculoComision();

@@ -3,7 +3,7 @@
   <app-titulo-principal titulo="Pagos / Realizar pago" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (submit)="buscar()" (reset)="limpiar()">
+  <form [formGroup]="filtroPagoForm" (submit)="buscar()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivelRealizarPago">Nivel:</label>
@@ -14,7 +14,8 @@
       <div class="col-md-6">
         <label class="control-label" for="velatorioRealizarPago">Velatorio:</label>
         <p-dropdown appendTo="body" id="velatorioRealizarPago" class="form-control" formControlName="velatorio"
-                    [options]="catalogoVelatorios" placeholder="Seleccione el velatorio">
+                    [options]="catalogoVelatorios" placeholder="Seleccione el velatorio" [filter]="true"
+                    filterBy="label">
         </p-dropdown>
       </div>
     </div>
@@ -22,14 +23,16 @@
       <div class="col-md-6">
         <label class="control-label" for="folioOrden">Folio de la orden de servicio inmediato (ODS):</label>
         <p-dropdown appendTo="body" id="folioOrden" class="form-control" formControlName="folioOrden"
-                    [options]="foliosODS" placeholder="Seleccione el folio" (onChange)="limpiarFolios(1)">
+                    [options]="foliosODS" placeholder="Seleccione el folio" (onChange)="limpiarFolios(1)"
+                    [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="folioConvenio">Folio del nuevo convenio de previsión funeraria
           (PNCPF):</label>
         <p-dropdown appendTo="body" id="folioConvenio" class="form-control" formControlName="folioConvenio"
-                    [options]="foliosPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(2)">
+                    [options]="foliosPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(2)"
+                    [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
     </div>
@@ -38,7 +41,8 @@
         <label class="control-label" for="folioRenovacion">Folio de la renovación de convenios de previsión funeraria
           (PRCPF):</label>
         <p-dropdown appendTo="body" id="folioRenovacion" class="form-control" formControlName="folioRenovacion"
-                    [options]="foliosRevPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(3)">
+                    [options]="foliosRevPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(3)"
+                    [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-6">
@@ -59,14 +63,14 @@
             <p-calendar id="periodoInicio" formControlName="periodoInicio" styleClass="form-control" [showIcon]="true"
                         placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
                         (onSelect)="validarMismaFechaInicioFin()"
-                        [maxDate]="filtroForm.get('periodoFin')?.value || fechaAnterior">
+                        [maxDate]="filtroPagoForm.get('periodoFin')?.value || fechaAnterior">
             </p-calendar>
           </div>
           <div class="col-md-6">
             <p-calendar id="periodoFin" formControlName="periodoFin" styleClass="form-control" [showIcon]="true"
                         placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
                         (onSelect)="validarMismaFechaInicioFin()"
-                        [minDate]="filtroForm.get('periodoInicio')?.value" [maxDate]="fechaActual">
+                        [minDate]="filtroPagoForm.get('periodoInicio')?.value" [maxDate]="fechaActual">
             </p-calendar>
           </div>
         </div>
@@ -74,10 +78,10 @@
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">
-          Limpiar filtros
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroPagoForm.pristine">
+          Limpiar
         </button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroPagoForm.pristine">Buscar
         </button>
       </div>
     </div>
@@ -122,9 +126,27 @@
             <a (click)="abrirModalDetallePago(pago)" [routerLink]="['./detalle-de-pago', pago.idPagoBitacora]">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
-            <a (click)="abrirPanel($event,pago)">
-              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-            </a>
+            <ng-container *ngIf="rol === 13; then admin; else notAdmin"></ng-container>
+            <ng-template #admin>
+              <a (click)="abrirPanel($event,pago)"
+                 *ngIf="habilitaIrPago.includes(pago.estatus) || habilitaIrPagoEstatus.includes(pago.estatusPago) ||
+                 habilitaModificar.includes(pago.estatus) || habilitaModificarPago.includes(pago.estatusPago); else emptyDivAdmin">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+              </a>
+              <ng-template #emptyDivAdmin>
+                <a></a>
+              </ng-template>
+            </ng-template>
+            <ng-template #notAdmin>
+              <a (click)="abrirPanel($event,pago)"
+                 *ngIf="habilitaIrPago.includes(pago.estatus) || habilitaIrPagoEstatus.includes(pago.estatusPago);
+                  else emptyDiv">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+              </a>
+              <ng-template #emptyDiv>
+                <a></a>
+              </ng-template>
+            </ng-template>
           </div>
         </td>
       </tr>
@@ -163,14 +185,16 @@
       <app-overlay-panel-opcion titulo="Ir a Pago" *ngIf="habilitaIrPago.includes(pagoSeleccionado.estatus) ||
         habilitaIrPagoEstatus.includes(pagoSeleccionado.estatusPago)" (click)="redireccionPago()">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) ||
+      <ng-container *ngIf="rol === 13">
+        <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) ||
         habilitaModificarPago.includes(pagoSeleccionado.estatusPago)" (click)="modificarPago()">
-      </app-overlay-panel-opcion>
+        </app-overlay-panel-opcion>
+      </ng-container>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
 
-<p-dialog header="Registrar tipo de pago" [(visible)]="realizarPagoModal">
+<p-dialog header="Registrar tipo de pago" [(visible)]="realizarPagoModal" [modal]="true">
   <div class="w-740">
     <div class="row flex justify-content-center mb-4 ">
       <button type="button" class="btn btn-primary btn-lg btn-md w-500" [routerLink]="'./pago-orden-servicio'">
