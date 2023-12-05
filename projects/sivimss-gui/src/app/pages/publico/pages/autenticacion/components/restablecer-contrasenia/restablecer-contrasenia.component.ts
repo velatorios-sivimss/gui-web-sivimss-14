@@ -27,7 +27,7 @@ export class RestablecerContraseniaComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly formBuilder: FormBuilder,
     private readonly loaderService: LoaderService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((params) => {
@@ -39,12 +39,13 @@ export class RestablecerContraseniaComponent implements OnInit {
   inicializarForm(): void {
     this.form = this.formBuilder.group(
       {
-        usuario: [{ value: this.usuario, disabled: true }],
+        usuario: [{ value: this.usuario, disabled: this.usuario ? true : false }],
         contraseniaNueva: [
           '',
           [Validators.required, Validators.pattern(PATRON_CONTRASENIA)],
         ],
-        contraseniaConfirmacion: ['', [Validators.required]],
+        contraseniaConfirmacion: [
+          '',[Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
       },
       { validators: [confirmacionContraseniadValidator] }
     );

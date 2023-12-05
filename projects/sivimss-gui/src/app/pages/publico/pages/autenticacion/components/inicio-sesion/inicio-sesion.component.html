@@ -6,7 +6,7 @@
     <div class="form-group">
       <label class="control-label" for="usuario">Usuario<span class="req">*</span>:</label>
       <input class="form-control" id="usuario" formControlName="usuario" placeholder="Ingresar usuario" type="text"
-        [maxlength]="16" (blur)="usuarioIncorrecto = false">
+        [maxlength]="20" (blur)="usuarioIncorrecto = false">
       <span class="campo-obligatorio"
         *ngIf="f.usuario?.errors?.required && (f.usuario?.dirty || f.usuario?.touched)">Debes capturar tu
         usuario.</span>
@@ -19,7 +19,7 @@
       </div>
       <div class="form-icon">
         <input #input class="form-control" id="contrasenia" formControlName="contrasenia"
-          placeholder="Ingresar contraseña" type="password" [maxlength]="16" (blur)="contraseniaIncorrecta = false">
+          placeholder="Ingresar contraseña" type="password" [maxlength]="15" (blur)="contraseniaIncorrecta = false">
         <i class="cursor-pointer icon pi pi-eye" (click)="input.type = input.type==='password'?'text':'password'"></i>
       </div>
       <span class="campo-obligatorio"
@@ -32,9 +32,7 @@
     </div>
     <div class="flex justify-content-end align-items-center mt-3 mb-4 flex-wrap">
       <button class="btn btn-default btn-lg" routerLink="../../registro-en-linea">Registrarse</button>
-      <!-- <button class="btn btn-primary btn-lg ml-5" type="button"
-        routerLink="../../../externo-privado/consultar-mis-servicios-en-linea" (click)="acceder()">Acceder</button> -->
-      <button class="btn btn-primary btn-lg ml-5" type="button" (click)="acceder()">Acceder</button>
+      <button class="btn btn-primary btn-lg ml-5" type="button" (click)="acceder()" [disabled]="form.invalid">Iniciar Sesión</button>
     </div>
   </form>
 </div>

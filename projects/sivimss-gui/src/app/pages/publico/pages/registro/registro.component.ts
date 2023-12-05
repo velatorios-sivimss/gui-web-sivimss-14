@@ -192,7 +192,7 @@ export class RegistroComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.required],
+          [Validators.required, Validators.minLength(5)],
         ],
         colonia: [
           {
@@ -265,7 +265,13 @@ export class RegistroComponent implements OnInit {
   }
 
   obtenerCP(): void {
-    if (!this.domicilio.codigoPostal.value) { return }
+    if (!this.domicilio.codigoPostal.value || this.domicilio.codigoPostal.invalid) {
+      this.colonias = [];
+      this.domicilio.estado.setValue(null);
+      this.domicilio.municipio.setValue(null);
+      this.domicilio.colonia.markAsTouched();
+      return
+    }
     this.loaderService.activar();
     this.registroService.consutaCP(this.domicilio.codigoPostal.value).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -275,6 +281,11 @@ export class RegistroComponent implements OnInit {
           this.colonias = mapearArregloTipoDropdown(respuesta, 'nombre', 'nombre');
           this.domicilio.estado.setValue(respuesta[0].municipio.entidadFederativa.nombre);
           this.domicilio.municipio.setValue(respuesta[0].municipio.nombre);
+          this.domicilio.colonia.markAsTouched();
+        } else {
+          this.colonias = [];
+          this.domicilio.estado.setValue(null);
+          this.domicilio.municipio.setValue(null);
           this.domicilio.colonia.markAsTouched();
         }
       },
@@ -355,7 +366,7 @@ export class RegistroComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {
-          this.alertaService.mostrar(TipoAlerta.Exito, `Registrado correctamente`);
+          this.alertaService.mostrar(TipoAlerta.Exito, "Se registró exitosamente tu cuenta.\n" + "Hemos enviado tu usuario y contraseña al correo.\n");
           void this.router.navigate(["../autenticacion/inicio-sesion"], { relativeTo: this.activatedRoute });
         } else {
           this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
