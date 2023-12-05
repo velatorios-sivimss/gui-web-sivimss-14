@@ -7,6 +7,8 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
+import {MetodoPago} from "../../modelos/detallePago.interface";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 
 interface SolicitudModificacionPago {
   idPagoDetalle: number,
@@ -76,14 +78,24 @@ export class ModificarTipoPagoComponent implements OnInit {
   }
 
   llenarCatalogos(): void {
-    this.tipoPagoForm.get('tipoPagoAnterior')?.patchValue(this.config.data.metodoPago);
-    this.idPagoDetalle = this.config.data.idPagoDetalle;
-    this.total = this.config.data.importe;
+    const pago: MetodoPago =  this.config.data.pago as MetodoPago
+    this.tipoPagoForm.get('tipoPagoAnterior')?.patchValue(pago.metodoPago);
+    this.tipoPagos = this.seleccionarCatalogosTipoPago();
+    this.tipoPagoForm.get('tipoPago')?.patchValue(pago.idMetodoPago);
+    this.seleccionarId();
+    this.tipoPagoForm.get('fecha')?.patchValue(pago.fechaPago);
+    this.tipoPagoForm.get('noAutorizacion')?.patchValue(pago.numAutorizacion);
+    this.tipoPagoForm.get('nombreBanco')?.patchValue(pago.nomBanco);
+    this.tipoPagoForm.get('importe')?.patchValue(pago.importe);
+    this.idPagoDetalle = pago.idPagoDetalle;
+    this.total = pago.importe;
+  }
+
+  seleccionarCatalogosTipoPago(): TipoDropdown[] {
     if (this.config.data.tipoPago === 'Pago de Orden de Servicio') {
-      this.tipoPagos = TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value));
-      return;
+      return TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value));
     }
-    this.tipoPagos = TIPO_PAGO_CATALOGOS_CONVENIO;
+    return TIPO_PAGO_CATALOGOS_CONVENIO;
   }
 
   seleccionarId(): void {
