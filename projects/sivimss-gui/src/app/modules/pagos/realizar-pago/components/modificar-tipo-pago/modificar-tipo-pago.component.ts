@@ -5,7 +5,6 @@ import {TIPO_PAGO_CATALOGOS_CONVENIO, TIPO_PAGO_CATALOGOS_ODS} from "../../const
 import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
-import {Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MetodoPago} from "../../modelos/detallePago.interface";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
@@ -48,7 +47,6 @@ export class ModificarTipoPagoComponent implements OnInit {
     private realizarPagoService: RealizarPagoService,
     private mensajesSistemaService: MensajesSistemaService,
     private alertaService: AlertaService,
-    private router: Router,
   ) {
   }
 
@@ -161,9 +159,6 @@ export class ModificarTipoPagoComponent implements OnInit {
   }
 
   actualizarPagina(): void {
-    const currentUrl: string = this.router.url;
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-      void this.router.navigate([currentUrl]);
-    });
+    window.location.reload();
   }
 }
