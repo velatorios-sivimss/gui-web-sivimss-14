@@ -1,11 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AlertaService } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { BusquedaConveniosPFServic } from '../../../../services/busqueda-convenios-pf.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { DatosGeneralesRenovacion } from '../../../../models/DatosGeneralesRenovacion.interface';
-
+import {
+  PATRON_CORREO,
+  PATRON_CURP,
+  PATRON_RFC,
+} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {
+  AlertaService,
+  TipoAlerta,
+} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 @Component({
   selector: 'app-modal-registrar-nuevo-beneficiario',
   templateUrl: './modal-registrar-nuevo-beneficiario.component.html',
@@ -20,11 +27,10 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
   velatorio!: string;
   datosGeneralesRenovacion: DatosGeneralesRenovacion =
     {} as DatosGeneralesRenovacion;
-  dummyDropdown: { label: string; value: number }[] = [
-    { label: 'Opción 1', value: 1 },
-    { label: 'Opción 2', value: 2 },
-  ];
-
+  documento: string = '';
+  nombreIne: string = '';
+  nombreActa: string = '';
+  esMenorEdad: boolean = false;
   constructor(
     private readonly formBuilder: FormBuilder,
     public config: DynamicDialogConfig,
@@ -39,7 +45,6 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
     this.parentesco = this.config.data['parentesco'];
     this.idVelatorio = this.config.data['idVelatorio'];
     this.velatorio = this.config.data['velatorio'];
-    console.log(this.idConvenio);
     this.form = this.crearForm();
   }
 
@@ -85,14 +90,14 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
           value: null,
           disabled: false,
         },
-        [Validators.required],
+        [Validators.required, Validators.pattern(PATRON_CURP)],
       ],
       rfc: [
         {
           value: null,
           disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.required, Validators.pattern(PATRON_RFC)],
       ],
       actaNacimiento: [
         {
@@ -113,7 +118,7 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
           value: null,
           disabled: false,
         },
-        [Validators.required],
+        [Validators.required, Validators.pattern(PATRON_CORREO)],
       ],
       velatorio: [
         {
@@ -132,54 +137,81 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
     });
   }
 
-  handleClick(controlName: string, formato: string) {
-    // let elements = document.getElementById(`upload-file-${formato}`);
-    // this.controlName = controlName;
-    // elements?.click();
-  }
-
-  addAttachment(fileInput: any) {
-    // const fileReaded = fileInput.target.files[0];
-    // if (this.controlName === 'archivoXml') {
-    //   this.importeFactura = null;
-    //   this.folioFiscal = null;
-    //   let reader = new FileReader();
-    //   reader.onload = () => {
-    //     let xml_content = reader.result ?? '';
-    //     if (typeof xml_content === 'string') {
-    //       let parser = new DOMParser();
-    //       let xmlDoc = parser.parseFromString(xml_content, 'text/xml');
-    //       let comprobante = xmlDoc.getElementsByTagName('cfdi:Comprobante')[0];
-    //       this.importeFactura = Number(comprobante.getAttribute('Total'));
-    //       let complemento = xmlDoc.getElementsByTagName('cfdi:Complemento')[0];
-    //       this.folioFiscal = complemento.getElementsByTagName('tfd:TimbreFiscalDigital')[0].getAttribute('UUID');
-    //       this.generarHojaConsignacionForm.get('folio')?.setValue(this.folioFiscal);
-    //       const formatter = new Intl.NumberFormat("en-US", {
-    //         style: 'currency',
-    //         currency: 'USD',
-    //         minimumFractionDigits: 2,
-    //       });
-    //       this.importeFacturaFormat = formatter.format(this.importeFactura);
-    //     }
-    //   }
-    //   if (fileReaded) reader.readAsText(fileReaded);
-    // }
-    // if (fileReaded) {
-    //   this.generarHojaConsignacionForm.get(this.controlName)?.setValue(fileReaded.name);
-    // } else {
-    //   this.generarHojaConsignacionForm.get(this.controlName)?.setValue(null);
-    // }
-  }
-
   get f() {
     return this.form.controls;
   }
 
   guardar(): void {
-    this.ref.close(this.datosGeneralesRenovacion);
+    this.esMenorEdad = this.f.edad.value >= 18 ? true : false;
+    //this.ref.close(this.datosGeneralesRenovacion);
   }
 
   cerrarModal(): void {
     this.ref.close();
+  }
+
+  handleClick(controlName: string) {
+    let elements = document.getElementById(`upload-file`);
+    console.log(elements);
+    controlName = controlName;
+    elements?.click();
+  }
+
+  getBase64(file: any) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  }
+  addAttachment(fileInput: any) {
+    const maxSize = 5000000;
+    const fileReaded = fileInput.target.files[0];
+
+    if (fileReaded.size > maxSize) {
+      const tamanioEnMb = maxSize / 1000000;
+      this.alertaService.mostrar(
+        TipoAlerta.Info,
+        `El tamaño máximo permititido es de ${tamanioEnMb} MB`
+      );
+
+      this.f.actaNacimiento.reset;
+      return;
+    }
+
+    this.nombreIne = this.f.edad.value >= 18 ? fileReaded.name : null;
+    this.nombreActa = this.f.edad.value < 18 ? fileReaded.name : null;
+    this.f.actaNacimiento = fileReaded.name;
+
+    this.getBase64(fileReaded).then((data: any) => {
+      this.documento = data;
+    });
+  }
+
+  consultarCURP() {
+    if (!this.f.curp.value) {
+      return;
+    }
+    if (this.f.curp?.errors?.pattern) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no valido.');
+      return;
+    }
+  }
+
+  convertirAMayusculas(posicionFormulario: number): void {
+    const formularios = [this.f.curp, this.f.rfc];
+    formularios[posicionFormulario].setValue(
+      formularios[posicionFormulario].value.toUpperCase()
+    );
+  }
+
+  validarCorreoElectronico(): void {
+    if (this.f.correoElectronico?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        'Tu correo electrónico no es válido. '
+      );
+    }
   }
 }
