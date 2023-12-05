@@ -40,12 +40,12 @@
         </div>
         <br>
         <hr class="solid">
-        <section class="flex justify-content-between info-gral-body mt-7 col-md-7">
+        <section class="flex justify-content-between info-gral-body mt-7 col-md-7">-
           <span class="etiqueta-formato">Pagaré
             <span class="etiqueta-formato-val">{{formatoPagare.folioPagare}}</span>
           </span>
           <span class="etiqueta-formato">Bueno por $
-            <span class="etiqueta-formato-val">{{formatoPagare.importe}}</span>
+            <span class="etiqueta-formato-val">{{formatoPagare.importe | currency}}</span>
           </span>
         </section>
 
