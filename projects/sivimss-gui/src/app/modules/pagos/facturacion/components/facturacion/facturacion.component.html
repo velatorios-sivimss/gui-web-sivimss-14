@@ -3,7 +3,7 @@
   <app-titulo-principal titulo="Facturación" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (submit)="buscar()">
+  <form [formGroup]="filtroForm" (submit)="buscar()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="velatorio">Velatorios:</label>
