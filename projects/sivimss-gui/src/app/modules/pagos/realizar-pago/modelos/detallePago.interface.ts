@@ -9,6 +9,7 @@ export interface DetallePago {
 }
 
 export interface MetodoPago {
+  idMetodoPago: number;
   fechaPago: string
   idPagoDetalle: number
   importe: number

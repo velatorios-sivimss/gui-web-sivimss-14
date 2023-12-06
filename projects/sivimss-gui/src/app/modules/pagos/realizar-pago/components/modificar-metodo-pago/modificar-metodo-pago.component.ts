@@ -8,10 +8,9 @@ import {EliminarTipoPagoComponent} from "../eliminar-tipo-pago/eliminar-tipo-pag
 import {DetallePago, MetodoPago} from "../../modelos/detallePago.interface";
 
 interface ParametrosModificar {
-  metodoPago: string,
+ pago: MetodoPago,
   tipoPago: string,
-  importe: number,
-  idPagoDetalle: number
+
 }
 
 interface ParametrosCancelar {
@@ -48,8 +47,8 @@ export class ModificarMetodoPagoComponent implements OnInit {
 
   modificarTipoPago(): void {
     const data: ParametrosModificar = {
-      metodoPago: this.pagoSeleccionado.metodoPago, importe: this.pagoSeleccionado.importe,
-      tipoPago: this.registroPago.tipoPago, idPagoDetalle: this.pagoSeleccionado.idPagoDetalle
+      pago: this.pagoSeleccionado,
+      tipoPago: this.registroPago.tipoPago
     };
     const MODIFICAR_TIPO_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Modificar pago",
