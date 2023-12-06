@@ -67,8 +67,15 @@ export class MapaContratarConvenioPrevisionFunerariaComponent
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap',
       }).addTo(this.map);
+      const map = this.el.nativeElement.querySelector('#map');
+      this.renderer.listen(map, 'click', this.consultarVelatorio.bind(this));
       this.agregarMarcadores();
     },300)
+  }
+  consultarVelatorio(e:any): void{
+    if(e.target.dataset.funeraria && e.target.dataset.nombre){
+      this.seleccionar(e)
+    }
   }
 
   getPosition(): Promise<any> {
@@ -82,51 +89,21 @@ export class MapaContratarConvenioPrevisionFunerariaComponent
     });
   }
 
-  agregarMarker() {
-    L.marker([19.4326296, -99.1331785])
-      .addTo(this.map)
-      .bindPopup(
-        `
-      <div class="custom-popup">
-        <span class="popup-title">No. 01 Doctores</span>
-        <span class="popup-description">Dr. Rafael Lucio No. 237, esquina Dr Isidro Olvera, Col. Doctores,
-            C.P. 06720, Ciudad de México</span>
-        <span class="popup-telephone">55 5607 3412</span>
-        <hr>
-        <span class="info-title">Servicios disponibles</span>
-        <ul>
-          <li class="info-description">Contratar convenio de previsión funeraria</li>
-          <li class="info-description">Contratar plan de servicios funerarios pagos anticipados</li>
-        </ul>
-        <div class="flex justify-content-end">
-          <button class="btn btn-primary btn-md" id="seleccionar" data-funeraria="idFuneraria">Continuar</button>
-        </div>
-     </div>
-`
-      )
-      .openPopup();
-    //Ojo, asegurate que el html ya se haya cargado antes de ejecutar este querySelector.
-
-    const buttonElement = this.el.nativeElement.querySelector('#seleccionar');
-    if (buttonElement) {
-      this.renderer.listen(buttonElement, 'click', this.seleccionar.bind(this));
-    }
-  }
-
   seleccionar(e: any) {
     //Con esto podriamos obtener el id de la funeraria mostrada en el popup
     console.log(e.target.dataset.funeraria);
+    console.log(e.target.dataset.nombre)
     this.router.navigate(
       ['registro-contratacion-convenio-de-prevision-funeraria'],
       {
         relativeTo: this.activatedRoute,
+        queryParams: { idVelatorio: e.target.dataset.funeraria,velatorio:e.target.dataset.nombre}
       }
     );
   }
 
   seleccionarVelatorio(velatorio:number): void {
     let velatorioSeleccionado;
-
     velatorioSeleccionado = this.listaVelatorios.filter((e:any) => {
       return e.idVelatorio == velatorio;
     });
@@ -142,7 +119,8 @@ export class MapaContratarConvenioPrevisionFunerariaComponent
       this.consultarVelatorios(velatorioSeleccionado[0].servicios)
       +`
         <div class="flex justify-content-end">
-          <button class="btn btn-primary btn-md" id="seleccionar" data-funeraria="idFuneraria">Continuar</button>
+          <button class="btn btn-primary btn-md" id="seleccionar"
+          data-nombre="${velatorioSeleccionado[0].nombreVelatorio}" data-funeraria="${velatorioSeleccionado[0].idVelatorio}">Continuar</button>
         </div>
      </div>
     `).openPopup();
@@ -169,11 +147,11 @@ export class MapaContratarConvenioPrevisionFunerariaComponent
         this.consultarVelatorios(velatorio.servicios)
         +`
         <div class="flex justify-content-end">
-          <button class="btn btn-primary btn-md" id="seleccionar" data-funeraria="idFuneraria">Continuar</button>
+          <button class="btn btn-primary btn-md" id="seleccionar"
+          data-nombre="${velatorio.nombreVelatorio}" data-funeraria="${velatorio.idVelatorio}">Continuar</button>
         </div>
      </div>
      `)});
-
   }
   consultarVelatorios(velatorios:any): any {
     let velatorioSeleccion:any = ``;

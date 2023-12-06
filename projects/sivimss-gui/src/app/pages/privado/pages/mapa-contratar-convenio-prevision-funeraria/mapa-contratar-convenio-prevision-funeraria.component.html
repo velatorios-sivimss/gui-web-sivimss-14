@@ -11,8 +11,8 @@
             <i class="pi pi-search"></i>
           </div>
         </div>
-        <div *ngFor="let velatorio of listaVelatorios">
-          <div class="address" (click)="seleccionarVelatorio(velatorio.idVelatorio)">
+        <div class="listadoVelatorios">
+          <div class="address" *ngFor="let velatorio of listaVelatorios" (click)="seleccionarVelatorio(velatorio.idVelatorio)">
             <span class="address-title"> {{velatorio.nombreVelatorio}} </span>
             <span class="address-description">{{velatorio.direccion}}</span>
             <span class="address-telephone">{{velatorio.telefono}}</span>
