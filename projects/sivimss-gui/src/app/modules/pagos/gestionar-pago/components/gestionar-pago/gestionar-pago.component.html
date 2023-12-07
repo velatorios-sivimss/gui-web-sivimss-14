@@ -17,21 +17,24 @@
         <span class="control-label font-bold block">Folio: </span>
         <label class="control-label" for="folioODS">Folio de la Orden de Servicio (ODS): </label>
         <p-dropdown appendTo="body" id="folioODS" class="form-control" formControlName="folioODS"
-                    [options]="foliosODS" placeholder="Ingresa el folio" (onChange)="limpiarFolios(1)">
+                    [options]="foliosODS" placeholder="Ingresa el folio" (onChange)="limpiarFolios(1)"
+                    [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-4">
         <label class="control-label mb-3" for="folioPNCPF">Folio del Nuevo convenio de previsión funeraria
           (PNCPF):</label>
         <p-dropdown appendTo="body" id="folioPNCPF" class="form-control" formControlName="folioPNCPF"
-                    [options]="foliosPNCPF" placeholder="Ingresa el folio" (onChange)="limpiarFolios(2)">
+                    [options]="foliosPNCPF" placeholder="Ingresa el folio" (onChange)="limpiarFolios(2)"
+                    [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-4">
         <label class="control-label mb-3" for="folioPRCPF">Folio de la Renovación de convenios de previsión
           funeraria (PRCPF):</label>
         <p-dropdown appendTo="body" id="folioPRCPF" class="form-control" formControlName="folioPRCPF"
-                    [options]="foliosPRCPF" placeholder="Ingresa el folio" (onChange)="limpiarFolios(3)">
+                    [options]="foliosPRCPF" placeholder="Ingresa el folio" (onChange)="limpiarFolios(3)"
+                    [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
     </div>
