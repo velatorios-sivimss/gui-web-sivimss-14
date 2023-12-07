@@ -110,11 +110,18 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   registrarPago(): void {
-    this.tipoPago = [...TIPO_PAGO_CATALOGOS_ODS];
-    if (this.pagoSeleccionado.valeP > 0 || this.pagoSeleccionado.nss) {
-      this.tipoPago.shift()
-    }
+    this.tipoPago = this.filtrarCatalogosODS();
     this.pagoODSModal = !this.pagoODSModal;
+  }
+
+  filtrarCatalogosODS(): TipoDropdown[] {
+    if (!this.pagoSeleccionado.nss) {
+      return [...TIPO_PAGO_CATALOGOS_ODS].filter(pago => ![1,2].includes(pago.value));
+    }
+    if (this.pagoSeleccionado.valeP > 0) {
+      return [...TIPO_PAGO_CATALOGOS_ODS].filter(pago => ![1].includes(pago.value));
+    }
+    return [...TIPO_PAGO_CATALOGOS_ODS]
   }
 
   seleccionarPago(): void {
