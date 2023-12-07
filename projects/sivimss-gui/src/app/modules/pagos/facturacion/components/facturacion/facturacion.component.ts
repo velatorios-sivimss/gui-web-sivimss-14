@@ -199,9 +199,9 @@ export class FacturacionComponent implements OnInit {
     let folio: string | null = null;
     if (this.tipoPago === 1) folio = this.filtroForm.get('ods')?.value;
     if (this.tipoPago === 2) folio = this.filtroForm.get('folioConvenio')?.value;
-    let fechaFin = this.filtroForm.get('fecha')?.value;
+    let fechaFin = this.filtroForm.get('periodoFin')?.value;
     if (fechaFin) fechaFin = moment(fechaFin).format('YYYY-MM-DD');
-    let fechaInicio = this.filtroForm.get('fecha')?.value;
+    let fechaInicio = this.filtroForm.get('periodoInicio')?.value;
     if (fechaInicio) fechaInicio = moment(fechaInicio).format('YYYY-MM-DD');
     return {
       fechaFin,
