@@ -107,7 +107,8 @@ export class CancelarFacturaComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       }
     })
   }
