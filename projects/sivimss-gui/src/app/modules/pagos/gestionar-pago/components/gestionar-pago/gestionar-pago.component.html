@@ -14,15 +14,14 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-4">
-        <span class="control-label font-bold block">Folio: </span>
-        <label class="control-label" for="folioODS">Folio de la Orden de Servicio (ODS): </label>
+        <label class="control-label md:pb-3 x2l:pb-0" for="folioODS">Folio de la Orden de Servicio (ODS): </label>
         <p-dropdown appendTo="body" id="folioODS" class="form-control" formControlName="folioODS"
                     [options]="foliosODS" placeholder="Ingresa el folio" (onChange)="limpiarFolios(1)"
                     [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-4">
-        <label class="control-label mb-3" for="folioPNCPF">Folio del Nuevo convenio de previsión funeraria
+        <label class="control-label" for="folioPNCPF">Folio del Nuevo convenio de previsión funeraria
           (PNCPF):</label>
         <p-dropdown appendTo="body" id="folioPNCPF" class="form-control" formControlName="folioPNCPF"
                     [options]="foliosPNCPF" placeholder="Ingresa el folio" (onChange)="limpiarFolios(2)"
@@ -30,7 +29,7 @@
         </p-dropdown>
       </div>
       <div class="col-md-4">
-        <label class="control-label mb-3" for="folioPRCPF">Folio de la Renovación de convenios de previsión
+        <label class="control-label" for="folioPRCPF">Folio de la Renovación de convenios de previsión
           funeraria (PRCPF):</label>
         <p-dropdown appendTo="body" id="folioPRCPF" class="form-control" formControlName="folioPRCPF"
                     [options]="foliosPRCPF" placeholder="Ingresa el folio" (onChange)="limpiarFolios(3)"
@@ -85,7 +84,7 @@
         <th pResizableColumn id="columna_gestionar_pago_contratante">Nombre contratante</th>
         <th pResizableColumn id="columna_gestionar_pago_tipo_pago">Tipo de pago</th>
         <th pResizableColumn id="columna_gestionar_pago_total">Total</th>
-        <th pResizableColumn id="columna_gestionar_pago_estatus">Estatus ODS</th>
+        <th pResizableColumn id="columna_gestionar_pago_estatus">Estatus</th>
         <th pResizableColumn id="columna_gestionar_pago_estatus_pago">Estatus de pago</th>
         <th pResizableColumn id="columna_gestionar_pago_datos_pago">Datos de pago</th>
         <th id="columna_gestionar_pago_datos_botones"></th>
