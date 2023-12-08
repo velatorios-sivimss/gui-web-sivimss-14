@@ -76,6 +76,7 @@ export class FacturacionComponent implements OnInit {
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
   mostrarModalDescargaExitosa: boolean = false;
+  rol!: number;
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -90,6 +91,8 @@ export class FacturacionComponent implements OnInit {
     private descargaArchivosService: DescargaArchivosService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.rol = +usuario.idRol;
   }
 
   ngOnInit(): void {

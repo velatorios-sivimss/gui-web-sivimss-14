@@ -72,7 +72,7 @@ export class CancelarFacturaComponent implements OnInit {
     this.activatedRoute.queryParams.pipe(
     ).subscribe(params => {
         const {datos_cancelar} = params;
-        this.registroCancelar = JSON.parse(atob(datos_cancelar));
+        this.registroCancelar = JSON.parse(window.atob(datos_cancelar));
       }
     );
   }
