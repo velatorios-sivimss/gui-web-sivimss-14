@@ -231,18 +231,13 @@
           </ng-template>
           <ng-template pTemplate="body" let-facturaConvenio>
             <tr>
-              <td> {{facturaConvenio?.factura}} </td>
-              <td> {{facturaConvenio?.uuid}} </td>
+              <td> {{facturaConvenio?.idFactura}} </td>
+              <td> {{facturaConvenio?.numeroFactura}} </td>
               <td> {{facturaConvenio?.fecha}} </td>
               <td> {{facturaConvenio?.rfc}} </td>
               <td> {{facturaConvenio?.cliente}} </td>
               <td> {{facturaConvenio?.total}} </td>
-              <td>
-                <div class="contenedor-inputswitch">
-                  <span class="activo" *ngIf="facturaConvenio.estatus">Activo</span>
-                  <span class="inactivo" *ngIf="!facturaConvenio.estatus">Inactivo</span>
-                </div>
-              </td>
+              <td> {{facturaConvenio?.estatusFactura}} </td>
             </tr>
           </ng-template>
         </p-table>
