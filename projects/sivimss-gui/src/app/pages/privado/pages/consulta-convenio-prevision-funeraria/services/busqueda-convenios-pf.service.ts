@@ -54,4 +54,18 @@ export class BusquedaConveniosPFServic extends BaseService<
       this._base + 'catalogo/parentesco'
     );
   }
+
+  buscarCurpRFC(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + 'convenio-pf/validar-curp-rfc',
+      parametros
+    );
+  }
+
+  altaBeneficiario(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `convenio-pf/alta-beneficiario`,
+      parametros
+    );
+  }
 }

@@ -183,8 +183,7 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
     this.actualizaArchivo = true;
     this.nombreIne = this.beneficiarios.edad >= 18 ? fileReaded.name : null;
     this.nombreActa = this.beneficiarios.edad < 18 ? fileReaded.name : null;
-    this.f.actaNacimiento = fileReaded.name;
-    console.log(fileReaded.name);
+    this.f.actaNacimiento.setValue(fileReaded.name);
 
     this.getBase64(fileReaded).then((data: any) => {
       this.documento = data;
@@ -215,6 +214,8 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
       this.beneficiarios.actaNacimiento = this.nombreActa;
     }
 
+    this.loaderService.activar();
+
     this.beneficiarios.correo = this.f.correoElectronico.value;
     this.beneficiarios.telefono = this.f.telefono.value;
     this.consultaConveniosService
@@ -238,8 +239,6 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
           this.alertaService.mostrar(TipoAlerta.Error, this.mensajeError);
         },
       });
-
-    console.log(parametros);
   }
   get f() {
     return this.form.controls;

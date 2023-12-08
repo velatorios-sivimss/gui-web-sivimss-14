@@ -14,7 +14,7 @@ import { Beneficiarios } from '../../../../models/Beneficiarios.interface';
 })
 export class ModalDetalleBeneficiariosComponent implements OnInit {
   beneficiarios: Beneficiarios = {} as Beneficiarios;
-
+  validaModificacion: boolean = false;
   constructor(
     private dialogService: DialogService,
     public readonly config: DynamicDialogConfig,
@@ -23,6 +23,7 @@ export class ModalDetalleBeneficiariosComponent implements OnInit {
 
   ngOnInit(): void {
     this.beneficiarios = this.config.data['item'];
+    this.validaModificacion = this.config.data['validaModificacion'];
   }
 
   abrirModalEditarBeneficiario(event: MouseEvent) {

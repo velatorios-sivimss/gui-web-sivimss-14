@@ -13,6 +13,10 @@ import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { finalize } from 'rxjs';
+import * as moment from 'moment';
 @Component({
   selector: 'app-modal-registrar-nuevo-beneficiario',
   templateUrl: './modal-registrar-nuevo-beneficiario.component.html',
@@ -31,6 +35,7 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
   nombreIne: string = '';
   nombreActa: string = '';
   esMenorEdad: boolean = false;
+
   constructor(
     private readonly formBuilder: FormBuilder,
     public config: DynamicDialogConfig,
@@ -50,31 +55,75 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
 
   crearForm(): FormGroup {
     return this.formBuilder.group({
+      idPersona: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.nullValidator],
+      ],
+
+      idConvenio: [
+        {
+          value: this.config.data['idConvenio'],
+          disabled: false,
+        },
+        [Validators.nullValidator],
+      ],
+      curp: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.required, Validators.pattern(PATRON_CURP)],
+      ],
       nombre: [
         {
           value: null,
-          disabled: true,
+          disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.required, Validators.maxLength(45)],
       ],
       primerApellido: [
         {
           value: null,
-          disabled: true,
+          disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.required, Validators.maxLength(45)],
       ],
       segundoApellido: [
         {
           value: null,
-          disabled: true,
+          disabled: false,
+        },
+        [Validators.required, Validators.maxLength(45)],
+      ],
+
+      fechaNacimiento: [
+        {
+          value: null,
+          disabled: false,
         },
         [Validators.nullValidator],
+      ],
+      fecha: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.required],
       ],
       edad: [
         {
           value: null,
           disabled: true,
+        },
+        [Validators.nullValidator],
+      ],
+      idParentesco: [
+        {
+          value: null,
+          disabled: false,
         },
         [Validators.nullValidator],
       ],
@@ -85,19 +134,36 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
         },
         [Validators.required],
       ],
-      curp: [
-        {
-          value: null,
-          disabled: false,
-        },
-        [Validators.required, Validators.pattern(PATRON_CURP)],
-      ],
+
       rfc: [
         {
           value: null,
           disabled: false,
         },
-        [Validators.required, Validators.pattern(PATRON_RFC)],
+        [
+          Validators.required,
+          Validators.pattern(PATRON_RFC),
+          Validators.maxLength(13),
+        ],
+      ],
+      telefono: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.required, Validators.maxLength(45)],
+      ],
+
+      correo: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [
+          Validators.required,
+          Validators.pattern(PATRON_CORREO),
+          Validators.maxLength(45),
+        ],
       ],
       actaNacimiento: [
         {
@@ -106,19 +172,41 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
         },
         [Validators.required],
       ],
-      fecha: [
-        {
-          value: null,
-          disabled: true,
-        },
-        [Validators.required],
-      ],
-      correoElectronico: [
+      documento: [
         {
           value: null,
           disabled: false,
         },
-        [Validators.required, Validators.pattern(PATRON_CORREO)],
+        [Validators.nullValidator],
+      ],
+      nombreIne: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.nullValidator],
+      ],
+      nombreActa: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.nullValidator],
+      ],
+
+      validaIne: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.nullValidator],
+      ],
+      validaActa: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.nullValidator],
       ],
       velatorio: [
         {
@@ -127,12 +215,19 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
         },
         [Validators.required],
       ],
-      telefono: [
+      idContratante: [
+        {
+          value: this.config.data['idContratante'],
+          disabled: false,
+        },
+        [Validators.nullValidator],
+      ],
+      actualizaArchivo: [
         {
           value: null,
           disabled: false,
         },
-        [Validators.required],
+        [Validators.nullValidator],
       ],
     });
   }
@@ -141,9 +236,13 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
     return this.form.controls;
   }
 
-  guardar(): void {
+  calcularEdad(): void {
+    this.f.edad.setValue(moment().diff(moment(this.f.fecha.value), 'years'));
+    this.validarEdad();
+  }
+
+  validarEdad() {
     this.esMenorEdad = this.f.edad.value >= 18 ? true : false;
-    //this.ref.close(this.datosGeneralesRenovacion);
   }
 
   cerrarModal(): void {
@@ -182,10 +281,15 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
 
     this.nombreIne = this.f.edad.value >= 18 ? fileReaded.name : null;
     this.nombreActa = this.f.edad.value < 18 ? fileReaded.name : null;
-    this.f.actaNacimiento = fileReaded.name;
+    this.f.nombreIne.setValue(this.nombreIne);
+    this.f.nombreActa.setValue(this.nombreActa);
+
+    //this.f.actaNacimiento = fileReaded.name;
+    this.f.actaNacimiento.setValue(fileReaded.name);
 
     this.getBase64(fileReaded).then((data: any) => {
       this.documento = data;
+      this.f.documento.setValue(data);
     });
   }
 
@@ -197,6 +301,19 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no valido.');
       return;
     }
+    if (this.f.curp.value.includes('XEXX010101HNEXXXA4')) {
+      return;
+    }
+    if (this.f.curp.value.includes('XEXX010101MNEXXXA8')) {
+      return;
+    }
+    if (this.form.controls.curp?.errors?.pattern) {
+      this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
+      return;
+    }
+    if (!this.f.curp.value) return;
+
+    this.buscarCurpRFC(this.f.curp.value, '');
   }
 
   convertirAMayusculas(posicionFormulario: number): void {
@@ -213,5 +330,150 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
         'Tu correo electrónico no es válido. '
       );
     }
+  }
+
+  buscarCurpRFC(curp: string, rfc: string): void {
+    let parametros = {
+      curp: curp,
+      rfc: rfc,
+    };
+
+    this.consultaConveniosService
+      .buscarCurpRFC(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            this.mostrarMensaje(Number(respuesta.mensaje));
+            return;
+          }
+          console.log(respuesta.datos);
+          if (respuesta.mensaje == 'Exito') {
+            if (curp != '') {
+              let valores = respuesta.datos[0];
+
+              let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
+              let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
+              console.log([diaD, mesD, anioD]);
+              [diaD, mesD, anioD] = [anioD, mesD, diaD];
+              this.f.idPersona.setValue(valores.idPersona);
+              this.f.nombre.setValue(valores.nomPersona);
+              this.f.nombre.setValue(valores.nomPersona);
+              this.f.primerApellido.setValue(valores.primerApellido);
+              this.f.segundoApellido.setValue(valores.segundoApellido);
+              this.f.fecha.setValue(fechaNacimiento);
+              this.f.telefono.setValue(valores.telefono);
+              this.f.correo.setValue(valores.correo);
+              this.f.correo.setValue(valores.correo);
+              this.calcularEdad();
+            }
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(
+            TipoAlerta.Error,
+            'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+          );
+        },
+      });
+  }
+
+  mostrarMensaje(numero: number): void {
+    switch (numero) {
+      case 186:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'El servicio no responde, no permite más llamadas.'
+        );
+        break;
+      case 187:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+        );
+        break;
+      case 33:
+        this.alertaService.mostrar(TipoAlerta.Info, 'R.F.C. no valido.');
+        break;
+
+      case 52:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Error al consultar la información.'
+        );
+        break;
+      case 5:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Error al guardar la información. Intenta nuevamente.'
+        );
+        break;
+      case 184:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El servicio de RENAPO  no esta disponible.'
+        );
+        break;
+      case 802:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El beneficiario ya fue registrado con anterioridad, ingrese un beneficiario diferente.'
+        );
+        break;
+      default:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+        );
+    }
+  }
+
+  validarRFC(): void {
+    if (!this.f.rfc.value) return;
+    this.f.rfc.clearValidators();
+    this.f.rfc.updateValueAndValidity();
+    if (this.f.rfc.value.includes('XAXX010101000')) return;
+    if (!this.f.rfc.value.match(PATRON_RFC)) {
+      this.mostrarMensaje(33);
+      this.f.rfc.setValidators(Validators.pattern(PATRON_RFC));
+      this.f.rfc.updateValueAndValidity();
+    }
+  }
+
+  guardar(): void {
+    if (!this.form.valid) {
+      return;
+    }
+    this.loaderService.activar();
+    this.f.validaIne.setValue(Number(this.f.edad.value) >= 18 ? 1 : null);
+    this.f.validaActa.setValue(Number(this.f.edad.value) < 18 ? 1 : null);
+
+    this.consultaConveniosService
+      .altaBeneficiario(this.form.value)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            console.log(respuesta.mensaje);
+            this.mostrarMensaje(Number(respuesta.mensaje));
+            return;
+          }
+
+          if (respuesta.mensaje === 'Exito') {
+            this.ref.close('exito');
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              'Beneficiario agregado correctamente'
+            );
+          } else {
+            this.mostrarMensaje(Number(respuesta.mensaje));
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.mostrarMensaje(-1);
+        },
+      });
   }
 }

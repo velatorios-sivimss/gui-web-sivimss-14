@@ -33,6 +33,8 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   errorSolicitud: string =
     'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
   ref!: DynamicDialogRef;
+  agregarBeneficiarios: boolean = false;
+
   constructor(
     private dialogService: DialogService,
     private rutaActiva: ActivatedRoute,
@@ -63,9 +65,10 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
           }
           try {
             this.datosGenerales = respuesta.datos.datosGenerales[0] || {};
-            this.beneficiarios = respuesta.datos.beneficiarios;
+            this.beneficiarios = respuesta.datos.beneficiarios || [];
             this.datosGeneralesRenovacion =
               respuesta.datos.datosRenovacion[0] || {};
+            this.validarAlta();
           } catch (error) {
             console.error(error);
           }
@@ -85,7 +88,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
     this.ref = this.dialogService.open(ModalDetalleBeneficiariosComponent, {
       header: 'Detalle del beneficiario',
       style: { maxWidth: '876px', width: '100%' },
-      data: { item: item },
+      data: { item: item, validaModificacion: this.agregarBeneficiarios },
     });
 
     this.ref.onClose.subscribe((respuesta: any) => {
@@ -108,11 +111,15 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
           parentesco: this.parentesco,
           idVelatorio: this.datosGenerales.idVelatorio,
           velatorio: this.datosGenerales.velatorio,
+          idContratante: this.datosGenerales.idContratante,
         },
       }
     );
     this.ref.onClose.subscribe((respuesta: any) => {
-      if (respuesta) console.log(respuesta);
+      if (respuesta == 'exito') {
+        this.detalleConvenio();
+        console.log(respuesta);
+      }
     });
   }
 
@@ -167,5 +174,19 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
           );
         },
       });
+  }
+
+  validarAlta(): void {
+    this.agregarBeneficiarios = true;
+    if (this.datosGeneralesRenovacion.tipoPrevision === 1) {
+      if (this.beneficiarios.length < 3) {
+        if (this.datosGeneralesRenovacion.periodoRenovacion === 1) {
+          if (this.datosGeneralesRenovacion.titularFallecido === 0) {
+            if (Number(this.datosGeneralesRenovacion.idEstatusConvenio) === 2)
+              this.agregarBeneficiarios = true;
+          }
+        }
+      }
+    }
   }
 }

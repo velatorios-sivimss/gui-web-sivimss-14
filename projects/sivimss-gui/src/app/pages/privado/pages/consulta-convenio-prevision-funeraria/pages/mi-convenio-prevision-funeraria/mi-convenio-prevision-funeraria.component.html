@@ -52,7 +52,7 @@
     <div class="border-panel mb-5">
         <h2 class="subtitulo-base">Beneficiarios</h2>
         <button class="btn btn-default btn-md ml-5" (click)="abrirModalRegistroNuevoBeneficiario($event)"
-            *ngIf="beneficiarios.length < 3">Nuevo
+            *ngIf="agregarBeneficiarios">Nuevo
             beneficiario</button>
         <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true" [columnResizeMode]="'expand'">
             <ng-template pTemplate="header">
@@ -107,7 +107,8 @@
     <div class="row">
         <div class="col-md-12 flex justify-content-end">
             <button class="btn btn-primary btn-md" routerLink="comprobante-de-pago">Ver comprobante de pago</button>
-            <button class="btn btn-primary btn-md ml-5" (click)="abrirModalRenovarConvenio($event)">Renovar
+            <button class="btn btn-primary btn-md ml-5" *ngIf="agregarBeneficiarios"
+                (click)="abrirModalRenovarConvenio($event)">Renovar
                 convenio</button>
         </div>
     </div>

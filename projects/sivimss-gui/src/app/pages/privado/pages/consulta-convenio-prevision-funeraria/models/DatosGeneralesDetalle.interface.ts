@@ -13,4 +13,5 @@ export interface DatosGeneralesDetalle {
   estatus: string;
   idVelatorio: number;
   velatorio: string;
+  idContratante:number;
 }

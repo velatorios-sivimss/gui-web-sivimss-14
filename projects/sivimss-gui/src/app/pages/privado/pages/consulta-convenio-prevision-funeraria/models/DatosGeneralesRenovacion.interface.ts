@@ -7,8 +7,10 @@ export interface DatosGeneralesRenovacion {
   fecActual: string;
   fecContratacion: string;
   fecVigencia: number;
-  titularFallecido: string;
+  titularFallecido: number;
   idEstatus: string;
   previsionFuneraria: string;
   diferenciaDias: number;
+  tipoPrevision: number;
+  idEstatusConvenio: string;
 }
