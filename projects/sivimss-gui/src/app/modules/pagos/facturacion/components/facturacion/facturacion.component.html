@@ -145,9 +145,11 @@
       <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" [routerLink]="'./enviar-factura'"
                                 *ngIf="false">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" (click)="cancelarFactura()"
-                                *ngIf="registroSeleccionado.estatusFactura !== 'Cancelada'">
-      </app-overlay-panel-opcion>
+      <ng-container *ngIf="[5,7,8].includes(rol)">
+        <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" (click)="cancelarFactura()"
+                                  *ngIf="registroSeleccionado.estatusFactura !== 'Cancelada'">
+        </app-overlay-panel-opcion>
+      </ng-container>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
