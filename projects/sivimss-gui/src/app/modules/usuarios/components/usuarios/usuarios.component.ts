@@ -153,10 +153,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       width: MAX_WIDTH,
       data: usuario.id,
     };
-    this.detalleRef = this.dialogService.open(
-      VerDetalleUsuarioComponent,
-      DETALLE_CONFIG
-    );
+    this.detalleRef = this.dialogService.open(VerDetalleUsuarioComponent, DETALLE_CONFIG);
     this.detalleRef.onClose.subscribe((respuesta: RespuestaModalUsuario) =>
       this.procesarRespuestaModal(respuesta)
     );
@@ -183,41 +180,47 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     }
   }
 
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
+  }
+
   obtenerVelatorios(): void {
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
-    this.usuarioService.obtenerVelatorios(idDelegacion).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(
-          respuesta.datos,
-          'desc',
-          'id'
-        );
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error('ERROR: ', error);
-      },
-    });
+    this.cargadorService.activar();
+    this.usuarioService.obtenerVelatorios(idDelegacion)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => this.procesarCatalogoVelatorios(respuesta),
+        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
+      });
+  }
+
+  procesarCatalogoVelatorios(respuesta: HttpRespuesta<any>): void {
+    this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, 'desc', 'id');
   }
 
   cargarRoles(): void {
     const idNivel = this.filtroForm.get('nivel')?.value;
-    this.catalogoRoles = [];
-    this.filtroForm.get('rol')?.patchValue(null);
+    this.limpiarCatalogoRoles();
     this.cargadorService.activar();
-    this.usuarioService
-      .obtenerCatalogoRoles(idNivel)
+    this.usuarioService.obtenerCatalogoRoles(idNivel)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          const roles = respuesta.datos;
-          this.catalogoRoles = mapearArregloTipoDropdown(roles, 'nombre', 'id');
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        },
+        next: (respuesta: HttpRespuesta<any>): void => this.procesarCatalogoRoles(respuesta),
+        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
       });
+  }
+
+  limpiarCatalogoRoles(): void {
+    this.catalogoRoles = [];
+    this.filtroForm.get('rol')?.patchValue(null);
+  }
+
+  procesarCatalogoRoles(respuesta: HttpRespuesta<any>): void {
+    const roles = respuesta.datos;
+    this.catalogoRoles = mapearArregloTipoDropdown(roles, 'nombre', 'id');
   }
 
   paginar(): void {
@@ -226,38 +229,31 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       .buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.usuarios = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-          this.folioCreacion = respuesta.datos.totalElements + 1;
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        },
+        next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaPaginacion(respuesta),
+        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
       });
+  }
+
+  procesarRespuestaPaginacion(respuesta: HttpRespuesta<any>): void {
+    this.usuarios = respuesta.datos.content;
+    this.totalElementos = respuesta.datos.totalElements;
+    this.folioCreacion = respuesta.datos.totalElements + 1;
   }
 
   paginarConFiltros(): void {
     const filtros: FiltrosUsuario = this.crearSolicitudFiltros();
     this.cargadorService.activar();
-    this.usuarioService
-      .buscarPorFiltros(
-        filtros,
-        this.numPaginaActual,
-        this.cantElementosPorPagina
-      )
+    this.usuarioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.usuarios = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        },
+        next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaPaginacionFiltros(respuesta),
+        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
       });
+  }
+
+  procesarRespuestaPaginacionFiltros(respuesta: HttpRespuesta<any>): void {
+    this.usuarios = respuesta.datos.content;
+    this.totalElementos = respuesta.datos.totalElements;
   }
 
   buscar(): void {
@@ -287,17 +283,11 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   cambiarEstatus(id: number): void {
     const idUsuario: SolicitudEstatus = {id};
     this.cargadorService.activar();
-    this.usuarioService
-      .cambiarEstatus(idUsuario)
+    this.usuarioService.cambiarEstatus(idUsuario)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (): void => {
-          this.alertaService.mostrar(TipoAlerta.Exito, this.MSG_CAMBIO_ESTATUS);
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        },
+        next: (): void => this.alertaService.mostrar(TipoAlerta.Exito, this.MSG_CAMBIO_ESTATUS),
+        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
       });
   }
 
