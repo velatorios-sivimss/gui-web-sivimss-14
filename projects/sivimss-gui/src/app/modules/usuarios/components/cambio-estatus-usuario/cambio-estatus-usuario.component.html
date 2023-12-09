@@ -1,120 +1,119 @@
-<div *ngIf="usuarioSeleccionado">
-  <app-table-panel>
-    <ng-template appCustomTemplate="left-header">
-      <div class="table-panel-header-column">
-        <span class="font-bold">ID {{usuarioSeleccionado.id}}</span>
-      </div>
-    </ng-template>
-    <ng-template appCustomTemplate="right-header">
-      <div class="table-panel-header-column">
-        <div class="flex flex-column">
-          <span>Estatus</span>
-          <span class="activo" *ngIf="usuarioSeleccionado.estatus">Activo</span>
-          <span class="inactivo" *ngIf="!usuarioSeleccionado.estatus">Inactivo</span>
-        </div>
-      </div>
-    </ng-template>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>CURP</label>
-          <span>{{usuarioSeleccionado.curp}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Matrícula</label>
-          <span>{{usuarioSeleccionado.matricula}}</span>
-        </div>
+<app-table-panel>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">ID {{ usuarioSeleccionado.id }}</span>
+    </div>
+  </ng-template>
+  <ng-template appCustomTemplate="right-header">
+    <div class="table-panel-header-column">
+      <div class="flex flex-column">
+        <span>Estatus</span>
+        <span class="activo" *ngIf="usuarioSeleccionado.estatus">Activo</span>
+        <span class="inactivo" *ngIf="!usuarioSeleccionado.estatus">Inactivo</span>
       </div>
     </div>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Nombre</label>
-          <span>{{usuarioSeleccionado.nombre}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Usuario</label>
-          <span>{{usuarioSeleccionado.usuario}}</span>
-        </div>
+  </ng-template>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>CURP</label>
+        <span>{{ usuarioSeleccionado.curp }}</span>
       </div>
     </div>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Contraseña</label>
-          <span>{{usuarioSeleccionado.contrasenia}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Entidad Federativa de Nacimiento</label>
-          <span>{{usuarioSeleccionado.desEdoNacimiento | uppercase}}</span>
-        </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Matrícula</label>
+        <span>{{ usuarioSeleccionado.matricula }}</span>
       </div>
     </div>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Primer apellido</label>
-          <span>{{usuarioSeleccionado.paterno}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Segundo apellido</label>
-          <span>{{usuarioSeleccionado.materno}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Correo electrónico</label>
-          <span>{{usuarioSeleccionado.correo}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Nivel</label>
-          <span>{{usuarioSeleccionado.oficina}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Delegación</label>
-          <span [ngClass]="{ 'mb-3': !usuarioSeleccionado.delegacion}">{{usuarioSeleccionado.delegacion}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Velatorio</label>
-          <span [ngClass]="{ 'mb-3': !usuarioSeleccionado.velatorio}">{{usuarioSeleccionado.velatorio}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="row table-panel-row">
-      <div class="col-md-12">
-        <div class="table-panel-column">
-          <label>Rol</label>
-          <span>{{usuarioSeleccionado.rol}}</span>
-        </div>
-      </div>
-    </div>
-  </app-table-panel>
-  <div class="mb-3 mt-3 row text-center">
-    ¿Estas seguro de {{title}} el registro seleccionado? {{usuarioSeleccionado.usuario}}
   </div>
-  <div class="row mb-3">
-    <div class="col-md-12 flex justify-content-end">
-      <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="cambiarEstatus()">Aceptar
-      </button>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Nombre</label>
+        <span>{{ usuarioSeleccionado.nombre }}</span>
+      </div>
     </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Usuario</label>
+        <span>{{ usuarioSeleccionado.usuario }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Contraseña</label>
+        <span>{{ usuarioSeleccionado.contrasenia }}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Entidad Federativa de Nacimiento</label>
+        <span>{{ usuarioSeleccionado.desEdoNacimiento | uppercase }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Primer apellido</label>
+        <span>{{ usuarioSeleccionado.paterno }}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Segundo apellido</label>
+        <span>{{ usuarioSeleccionado.materno }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Correo electrónico</label>
+        <span>{{ usuarioSeleccionado.correo }}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Nivel</label>
+        <span>{{ usuarioSeleccionado.oficina }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Delegación</label>
+        <span [ngClass]="{ 'mb-3': !usuarioSeleccionado.delegacion}">{{ usuarioSeleccionado.delegacion }}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Velatorio</label>
+        <span [ngClass]="{ 'mb-3': !usuarioSeleccionado.velatorio}">{{ usuarioSeleccionado.velatorio }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-12">
+      <div class="table-panel-column">
+        <label>Rol</label>
+        <span>{{ usuarioSeleccionado.rol }}</span>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
+<div class="mb-3 mt-3 row text-center">
+  ¿Estas seguro de {{ title }} el registro seleccionado? {{ usuarioSeleccionado.usuario }}
+</div>
+<div class="row mb-3">
+  <div class="col-md-12 flex justify-content-end">
+    <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+    <button type="submit" class="btn btn-primary btn-md ml-5" (click)="cambiarEstatus()">Aceptar
+    </button>
   </div>
 </div>
+

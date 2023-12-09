@@ -115,12 +115,13 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   abrirModalModificarUsuario(): void {
-    const data: number = this.usuarioSeleccionado.id;
-    const MODIFICAR_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo('Modificar usuario', data);
-    this.modificacionRef = this.dialogService.open(ModificarUsuarioComponent, MODIFICAR_CONFIG);
-    this.modificacionRef.onClose.subscribe({
-      next: (respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta)
-    });
+    this.obtenerUsuario(this.usuarioSeleccionado.id, (): void => {
+      const MODIFICAR_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo('Modificar usuario', this.detalleUsuarioSeleccionado);
+      this.modificacionRef = this.dialogService.open(ModificarUsuarioComponent, MODIFICAR_CONFIG);
+      this.modificacionRef.onClose.subscribe({
+        next: (respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta)
+      });
+    })
   }
 
   abrirModalCambioEstatusUsuario(usuario: Usuario): void {
@@ -227,8 +228,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   procesarCatalogoRoles(respuesta: HttpRespuesta<any>): void {
-    const roles = respuesta.datos;
-    this.catalogoRoles = mapearArregloTipoDropdown(roles, 'nombre', 'id');
+    this.catalogoRoles = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'id');
   }
 
   paginar(): void {
