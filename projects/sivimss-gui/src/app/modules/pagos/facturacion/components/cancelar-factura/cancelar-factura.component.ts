@@ -84,7 +84,10 @@ export class CancelarFacturaComponent implements OnInit {
   }
 
   mapearArregloMotivosCancelacion(arregloMotivos: MotivoCancelacion[]): TipoDropdown[] {
-    return arregloMotivos.map(motivo =>  ({ value: motivo.idMotivoCancelacion, label: `${motivo.clave} ${motivo.descripcion}` }))
+    return arregloMotivos.map(motivo => ({
+      value: motivo.idMotivoCancelacion,
+      label: `${motivo.clave} ${motivo.descripcion}`
+    }))
   }
 
   realizarCancelacionFactura(): void {
@@ -122,4 +125,12 @@ export class CancelarFacturaComponent implements OnInit {
   }
 
 
+  actualizarValidaciones($event: { value: number }): void {
+    if ($event.value === 1) {
+      this.cancelarForm.get('folioRelacionado')?.setValidators([Validators.required]);
+    } else {
+      this.cancelarForm.get('folioRelacionado')?.clearValidators();
+    }
+    this.cancelarForm.get('folioRelacionado')?.updateValueAndValidity();
+  }
 }
