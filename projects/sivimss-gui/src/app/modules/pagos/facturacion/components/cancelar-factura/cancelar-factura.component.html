@@ -21,7 +21,7 @@
         <div class="col-md-6">
           <label class="control-label" for="motivoCancelacion">Motivo de cancelación<span class="req">*</span>:</label>
           <p-dropdown id="motivoCancelacion" class="form-control" formControlName="motivoCancelacion"
-                      [options]="motivos"
+                      [options]="motivos" (onChange)="actualizarValidaciones($event)"
                       placeholder="Selecciona el motivo de cancelación">
           </p-dropdown>
           <span class="campo-obligatorio"

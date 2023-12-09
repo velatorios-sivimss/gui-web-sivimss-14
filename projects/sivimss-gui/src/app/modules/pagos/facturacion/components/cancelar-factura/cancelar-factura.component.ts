@@ -80,7 +80,14 @@ export class CancelarFacturaComponent implements OnInit {
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.motivosCancelacion = respuesta.datos;
-    this.motivos = mapearArregloTipoDropdown(respuesta.datos, 'descripcion', 'idMotivoCancelacion');
+    this.motivos = this.mapearArregloMotivosCancelacion(this.motivosCancelacion);
+  }
+
+  mapearArregloMotivosCancelacion(arregloMotivos: MotivoCancelacion[]): TipoDropdown[] {
+    return arregloMotivos.map(motivo => ({
+      value: motivo.idMotivoCancelacion,
+      label: `${motivo.clave} ${motivo.descripcion}`
+    }))
   }
 
   realizarCancelacionFactura(): void {
@@ -118,4 +125,12 @@ export class CancelarFacturaComponent implements OnInit {
   }
 
 
+  actualizarValidaciones($event: { value: number }): void {
+    if ($event.value === 1) {
+      this.cancelarForm.get('folioRelacionado')?.setValidators([Validators.required]);
+    } else {
+      this.cancelarForm.get('folioRelacionado')?.clearValidators();
+    }
+    this.cancelarForm.get('folioRelacionado')?.updateValueAndValidity();
+  }
 }
