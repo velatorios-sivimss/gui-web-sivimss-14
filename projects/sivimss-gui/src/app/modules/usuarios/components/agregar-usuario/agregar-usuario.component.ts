@@ -17,9 +17,8 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
-type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula" | "usuario"> & {
-  idEdoNacimiento: number
-};
+type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula" | "usuario"> &
+  { idEdoNacimiento: number };
 type SolicitudCurp = Pick<Usuario, "curp">;
 type SolicitudMatricula = Pick<Usuario, "claveMatricula">;
 

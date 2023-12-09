@@ -23,13 +23,13 @@ import {MensajesSistemaService} from '../../../../services/mensajes-sistema.serv
 import {AgregarUsuarioComponent} from "../agregar-usuario/agregar-usuario.component";
 import {ModificarUsuarioComponent} from "../modificar-usuario/modificar-usuario.component";
 import {VerDetalleUsuarioComponent} from "../ver-detalle-usuario/ver-detalle-usuario.component";
+import {NuevoUsuario} from "../../models/nuevoUsuario.interface";
 
 type SolicitudEstatus = Pick<Usuario, 'id'>;
-
-interface NuevoUsuario {
-  usuario: string;
-  contrasenia: string
-}
+type DetalleUsuario = Required<Usuario> & {
+  oficina: string, rol: string, delegacion: string,
+  velatorio: string, contrasenia: string, desEdoNacimiento: string
+};
 
 @Component({
   selector: 'app-usuarios',
@@ -57,6 +57,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   mostrarNuevoUsuario: boolean = false;
   nuevoUsuario: NuevoUsuario = {usuario: '', contrasenia: ''};
   respuestaNuevoUsuario: RespuestaModalUsuario = {};
+  detalleUsuarioSeleccionado!: DetalleUsuario;
 
   filtroForm!: FormGroup;
 
@@ -101,62 +102,69 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.overlayPanel.toggle(event);
   }
 
+  crearConfiguracionDialogo(header: string, data: number | DetalleUsuario): DynamicDialogConfig {
+    return {header, width: MAX_WIDTH, data}
+  }
+
   abrirModalAgregarUsuario(): void {
-    const CREACION_CONFIG: DynamicDialogConfig = {
-      header: 'Registro de usuario nuevo',
-      width: MAX_WIDTH,
-      data: this.folioCreacion,
-    };
+    const data: number = this.folioCreacion;
+    const CREACION_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo('Registro de usuario nuevo', data);
     this.creacionRef = this.dialogService.open(AgregarUsuarioComponent, CREACION_CONFIG);
-    this.creacionRef.onClose
-      .subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
+    this.creacionRef.onClose.subscribe(
+      {next: (respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta)});
   }
 
   abrirModalModificarUsuario(): void {
-    const MODIFICAR_CONFIG: DynamicDialogConfig = {
-      header: 'Modificar usuario',
-      width: MAX_WIDTH,
-      data: this.usuarioSeleccionado.id,
-    };
+    const data: number = this.usuarioSeleccionado.id;
+    const MODIFICAR_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo('Modificar usuario', data);
     this.modificacionRef = this.dialogService.open(ModificarUsuarioComponent, MODIFICAR_CONFIG);
-    this.modificacionRef.onClose
-      .subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
+    this.modificacionRef.onClose.subscribe({
+      next: (respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta)
+    });
   }
 
   abrirModalCambioEstatusUsuario(usuario: Usuario): void {
     this.usuarioSeleccionado = usuario;
     const header: string = usuario.estatus ? 'Activar' : 'Desactivar';
-    const CAMBIO_ESTATUS_CONFIG: DynamicDialogConfig = {
-      header: `${header} usuario`,
-      width: MAX_WIDTH,
-      data: usuario.id,
-    };
-    this.cambioEstatusRef = this.dialogService.open(
-      CambioEstatusUsuarioComponent,
-      CAMBIO_ESTATUS_CONFIG
-    );
-    this.cambioEstatusRef.onClose.subscribe(
-      (respuesta: RespuestaModalUsuario): void => {
-        if (!respuesta) {
-          this.limpiar();
-          return;
-        }
-        this.procesarRespuestaModal(respuesta);
-      }
-    );
+    this.obtenerUsuario(usuario.id, (): void => {
+      const CAMBIO_ESTATUS_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo(`${header} usuario`, this.detalleUsuarioSeleccionado);
+      this.cambioEstatusRef = this.dialogService.open(CambioEstatusUsuarioComponent, CAMBIO_ESTATUS_CONFIG);
+      this.cambioEstatusRef.onClose.subscribe({
+        next: (respuesta: RespuestaModalUsuario): void => this.procesareRespuestaCambioEstatus(respuesta)
+      });
+    })
   }
 
   abrirModalDetalleUsuario(usuario: Usuario): void {
     this.usuarioSeleccionado = usuario;
-    const DETALLE_CONFIG: DynamicDialogConfig = {
-      header: 'Ver detalle',
-      width: MAX_WIDTH,
-      data: usuario.id,
-    };
-    this.detalleRef = this.dialogService.open(VerDetalleUsuarioComponent, DETALLE_CONFIG);
-    this.detalleRef.onClose.subscribe((respuesta: RespuestaModalUsuario) =>
-      this.procesarRespuestaModal(respuesta)
-    );
+    this.obtenerUsuario(usuario.id, (): void => {
+      const DETALLE_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo('Ver detalle', this.detalleUsuarioSeleccionado);
+      this.detalleRef = this.dialogService.open(VerDetalleUsuarioComponent, DETALLE_CONFIG);
+      this.detalleRef.onClose.subscribe({
+        next: (respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta)
+      });
+    })
+  }
+
+  obtenerUsuario(id: number, callback: () => void): void {
+    this.cargadorService.activar();
+    this.usuarioService.buscarPorId(id)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.detalleUsuarioSeleccionado = respuesta.datos[0]
+          callback();
+        },
+        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
+      });
+  }
+
+  procesareRespuestaCambioEstatus(respuesta: RespuestaModalUsuario): void {
+    if (!respuesta) {
+      this.limpiar();
+      return;
+    }
+    this.procesarRespuestaModal(respuesta);
   }
 
   inicializarFiltroForm(): void {

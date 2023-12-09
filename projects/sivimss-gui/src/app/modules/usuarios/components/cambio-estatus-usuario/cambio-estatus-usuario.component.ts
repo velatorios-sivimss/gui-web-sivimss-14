@@ -52,11 +52,13 @@ export class CambioEstatusUsuarioComponent implements OnInit {
           this.estatus = !!this.usuarioSeleccionado.estatus;
           this.title = this.usuarioSeleccionado.estatus ? 'Desactivar' : 'Activar';
         },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
+        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
       });
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   cancelar(): void {
@@ -77,10 +79,7 @@ export class CambioEstatusUsuarioComponent implements OnInit {
           respuesta.mensaje = mensaje;
           this.ref.close(respuesta);
         },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
+        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
       });
   }
 }
