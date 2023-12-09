@@ -109,6 +109,11 @@ export class AgregarUsuarioComponent implements OnInit {
     });
   }
 
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
+  }
+
   cargarRoles(): void {
     const idNivel = this.agregarUsuarioForm.get('nivel')?.value;
     this.catalogoRoles = [];
@@ -119,15 +124,13 @@ export class AgregarUsuarioComponent implements OnInit {
     this.usuarioService.obtenerCatalogoRoles(idNivel).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        const roles = respuesta.datos || [];
-        this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarCatalogoRoles(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  procesarCatalogoRoles(respuesta: HttpRespuesta<any>): void {
+    this.catalogoRoles = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'id');
   }
 
   buscarVelatorios(): void {
@@ -137,15 +140,13 @@ export class AgregarUsuarioComponent implements OnInit {
     this.usuarioService.obtenerVelatorios(delegacion)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          const velatorios = respuesta.datos || [];
-          this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.log(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
+        next: (respuesta: HttpRespuesta<any>): void => this.procesarCatalogoVelatorios(respuesta),
+        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
       });
+  }
+
+  procesarCatalogoVelatorios(respuesta: HttpRespuesta<any>): void {
+    this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, 'desc', 'id');
   }
 
   crearUsuario(): NuevoUsuario {
@@ -195,22 +196,26 @@ export class AgregarUsuarioComponent implements OnInit {
     this.usuarioService.validarCurp(consulta).pipe(
       finalize(() => this.validarCurpRenapo(consulta.curp))
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        if (!respuesta.datos || respuesta.datos.length === 0) return;
-        const {valor} = respuesta.datos[0];
-        if (!MENSAJES_CURP.has(valor)) return;
-        const {valido} = MENSAJES_CURP.get(valor);
-        this.curpValida = valido;
-        if (!valido) {
-          this.mostrarModalUsuarioRepetido = !this.mostrarModalUsuarioRepetido;
-        }
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-        const ERROR: string = 'Error al consultar la información.';
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.validarRespuestaCurp(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeErrorConsulta(error)
     });
+  }
+
+  validarRespuestaCurp(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos || respuesta.datos.length === 0) return;
+    const {valor} = respuesta.datos[0];
+    if (!MENSAJES_CURP.has(valor)) return;
+    const {valido} = MENSAJES_CURP.get(valor);
+    this.curpValida = valido;
+    if (!valido) {
+      this.mostrarModalUsuarioRepetido = !this.mostrarModalUsuarioRepetido;
+    }
+  }
+
+  private manejarMensajeErrorConsulta(error: HttpErrorResponse): void {
+    console.error(error);
+    const ERROR: string = 'Error al consultar la información.';
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
   }
 
   validarCurpRenapo(curp: string): void {
@@ -219,25 +224,23 @@ export class AgregarUsuarioComponent implements OnInit {
     this.usuarioService.consultarCurpRenapo(curp).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        if (!respuesta.datos) return;
-        if (respuesta.datos.message !== '') {
-          const error: HttpErrorResponse = this.generarError(respuesta.mensaje)
-          this.mensajesSistemaService.mostrarMensajeError(error, this.NOT_FOUND_ERROR_RENAPO);
-          this.curpValida = !this.curpValida;
-          return;
-        }
-        const {apellido1, apellido2, nombre} = respuesta.datos;
-        this.agregarUsuarioForm.get("nombre")?.patchValue(nombre);
-        this.agregarUsuarioForm.get("primerApellido")?.patchValue(apellido1);
-        this.agregarUsuarioForm.get("segundoApellido")?.patchValue(apellido2);
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-        const ERROR: string = 'Error al consultar la información.';
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaCURPRenapo(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeErrorConsulta(error)
     });
+  }
+
+  procesarRespuestaCURPRenapo(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos) return;
+    if (respuesta.datos.message !== '') {
+      const error: HttpErrorResponse = this.generarError(respuesta.mensaje)
+      this.mensajesSistemaService.mostrarMensajeError(error, this.NOT_FOUND_ERROR_RENAPO);
+      this.curpValida = !this.curpValida;
+      return;
+    }
+    const {apellido1, apellido2, nombre} = respuesta.datos;
+    this.agregarUsuarioForm.get("nombre")?.patchValue(nombre);
+    this.agregarUsuarioForm.get("primerApellido")?.patchValue(apellido1);
+    this.agregarUsuarioForm.get("segundoApellido")?.patchValue(apellido2);
   }
 
   validarMatricula(): void {
@@ -249,21 +252,20 @@ export class AgregarUsuarioComponent implements OnInit {
     this.usuarioService.validarMatricula(consulta).pipe(
       finalize(() => this.validarMatriculaSiap(consulta.claveMatricula))
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        if (!respuesta.datos || respuesta.datos.length === 0) return;
-        const {valor} = respuesta.datos[0];
-        if (!MENSAJES_MATRICULA.has(valor)) return;
-        const {valido} = MENSAJES_MATRICULA.get(valor);
-        this.matriculaValida = valido;
-        if (!valido) {
-          this.mostrarModalUsuarioRepetido = !this.mostrarModalUsuarioRepetido;
-        }
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaMatricula(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  procesarRespuestaMatricula(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos || respuesta.datos.length === 0) return;
+    const {valor} = respuesta.datos[0];
+    if (!MENSAJES_MATRICULA.has(valor)) return;
+    const {valido} = MENSAJES_MATRICULA.get(valor);
+    this.matriculaValida = valido;
+    if (!valido) {
+      this.mostrarModalUsuarioRepetido = !this.mostrarModalUsuarioRepetido;
+    }
   }
 
   validarMatriculaSiap(matricula: string): void {
@@ -272,23 +274,22 @@ export class AgregarUsuarioComponent implements OnInit {
     this.usuarioService.consultarMatriculaSiap(matricula).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        if (respuesta.error) {
-          const mensaje: string = respuesta.mensaje === '79' ? '70' : respuesta.mensaje;
-          const error: HttpErrorResponse = this.generarError(mensaje)
-          this.mensajesSistemaService.mostrarMensajeError(error);
-          this.matriculaValida = !this.matriculaValida;
-        }
-        if (respuesta.datos.status === 'INACTIVO') {
-          this.mostrarModalMatriculaInactiva = !this.mostrarModalMatriculaInactiva;
-          this.matriculaValida = !this.matriculaValida;
-        }
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaMatriculaSIAP(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  procesarRespuestaMatriculaSIAP(respuesta: HttpRespuesta<any>): void {
+    if (respuesta.error) {
+      const mensaje: string = respuesta.mensaje === '79' ? '70' : respuesta.mensaje;
+      const error: HttpErrorResponse = this.generarError(mensaje)
+      this.mensajesSistemaService.mostrarMensajeError(error);
+      this.matriculaValida = !this.matriculaValida;
+    }
+    if (respuesta.datos.status === 'INACTIVO') {
+      this.mostrarModalMatriculaInactiva = !this.mostrarModalMatriculaInactiva;
+      this.matriculaValida = !this.matriculaValida;
+    }
   }
 
   generarError(message: string): HttpErrorResponse {
@@ -306,21 +307,25 @@ export class AgregarUsuarioComponent implements OnInit {
   }
 
   agregarUsuario(): void {
-    const respuestaModal: RespuestaModalUsuario = {mensaje: this.MSG_ALTA_USUARIO, actualizar: true}
     this.cargadorService.activar();
     this.usuarioService.guardar(this.nuevoUsuario)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          respuestaModal.usuario = respuesta.datos[0];
-          this.ref.close(respuestaModal);
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error("ERROR: ", error);
-          const ERROR_MENSAJE: string = `${this.ERROR_ALTA_USUARIO} ${this.nombreUsuario}`;
-          this.mensajesSistemaService.mostrarMensajeError(error, ERROR_MENSAJE);
-        }
+        next: (respuesta: HttpRespuesta<any>): void => this.altaUsuarioValida(respuesta),
+        error: (error: HttpErrorResponse): void => this.errorAltaUsuario(error)
       });
+  }
+
+  altaUsuarioValida(respuesta: HttpRespuesta<any>): void {
+    const respuestaModal: RespuestaModalUsuario = {mensaje: this.MSG_ALTA_USUARIO, actualizar: true}
+    respuestaModal.usuario = respuesta.datos[0];
+    this.ref.close(respuestaModal);
+  }
+
+  errorAltaUsuario(error: HttpErrorResponse): void {
+    console.error("ERROR: ", error);
+    const ERROR_MENSAJE: string = `${this.ERROR_ALTA_USUARIO} ${this.nombreUsuario}`;
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR_MENSAJE);
   }
 
   cancelar(): void {

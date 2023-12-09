@@ -56,7 +56,7 @@ export class ModificarUsuarioComponent implements OnInit {
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private cargadorService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
   }
 
@@ -109,10 +109,7 @@ export class ModificarUsuarioComponent implements OnInit {
       this.modificarUsuarioForm.get('velatorio')?.patchValue(null);
       this.modificarUsuarioForm.get('delegacion')?.patchValue(null);
     }
-    this.cargadorService.activar();
-    this.usuarioService.obtenerCatalogoRoles(idNivel).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
+    this.usuarioService.obtenerCatalogoRoles(idNivel).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.procesarCatalogoRoles(respuesta),
       error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
