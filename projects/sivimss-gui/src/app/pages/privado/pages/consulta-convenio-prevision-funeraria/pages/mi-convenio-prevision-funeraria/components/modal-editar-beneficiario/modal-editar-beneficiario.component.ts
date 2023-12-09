@@ -11,11 +11,7 @@ import { finalize } from 'rxjs';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  PATRON_CORREO,
-  PATRON_CURP,
-  PATRON_RFC,
-} from 'projects/sivimss-gui/src/app/utils/constantes';
+import { PATRON_CORREO } from 'projects/sivimss-gui/src/app/utils/constantes';
 
 @Component({
   selector: 'app-modal-editar-beneficiario',
