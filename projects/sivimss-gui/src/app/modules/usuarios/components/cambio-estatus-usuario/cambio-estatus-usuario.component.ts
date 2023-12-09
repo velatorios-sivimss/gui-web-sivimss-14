@@ -6,7 +6,6 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RespuestaModalUsuario} from "../../models/respuestaModal.interface";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 type SolicitudEstatus = Pick<Usuario, "id">
@@ -23,7 +22,6 @@ type DetalleUsuario = Required<Usuario> & {
 export class CambioEstatusUsuarioComponent implements OnInit {
 
   usuarioSeleccionado!: DetalleUsuario;
-  id!: number;
   estatus!: boolean;
   title!: string;
 
@@ -34,26 +32,18 @@ export class CambioEstatusUsuarioComponent implements OnInit {
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
+    this.obtenerUsuario();
   }
 
   ngOnInit(): void {
-    this.id = this.config.data;
-    this.obtenerUsuario(this.id);
+    this.obtenerUsuario();
   }
 
-  obtenerUsuario(id: number): void {
-    this.cargadorService.activar();
-    this.usuarioService.buscarPorId(id)
-      .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.usuarioSeleccionado = respuesta.datos[0];
-          this.usuarioSeleccionado.contrasenia = '*'.repeat(this.usuarioSeleccionado.contrasenia.length);
-          this.estatus = !!this.usuarioSeleccionado.estatus;
-          this.title = this.usuarioSeleccionado.estatus ? 'Desactivar' : 'Activar';
-        },
-        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
-      });
+  obtenerUsuario(): void {
+    this.usuarioSeleccionado = this.config.data;
+    this.usuarioSeleccionado.contrasenia = '*'.repeat(this.usuarioSeleccionado.contrasenia.length);
+    this.estatus = !!this.usuarioSeleccionado.estatus;
+    this.title = this.usuarioSeleccionado.estatus ? 'Desactivar' : 'Activar';
   }
 
   private manejarMensajeError(error: HttpErrorResponse): void {
@@ -66,20 +56,22 @@ export class CambioEstatusUsuarioComponent implements OnInit {
   }
 
   cambiarEstatus(): void {
-    const idUsuario: SolicitudEstatus = {id: this.id}
-    const estatus: string = this.usuarioSeleccionado.estatus ? "Desactivado" : "Activado";
-    const mensaje: string = `${estatus} correctamente`;
-    const respuesta: RespuestaModalUsuario = {actualizar: false};
+    const idUsuario: SolicitudEstatus = {id: this.usuarioSeleccionado.id}
     this.cargadorService.activar();
     this.usuarioService.cambiarEstatus(idUsuario)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (): void => {
-          respuesta.actualizar = true;
-          respuesta.mensaje = mensaje;
-          this.ref.close(respuesta);
-        },
+        next: (): void => this.procesarRespuestaCambioEstatus(),
         error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
       });
+  }
+
+  procesarRespuestaCambioEstatus(): void {
+    const estatus: string = this.usuarioSeleccionado.estatus ? "Desactivado" : "Activado";
+    const mensaje: string = `${estatus} correctamente`;
+    const respuesta: RespuestaModalUsuario = {actualizar: false};
+    respuesta.actualizar = true;
+    respuesta.mensaje = mensaje;
+    this.ref.close(respuesta);
   }
 }
