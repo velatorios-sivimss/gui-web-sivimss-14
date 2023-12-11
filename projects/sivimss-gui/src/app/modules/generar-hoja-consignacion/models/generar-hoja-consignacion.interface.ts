@@ -74,6 +74,7 @@ export interface GenerarHojaConsignacionBusqueda {
   fecElaboracion?: string | null;
   folio?: string | null;
   proveedor?: string | null;
+  folioFiscal?: string | null;
 }
 
 export interface BuscarCatalogo {
