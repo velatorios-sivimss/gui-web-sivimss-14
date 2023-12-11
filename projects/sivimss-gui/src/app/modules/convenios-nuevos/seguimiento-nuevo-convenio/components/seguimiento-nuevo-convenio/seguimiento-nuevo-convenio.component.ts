@@ -173,7 +173,8 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   }
 
   buscar(): void {
-
+    this.numPaginaActual = 0;
+    this.paginacionConFiltrado = true;
   }
 
   abrirModalAgregarServicio(): void {
