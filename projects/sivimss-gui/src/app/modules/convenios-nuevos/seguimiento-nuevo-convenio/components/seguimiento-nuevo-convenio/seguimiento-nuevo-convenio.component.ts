@@ -22,6 +22,7 @@ import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {FiltroBasico} from "../../../../pagos/realizar-pago/modelos/filtrosPago.interface";
 
 interface FiltrosBasicosNuevoConvenio {
   idVelatorio: number | null
@@ -156,7 +157,19 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   }
 
   limpiar(): void {
-    this.filtroForm.reset();
+    this.paginacionConFiltrado = false;
+    this.limpiarFormulario();
+    this.numPaginaActual = 0;
+    this.paginar();
+  }
+
+  limpiarFormulario(): void {
+    if (!this.filtroForm) return;
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const idNivel: number = obtenerNivelUsuarioLogueado(usuario);
+    const idVelatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
+    const DEFAULT = {idNivel, idVelatorio}
+    this.filtroFormDir.resetForm(DEFAULT);
   }
 
   buscar(): void {
