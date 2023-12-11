@@ -72,7 +72,7 @@ export class CancelarFacturaComponent implements OnInit {
     this.activatedRoute.queryParams.pipe(
     ).subscribe(params => {
         const {datos_cancelar} = params;
-        this.registroCancelar = JSON.parse(atob(datos_cancelar));
+        this.registroCancelar = JSON.parse(window.atob(datos_cancelar));
       }
     );
   }
@@ -80,7 +80,14 @@ export class CancelarFacturaComponent implements OnInit {
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.motivosCancelacion = respuesta.datos;
-    this.motivos = mapearArregloTipoDropdown(respuesta.datos, 'descripcion', 'idMotivoCancelacion');
+    this.motivos = this.mapearArregloMotivosCancelacion(this.motivosCancelacion);
+  }
+
+  mapearArregloMotivosCancelacion(arregloMotivos: MotivoCancelacion[]): TipoDropdown[] {
+    return arregloMotivos.map(motivo => ({
+      value: motivo.idMotivoCancelacion,
+      label: `${motivo.clave} ${motivo.descripcion}`
+    }))
   }
 
   realizarCancelacionFactura(): void {
@@ -107,7 +114,8 @@ export class CancelarFacturaComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       }
     })
   }
@@ -117,4 +125,12 @@ export class CancelarFacturaComponent implements OnInit {
   }
 
 
+  actualizarValidaciones($event: { value: number }): void {
+    if ($event.value === 1) {
+      this.cancelarForm.get('folioRelacionado')?.setValidators([Validators.required]);
+    } else {
+      this.cancelarForm.get('folioRelacionado')?.clearValidators();
+    }
+    this.cancelarForm.get('folioRelacionado')?.updateValueAndValidity();
+  }
 }

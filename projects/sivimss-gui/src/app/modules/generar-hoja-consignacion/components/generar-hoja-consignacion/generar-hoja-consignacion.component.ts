@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
@@ -29,7 +29,7 @@ import { FacturaProveedorComponent } from '../factura-proveedor/factura-proveedo
   styleUrls: ['./generar-hoja-consignacion.component.scss'],
   providers: [DialogService, DescargaArchivosService, DynamicDialogRef]
 })
-export class GenerarHojaConsignacionComponent implements OnInit {
+export class GenerarHojaConsignacionComponent implements OnInit, OnDestroy {
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
 
@@ -242,7 +242,7 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.cargarCatalogos();
     this.hojasConsignacion = [];
     this.totalElementos = 0;
-    setTimeout(()=> this.filtroForm.get('velatorio')?.patchValue(+usuario?.idVelatorio),300)
+    setTimeout(() => this.filtroForm.get('velatorio')?.patchValue(+usuario?.idVelatorio), 300)
   }
 
   validarAlMenosUnCampoConValor(group: FormGroup) {
@@ -292,6 +292,12 @@ export class GenerarHojaConsignacionComponent implements OnInit {
         !this.ff.fecFin.value || this.ff.fecFin.getRawValue() === '' ? null : moment(this.ff.fecFin.value).format('DD/MM/YYYY'),
 
       tipoReporte,
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.detalleRef) {
+      this.detalleRef.destroy();
     }
   }
 

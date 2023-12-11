@@ -60,7 +60,7 @@
             <p-calendar id="periodoFin" formControlName="periodoFin" styleClass="form-control" [showIcon]="true"
                         placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
                         (onSelect)="validarMismaFechaInicioFin()"
-                        [minDate]="filtroForm.get('elaboracionInicio')?.value" [maxDate]="fechaActual">
+                        [minDate]="filtroForm.get('periodoInicio')?.value" [maxDate]="fechaActual">
             </p-calendar>
           </div>
         </div>
@@ -145,9 +145,11 @@
       <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" [routerLink]="'./enviar-factura'"
                                 *ngIf="false">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" (click)="cancelarFactura()"
-                                *ngIf="registroSeleccionado.estatusFactura !== 'Cancelada'">
-      </app-overlay-panel-opcion>
+      <ng-container *ngIf="[5,7,8].includes(rol)">
+        <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" (click)="cancelarFactura()"
+                                  *ngIf="registroSeleccionado.estatusFactura !== 'Cancelada'">
+        </app-overlay-panel-opcion>
+      </ng-container>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

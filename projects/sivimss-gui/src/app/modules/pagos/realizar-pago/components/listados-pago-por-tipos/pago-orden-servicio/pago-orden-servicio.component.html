@@ -72,7 +72,7 @@
   </ng-template>
 </p-overlayPanel>
 
-<p-dialog header="Pagar orden" [(visible)]="pagoODSModal" [style]="{width: '50vw'}">
+<p-dialog header="Pagar orden" [(visible)]="pagoODSModal" [style]="{width: '50vw'}" [modal]="true">
   <div class="row mb-3" [formGroup]="pagoForm">
     <div class="col-md-12">
       <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span></label>

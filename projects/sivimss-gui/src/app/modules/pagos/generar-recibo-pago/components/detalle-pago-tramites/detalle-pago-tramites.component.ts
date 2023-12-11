@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {DetalleReciboPago} from "../../models/detalleReciboPago.interface";
 import {ActivatedRoute} from "@angular/router";
 import {GenerarReciboService} from "../../services/generar-recibo-pago.service";
-import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -24,10 +23,12 @@ export class DetallePagoTramitesComponent {
   dia: string = '';
   anio: string = '';
 
+  mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
+
   constructor(
     private route: ActivatedRoute,
     private generarReciboService: GenerarReciboService,
-    private mensajesSistemaService: MensajesSistemaService,
     private cargadorService: LoaderService,
     private descargaArchivosService: DescargaArchivosService
   ) {
@@ -57,6 +58,7 @@ export class DetallePagoTramitesComponent {
     this.descargaArchivosService.descargarArchivo(servicio$, opcionesArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta): void => {
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error: HttpErrorResponse): void => {
@@ -72,6 +74,7 @@ export class DetallePagoTramitesComponent {
     this.descargaArchivosService.descargarArchivo(servicio$, {nombreArchivo: 'reciboPago'}).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta): void => {
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error: HttpErrorResponse): void => {

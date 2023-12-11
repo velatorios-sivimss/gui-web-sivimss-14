@@ -38,7 +38,11 @@
           <span class="campo-obligatorio"
                 *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 flex justify-content-end  mt-2">
+          <div class="flex flex-column">
+            <span class=" etiqueta-base mt-2">Total a pagar</span>
+            <span class="text-bold mt-2 total-pago">{{total | currency}}</span>
+          </div>
         </div>
       </div>
       <div class="row mb-4">
