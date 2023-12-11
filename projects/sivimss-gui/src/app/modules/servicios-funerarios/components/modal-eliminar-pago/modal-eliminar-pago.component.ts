@@ -26,7 +26,8 @@ export class ModalEliminarPagoComponent {
 
   desactivar(): void {
     this.loaderService.activar();
-    this.detallePagoService.desactivarPago(Number(this.config.data.idBitacora)).pipe(
+    const objetoDesactivarPago = this.generarObjetoDesactivarPago(this.config.data.bitacora);
+    this.detallePagoService.desactivarPago(objetoDesactivarPago).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
@@ -38,6 +39,17 @@ export class ModalEliminarPagoComponent {
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.')
       }
     });
+  }
+
+  generarObjetoDesactivarPago(objeto:any):any {
+    return {
+      idPagoBitacora: objeto.idBitacora,
+      idPagoParcialidad:objeto.idPagoParcialidad,
+      idPlan:objeto.idPlan,
+      totalParcialidades:objeto.totalParcialidades,
+      idPrimerParcialidad:objeto.idPrimerParcialidad,
+      idUltimaParcialidad:objeto.idUltimaParcialidad
+    }
   }
 
   cerrarModal(respuesta: boolean) {

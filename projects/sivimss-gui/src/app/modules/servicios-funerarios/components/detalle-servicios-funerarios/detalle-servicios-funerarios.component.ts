@@ -31,6 +31,7 @@ import { ModalModificarPagosComponent } from '../modal-modificar-pagos/modal-mod
 import { of } from 'rxjs';
 import { OpcionesArchivos } from '../../../../models/opciones-archivos.interface';
 import { DescargaArchivosService } from '../../../../services/descarga-archivos.service';
+import * as moment from "moment";
 
 
 @Component({
@@ -47,6 +48,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanelBody!: OverlayPanel;
+  fechaActual = moment().format('YYYY-MM-DD')
+  ;
 
   readonly POSICION_METODO_PAGO: number = 0;
 
@@ -145,6 +148,9 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
         this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
+        setTimeout(()=> {
+          if(this.item.idPagoSFPA)this.buscarPagosBitacora(Number(this.item.idPagoSFPA));
+        },500)
       }
     });
   }
@@ -234,7 +240,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
         width: '100%',
       },
       data: {
-        idBitacora: this.detallePagoBitacora.idBitacora,
+        bitacora: this.detallePagoBitacora
       },
     });
     ref.onClose.subscribe((val: boolean) => {
@@ -284,5 +290,11 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
           );
         },
       });
+  }
+
+  validarMenuBitacora(bitacora: any): boolean {
+    let fecha;
+    bitacora.fechaPago ? fecha = moment(bitacora.fechaPago).format('YYYY-MM-DD') : fecha = moment(bitacora.fechaValeParitario).format('YYYY-MM-DD')
+    return (this.fechaActual === fecha) && (bitacora.idEstatus != '0')
   }
 }
