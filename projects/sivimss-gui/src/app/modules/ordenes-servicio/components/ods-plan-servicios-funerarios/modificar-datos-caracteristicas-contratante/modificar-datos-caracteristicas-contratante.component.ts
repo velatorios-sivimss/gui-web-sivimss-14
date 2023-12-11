@@ -177,6 +177,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   ngOnInit(): void {
+    localStorage.setItem("ataudDonado", 'N');
     let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
     const usuario: UsuarioEnSesion = JSON.parse(
@@ -724,6 +725,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
       if (respuesta == null) {
         return;
       }
+      +respuesta.idAsignacion == 3 ? localStorage.setItem("ataudDonado", 'S') : localStorage.setItem("ataudDonado", 'N')
       this.datosPaquetes.forEach((datos: any) => {
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = respuesta.idInventario;

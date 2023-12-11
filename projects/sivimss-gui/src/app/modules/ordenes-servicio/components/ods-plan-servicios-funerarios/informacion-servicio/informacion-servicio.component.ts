@@ -656,7 +656,10 @@ export class InformacionServicioSFComponent implements OnInit {
           }
           this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
           if(this.altaODS.idEstatus != 1){
-            this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+            if(localStorage.getItem("ataudDonado") == 'S' as string){
+              this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+            }
+            localStorage.removeItem('ataudDonado');
           }
           const ExitoMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
