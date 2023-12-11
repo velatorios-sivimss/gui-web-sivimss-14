@@ -7,7 +7,7 @@ export const SERVICIO_BREADCRUMB: ElementoBreadcrumb[] = [
   },
   {
     icono: '',
-    titulo: 'Pagos '
+    titulo: 'Pagos'
   },
   {
     icono: '',
