@@ -660,9 +660,11 @@ export class ModificarInformacionServicioSFComponent
 
               return;
             }
-            this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+            this.descargarOrdenServicio(respuesta.datos.idOrdenServicio,respuesta.datos.idEstatus);
             if(this.altaODS.idEstatus != 1){
-              this.descargarOrdenServicio(respuesta.datos.idOrdenServicio,respuesta.datos.idEstatus);
+              if(localStorage.getItem("ataudDonado") == 'S' as string){
+                this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+              }
             }
             if (this.altaODS.idEstatus == 2) {
               const ExitoMsg: string =
