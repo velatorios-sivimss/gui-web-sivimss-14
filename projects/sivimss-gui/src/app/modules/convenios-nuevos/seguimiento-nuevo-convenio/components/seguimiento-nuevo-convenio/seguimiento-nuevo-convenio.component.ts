@@ -22,7 +22,6 @@ import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {FiltroBasico} from "../../../../pagos/realizar-pago/modelos/filtrosPago.interface";
 
 interface FiltrosBasicosNuevoConvenio {
   idVelatorio: number | null
@@ -127,7 +126,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
     if (this.paginacionConFiltrado) {
-      // this.paginarConFiltros();
+      this.paginarConFiltros();
     } else {
       this.paginar();
     }
@@ -175,6 +174,17 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   buscar(): void {
     this.numPaginaActual = 0;
     this.paginacionConFiltrado = true;
+    this.paginarConFiltros();
+  }
+
+  paginarConFiltros(): void {
+    const filtros = {};
+    this.cargadorService.activar();
+    this.seguimientoConvenioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaPaginacion(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
+    });
   }
 
   abrirModalAgregarServicio(): void {
@@ -189,7 +199,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
     // })
   }
 
-  abrirCambioEstatus(servicio: SeguimientoNuevoConvenio) {
+  abrirCambioEstatus(servicio: SeguimientoNuevoConvenio): void {
     void this.router.navigate(['desactivar-convenio'], {relativeTo: this.activatedRoute});
     /*Preguntar si se puede usar 'let'*/
     // let header:string = "" ;
