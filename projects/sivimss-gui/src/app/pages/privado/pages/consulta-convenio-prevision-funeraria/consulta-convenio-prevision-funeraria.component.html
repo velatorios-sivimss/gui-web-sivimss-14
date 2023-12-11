@@ -11,18 +11,21 @@
                 <th scope="col">Folio</th>
                 <th scope="col">Nombre del afiliado</th>
                 <th scope="col">CURP</th>
+                <th scope="col">Estatus</th>
                 <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-convenio>
             <tr>
-                <td>{{convenio.folio}}</td>
+                <td>{{convenio.folioConvenio}}</td>
                 <td>{{convenio.nombreAfiliado}}</td>
                 <td>{{convenio.curp}}</td>
-                <td style="border-left: 1px solid #b0b0b0;">
-                    <div class="contenedor-celda-iconos">
-                        <a routerLink="mi-convenio-de-prevision-funeraria">
-                            <i class="pi pi-eye"></i>
+                <td>{{convenio.estatus}}</td>
+                <td>
+                    <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'60px 40px'}"
+                        class="contenedor-celda-iconos">
+                        <a (click)="abrirPanel($event,convenio)">
+                            <i class="fs fs-barras-horizontales"></i>
                         </a>
                     </div>
                 </td>
@@ -41,21 +44,23 @@
             </div>
         </ng-template>
     </p-table>
-    <div class="row mb-3">
-        <div class="col-md-12 flex justify-content-end">
-            <button class="btn btn-primary" (click)="mostrarModalFaltaConvenio = !mostrarModalFaltaConvenio">Mostrar
-                modal
-                falta convenio</button>
-            <button class="btn btn-primary ml-5"
-                (click)="mostrarModalNoPuedeRenovar = !mostrarModalNoPuedeRenovar">Mostrar
-                modal
-                falta convenio</button>
-            <button class="btn btn-primary ml-5"
-                (click)="mostrarModalNoSeEncuentraEnPeriodo = !mostrarModalNoSeEncuentraEnPeriodo">Mostrar modal
-                falta convenio</button>
-        </div>
-    </div>
+
 </div>
+
+<!-- agregar validacion  cuando este pagado deshabolitar le opcion realizar pago,
+si esta vigente desabilitar pago,
+si esta preorden habilitar pago y deshabilitar la descarga de documento-->
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Ver" onCloseOnNavigation
+                (click)="verPlanPreFune()"></app-overlay-panel-opcion>
+            <app-overlay-panel-opcion titulo="Descargar convenio"
+                (click)="descargarDocumento()"></app-overlay-panel-opcion>
+            <app-overlay-panel-opcion titulo="Realizar pago" *ngIf="realizarPago"></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>
 
 
 <p-dialog [(visible)]="mostrarModalFaltaConvenio" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"

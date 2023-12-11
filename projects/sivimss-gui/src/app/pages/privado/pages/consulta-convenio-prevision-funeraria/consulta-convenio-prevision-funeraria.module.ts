@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { OverlayPanelOpcionesModule } from 'projects/sivimss-gui/src/app/shared/overlay-panel-opciones/overlay-panel-opciones.module';
 
 import { ConsultaConvenioPrevisionFunerariaRoutingModule } from './consulta-convenio-prevision-funeraria-routing.module';
 import { ConsultaConvenioPrevisionFunerariaComponent } from './consulta-convenio-prevision-funeraria.component';
@@ -15,6 +16,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { ModalEditarBeneficiarioComponent } from './pages/mi-convenio-prevision-funeraria/components/modal-editar-beneficiario/modal-editar-beneficiario.component';
 import { DialogModule } from 'primeng/dialog';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @NgModule({
   declarations: [ConsultaConvenioPrevisionFunerariaComponent],
@@ -28,6 +30,8 @@ import { DialogModule } from 'primeng/dialog';
     TableModule,
     CeldaStickyModule,
     DialogModule,
+    OverlayPanelModule,
+    OverlayPanelOpcionesModule,
   ],
   providers: [DialogService],
 })
