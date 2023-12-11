@@ -92,7 +92,8 @@
               <a (click)="detalleFormatoActividades(hojaConsignacion)">
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
               </a>
-              <a (click)="abrirPanel($event, hojaConsignacion)">
+              <a *ngIf="hojaConsignacion.folioFiscal"></a>
+              <a (click)="abrirPanel($event, hojaConsignacion)" *ngIf="!hojaConsignacion.folioFiscal">
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
             </div>
