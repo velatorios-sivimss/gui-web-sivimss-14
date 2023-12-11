@@ -23,6 +23,10 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 
+interface FiltrosBasicosNuevoConvenio {
+  idVelatorio: number | null
+}
+
 @Component({
   selector: 'app-seguimiento-nuevo-convenio',
   templateUrl: './seguimiento-nuevo-convenio.component.html',
@@ -74,8 +78,8 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadcrumbService.actualizar(SEGUIMIENTO_CONVENIO_BREADCRUMB);
-    this.cargarCatalogos();
     this.inicializarFiltroForm();
+    this.cargarCatalogos();
   }
 
   cargarCatalogos(): void {
@@ -130,13 +134,20 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
 
   paginar(): void {
     this.cargadorService.activar();
+    const filtros: FiltrosBasicosNuevoConvenio = this.obtenerFiltroBasico();
     this.seguimientoConvenioService
-      .buscarPorFiltros({ idVelatorio: null }, this.numPaginaActual, this.cantElementosPorPagina)
+      .buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaPaginacion(respuesta),
         error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
       });
+  }
+
+  obtenerFiltroBasico(): FiltrosBasicosNuevoConvenio {
+    return {
+      idVelatorio: this.filtroForm.get('velatorio')?.value
+    }
   }
 
   procesarRespuestaPaginacion(respuesta: HttpRespuesta<any>): void {
@@ -216,7 +227,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   }
 
   abrirPreRegistroNuevoConvenio(): void {
-    this.router.navigate(['pre-registro-nuevo-convenio'], {relativeTo: this.activatedRoute});
+    void this.router.navigate(['pre-registro-nuevo-convenio'], {relativeTo: this.activatedRoute});
   }
 
 
