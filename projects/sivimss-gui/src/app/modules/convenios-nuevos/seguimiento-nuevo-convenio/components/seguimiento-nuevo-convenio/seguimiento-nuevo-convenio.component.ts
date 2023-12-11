@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, FormGroupDirective, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {LazyLoadEvent} from 'primeng/api';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
@@ -25,6 +25,13 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 
 interface FiltrosBasicosNuevoConvenio {
   idVelatorio: number | null
+}
+
+interface FiltrosNuevoConvenio {
+  idVelatorio: number | null,
+  folioConvenioPf: string,
+  folioConvenioPsfpa: string,
+  rfc: string
 }
 
 @Component({
@@ -96,9 +103,9 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
         value: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario),
         disabled: obtenerNivelUsuarioLogueado(usuario) === 3
       }],
-      folioConvenioPf: [{value: null, disabled: false}, [Validators.required]],
-      folioConvenioPsfpa: [{value: null, disabled: false}, [Validators.required]],
-      rfcAfiliado: [{value: null, disabled: false}, [Validators.required]],
+      folioConvenioPf: [{value: null, disabled: false}],
+      folioConvenioPsfpa: [{value: null, disabled: false}],
+      rfcAfiliado: [{value: null, disabled: false}],
     });
   }
 
@@ -165,9 +172,9 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   limpiarFormulario(): void {
     if (!this.filtroForm) return;
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    const idNivel: number = obtenerNivelUsuarioLogueado(usuario);
-    const idVelatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
-    const DEFAULT = {idNivel, idVelatorio}
+    const nivel: number = obtenerNivelUsuarioLogueado(usuario);
+    const velatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
+    const DEFAULT = {nivel, velatorio}
     this.filtroFormDir.resetForm(DEFAULT);
   }
 
@@ -185,6 +192,15 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaPaginacion(respuesta),
       error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  obtenerFiltroConvenio(): FiltrosNuevoConvenio {
+    return {
+      folioConvenioPf: this.filtroForm.get('folioConvenioPf')?.value,
+      folioConvenioPsfpa: this.filtroForm.get('folioConvenioPsfpa')?.value,
+      idVelatorio: this.filtroForm.get('velatorio')?.value,
+      rfc: this.filtroForm.get('rfcAfiliado')?.value
+    }
   }
 
   abrirModalAgregarServicio(): void {
