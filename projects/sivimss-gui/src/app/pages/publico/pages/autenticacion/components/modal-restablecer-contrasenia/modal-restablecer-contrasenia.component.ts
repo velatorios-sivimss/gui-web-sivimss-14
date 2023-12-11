@@ -6,10 +6,11 @@ import {Subscription} from "rxjs";
 import {finalize} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
 import { HttpRespuesta } from "projects/sivimss-gui/src/app/models/http-respuesta.interface";
-import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
 import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
 import { MensajesRespuestaCodigo } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-codigo.enum";
+// import { AutenticacionContratanteService } from "projects/sivimss-gui/src/app/services/autenticacion-contratante.service";
+import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
 
 
 @Component({
@@ -33,7 +34,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
-    private readonly autenticacionService: AutenticacionService,
+    private readonly autenticacionContratanteService: AutenticacionService,
     private readonly alertaService: AlertaService,
     private readonly loaderService: LoaderService,
     private readonly activatedRoute: ActivatedRoute,
@@ -59,7 +60,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
     this.renovarCodigo = false;
     const {usuario} = this.formRestContraUsuario.value;
     this.loaderService.activar();
-    this.subGeneracionCodigo = this.autenticacionService.generarCodigoRestablecerContrasenia(usuario).pipe(
+    this.subGeneracionCodigo = this.autenticacionContratanteService.generarCodigoRestablecerContraseniaNewLogin(usuario).pipe(
       finalize(() => this.loaderService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.error) {
@@ -81,7 +82,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
     const {usuario} = this.formRestContraUsuario.value;
     const {codigo} = this.formRestContraCodigo.value;
     this.loaderService.activar();
-    this.subValidacionCodigo = this.autenticacionService.validarCodigoRestablecerContrasenia(usuario, codigo).pipe(
+    this.subValidacionCodigo = this.autenticacionContratanteService.validarCodigoRestablecerContraseniaNewLogin(usuario, codigo).pipe(
       finalize(() => this.loaderService.desactivar())).subscribe({
       next: (respuesta: string): void => {
         switch (respuesta) {
@@ -113,7 +114,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
 
   restablecerContrasenia(): void {
     const {usuario} = this.formRestContraUsuario.value;
-    void this.router.navigate(["inicio-sesion/restablecer-contrasenia"], {
+    void this.router.navigate(["/externo-publico/autenticacion/restablecer-contrasenia"], {
       relativeTo: this.activatedRoute,
       queryParams: {usuario}
     });

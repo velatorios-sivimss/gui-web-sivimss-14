@@ -7,12 +7,14 @@ export const environment = {
   api: {
     mssivimss: 'mssivimss-ctrol-permisos/v1/sivimss/service/',
     login: 'mssivimss-oauth/v1',
+    loginContratante: 'mssivimss-oauth-online/v1',
     servicios_externos: 'mssivimss-ser-externos/v1/catalogos/externos/',
     servicios_externos_reportes: 'mssivimss-ser-externos/v1/reportes/',
     notificaciones: 'mssivimss-notificaciones/v1/notificaciones/avisos',
 
     // mssivimss: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ctrol-permisos/v1/sivimss/service/',
     // login: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1',
+    // loginContratante: 'http://localhost:8085/mssivimss-oauth/v1',
     // servicios_externos: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/catalogos/externos/',
     // servicios_externos_reportes: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/reportes/',
     // notificaciones: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-notificaciones/v1/notificaciones/avisos',
