@@ -83,9 +83,9 @@
         <td> {{orden.folioOds}}</td>
         <td> {{orden.proveedor}}</td>
         <td> {{orden.nombreFinado}}</td>
-        <td> {{orden.tipoServicio}}</td>
+        <td> {{orden.idHojaSubrogacion != '' ? orden.tipoServicio : ''}}</td>
         <td>
-          <div class="contenedor-celda-iconos">
+          <div class="contenedor-celda-iconos"  *ngIf="validarRegistro(orden)">
             <a> </a>
             <a (click)="abrirPanel($event, orden)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
@@ -127,7 +127,11 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Generar orden de subrogación" (click)="generarOrdenSubrogacion(false);" *ngIf="ordenSeleccionada.puedeRegistrar === 'true'">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *appValidaRol="['HOJA_SUBROGACION','MODIFICAR']" titulo="Modificar" (click)="generarOrdenSubrogacion(true);"></app-overlay-panel-opcion>
+      <div *appValidaRol="['HOJA_SUBROGACION','MODIFICAR']">
+        <app-overlay-panel-opcion   *ngIf="ordenSeleccionada.idHojaSubrogacion != '' && ordenSeleccionada.idHojaSubrogacion != null"
+           titulo="Modificar" (click)="generarOrdenSubrogacion(true);">
+        </app-overlay-panel-opcion>
+      </div>
       <app-overlay-panel-opcion *ngIf="ordenSeleccionada.idHojaSubrogacion != '' && ordenSeleccionada.idHojaSubrogacion != null" titulo="Ver" (click)="vistaPreviaOrdenSubrogacion()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

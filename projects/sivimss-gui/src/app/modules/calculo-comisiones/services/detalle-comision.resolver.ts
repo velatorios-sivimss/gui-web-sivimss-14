@@ -14,8 +14,6 @@ export class DetalleComisionResolver implements Resolve<any> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const idComision = +(route.paramMap.get('id') ?? 0);
     const detallePromotor$ = this.calculoComisionesService.obtenerDetallePromotor(idComision);
-    const detalleODS$ = this.calculoComisionesService.obtenerDetalleODS(idComision);
-    const detalleConveniosPF$ = this.calculoComisionesService.obtenerDetalleConveniosPF(idComision);
-    return forkJoin([detallePromotor$, detalleODS$, detalleConveniosPF$]);
+    return forkJoin([detallePromotor$]);
   }
 }

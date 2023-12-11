@@ -431,6 +431,10 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     this.paginar();
   }
 
+  validarRegistro(orden:any): boolean {
+    return !(orden.puedeRegistrar.includes('false') && orden.idHojaSubrogacion === '');
+  }
+
   get f() {
     return this.filtroForm.controls;
   }

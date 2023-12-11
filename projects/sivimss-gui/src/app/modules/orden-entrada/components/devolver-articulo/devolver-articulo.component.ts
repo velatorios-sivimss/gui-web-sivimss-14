@@ -82,6 +82,11 @@ export class DevolverArticuloComponent implements OnInit {
     }
   }
 
+  setearLocalStorage(): void {
+    localStorage.setItem("indexOrdenEntrada","1");
+    this.router.navigate(["/orden-entrada"]);
+  }
+
   get f() {
     return this.formulario.controls;
   }
