@@ -333,9 +333,9 @@ export class SolicitarFacturaComponent implements OnInit {
       totalPagado: this.registroContratante!.totalPagado.toString(),
       totalServicios: this.registroContratante!.totalServicios.toString(),
       finado: {
-        fecFinado: this.registroContratante!.finado.fecFinado,
-        idFinado: this.registroContratante!.finado.idFinado,
-        nomFinado: this.registroContratante!.finado.nomFinado
+        fecFinado: this.registroContratante!.finado?.fecFinado ?? null,
+        idFinado: this.registroContratante!.finado?.idFinado ?? null,
+        nomFinado: this.registroContratante!.finado?.nomFinado ?? null
       }
     }
   }

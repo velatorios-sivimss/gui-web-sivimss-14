@@ -170,11 +170,7 @@ export class BalanceCajaComponent implements OnInit {
 
   paginar(): void {
     this.cargadorService.activar();
-    let filtros: FiltrosBalanceCaja = this.crearSolicitudFiltros();
-    delete filtros.tipoReporte;
-    if (filtros.fecha === null) {
-      filtros.fecha = this.datePipe.transform(new Date(), 'YYYY-MM-dd')
-    }
+    const filtros = this.crearSolicitudBasica();
     this.balanceCajaService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -189,6 +185,14 @@ export class BalanceCajaComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
+  }
+
+  crearSolicitudBasica() {
+    return {
+      idNivel: this.filtroFormBalanceCaja.get("nivel")?.value === "" ? null : this.filtroFormBalanceCaja.get("nivel")?.value,
+      idDelegacion: this.filtroFormBalanceCaja.get("delegacion")?.value === "" ? null : this.filtroFormBalanceCaja.get("delegacion")?.value,
+      idVelatorio: this.filtroFormBalanceCaja.get("velatorio")?.value === "" ? null : this.filtroFormBalanceCaja.get("velatorio")?.value,
+    }
   }
 
   paginarConFiltros(): void {
