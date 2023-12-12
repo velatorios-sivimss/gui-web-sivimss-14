@@ -241,7 +241,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
           this.hojaGenerada = true;
           this.idHojaConsig = respuesta.datos;
           this.obtenerDetalle();
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Agregado correctamente');
+          this.alertaService.mostrar(TipoAlerta.Exito, 'Hoja de consignación agregada correctamente');
         }
       },
       error: (error: HttpErrorResponse) => {

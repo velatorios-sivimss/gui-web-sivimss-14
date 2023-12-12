@@ -613,8 +613,8 @@ export class ModificarInformacionServicioSFComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
             this.lugarVelacion.municipio.setValue(
               respuesta.datos[0].municipio.nombre
@@ -624,6 +624,9 @@ export class ModificarInformacionServicioSFComponent
             );
             return;
           }
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(185));
+          this.colonias = [];
           this.lugarVelacion.colonia.patchValue(null);
           this.lugarVelacion.municipio.patchValue(null);
           this.lugarVelacion.estado.patchValue(null);
@@ -660,9 +663,11 @@ export class ModificarInformacionServicioSFComponent
 
               return;
             }
-            this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+            this.descargarOrdenServicio(respuesta.datos.idOrdenServicio,respuesta.datos.idEstatus);
             if(this.altaODS.idEstatus != 1){
-              this.descargarOrdenServicio(respuesta.datos.idOrdenServicio,respuesta.datos.idEstatus);
+              if(localStorage.getItem("ataudDonado") == 'S' as string){
+                this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+              }
             }
             if (this.altaODS.idEstatus == 2) {
               const ExitoMsg: string =

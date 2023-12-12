@@ -1,5 +1,5 @@
-import {HttpErrorResponse} from "@angular/common/http";
-import {Component, OnInit} from '@angular/core';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -9,14 +9,14 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {HttpRespuesta} from "projects/sivimss-gui/src/app/models/http-respuesta.interface";
-import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autenticacion.service";
-import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-import {LoaderService} from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
-import {finalize} from "rxjs/operators";
-import {PATRON_CONTRASENIA} from "../../../../utils/regex";
-import {MensajesRespuestaAutenticacion} from "../../../../utils/mensajes-respuesta-autenticacion.enum";
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpRespuesta } from "projects/sivimss-gui/src/app/models/http-respuesta.interface";
+import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
+import { finalize } from "rxjs/operators";
+import { PATRON_CONTRASENIA } from "../../../../utils/regex";
+import { MensajesRespuestaAutenticacion } from "../../../../utils/mensajes-respuesta-autenticacion.enum";
 
 /**
  * Valida que la contraseña anterior sea diferente a la nueva
@@ -25,7 +25,7 @@ export function contraseniasDiferentesdValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const contraseniaAnterior = control.get('contraseniaAnterior');
     const contraseniaNueva = control.get('contraseniaNueva');
-    return contraseniaAnterior && contraseniaNueva && contraseniaAnterior.value !== contraseniaNueva.value ? null : {contraseniasIguales: true};
+    return contraseniaAnterior && contraseniaNueva && contraseniaAnterior.value !== contraseniaNueva.value ? null : { contraseniasIguales: true };
   };
 }
 
@@ -35,9 +35,21 @@ export function contraseniasDiferentesdValidator(): ValidatorFn {
 export const confirmacionContraseniadValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const contraseniaNueva = control.get('contraseniaNueva');
   const contraseniaConfirmacion = control.get('contraseniaConfirmacion');
-  return contraseniaNueva && contraseniaConfirmacion && contraseniaNueva.value === contraseniaConfirmacion.value ? null : {contraseniasDiferentes: true};
+  return contraseniaNueva && contraseniaConfirmacion && contraseniaNueva.value === contraseniaConfirmacion.value ? null : { contraseniasDiferentes: true };
 };
 
+/**
+ * Valida que los correos introducidos del contratante sean iguales.
+ */
+export const confirmacionCorreoValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const correo = control.get('datosGenerales')?.get('correo');
+  const correoConfirmacion = control.get('datosGenerales')?.get('correoConfirmacion');
+  if (correo?.value && correoConfirmacion?.value) {
+    return correo && correoConfirmacion && correo.value === correoConfirmacion.value ? null : { correosDiferentes: true };
+  } else {
+    return null;  
+  }
+};
 
 @Component({
   selector: 'app-actualizar-contrasenia',
@@ -75,11 +87,11 @@ export class ActualizarContraseniaComponent implements OnInit {
 
   inicializarForm(): void {
     this.form = this.formBuilder.group({
-        usuario: ['', Validators.required],
-        contraseniaAnterior: ['', Validators.required],
-        contraseniaNueva: new FormControl('', Validators.compose([Validators.required, Validators.pattern(PATRON_CONTRASENIA)])),
-        contraseniaConfirmacion: ['', Validators.required]
-      },
+      usuario: ['', Validators.required],
+      contraseniaAnterior: ['', Validators.required],
+      contraseniaNueva: new FormControl('', Validators.compose([Validators.required, Validators.pattern(PATRON_CONTRASENIA)])),
+      contraseniaConfirmacion: ['', Validators.required]
+    },
       {
         validators: [
           contraseniasDiferentesdValidator(),
@@ -110,7 +122,7 @@ export class ActualizarContraseniaComponent implements OnInit {
           return;
         }
         this.alertaService.mostrar(TipoAlerta.Exito, 'Contraseña actualizada correctamente.');
-        void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
+        void this.router.navigate(["../"], { relativeTo: this.activatedRoute });
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);

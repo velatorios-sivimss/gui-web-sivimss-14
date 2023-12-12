@@ -15,6 +15,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   existeUnaSesion$!: Observable<boolean>;
   paginaCargada: boolean = false;
   subs!: Subscription;
+  serviciosEnLinea: boolean = false;
 
   constructor(
     private primengConfig: PrimeNGConfig,
@@ -26,6 +27,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.existeUnaSesion$ = this.autenticacionService.existeUnaSesion$;
+    const pathname = window.location.pathname;
+    this.serviciosEnLinea = false;
+    if (pathname.includes('/externo-privado')) {
+      this.serviciosEnLinea = true;
+    }
+
     this.loaderService.activar();
     this.autenticacionService.paginaCargada$.subscribe((paginaCargada: boolean) => {
       this.paginaCargada = paginaCargada;

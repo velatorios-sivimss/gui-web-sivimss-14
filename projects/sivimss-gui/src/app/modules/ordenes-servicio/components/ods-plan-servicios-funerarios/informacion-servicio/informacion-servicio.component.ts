@@ -656,7 +656,10 @@ export class InformacionServicioSFComponent implements OnInit {
           }
           this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
           if(this.altaODS.idEstatus != 1){
-            this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+            if(localStorage.getItem("ataudDonado") == 'S' as string){
+              this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+            }
+            localStorage.removeItem('ataudDonado');
           }
           const ExitoMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -789,7 +792,7 @@ export class InformacionServicioSFComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
             this.lugarVelacion.municipio.setValue(
@@ -800,6 +803,9 @@ export class InformacionServicioSFComponent implements OnInit {
             );
             return;
           }
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(185));
+          this.colonias = [];
           this.lugarVelacion.colonia.patchValue(null);
           this.lugarVelacion.municipio.patchValue(null);
           this.lugarVelacion.estado.patchValue(null);
