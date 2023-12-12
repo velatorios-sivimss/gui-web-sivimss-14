@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { OverlayPanel } from "primeng/overlaypanel";
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
@@ -27,7 +27,7 @@ import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-a
   styleUrls: ['./contratantes.component.scss'],
   providers: [DialogService, DescargaArchivosService, ConfirmationService]
 })
-export class ContratantesComponent implements OnInit {
+export class ContratantesComponent implements OnInit, OnDestroy {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -260,6 +260,13 @@ export class ContratantesComponent implements OnInit {
           console.error(error);
         }
       });
+    }
+  }
+
+  
+  ngOnDestroy(): void {
+    if (this.detalleRef) {
+      this.detalleRef.destroy();
     }
   }
 

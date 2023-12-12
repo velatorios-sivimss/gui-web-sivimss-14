@@ -9,7 +9,7 @@
 <ng-template #paginaPrivada>
   <ng-container>
     <app-header-imss-publico></app-header-imss-publico>
-    <app-sub-header-privado></app-sub-header-privado>
+    <app-sub-header-privado *ngIf="!serviciosEnLinea"></app-sub-header-privado>
     <app-template-with-sidebar>
       <app-breadcrumb></app-breadcrumb>
       <router-outlet></router-outlet>

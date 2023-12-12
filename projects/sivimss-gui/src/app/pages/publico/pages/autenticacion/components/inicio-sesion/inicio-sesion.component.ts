@@ -1,14 +1,15 @@
-import {HttpErrorResponse} from "@angular/common/http";
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {DialogService} from "primeng/dynamicdialog";
-import {finalize} from "rxjs/operators";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DialogService } from "primeng/dynamicdialog";
+import { finalize } from "rxjs/operators";
 import { ModalRestablecerContraseniaComponent } from "../modal-restablecer-contrasenia/modal-restablecer-contrasenia.component";
-import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
+// import { AutenticacionContratanteService } from "projects/sivimss-gui/src/app/services/autenticacion-contratante.service";
 import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
 import { MensajesRespuestaAutenticacion } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
+import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -39,7 +40,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly loaderService: LoaderService,
-    private readonly autenticacionService: AutenticacionService,
+    private readonly autenticacionContratanteService: AutenticacionService,
     private readonly router: Router,
     private readonly alertaService: AlertaService,
     private readonly activatedRoute: ActivatedRoute,
@@ -62,60 +63,65 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       return;
     }
-    const {usuario, contrasenia} = this.form.value;
+    const { usuario, contrasenia } = this.form.value;
     this.loaderService.activar();
     this.usuarioIncorrecto = false;
-    this.autenticacionService.iniciarSesion(usuario, contrasenia, mostrarMsjContraseniaProxVencer)
+    this.autenticacionContratanteService.iniciarSesionNewLogin(usuario, contrasenia, mostrarMsjContraseniaProxVencer)
       .pipe(
         finalize(() => this.loaderService.desactivar())).subscribe({
-      next: (respuesta: string): void => {
-        switch (respuesta) {
-          case MensajesRespuestaAutenticacion.InicioSesionCorrecto:
-            void this.router.navigate(["/inicio"]);
-            break;
-          case MensajesRespuestaAutenticacion.ContraseniaProximaVencer:
-            this.mostrarModalContraseniaProxVencer = true;
-            break;
-          case MensajesRespuestaAutenticacion.CredencialesIncorrectas:
-            this.form.get('contrasenia')?.reset();
-            this.contraseniaIncorrecta = !this.contraseniaIncorrecta;
-            break;
-          case MensajesRespuestaAutenticacion.CantidadMaximaIntentosFallidos:
-            this.mostrarModalIntentosFallidos = true;
-            this.empezarTemporizadorPorExcederIntentos();
-            break;
-          case MensajesRespuestaAutenticacion.FechaContraseniaVencida:
-            this.mostrarModalFechaContraseniaVencida = true;
-            break;
-          case MensajesRespuestaAutenticacion.UsuarioPreactivo:
-            this.mostrarModalPreActivo = true;
-            break;
-          case MensajesRespuestaAutenticacion.UsuarioNoExiste:
-            this.form.get('usuario')?.reset();
-            this.form.get('contrasenia')?.reset();
-            this.usuarioIncorrecto = !this.usuarioIncorrecto;
-            break;
-          case MensajesRespuestaAutenticacion.SIAPSinConexion:
-            this.mostrarModalSIAPSinConexion = true;
-            break;
-          case MensajesRespuestaAutenticacion.SIAPDesactivado:
-            this.mostrarModalSIAPDesactivado = true;
-            break;
-          case MensajesRespuestaAutenticacion.CuentaBloqueada:
-            this.mostrarModalCuentaBloqueada = true;
-            break;
-        }
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información.');
-      }
-    });
+          next: (respuesta: string): void => {
+            switch (respuesta) {
+              case MensajesRespuestaAutenticacion.InicioSesionCorrecto:
+                void this.router.navigate(["/externo-privado/consultar-mis-servicios-en-linea"]);
+                break;
+              case MensajesRespuestaAutenticacion.ContraseniaProximaVencer:
+                this.mostrarModalContraseniaProxVencer = true;
+                break;
+              case MensajesRespuestaAutenticacion.CredencialesIncorrectas:
+                this.form.get('contrasenia')?.reset();
+                this.contraseniaIncorrecta = !this.contraseniaIncorrecta;
+                break;
+              case MensajesRespuestaAutenticacion.CantidadMaximaIntentosFallidos:
+                this.mostrarModalIntentosFallidos = true;
+                this.empezarTemporizadorPorExcederIntentos();
+                break;
+              case MensajesRespuestaAutenticacion.FechaContraseniaVencida:
+                this.mostrarModalFechaContraseniaVencida = true;
+                break;
+              case MensajesRespuestaAutenticacion.UsuarioPreactivo:
+                this.mostrarModalPreActivo = true;
+                break;
+              case MensajesRespuestaAutenticacion.UsuarioNoExiste:
+                this.form.get('usuario')?.reset();
+                this.form.get('contrasenia')?.reset();
+                this.usuarioIncorrecto = !this.usuarioIncorrecto;
+                break;
+              case MensajesRespuestaAutenticacion.SIAPSinConexion:
+                this.mostrarModalSIAPSinConexion = true;
+                break;
+              case MensajesRespuestaAutenticacion.SIAPDesactivado:
+                this.mostrarModalSIAPDesactivado = true;
+                break;
+              case MensajesRespuestaAutenticacion.CuentaBloqueada:
+                this.mostrarModalCuentaBloqueada = true;
+                break;
+            }
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+            this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información.');
+          }
+        });
   }
 
   actualizarContrasenia(): void {
+    this.autenticacionContratanteService.cambiarPwd = true;
+    this.autenticacionContratanteService.tituloCambiarPwd = 'Cambiar contraseña';
+    this.autenticacionContratanteService.usuario = this.f.usuario.value;
+    this.autenticacionContratanteService.contrasenia = this.f.contrasenia.value;
+
     this.mostrarModalPreActivo = false;
-    void this.router.navigate(["actualizar-contrasenia"], {relativeTo: this.activatedRoute});
+    void this.router.navigate(["../restablecer-contrasenia"], { relativeTo: this.activatedRoute });
   }
 
   empezarTemporizadorPorExcederIntentos(): void {
@@ -144,9 +150,13 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
   }
 
   abrirModalRestablecerContrasenia(): void {
+    this.autenticacionContratanteService.cambiarPwd = false;
+    this.autenticacionContratanteService.usuario = this.f.usuario.value;
+    this.autenticacionContratanteService.contrasenia = this.f.contrasenia.value;
+
     this.dialogService.open(ModalRestablecerContraseniaComponent, {
       header: 'Restablecer contraseña',
-      style: {maxWidth: '600px', width: '100%'},
+      style: { maxWidth: '600px', width: '100%' },
       closable: false
     });
   }
