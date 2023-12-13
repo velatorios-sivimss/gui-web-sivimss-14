@@ -22,6 +22,7 @@ export interface HojaConsignacionDetalle {
   totalCosto?: string;
   totalArt?: number;
   folio?: string;
+  folioFiscal?: string;
   velatorio?: string;
   delegacion?: string;
   fecElaboracion?: string;
