@@ -1084,7 +1084,7 @@ export class ModificarDatosContratanteComponent
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
         tipoOrden: finado.idTipoOrden,
-        noContrato: finado.idContratoPrevision,
+        noContrato: finado.folioContrato,
         velatorioPrevision: finado.idVelatorioContratoPrevision,
         esObito: finado.esobito,
         esParaExtremidad: finado.extremidad,
