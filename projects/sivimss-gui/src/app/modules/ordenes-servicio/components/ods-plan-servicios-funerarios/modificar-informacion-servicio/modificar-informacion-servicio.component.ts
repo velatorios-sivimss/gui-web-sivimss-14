@@ -278,11 +278,11 @@ export class ModificarInformacionServicioSFComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor ?? false, disabled: true},
+          {value: false, disabled: true},
           [Validators.required],
         ],
         promotor: [
-          {value: datos.promotor, disabled: false},
+          {value: null, disabled: true},
           [Validators.required],
         ],
       }),
@@ -795,7 +795,7 @@ export class ModificarInformacionServicioSFComponent
       colonia: formulario.lugarVelacion.colonia,
       municipio: formulario.lugarVelacion.municipio,
       estado: formulario.lugarVelacion.estado,
-      gestionadoPorPromotor: formulario.cortejo.gestionadoPorPromotor,
+      gestionadoPorPromotor: null,
       promotor: formulario.cortejo.promotor,
     };
     this.informacionServicio.fechaCortejo =

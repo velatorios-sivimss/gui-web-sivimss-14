@@ -270,11 +270,11 @@ export class InformacionServicioSFComponent implements OnInit {
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor ? datos.gestionadoPorPromotor : false, disabled: false},
+          {value: false, disabled: true},
           [Validators.required],
         ],
         promotor: [
-          {value: datos.promotor, disabled: false},
+          {value: null, disabled: true},
           [Validators.required],
         ],
       }),
@@ -527,7 +527,7 @@ export class InformacionServicioSFComponent implements OnInit {
       colonia: formulario.lugarVelacion.colonia,
       municipio: formulario.lugarVelacion.municipio,
       estado: formulario.lugarVelacion.estado,
-      gestionadoPorPromotor: formulario.cortejo.gestionadoPorPromotor,
+      gestionadoPorPromotor: null,
       promotor: formulario.cortejo.promotor,
     };
     this.informacionServicio.fechaCortejo =
