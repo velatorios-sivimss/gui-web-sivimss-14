@@ -783,10 +783,10 @@ export class InformacionServicioSFComponent implements OnInit {
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if (!this.lugarVelacion.cp.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consutaCP(this.lugarVelacion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
