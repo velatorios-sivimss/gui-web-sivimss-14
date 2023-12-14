@@ -10,7 +10,7 @@ import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/ale
 import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {GenerarReciboService} from '../../services/generar-recibo-pago.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, ActivatedRouteSnapshot, Router} from '@angular/router';
 import {FiltrosReciboPago} from "../../models/filtrosReciboPago.interface";
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -72,9 +72,8 @@ export class GenerarReciboPagoComponent implements OnInit {
     private alertaService: AlertaService,
     public dialogService: DialogService,
     private generarReciboService: GenerarReciboService,
-    private router: Router,
     private cargadorService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
