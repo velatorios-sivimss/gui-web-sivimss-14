@@ -56,7 +56,7 @@ export class AgregarRolComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    this.catalogo_nivelOficina = respuesta[this.POSICION_CATALOGO_NIVELES]
+    this.catalogo_nivelOficina = respuesta[this.POSICION_CATALOGO_NIVELES];
   }
 
   inicializarAgregarRolForm(): void {
