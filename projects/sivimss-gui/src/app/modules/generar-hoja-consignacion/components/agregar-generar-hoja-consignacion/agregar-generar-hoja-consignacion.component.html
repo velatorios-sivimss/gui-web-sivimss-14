@@ -64,7 +64,7 @@
   </div>
 
   <div class="col text-center">
-    <span class="texto-base">C. Versalles #15, Juárez, Cuauhtémoc, 06600 Ciudad de México, CDMX</span>
+    <span class="texto-base">Avenida Álvaro Obregón No.121, interior 903-904, Colonia Roma Norte, Alcaldía Cuauhtémoc, C.P 06700, Ciudad de México</span>
   </div>
 
   <div class="row">
@@ -95,21 +95,28 @@
 
     <div class="col-md-6">
       <div class="background-group">
-        <div class="col-md-4">
+        <div class="col-md-5">
+          <div class="table-panel-column">
+            <span>Folio fiscal de la factura</span>
+            <label>{{folioFiscal === '' ? 'Por asignar' : folioFiscal}}</label>
+          </div>
+        </div>
+
+        <div class="col-md-3">
           <div class="table-panel-column">
             <span>Fecha</span>
             <label>{{fechaActual}}</label>
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-2">
           <div class="table-panel-column">
             <span>Hora</span>
             <label>{{horaActual}}</label>
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-2">
           <div class="table-panel-column">
             <span>Versión</span>
             <label>1.0.0</label>

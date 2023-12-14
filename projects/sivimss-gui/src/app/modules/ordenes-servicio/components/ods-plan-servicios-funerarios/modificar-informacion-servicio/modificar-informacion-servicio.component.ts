@@ -278,11 +278,11 @@ export class ModificarInformacionServicioSFComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor ?? false, disabled: true},
+          {value: false, disabled: true},
           [Validators.required],
         ],
         promotor: [
-          {value: datos.promotor, disabled: false},
+          {value: null, disabled: true},
           [Validators.required],
         ],
       }),
@@ -604,10 +604,10 @@ export class ModificarInformacionServicioSFComponent
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if (!this.lugarVelacion.cp.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consutaCP(this.lugarVelacion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -795,7 +795,7 @@ export class ModificarInformacionServicioSFComponent
       colonia: formulario.lugarVelacion.colonia,
       municipio: formulario.lugarVelacion.municipio,
       estado: formulario.lugarVelacion.estado,
-      gestionadoPorPromotor: formulario.cortejo.gestionadoPorPromotor,
+      gestionadoPorPromotor: null,
       promotor: formulario.cortejo.promotor,
     };
     this.informacionServicio.fechaCortejo =
