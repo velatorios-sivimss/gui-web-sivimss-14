@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective} from "@angular/forms";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../utils/constantes";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {Rol} from "../../models/rol.interface";
@@ -10,7 +10,6 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {HttpErrorResponse} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
 import {RolService} from '../../services/rol.service';
-import {Catalogo} from 'projects/sivimss-gui/src/app/models/catalogos.interface';
 import {FiltrosRol} from '../../models/filtrosRol.interface';
 import {ModificarRolComponent} from "../modificar-rol/modificar-rol.component";
 import {RespuestaModalRol} from "../../models/respuestaModal.interface";
@@ -19,13 +18,17 @@ import {MensajesSistemaService} from "../../../../services/mensajes-sistema.serv
 import {
   ConfirmacionMovimientoComponent
 } from "../confirmacion-movimiento/confirmacion-movimiento.component";
-import {validarUsuarioLogueado} from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
 import {ROLES_BREADCRUMB} from "../../constants/breadcrumb";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {ESTATUS_ROL} from "../../constants/estatus";
 
-const MAX_WIDTH: string = "876px";
+interface SolicitudCambioEstatus {
+  idRol: any,
+  estatusRol: 1 | 0
+}
 
 @Component({
   selector: 'app-roles',
@@ -34,9 +37,6 @@ const MAX_WIDTH: string = "876px";
   providers: [DialogService]
 })
 export class RolesComponent implements OnInit {
-
-  base64: string = ''
-
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
@@ -47,16 +47,20 @@ export class RolesComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   paginacionConFiltrado: boolean = false;
-  filtroForm!: FormGroup;
 
-  catalogo_nivelOficina!: TipoDropdown[];
-  estatus!: TipoDropdown[];
-  catRol: Rol[] = [];
+  catalogo_nivelOficina: TipoDropdown[] = [];
+  estatus: TipoDropdown[] = ESTATUS_ROL;
+  catRol: TipoDropdown[] = [];
   roles: Rol[] = [];
+
   rolSeleccionado!: Rol;
   detalleRef!: DynamicDialogRef;
   modificacionRef!: DynamicDialogRef;
   cambiarEstatusRef!: DynamicDialogRef;
+  filtroForm!: FormGroup;
+
+  readonly POSICION_CATALOGO_ROLES: number = 0;
+  readonly POSICION_CATALOGO_NIVELES: number = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -72,11 +76,15 @@ export class RolesComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadcrumbService.actualizar(ROLES_BREADCRUMB);
-    const roles = this.route.snapshot.data["respuesta"];
-    this.catRol = roles[0].datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
-    this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
-    this.estatus = [{label: "Activo", value: 1}, {label: "Inactivo", value: 0}];
     this.inicializarFiltroForm();
+    this.cargarCatalogos();
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    const roles = respuesta[this.POSICION_CATALOGO_ROLES].datos;
+    this.catRol = mapearArregloTipoDropdown(roles, 'des_rol', 'id');
+    this.catalogo_nivelOficina = respuesta[this.POSICION_CATALOGO_NIVELES]
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -95,15 +103,14 @@ export class RolesComponent implements OnInit {
     this.cargadorService.activar();
     this.rolService.obtenerCatRolesPaginadoSinFiltro(this.numPaginaActual, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.roles = respuesta.datos.content || [];
-        this.totalElementos = respuesta.datos.totalElements || 0;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaPaginacion(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  procesarRespuestaPaginacion(respuesta: HttpRespuesta<any>): void {
+    this.roles = respuesta.datos.content || [];
+    this.totalElementos = respuesta.datos.totalElements || 0;
   }
 
   paginarConFiltros(): void {
@@ -112,15 +119,14 @@ export class RolesComponent implements OnInit {
     this.rolService.buscarPorFiltros(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.roles = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaPaginacion(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   buscar(): void {
@@ -147,37 +153,27 @@ export class RolesComponent implements OnInit {
   }
 
   cambiarEstatus(rol: Rol): void {
-    const titulo: string = rol.estatusRol ? "Activar" : "Desactivar"
-    const DETALLE_CONFIG: DynamicDialogConfig = {
-      header: titulo + " rol",
-      width: MAX_WIDTH,
-      data: rol
-    }
+    const titulo: string = rol.estatusRol ? "Activar" : "Desactivar";
+    const DETALLE_CONFIG: DynamicDialogConfig<any> = this.crearConfiguracionDialogo(titulo + " rol", rol);
     this.cambiarEstatusRef = this.dialogService.open(ConfirmacionMovimientoComponent, DETALLE_CONFIG);
+    this.cambiarEstatusRef.onClose.subscribe((respuesta: any): void => this.verificarCambioEstatus(respuesta));
+  }
 
-    this.cambiarEstatusRef.onClose.subscribe((respuesta: any): void => {
-      if (respuesta?.estatus) {
-        const solicitudId = {
-          "idRol": respuesta.datosRol.idRol,
-          "estatusRol": respuesta.datosRol.estatusRol ? 1 : 0
-        }
-        this.rolService.cambiarEstatus(solicitudId).subscribe({
-          next: (): void => {
-            if (solicitudId.estatusRol === 1) {
-              this.alertaService.mostrar(TipoAlerta.Exito, 'Activado correctamente. ');
-            } else {
-              this.alertaService.mostrar(TipoAlerta.Exito, 'Desactivado correctamente.');
-            }
-          },
-          error: (error: HttpErrorResponse): void => {
-            console.error(error);
-            this.mensajesSistemaService.mostrarMensajeError(error);
-          }
-        });
-        return;
-      }
-      this.limpiar();
-    });
+  verificarCambioEstatus(respuesta: any): void {
+    if (respuesta?.estatus) {
+      const {datosRol: {idRol, estatusRol}} = respuesta;
+      const solicitudId: SolicitudCambioEstatus = {idRol, "estatusRol": estatusRol ? 1 : 0}
+      this.rolService.cambiarEstatus(solicitudId).subscribe({
+        next: (): void => this.mostarMensajeCambioEstatus(solicitudId.estatusRol),
+        error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
+      });
+    }
+    this.limpiar();
+  }
+
+  mostarMensajeCambioEstatus(estatus: 1 | 0): void {
+    const mensaje: string = estatus === 1 ? 'Activado correctamente.' : 'Desactivado correctamente.';
+    this.alertaService.mostrar(TipoAlerta.Exito, mensaje);
   }
 
   inicializarFiltroForm(): void {
@@ -194,19 +190,18 @@ export class RolesComponent implements OnInit {
   }
 
   abrirModalModificarRol(): void {
-    const MODIFICAR_CONFIG: DynamicDialogConfig = {
-      header: "Modificar rol",
-      width: MAX_WIDTH,
-      data: this.rolSeleccionado
-    }
+    const MODIFICAR_CONFIG: DynamicDialogConfig<any> = this.crearConfiguracionDialogo("Modificar rol", this.rolSeleccionado);
     this.modificacionRef = this.dialogService.open(ModificarRolComponent, MODIFICAR_CONFIG);
     this.modificacionRef.onClose.subscribe((respuesta: RespuestaModalRol) => this.procesarRespuestaModal(respuesta));
   }
 
+  crearConfiguracionDialogo(header: string, data: Rol): DynamicDialogConfig {
+    return {header, width: MAX_WIDTH, data}
+  }
+
   procesarRespuestaModal(respuesta: RespuestaModalRol = {}): void {
-    if (respuesta.actualizar) {
-      this.limpiar();
-    }
+    if (!respuesta.actualizar) return;
+    this.limpiar();
   }
 
   ngOnDestroy(): void {

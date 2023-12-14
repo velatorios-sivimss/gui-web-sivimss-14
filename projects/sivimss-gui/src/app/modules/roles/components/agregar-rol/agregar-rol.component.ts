@@ -49,6 +49,7 @@ export class AgregarRolComponent implements OnInit {
   ngOnInit(): void {
     const roles = this.route.snapshot.data["respuesta"];
     this.breadcrumbService.actualizar(ROLES_BREADCRUMB);
+    console.log(roles);
     this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
     this.inicializarAgregarRolForm();
   }
@@ -71,16 +72,20 @@ export class AgregarRolComponent implements OnInit {
     const rolBo: NuevoRol = this.crearNuevoRol();
     const solicitudRol: string = JSON.stringify(rolBo);
     this.rolService.guardar(solicitudRol).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Exito, msg );
-        void this.router.navigate(["roles"]);
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaCorrecta(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  manejarRespuestaCorrecta(respuesta: HttpRespuesta<any>): void {
+    const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+    this.alertaService.mostrar(TipoAlerta.Exito, msg);
+    void this.router.navigate(["roles"]);
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   noEspaciosAlPrincipio(): void {
