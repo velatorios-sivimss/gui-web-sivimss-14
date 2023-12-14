@@ -24,11 +24,7 @@ import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {ESTATUS_ROL} from "../../constants/estatus";
-
-interface SolicitudCambioEstatus {
-  idRol: any,
-  estatusRol: 1 | 0
-}
+import {SolicitudCambioEstatus} from "../../models/solicitudCambioEstatus.interface";
 
 @Component({
   selector: 'app-roles',
