@@ -35,6 +35,8 @@ export class AgregarRolComponent implements OnInit {
   confirmacion: boolean = false;
   pasoAgregarRol: number = 1;
 
+  readonly POSICION_CATALOGO_NIVELES: number = 1;
+
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -47,10 +49,14 @@ export class AgregarRolComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const roles = this.route.snapshot.data["respuesta"];
     this.breadcrumbService.actualizar(ROLES_BREADCRUMB);
-    this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
+    this.cargarCatalogos();
     this.inicializarAgregarRolForm();
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogo_nivelOficina = respuesta[this.POSICION_CATALOGO_NIVELES];
   }
 
   inicializarAgregarRolForm(): void {
@@ -71,20 +77,25 @@ export class AgregarRolComponent implements OnInit {
     const rolBo: NuevoRol = this.crearNuevoRol();
     const solicitudRol: string = JSON.stringify(rolBo);
     this.rolService.guardar(solicitudRol).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Exito, msg );
-        void this.router.navigate(["roles"]);
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaCorrecta(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
   }
 
+  manejarRespuestaCorrecta(respuesta: HttpRespuesta<any>): void {
+    const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+    this.alertaService.mostrar(TipoAlerta.Exito, msg);
+    void this.router.navigate(["roles"]);
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
+  }
+
   noEspaciosAlPrincipio(): void {
-    this.f.nombre.setValue(this.f.nombre.value.trimStart());
+    const nombre: string = this.agregarRolForm.get("nombre")?.value;
+    this.agregarRolForm.get('nombre')?.setValue(nombre.trimStart());
   }
 
   get f() {

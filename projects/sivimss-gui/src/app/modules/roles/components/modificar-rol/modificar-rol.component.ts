@@ -9,6 +9,7 @@ import {Rol} from '../../models/rol.interface';
 import {RespuestaModalRol} from "../../models/respuestaModal.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {ActivatedRoute} from "@angular/router";
 
 type RolModificado = Omit<Rol, "password">
 
@@ -29,11 +30,14 @@ export class ModificarRolComponent implements OnInit {
   datosConfirmacion!: Rol;
   pasoModificarRol: number = 1;
 
+  readonly POSICION_CATALOGO_NIVELES: number = 1;
+
   constructor(
     private alertaService: AlertaService,
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private rolService: RolService,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private mensajesSistemaService: MensajesSistemaService
   ) {
@@ -41,7 +45,7 @@ export class ModificarRolComponent implements OnInit {
 
   ngOnInit(): void {
     const rol = this.config.data;
-    this.consultarCatalogoNiveles();
+    this.cargarCatalogos();
     this.inicializarModificarRolForm(rol);
   }
 
@@ -55,6 +59,11 @@ export class ModificarRolComponent implements OnInit {
     });
   }
 
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogo_nivelOficina = respuesta[this.POSICION_CATALOGO_NIVELES];
+  }
+
   crearUsuarioModificado(): any {
     return {
       idRol: this.modificarRolForm.get("id")?.value,
@@ -65,38 +74,29 @@ export class ModificarRolComponent implements OnInit {
   }
 
   modificarRol(event?: boolean): void {
-    if (!event) return
+    if (!event) return;
     this.rolModificado = this.crearUsuarioModificado();
     const solicitudUsuario: string = JSON.stringify(this.rolModificado);
     this.rolService.actualizar(solicitudUsuario).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Exito, msg );
-        this.ref.close({actualizar: true})
-      },
-      error: (error: HttpErrorResponse): void => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Actualización incorrecta');
-        console.error("ERROR: ", error)
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaCorrecta(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
   }
 
-  consultarCatalogoNiveles(): void {
-    this.rolService.obtenerCatNivel().subscribe(
-      (respuesta: TipoDropdown[]): void => {
-        this.catalogo_nivelOficina = respuesta.map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
-      }
-    );
+  manejarRespuestaCorrecta(respuesta: HttpRespuesta<any>): void {
+    const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+    this.alertaService.mostrar(TipoAlerta.Exito, msg);
+    this.ref.close({actualizar: true});
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.alertaService.mostrar(TipoAlerta.Error, 'Actualización incorrecta');
   }
 
   noEspaciosAlPrincipio(): void {
-    this.f.nombre.setValue(
-      this.f.nombre.value.trimStart()
-    );
-  }
-
-  get f() {
-    return this.modificarRolForm.controls;
+    const nombre: string = this.modificarRolForm.get("nombre")?.value;
+    this.modificarRolForm.get('nombre')?.setValue(nombre.trimStart());
   }
 
   cancelar(): void {
@@ -105,28 +105,32 @@ export class ModificarRolComponent implements OnInit {
   }
 
   confirmarModificacion(): void {
-    if (this.pasoModificarRol === this.CAPTURA_DE_ROL) {
-      this.pasoModificarRol = this.RESUMEN_DE_ROL;
-      this.datosConfirmacion = {
-        desRol: this.f.nombre.value,
-        fCreacion: this.f.fechaCreacion.value,
-        nivelOficina: this.tomarNivel(),
-        estatusRol: this.f.estatus.value,
-        idRol: this.f.id.value
-      }
+    if (this.pasoModificarRol !== this.CAPTURA_DE_ROL) return;
+    this.pasoModificarRol = this.RESUMEN_DE_ROL;
+    this.datosConfirmacion = {
+      desRol: this.modificarRolForm.get('nombre')?.value,
+      fCreacion: this.modificarRolForm.get('fechaCreacion')?.value,
+      nivelOficina: this.tomarNivel(),
+      estatusRol: this.modificarRolForm.get('estatus')?.value,
+      idRol: this.modificarRolForm.get('id')?.value
     }
   }
 
   tomarNivel(): string {
-    if (this.f.nivel.value == 1) {
+    const nivel: number = this.modificarRolForm.get('nivel')?.value as number;
+    if (nivel === 1) {
       return "CENTRAL"
     }
-    if (this.f.nivel.value == 2) {
+    if (nivel === 2) {
       return "DELEGACIONAL"
     }
-    if (this.f.nivel.value == 3) {
+    if (nivel === 3) {
       return "VELATORIOS"
     }
     return "";
+  }
+
+  get f() {
+    return this.modificarRolForm.controls;
   }
 }
