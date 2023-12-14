@@ -33,6 +33,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
   catalogoTramites: TipoDropdown[] = [];
   catalogoDerechos: TipoDropdown[] = [];
 
+  idBitacoraPago!: number;
+
   FormReciboPago!: FormGroup;
 
   constructor(
@@ -42,10 +44,11 @@ export class ReciboPagoTramitesComponent implements OnInit {
     private cargadorService: LoaderService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private alertaService: AlertaService
+    private alertaService: AlertaService,
   ) {
     this.recibo = this.route.snapshot.data["respuesta"].datos[0];
     this.obtenerCatalogosPorVelatorio();
+    this.idBitacoraPago = this.route.snapshot.params['idPagoBitacora'];
   }
 
   ngOnInit(): void {
@@ -85,7 +88,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       numFolio: this.recibo.claveFolio,
       idDelegacion: this.recibo.idDelegacion,
       idVelatorio: this.recibo.idVelatorio,
-      idPagoDetalle: this.recibo.idPagoDetalle,
+      idPagoDetalle: this.idBitacoraPago,
       fecReciboPago: moment(new Date()).format('YYYY-MM-DD HH:mm'),
       nomContratante: this.recibo.recibimos,
       canReciboPago: `${this.convertirMoneda(+this.recibo.cantidad)} (${this.recibo.cantidadLetra})`,

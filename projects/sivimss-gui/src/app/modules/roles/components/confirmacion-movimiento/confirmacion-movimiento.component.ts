@@ -11,10 +11,9 @@ export class ConfirmacionMovimientoComponent implements OnInit {
 
   @Input() datosRolModificar!: Rol;
   @Input() origen!: number;
-  @Output() confirmacionAceptar = new EventEmitter<boolean>();
+  @Output() confirmacionAceptar: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   datosRol!: Rol;
-
 
   constructor(
     public config: DynamicDialogConfig,
@@ -25,7 +24,6 @@ export class ConfirmacionMovimientoComponent implements OnInit {
   ngOnInit(): void {
     this.datosRol = this.config.data;
   }
-
 
   confirmar(): void {
     this.confirmacionAceptar.emit(true);

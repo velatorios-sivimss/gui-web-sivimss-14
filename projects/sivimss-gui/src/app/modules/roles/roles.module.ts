@@ -16,7 +16,6 @@ import {AgregarRolComponent} from './components/agregar-rol/agregar-rol.componen
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {OverlayPanelOpcionesModule} from "../../shared/overlay-panel-opciones/overlay-panel-opciones.module";
 import {TablePanelModule} from "../../shared/table-panel/table-panel.module";
-import {VerDetalleRolComponent} from './components/ver-detalle-rol/ver-detalle-rol.component';
 import {ModificarRolComponent} from './components/modificar-rol/modificar-rol.component';
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {CalendarModule} from "primeng/calendar";
@@ -29,7 +28,6 @@ import {ConfirmacionMovimientoComponent} from "./components/confirmacion-movimie
   declarations: [
     RolesComponent,
     AgregarRolComponent,
-    VerDetalleRolComponent,
     ModificarRolComponent,
     ConfirmacionMovimientoComponent
   ],
