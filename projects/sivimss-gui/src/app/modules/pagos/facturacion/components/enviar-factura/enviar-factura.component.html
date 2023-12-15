@@ -34,7 +34,8 @@
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" class="btn btn-default btn-md" [routerLink]="'./..'">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="enviarForm.invalid">Enviar Factura</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="enviarForm.invalid"
+      (click)="mostrarDialogEnviar = true">Enviar Factura</button>
     </div>
   </div>
 </form>
@@ -49,7 +50,7 @@
     </div>
     <div class="flex justify-content-center">
       <button class="btn btn-default btn-md mr-3" (click)="mostrarDialogEnviar = false">Cancelar</button>
-      <button class="btn btn-primary btn-md">Aceptar</button>
+      <button class="btn btn-primary btn-md" (click)="enviarFactura()">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>

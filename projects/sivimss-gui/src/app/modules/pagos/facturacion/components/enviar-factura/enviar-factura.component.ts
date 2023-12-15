@@ -9,6 +9,11 @@ interface ParamsEnviar {
   folioRelacionado: string
 }
 
+interface SolicitudFactura {
+  idFactura: number,
+  correo: string
+}
+
 @Component({
   selector: 'app-enviar-factura',
   templateUrl: './enviar-factura.component.html',
@@ -44,6 +49,17 @@ export class EnviarFacturaComponent implements OnInit {
     this.enviarForm = this.formBuilder.group({
       correoElectronico: [{value: null, disabled: false}, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
     });
+  }
+
+  enviarFactura(): void {
+    const solicitud: SolicitudFactura = this.crearSolicitudFactura();
+  }
+
+  crearSolicitudFactura(): SolicitudFactura {
+    return {
+      idFactura: this.registroEnviar.folioFactura,
+      correo : this.enviarForm.get('correoElectronico')?.value
+    }
   }
 
   get fc() {
