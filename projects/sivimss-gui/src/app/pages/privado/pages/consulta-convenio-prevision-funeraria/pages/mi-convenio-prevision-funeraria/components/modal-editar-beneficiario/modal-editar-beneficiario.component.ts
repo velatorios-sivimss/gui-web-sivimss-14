@@ -148,7 +148,6 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
   handleClick(controlName: string) {
     let elements = document.getElementById(`upload-file`);
     console.log(elements);
-    controlName = controlName;
     elements?.click();
   }
 

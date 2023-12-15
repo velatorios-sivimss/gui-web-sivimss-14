@@ -122,7 +122,6 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
     this.ref.onClose.subscribe((respuesta: any) => {
       if (respuesta == 'exito') {
         this.detalleConvenio();
-        console.log(respuesta);
       }
     });
   }
