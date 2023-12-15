@@ -180,10 +180,10 @@ export class ModificarDatosFinadoComponent
 
 
   consultarNSS(): void {
-    this.loaderService.activar();
     if (!this.datosFinado.nss.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarNSS(this.datosFinado.nss.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
