@@ -65,14 +65,15 @@
     </ng-template>
     <ng-template pTemplate="body" let-convenio>
       <tr>
-        <td pResizableColumn> {{ convenio.folioConvenioPf }}</td>
+        <td pResizableColumn> {{ convenio.folioConvenio }}</td>
         <td pResizableColumn> {{ convenio.tipoContratacion }}</td>
         <td pResizableColumn> {{ convenio.rfc }}</td>
-        <td pResizableColumn> {{ convenio.nombreAfiliado }}</td>
+        <td pResizableColumn> {{ convenio.NombreAfiliadoTitular }}</td>
         <td pResizableColumn> {{ convenio.tipoPaquete }}</td>
         <td>
           <div class="contenedor-inputswitch">
             <p-inputSwitch [(ngModel)]="convenio.estatus"
+                           [disabled]="!convenio.estatus"
                            (onChange)="abrirCambioEstatus(convenio)"></p-inputSwitch>
             <span class="activo" *ngIf="convenio.estatus">Activo</span>
             <span class="inactivo" *ngIf="!convenio.estatus">Inactivo</span>
@@ -80,11 +81,14 @@
         </td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirPanel($event,convenio)">
+            <a (click)="abrirPanel($event,convenio)" *ngIf="convenio.estatus else emptyDiv">
               <img
                 src="assets/images/imagen-icono-barras-horizontales.svg"
                 alt="icono barras horizontales">
             </a>
+            <ng-template #emptyDiv>
+              <a></a>
+            </ng-template>
           </div>
         </td>
       </tr>
