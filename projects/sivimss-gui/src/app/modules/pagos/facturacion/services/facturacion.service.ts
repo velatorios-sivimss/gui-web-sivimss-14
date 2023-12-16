@@ -84,6 +84,10 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/cancelar_factura`, body);
   }
 
+  enviarFactura(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/envioCorreoFactura`, body);
+  }
+
   generarFactura(idFactura: number): Observable<Blob> {
     const body = {idFactura};
     const headers: HttpHeaders = new HttpHeaders({
