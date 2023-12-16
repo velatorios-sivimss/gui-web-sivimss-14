@@ -354,14 +354,14 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
             this.mostrarMensaje(Number(respuesta.mensaje));
             return;
           }
-          console.log(respuesta.datos);
+
           if (respuesta.mensaje == 'Exito') {
             if (curp != '') {
               let valores = respuesta.datos[0];
 
               let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
               let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
-              console.log([diaD, mesD, anioD]);
+
               [diaD, mesD, anioD] = [anioD, mesD, diaD];
               this.f.idPersona.setValue(valores.idPersona);
               this.f.nombre.setValue(valores.nomPersona);

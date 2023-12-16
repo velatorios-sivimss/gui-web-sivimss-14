@@ -23,6 +23,7 @@ import { DatosGeneralesContratante } from '../../../consulta-convenio-prevision-
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import { CATALOGO_ENFERMEDAD_PREEXISTENTE } from 'projects/sivimss-gui/src/app/modules/convenios-prevision-funeraria/constants/catalogos-funcion';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { Beneficiarios } from '../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
 @Component({
   selector: 'app-contratar-convenio-prevision-funeraria',
   templateUrl: './contratar-convenio-prevision-funeraria.component.html',
@@ -34,7 +35,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   promotores: any[] = [];
   paquetes: any[] = [];
   paises: any[] = [];
-  beneficiarios: any[] = [];
+  beneficiarios: Beneficiarios[] = [];
   personasGrupo: any[] = [];
   colonias: any[] = [];
   datosGeneralesContrante: DatosGeneralesContratante =
@@ -42,6 +43,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   fechaActual: Date = new Date();
   enfermedadPrexistenteArray: TipoDropdown[] = CATALOGO_ENFERMEDAD_PREEXISTENTE;
   parentesco: any[] = [];
+  itemBeneficiarios: Beneficiarios = {} as Beneficiarios;
 
   @ViewChild('overlayPanel')
   overlayPanel!: OverlayPanel;
@@ -61,6 +63,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   mostrarPorContrato: boolean = false;
   muestraOtraEnfermedad: boolean = false;
   mostrarBontonGaurdarPersona: boolean = true;
+  mostrarBotonAgregarBeneficiario: boolean = false;
+  deshabilitarTipo: boolean = false;
 
   TIPO_CONTRATACION_PERSONA: string = 'persona';
   TIPO_CONTRATACION_GRUPO: string = 'grupo';
@@ -99,19 +103,10 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   ngOnInit(): void {
     this.formPersona = this.crearFormPersona();
     this.formEmpresa = this.crearFormularioEmpresa();
-    setTimeout(() => {
-      this.buscarDatosGenerales();
-    }, 100);
-
-    setTimeout(() => {
-      this.buscarPromotores();
-    }, 500);
-    setTimeout(() => {
-      this.buscarPaises();
-    }, 800);
-    setTimeout(() => {
-      this.buscarPaquete();
-    }, 500);
+    this.buscarDatosGenerales();
+    this.buscarPromotores();
+    this.buscarPaises();
+    this.buscarPaquete();
     this.buscarParentesco();
     this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
     this.velatorio = this.rutaActiva.snapshot.queryParams.velatorio;
@@ -546,7 +541,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
             this.mostrarMensaje(Number(respuesta.mensaje));
             return;
@@ -621,7 +615,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   llenarForm(datosGeneralesContrante: DatosGeneralesContratante): void {
-    console.log(datosGeneralesContrante);
     this.datosPersonales.nombre.setValue(datosGeneralesContrante.nombre);
     this.datosPersonales.curp.setValue(datosGeneralesContrante.curp);
     this.datosPersonales.fechaNacimiento.setValue(
@@ -638,7 +631,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     );
     this.datosPersonales.matricula.setValue(datosGeneralesContrante.matricula);
     this.datosPersonales.rfc.setValue(datosGeneralesContrante.rfc);
-
     this.datosPersonales.idPersona.setValue(datosGeneralesContrante.idPersona);
     this.datosPersonales.sexo.setValue(datosGeneralesContrante.sexo);
     this.datosPersonales.otro.setValue(datosGeneralesContrante.otroSexo);
@@ -647,7 +639,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
 
   handleClick(controlName: string): void {
     let elements = document.getElementById(controlName);
-    console.log(elements);
     this.inputSeleccionado = controlName;
     elements?.click();
   }
@@ -713,7 +704,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   guardar(): void {
-    console.log(this.formPersona.valid);
     let tipoContratacion = this.formPersona.value.tipoContratacion;
     if (tipoContratacion == 'persona') {
       this.guardarPersona();
@@ -763,11 +753,9 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
             console.log(respuesta.mensaje);
             this.mostrarMensaje(Number(respuesta.mensaje));
-
             return;
           }
 
@@ -776,12 +764,16 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
               TipoAlerta.Exito,
               'Beneficiario actualizado correctamente'
             );
-            const datos = respuesta.datos;
+
+            let datos = respuesta.datos;
+
             this.mostrarBontonGaurdarPersona = false;
-            this.idConvenioPf = datos.idConvenioPf;
+            this.idConvenioPf = datos.idConvenioPF;
             this.idDomicilio = datos.idDomicilio;
             this.folioConvenio = datos.folio;
             this.idContratante = datos.idContratante;
+            this.mostrarBotonAgregarBeneficiario = true;
+            this.deshabilitarTipo = true;
           } else {
             console.log(respuesta);
             this.mostrarMensaje(Number(respuesta.mensaje));
@@ -856,9 +848,9 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
 
   cambioEnfermedadPrexistente(): void {
     let valorEnfermedad = this.domicilio.enfermedadPrexistente.value;
-
     this.muestraOtraEnfermedad = false;
     this.domicilio.otro.setValue(null);
+
     if (Number(valorEnfermedad) == 4) {
       this.muestraOtraEnfermedad = true;
     }
@@ -866,13 +858,13 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
 
   buscarCodigoPostal(): void {
     if (this.domicilio.codigoPostal.value.length < 5) return;
+
     this.loaderService.activar();
     this.consultaConveniosService
       .buscarCodigoPostal(this.domicilio.codigoPostal.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           if (!respuesta) {
             this.mostrarMensaje(185);
             this.limpiaInputsCp();
@@ -931,6 +923,34 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     this.domicilio.municipio.setValue(null);
   }
 
+  detalleConvenio() {
+    let idPlan = this.idConvenioPf + '';
+    this.consultaConveniosService
+      .detalleConvenio(idPlan)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            console.log(respuesta.mensaje);
+            this.mostrarMensaje(Number(respuesta.mensaje));
+            return;
+          }
+
+          if (respuesta.mensaje === 'Exito') {
+            this.beneficiarios = respuesta.datos.beneficiarios || [];
+            console.log('los beneficarios', this.beneficiarios);
+          } else {
+            this.beneficiarios = [];
+            this.mostrarMensaje(Number(respuesta.mensaje));
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.mostrarMensaje(0);
+        },
+      });
+  }
+
   seleccionaPaquete(idPaquete: string): void {
     this.idPaquete = idPaquete;
   }
@@ -946,21 +966,16 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
       header: 'Registrar beneficiario',
       style: { maxWidth: '876px', width: '100%' },
       data: {
-        /*  idConvenio: this.idConvenioPf,
+        idConvenio: this.idConvenioPf,
         parentesco: this.parentesco,
         idVelatorio: this.idVelatorio,
         velatorio: this.velatorio,
-        idContratante: this.idContratante, */
-        idConvenio: 215,
-        parentesco: this.parentesco,
-        idVelatorio: this.idVelatorio,
-        velatorio: this.velatorio,
-        idContratante: 362,
+        idContratante: this.idContratante,
       },
     });
     ref.onClose.subscribe((respuesta: any) => {
       if (respuesta == 'exito') {
-        // this.detalleConvenio();
+        this.detalleConvenio();
       }
     });
   }
@@ -971,10 +986,14 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
       header: 'Editar beneficiario',
       style: { maxWidth: '876px', width: '100%' },
       data: {
-        dato1: null,
+        item: this.itemBeneficiarios,
       },
     });
-    ref.onClose.subscribe((respuesta: any) => {});
+    ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta === 'exito') {
+        this.detalleConvenio();
+      }
+    });
   }
 
   abrirModalDesactivarBeneficiario(event: MouseEvent): void {
@@ -983,14 +1002,19 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
       header: 'Desactivar beneficiario',
       style: { maxWidth: '876px', width: '100%' },
       data: {
-        dato1: null,
+        item: this.itemBeneficiarios,
       },
     });
-    ref.onClose.subscribe((respuesta: any) => {});
+    ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta === 'exito') {
+        this.detalleConvenio();
+      }
+    });
   }
 
-  abrirPanel(event: MouseEvent): void {
+  abrirPanel(event: MouseEvent, itemBeneficiarios: Beneficiarios): void {
     this.overlayPanel.toggle(event);
+    this.itemBeneficiarios = itemBeneficiarios;
   }
 
   abrirPanelGrupo(event: MouseEvent): void {

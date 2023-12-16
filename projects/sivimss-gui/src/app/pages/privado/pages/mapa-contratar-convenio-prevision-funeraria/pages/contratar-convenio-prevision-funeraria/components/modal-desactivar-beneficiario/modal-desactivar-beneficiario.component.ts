@@ -1,162 +1,253 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Beneficiarios } from '../../../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
+import {
+  AlertaService,
+  TipoAlerta,
+} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { BusquedaConveniosPFServic } from '../../../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
+import { finalize } from 'rxjs';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { PATRON_CORREO } from 'projects/sivimss-gui/src/app/utils/constantes';
 
 @Component({
   selector: 'app-modal-desactivar-beneficiario',
   templateUrl: './modal-desactivar-beneficiario.component.html',
-  styleUrls: ['./modal-desactivar-beneficiario.component.scss']
+  styleUrls: ['./modal-desactivar-beneficiario.component.scss'],
 })
 export class ModalDesactivarBeneficiarioComponent implements OnInit {
-
+  beneficiarios: Beneficiarios = {} as Beneficiarios;
   form!: FormGroup;
+  documento: string = '';
+  nombreIne: string | null = null;
+  nombreActa: string | null = null;
+  actualizaArchivo: boolean = false;
+  fechaActual = new Date();
+  esMenorEdad: boolean = false;
 
-  fechaActual: Date = new Date();
-
-  dummyDropdown: { label: string; value: number }[] = [
-    { label: 'Opción 1', value: 1 },
-    { label: 'Opción 2', value: 2 },
-  ];
+  mensajeError: string =
+    'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    public config: DynamicDialogConfig
+    public config: DynamicDialogConfig,
+    private readonly ref: DynamicDialogRef,
+    private alertaService: AlertaService,
+    private consultaConveniosService: BusquedaConveniosPFServic,
+    private loaderService: LoaderService
   ) {}
 
   ngOnInit(): void {
-    this.form = this.crearForm();
+    this.beneficiarios = this.config.data['item'];
+    this.crearForm();
   }
 
-  crearForm(): FormGroup {
-    return this.formBuilder.group({
-      velatorio: [
-        {
-          value: null,
-          disabled: false,
-        },
-        [Validators.nullValidator],
-      ],
-      fecha: [
-        {
-          value: null,
-          disabled: false,
-        },
-        [Validators.nullValidator],
-      ],
+  crearForm(): void {
+    this.esMenorEdad = this.beneficiarios.edad >= 18 ? true : false;
+    this.form = this.formBuilder.group({
       nombre: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.nombreAfiliado,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       primerApellido: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.primerApellido,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       segundoApellido: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.segundoApellido,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       edad: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.edad,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       parentesco: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.parentesco,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       curp: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.curp,
+          disabled: true,
         },
         [Validators.required],
       ],
       rfc: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.rfc,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       actaNacimiento: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.ine,
+          disabled: true,
+        },
+        [Validators.nullValidator],
+      ],
+      fecha: [
+        {
+          value: this.beneficiarios.fechaNacimiento,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       correoElectronico: [
         {
-          value: null,
-          disabled: false,
+          value: this.beneficiarios.correo,
+          disabled: true,
+        },
+        [
+          Validators.required,
+          Validators.pattern(PATRON_CORREO),
+          Validators.max(45),
+        ],
+      ],
+      velatorio: [
+        {
+          value: this.beneficiarios.velatorio,
+          disabled: true,
         },
         [Validators.nullValidator],
       ],
       telefono: [
         {
+          value: this.beneficiarios.telefono,
+          disabled: true,
+        },
+        [Validators.required],
+      ],
+      documento: [
+        {
           value: null,
           disabled: false,
         },
-        [Validators.nullValidator],
       ],
     });
   }
 
-  handleClick(controlName: string, formato: string) {
-    // let elements = document.getElementById(`upload-file-${formato}`);
-    // this.controlName = controlName;
-    // elements?.click();
-  }
+  guardar(): void {
+    this.loaderService.activar();
+    let parametros = {
+      idContratante: this.beneficiarios.idContratanteBeneficiarios,
+      idPersona: this.beneficiarios.idPersona,
+    };
+    this.consultaConveniosService
+      .desactivarBeneficiario(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            console.log(respuesta.mensaje);
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajeError);
+            return;
+          }
 
-  addAttachment(fileInput: any) {
-    // const fileReaded = fileInput.target.files[0];
-    // if (this.controlName === 'archivoXml') {
-    //   this.importeFactura = null;
-    //   this.folioFiscal = null;
-    //   let reader = new FileReader();
-    //   reader.onload = () => {
-    //     let xml_content = reader.result ?? '';
-    //     if (typeof xml_content === 'string') {
-    //       let parser = new DOMParser();
-    //       let xmlDoc = parser.parseFromString(xml_content, 'text/xml');
-    //       let comprobante = xmlDoc.getElementsByTagName('cfdi:Comprobante')[0];
-    //       this.importeFactura = Number(comprobante.getAttribute('Total'));
-    //       let complemento = xmlDoc.getElementsByTagName('cfdi:Complemento')[0];
-    //       this.folioFiscal = complemento.getElementsByTagName('tfd:TimbreFiscalDigital')[0].getAttribute('UUID');
-    //       this.generarHojaConsignacionForm.get('folio')?.setValue(this.folioFiscal);
-    //       const formatter = new Intl.NumberFormat("en-US", {
-    //         style: 'currency',
-    //         currency: 'USD',
-    //         minimumFractionDigits: 2,
-    //       });
-    //       this.importeFacturaFormat = formatter.format(this.importeFactura);
-    //     }
-    //   }
-    //   if (fileReaded) reader.readAsText(fileReaded);
-    // }
-    // if (fileReaded) {
-    //   this.generarHojaConsignacionForm.get(this.controlName)?.setValue(fileReaded.name);
-    // } else {
-    //   this.generarHojaConsignacionForm.get(this.controlName)?.setValue(null);
-    // }
+          if (respuesta.mensaje === 'Exito') {
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              'Beneficiario eliminado correctamente'
+            );
+            this.ref.close('exito');
+          } else this.mostrarMensaje(Number(respuesta.mensaje));
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, this.mensajeError);
+        },
+      });
   }
-
   get f() {
     return this.form.controls;
   }
 
+  cerrarModal(): void {
+    this.ref.close();
+  }
+
+  validarCorreoElectronico(): void {
+    if (this.f.correoElectronico?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        'Tu correo electrónico no es válido. '
+      );
+    }
+  }
+
+  mostrarMensaje(numero: number): void {
+    switch (numero) {
+      case 5:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Error al guardar la información. Intenta nuevamente.'
+        );
+        break;
+      case 33:
+        this.alertaService.mostrar(TipoAlerta.Info, 'R.F.C. no valido.');
+        break;
+      case 52:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Error al consultar la información.'
+        );
+        break;
+      case 184:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El servicio de RENAPO  no esta disponible.'
+        );
+        break;
+      case 185:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El código postal no existe.'
+        );
+        break;
+      case 186:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'El servicio no responde, no permite más llamadas.'
+        );
+        break;
+      case 187:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+        );
+        break;
+      case 802:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El beneficiario ya fue registrado con anterioridad, ingrese un beneficiario diferente.'
+        );
+        break;
+      case 900:
+        this.alertaService.mostrar(TipoAlerta.Info, 'Selecciona un paquete.');
+        break;
+      default:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+        );
+    }
+  }
 }

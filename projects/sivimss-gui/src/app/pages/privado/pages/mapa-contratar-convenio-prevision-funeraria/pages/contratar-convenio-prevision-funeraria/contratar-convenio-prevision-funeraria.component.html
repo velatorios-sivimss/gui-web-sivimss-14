@@ -8,12 +8,14 @@
       <div class="flex mt-4">
         <div class="flex align-items-center mx-2">
           <p-radioButton [inputId]="'persona'" name="tipoContratacion" [value]="'persona'"
-            (click)="clickContratacion('persona')" [(ngModel)]="tipoContratacion"></p-radioButton>
+            (ngModelChange)="clickContratacion('persona')" [(ngModel)]="tipoContratacion"
+            [disabled]="deshabilitarTipo"></p-radioButton>
           <label class="control-label m-0 mx-3" [for]="'persona'">Persona</label>
         </div>
         <div class="flex align-items-center mx-2">
           <p-radioButton [inputId]="'grupo'" name="tipoContratacion" [value]="'grupo'"
-            (click)="clickContratacion('grupo')" [(ngModel)]="tipoContratacion"></p-radioButton>
+            (ngModelChange)="clickContratacion('grupo')" [(ngModel)]="tipoContratacion"
+            [disabled]="deshabilitarTipo"></p-radioButton>
           <label class="control-label m-0 mx-3" [for]="'grupo'">Grupo</label>
         </div>
       </div>
@@ -198,7 +200,8 @@
         <div class="border-panel mb-5">
           <h2 class="subtitulo-base">Beneficiarios</h2>
           <button class="btn btn-default btn-md ml-5" (click)="abrirModalRegistroNuevoBeneficiario($event)"
-            *ngIf="beneficiarios.length==0" type="button">Nuevo beneficiario</button>
+            *ngIf="(beneficiarios.length < 3) && mostrarBotonAgregarBeneficiario" type="button">Nuevo
+            beneficiario</button>
           <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true"
             [columnResizeMode]="'expand'">
             <ng-template pTemplate="header">
@@ -218,8 +221,27 @@
                 <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-convenio>
-
+            <ng-template pTemplate="body" let-beneficiarios>
+              <tr>
+                <td>{{beneficiarios.velatorio }}</td>
+                <td>{{beneficiarios.fechaNacimiento}}</td>
+                <td>{{beneficiarios.nombreAfiliado}}</td>
+                <td>{{beneficiarios.primerApellido}}</td>
+                <td>{{beneficiarios.segundoApellido}}</td>
+                <td>{{beneficiarios.edad}}</td>
+                <td>{{beneficiarios.parentesco}}</td>
+                <td>{{beneficiarios.curp}}</td>
+                <td>{{beneficiarios.rfc}}</td>
+                <td>{{beneficiarios.ine}}</td>
+                <td>{{beneficiarios.correo}}</td>
+                <td>{{beneficiarios.telefono}}</td>
+                <td style="border-left: 1px solid #b0b0b0;">
+                  <div class="contenedor-celda-iconos">
+                    <a (click)="abrirPanel($event,beneficiarios)" onCloseOnNavigation>
+                      <i class="pi pi-ellipsis-v"></i>
+                    </a>
+                  </div>
+                </td>
             </ng-template>
           </p-table>
         </div>
@@ -242,8 +264,8 @@
                   </ul>
                   <div class="iconos">
                     <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                    <img src="assets/images/sivimss-externos/material-symbols_candle-2.svg" alt="">
-                    <img src="assets/images/sivimss-externos/material-symbols_candle-2.svg" alt="">
+                    <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
+                    <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
                   </div>
                 </div>
               </div>
