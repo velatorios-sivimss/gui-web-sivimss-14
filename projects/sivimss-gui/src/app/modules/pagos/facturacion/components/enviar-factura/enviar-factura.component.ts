@@ -1,7 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {PATRON_CORREO} from "../../../../../utils/constantes";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {FacturacionService} from "../../services/facturacion.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 
 interface ParamsEnviar {
   folioFactura: number,
@@ -28,6 +32,10 @@ export class EnviarFacturaComponent implements OnInit {
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
+    private readonly router: Router,
+    private facturacionService: FacturacionService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private alertaService: AlertaService,
   ) {
     this.obtenerParametrosEnviar();
   }
@@ -53,6 +61,17 @@ export class EnviarFacturaComponent implements OnInit {
 
   enviarFactura(): void {
     const solicitud: SolicitudFactura = this.crearSolicitudFactura();
+    this.facturacionService.enviarFactura(solicitud).subscribe({
+      next: (): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Factura enviada correctamente');
+        void this.router.navigate(['./..'], {relativeTo: this.activatedRoute});
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      }
+    })
   }
 
   crearSolicitudFactura(): SolicitudFactura {
