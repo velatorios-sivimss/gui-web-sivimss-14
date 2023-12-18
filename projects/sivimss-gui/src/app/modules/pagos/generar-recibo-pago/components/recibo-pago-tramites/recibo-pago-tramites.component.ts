@@ -84,6 +84,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
     const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
     const derecho = this.FormReciboPago.get('derecho')?.value;
     const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    const total = this.FormReciboPago.get('total')?.value || 0;
     return {
       numFolio: this.recibo.claveFolio,
       idDelegacion: this.recibo.idDelegacion,
@@ -97,7 +98,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       canDerechos: this.convertirMoneda(this.totalDerecho),
       descDerechos: descripcionDerecho ?? '',
       canSuma: this.convertirMoneda(this.totalServicios),
-      canTotal: this.convertirMoneda(this.total),
+      canTotal: this.convertirMoneda(total),
       agenteFuneMat: "",
       recibeMat: ""
     }
@@ -126,7 +127,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
       fechaTramite: [{value: null, disable: true}, [Validators.required]],
       descripcionTramite: [{value: null, disabled: true}],
       derecho: [{value: null, disable: false}, [Validators.required]],
-      descripcionDerecho: [{value: null, disabled: true}]
+      descripcionDerecho: [{value: null, disabled: true}],
+      total: [{value: null, disabled: false}, [Validators.required]]
     });
     this.FormReciboPago.get('fechaTramite')?.patchValue(new Date(this.recibo.fecha));
     this.obtenerValoresFecha();
@@ -167,6 +169,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
     const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
     const derecho = this.FormReciboPago.get('derecho')?.value;
     const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    const total = this.FormReciboPago.get('total')?.value || 0;
     return {
       folio: "XXXXXX",
       delegacion: this.recibo.delegacion,
@@ -180,7 +183,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       derechos: this.convertirMoneda(this.totalDerecho),
       descDerechos: descripcionDerecho ?? '',
       total: this.convertirMoneda(this.totalServicios),
-      totalFinal: this.convertirMoneda(this.total),
+      totalFinal: this.convertirMoneda(total),
       rutaNombreReporte: "reportes/plantilla/DetalleRecPagos.jrxml",
       tipoReporte: "pdf",
       folioPF: this.recibo.folioPF
@@ -200,11 +203,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
     return this.totalTramite + this.totalDerecho;
   }
 
-  get total() {
-    return this.totalTramite + this.totalDerecho - +this.recibo.cantidad;
-  }
-
   get f() {
     return this.FormReciboPago?.controls;
   }
+
 }
