@@ -6,6 +6,8 @@ import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/a
 import {HttpErrorResponse} from "@angular/common/http";
 import {FacturacionService} from "../../services/facturacion.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
 
 interface ParamsEnviar {
   folioFactura: number,
@@ -35,6 +37,7 @@ export class EnviarFacturaComponent implements OnInit {
     private readonly router: Router,
     private facturacionService: FacturacionService,
     private mensajesSistemaService: MensajesSistemaService,
+    private cargadorService: LoaderService,
     private alertaService: AlertaService,
   ) {
     this.obtenerParametrosEnviar();
@@ -55,13 +58,19 @@ export class EnviarFacturaComponent implements OnInit {
 
   inicializarEnviarForm(): void {
     this.enviarForm = this.formBuilder.group({
-      correoElectronico: [{value: null, disabled: false}, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
+      correoElectronico: [{
+        value: null,
+        disabled: false
+      }, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
     });
   }
 
   enviarFactura(): void {
     const solicitud: SolicitudFactura = this.crearSolicitudFactura();
-    this.facturacionService.enviarFactura(solicitud).subscribe({
+    this.cargadorService.activar()
+    this.facturacionService.enviarFactura(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Factura enviada correctamente');
         void this.router.navigate(['./..'], {relativeTo: this.activatedRoute});
@@ -77,7 +86,7 @@ export class EnviarFacturaComponent implements OnInit {
   crearSolicitudFactura(): SolicitudFactura {
     return {
       idFactura: this.registroEnviar.folioFactura,
-      correo : this.enviarForm.get('correoElectronico')?.value
+      correo: this.enviarForm.get('correoElectronico')?.value
     }
   }
 

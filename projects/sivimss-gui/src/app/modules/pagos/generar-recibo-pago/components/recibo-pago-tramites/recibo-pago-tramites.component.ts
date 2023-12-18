@@ -115,8 +115,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
         const POSICION_DERECHOS: number = 1;
         const tramites = respuesta[POSICION_TRAMITES].datos;
         const derechos = respuesta[POSICION_DERECHOS].datos;
-        this.catalogoTramites = mapearArregloTipoDropdown(tramites, "importe", "desTramite");
-        this.catalogoDerechos = mapearArregloTipoDropdown(derechos, "importe", "desDerecho");
+        this.catalogoTramites = mapearArregloTipoDropdown(tramites, "desTramite", "importe");
+        this.catalogoDerechos = mapearArregloTipoDropdown(derechos, "desDerecho", "importe");
       }
     });
   }
@@ -128,7 +128,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       descripcionTramite: [{value: null, disabled: true}],
       derecho: [{value: null, disable: false}, [Validators.required]],
       descripcionDerecho: [{value: null, disabled: true}],
-      total: [{value: null, disabled: false}, [Validators.required]]
+      total: [{value: null, disabled: false}]
     });
     this.FormReciboPago.get('fechaTramite')?.patchValue(new Date(this.recibo.fecha));
     this.obtenerValoresFecha();
@@ -136,16 +136,14 @@ export class ReciboPagoTramitesComponent implements OnInit {
 
   cambiarTramite(): void {
     const tramite = this.FormReciboPago.get('tramite')?.value;
-    const descripcion = this.catalogoTramites.find(t => (t.value === tramite))?.value;
-    this.totalTramite = +this.catalogoTramites.find(t => (t.value === tramite))!.label;
-    this.FormReciboPago.get('descripcionTramite')?.patchValue(descripcion);
+    this.totalTramite = +tramite;
+    this.FormReciboPago.get('descripcionTramite')?.patchValue(tramite);
   }
 
   cambiarDerechos(): void {
     const derecho = this.FormReciboPago.get('derecho')?.value;
-    const descripcion = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
-    this.totalDerecho = +this.catalogoDerechos.find(t => (t.value === derecho))!.label;
-    this.FormReciboPago.get('descripcionDerecho')?.patchValue(descripcion);
+    this.totalDerecho = +derecho;
+    this.FormReciboPago.get('descripcionDerecho')?.patchValue(derecho);
   }
 
   generarVistaPrevia(): void {
@@ -166,9 +164,9 @@ export class ReciboPagoTramitesComponent implements OnInit {
 
   generarSolicitudVistaPrevia(): VistaPreviaReciboPago {
     const tramite = this.FormReciboPago.get('tramite')?.value;
-    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
+    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.label;
     const derecho = this.FormReciboPago.get('derecho')?.value;
-    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.label;
     const total = this.FormReciboPago.get('total')?.value || 0;
     return {
       folio: "XXXXXX",
