@@ -25,6 +25,7 @@ import {UtileriaModule} from '../../../shared/utileria/utileria.module';
 import {DetallePagoTramitesComponent} from "./components/detalle-pago-tramites/detalle-pago-tramites.component";
 import {ValidaRolModule} from '../../../shared/valida-rol/valida-rol.module';
 import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
+import {InputNumberModule} from "primeng/inputnumber";
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.modul
         ValidaRolModule,
         UtileriaModule,
         BtnRegresarModule,
+        InputNumberModule,
     ],
   providers: [GenerarReciboService]
 })

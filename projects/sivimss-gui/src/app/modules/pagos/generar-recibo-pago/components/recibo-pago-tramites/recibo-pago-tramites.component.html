@@ -28,12 +28,12 @@
         <section class="row grid mt-7">
           <div class="col">
               <span>DELEGACIÓN:*
-                <span class="font-bold titulo-body">{{recibo.delegacion}}</span>
+                <span class="font-bold titulo-body">{{ recibo.delegacion }}</span>
               </span>
           </div>
           <div class="col">
               <span>VELATORIO:*
-                <span class="font-bold titulo-body"># {{recibo.idVelatorio}}</span>
+                <span class="font-bold titulo-body"># {{ recibo.idVelatorio }}</span>
               </span>
           </div>
         </section>
@@ -51,16 +51,16 @@
           </div>
           <div class="mt-2">
           <span class="col-md-12 mt-5 etiqueta-base titulo-body">RECIBIMOS DEL SR.(A):*
-            <span class="etiqueta-formato-val">{{recibo.recibimos | uppercase}}</span>
+            <span class="etiqueta-formato-val">{{ recibo.recibimos | uppercase }}</span>
           </span>
             <span class="col-md-12 etiqueta-base mt-3">LA CANTIDAD DE:*
-            <span class="etiqueta-formato-val">{{recibo.cantidad | currency}}  ({{recibo.cantidadLetra}})</span>
+            <span class="etiqueta-formato-val">{{ recibo.cantidad | currency }}  ({{ recibo.cantidadLetra }})</span>
           </span>
           </div>
           <div>
           <span class="col-md-12 etiqueta-base mt-7 mb-3">PARA QUE A SU NOMBRE Y REPRESENTACIÓN PAGUE LOS TRAMITES PARA
             OTORGAR EL CONTRATO DE PRESTACIÓN DE SERVICIOS
-            <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span>
+            <span class="etiqueta-formato-val"> No. {{ recibo.folioPF }} </span>
              EN DEPENDENCIAS OFICIALES, DE ACUERDO AL SIGUIENTE DESGLOSE:
           </span>
             <div class="grid-container">
@@ -94,7 +94,7 @@
               <div class="grid-item"></div>
               <div class="grid-item mt-5">
                 <span class="etiqueta-formato">TOTAL:*
-                  <span class="etiqueta-totales">{{totalServicios | currency}}</span>
+                  <span class="etiqueta-totales">{{ totalServicios | currency }}</span>
                 </span>
               </div>
               <div class="grid-item"></div>
@@ -107,9 +107,12 @@
             </span>
             <div class="grid-container mb-4">
               <div class="grid-item">
-              <span class="etiqueta-formato">TOTAL
-                <span class="etiqueta-totales">{{total | currency}}</span>
-              </span>
+                <label class="etiqueta-formato" for="total">TOTAL:</label>
+                <p-inputNumber id="total" class="form-control" formControlName="total"
+                               placeholder="Ingrese Total" [maxlength]="14" [minFractionDigits]="2"
+                               [min]="0" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
+                <span class="campo-obligatorio"
+                      *ngIf="f?.total?.errors?.required && (f?.total?.dirty || f?.total?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="grid-item"></div>
               <div class="grid-item"></div>
