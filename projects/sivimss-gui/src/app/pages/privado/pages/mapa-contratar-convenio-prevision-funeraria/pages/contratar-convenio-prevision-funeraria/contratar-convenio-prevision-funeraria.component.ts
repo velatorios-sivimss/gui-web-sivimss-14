@@ -38,6 +38,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   beneficiarios: Beneficiarios[] = [];
   personasGrupo: any[] = [];
   colonias: any[] = [];
+  coloniasEmpresa: any[] = [];
   datosGeneralesContrante: DatosGeneralesContratante =
     {} as DatosGeneralesContratante;
   fechaActual: Date = new Date();
@@ -65,6 +66,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   mostrarBontonGaurdarPersona: boolean = true;
   mostrarBotonAgregarBeneficiario: boolean = false;
   deshabilitarTipo: boolean = false;
+  seleccionarPromotorEmpresa: boolean = false;
 
   TIPO_CONTRATACION_PERSONA: string = 'persona';
   TIPO_CONTRATACION_GRUPO: string = 'grupo';
@@ -93,6 +95,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
 
   constructor(
     private readonly formBuilder: FormBuilder,
+    private readonly formBuilderEmpresa: FormBuilder,
     public readonly dialogService: DialogService,
     private rutaActiva: ActivatedRoute,
     private consultaConveniosService: BusquedaConveniosPFServic,
@@ -110,6 +113,10 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     this.buscarParentesco();
     this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
     this.velatorio = this.rutaActiva.snapshot.queryParams.velatorio;
+    if (!this.rutaActiva.snapshot.queryParams.idConvenio)
+      this.buscarConvenioEmpresa(
+        this.rutaActiva.snapshot.queryParams.idConvenio
+      );
   }
 
   clickContratacion(tipoContratacion: string): void {
@@ -355,28 +362,28 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   crearFormularioEmpresa(): FormGroup {
-    return this.formBuilder.group({
-      datosGrupo: this.formBuilder.group({
+    return this.formBuilderEmpresa.group({
+      datosGrupo: this.formBuilderEmpresa.group({
         nombre: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.required],
+          [Validators.required, Validators.maxLength(5)],
         ],
         razonSocial: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.required],
+          [Validators.required, Validators.maxLength(5)],
         ],
         rfc: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.nullValidator],
+          [Validators.required, Validators.maxLength(5)],
         ],
         pais: [
           {
@@ -402,14 +409,14 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
         municipio: [
           {
             value: null,
-            disabled: false,
+            disabled: true,
           },
           [Validators.nullValidator],
         ],
         estado: [
           {
             value: null,
-            disabled: false,
+            disabled: true,
           },
           [Validators.nullValidator],
         ],
@@ -418,37 +425,55 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.required],
+          [Validators.required, Validators.maxLength(5)],
         ],
         numeroExterior: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.required],
+          [Validators.required, Validators.maxLength(5)],
         ],
         numeroInterior: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.nullValidator],
+          [Validators.maxLength(45)],
         ],
         telefono: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.required],
+          [Validators.required, Validators.maxLength(5)],
         ],
         correoElectronico: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.nullValidator],
+          [
+            Validators.required,
+            Validators.pattern(PATRON_CORREO),
+            Validators.maxLength(5),
+          ],
         ],
       }),
+      gestionadoPorPromotor: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.nullValidator],
+      ],
+      promotor: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.nullValidator],
+      ],
     });
   }
 
@@ -607,7 +632,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   get datosGrupo() {
-    return (this.formPersona.controls['datosGrupo'] as FormGroup).controls;
+    return (this.formEmpresa.controls['datosGrupo'] as FormGroup).controls;
   }
 
   get archivos() {
@@ -665,11 +690,11 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
       );
 
       if (this.inputSeleccionado == 'archivoIneUpload')
-        this.archivos.archivoIne.reset;
+        this.archivos.archivoIne.setValue(null);
       else if (this.inputSeleccionado == 'archivoCURPUpload')
-        this.archivos.archivoCurp.reset;
+        this.archivos.archivoCurp.setValue(null);
       else if (this.inputSeleccionado == 'archivoRFCUpload')
-        this.archivos.archivoRfc.reset;
+        this.archivos.archivoRfc.setValue(null);
 
       return;
     }
@@ -703,12 +728,29 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     });
   }
 
-  guardar(): void {
-    let tipoContratacion = this.formPersona.value.tipoContratacion;
-    if (tipoContratacion == 'persona') {
-      this.guardarPersona();
-    } else {
+  guardarEmpresa(): void {
+    if (!this.formPersona.valid) {
+      return;
     }
+
+    let parametros = {
+      idVelatorio: this.rutaActiva.snapshot.queryParams.idVelatorio,
+      idPromotor: this.datosGrupo.promotor.value,
+      calle: this.datosGrupo.calle.value,
+      noExterior: this.datosGrupo.numeroExterior.value,
+      noInterior: this.datosGrupo.numeroInterior.value,
+      cp: this.datosGrupo.codigoPostal.value,
+      colonia: this.datosGrupo.asentamientoColonia.value,
+      municipio: this.datosGrupo.municipio.value,
+      estado: this.datosGrupo.estado.value,
+      nombre: this.datosGrupo.nombre.value,
+      razonSocial: this.datosGrupo.razonSocial.value,
+      rfcEmpresa: this.datosGrupo.rfc.value,
+      idPais: this.datosGrupo.pais.value,
+      telefono: this.datosGrupo.telefono.value,
+      correo: this.datosGrupo.correoElectronicoGrupo.value,
+    };
+    console.log(parametros);
   }
 
   guardarPersona(): void {
@@ -876,12 +918,12 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             return;
           }
 
-          if (respuesta.mensaje === 'Exito') {
+          if (respuesta.datos === 'Exito') {
             if (this.paquetes.length == 0) {
               this.limpiaInputsCp();
               this.alertaService.mostrar(
                 TipoAlerta.Info,
-                'Ingrese un codigo postal valido'
+                'Ingrese un código postal valido'
               );
             } else {
               this.colonias = mapearArregloTipoDropdown(
@@ -923,6 +965,75 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     this.domicilio.municipio.setValue(null);
   }
 
+  buscarCodigoPostalEmpresa(): void {
+    if (this.datosGrupo.codigoPostal.value.length < 5) return;
+
+    this.loaderService.activar();
+    this.consultaConveniosService
+      .buscarCodigoPostal(this.datosGrupo.codigoPostal.value)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+          if (!respuesta) {
+            this.mostrarMensaje(185);
+            this.limpiaInputsCpEmpresa();
+            return;
+          }
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            this.limpiaInputsCpEmpresa();
+            this.mostrarMensaje(Number(respuesta.mensaje));
+            return;
+          }
+
+          if (respuesta.mensaje === 'Exito') {
+            if (respuesta.datos.length == 0) {
+              this.limpiaInputsCpEmpresa();
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                'Ingrese un código postal valido'
+              );
+            } else {
+              this.coloniasEmpresa = mapearArregloTipoDropdown(
+                respuesta.datos,
+                'nombre',
+                'nombre'
+              );
+              this.datosGrupo.asentamientoColonia.setValue(
+                respuesta.datos[0].nombre
+              );
+              this.datosGrupo.estado.setValue(
+                respuesta.datos[0].municipio.entidadFederativa.nombre
+              );
+              this.datosGrupo.municipio.setValue(
+                respuesta.datos[0].municipio.nombre
+              );
+              this.datosGrupo.pais.setValue(119);
+            }
+          } else {
+            console.log(respuesta);
+
+            this.limpiaInputsCpEmpresa();
+            this.mostrarMensaje(Number(respuesta.mensaje));
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(
+            TipoAlerta.Error,
+            'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+          );
+        },
+      });
+  }
+
+  limpiaInputsCpEmpresa(): void {
+    this.coloniasEmpresa = [];
+    this.datosGrupo.asentamientoColonia.setValue(null);
+    this.datosGrupo.estado.setValue(null);
+    this.datosGrupo.municipio.setValue(null);
+  }
+
   detalleConvenio() {
     let idPlan = this.idConvenioPf + '';
     this.consultaConveniosService
@@ -955,9 +1066,16 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     this.idPaquete = idPaquete;
   }
 
-  clickSeleccionaPromotor(): void {
-    this.seleccionarPromotor = !this.formPersona.value.gestionadoPorPromotor;
-    this.formPersona.controls['promotor'].setValue(null);
+  clickSeleccionaPromotor(proviene: string): void {
+    if (proviene == 'persona') {
+      this.seleccionarPromotor = !this.formPersona.value.gestionadoPorPromotor;
+      this.formPersona.controls['promotor'].setValue(null);
+    } else {
+      console.log('entro por emrpesa');
+      this.seleccionarPromotorEmpresa =
+        !this.formEmpresa.value.gestionadoPorPromotor;
+      this.formEmpresa.controls['promotor'].setValue(null);
+    }
   }
 
   abrirModalRegistroNuevoBeneficiario(event: MouseEvent): void {
@@ -1022,4 +1140,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   abrirModalDetalleBeneficiarios(event: any) {}
+
+  buscarConvenioEmpresa(idConvenio: string): void {
+    console.log('buscarconvenio');
+  }
 }
