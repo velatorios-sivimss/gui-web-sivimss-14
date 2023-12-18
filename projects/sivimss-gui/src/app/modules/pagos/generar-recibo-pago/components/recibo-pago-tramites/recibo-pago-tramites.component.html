@@ -33,7 +33,7 @@
           </div>
           <div class="col">
               <span>VELATORIO:*
-                <span class="font-bold titulo-body"># {{ recibo.idVelatorio }}</span>
+                <span class="font-bold titulo-body"># {{ recibo.idVelatorio }}  {{ recibo.velatorio }}</span>
               </span>
           </div>
         </section>
@@ -42,8 +42,8 @@
             <div class="col-md-4 grid-item ml-3">
               <label class="control-label" for="fechaTramite">FECHA<span class="req">*</span>:</label>
               <p-calendar id="fechaTramite" [formControlName]="'fechaTramite'" styleClass="form-control"
-                          [showIcon]="true" [disabled]="true"
-                          placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" (onSelect)="obtenerValoresFecha()">
+                          [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy"
+                          (onSelect)="obtenerValoresFecha()">
               </p-calendar>
               <span class="campo-obligatorio"
                     *ngIf="f?.fechaTramite?.errors?.required && (f?.fechaTramite?.dirty || f?.fechaTramite?.touched)">Este campo es obligatorio *.</span>
@@ -111,8 +111,6 @@
                 <p-inputNumber id="total" class="form-control" formControlName="total"
                                placeholder="Ingrese Total" [maxlength]="14" [minFractionDigits]="2"
                                [min]="0" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
-                <span class="campo-obligatorio"
-                      *ngIf="f?.total?.errors?.required && (f?.total?.dirty || f?.total?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="grid-item"></div>
               <div class="grid-item"></div>
