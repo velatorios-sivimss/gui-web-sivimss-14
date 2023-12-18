@@ -1,81 +1,111 @@
-<form [formGroup]="form">
+<form [formGroup]="form" (submit)="guardar()">
     <div class="row mb-3">
-
         <div class="col-md-4">
-            <label class="control-label" for="velatorio">Velatorio:</label>
-            <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" appendTo="body"
-                placeholder="Selecciona velatorio" [options]="dummyDropdown" [filter]="true"
-                filterBy="label"></p-dropdown>
+            <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
+            <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa curp"
+                maxlength="18" (blur)="consultarCURP()" (keyup)="convertirAMayusculas(0)" />
+            <span class="campo-obligatorio" *ngIf="f.curp?.errors?.required && (f.curp?.dirty || f.curp?.touched)">
+                Este campo es obligatorio *.</span>
         </div>
-
         <div class="col-md-4">
-            <label class="control-label" for="fecha">Fecha:</label>
-            <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"
-                dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual"></p-calendar>
+            <label class="control-label" for="nombre">Nombre<span class="req">*</span>:</label>
+            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre" />
+            <span class="campo-obligatorio"
+                *ngIf="f.nombre?.errors?.required && (f.nombre?.dirty || f.nombre?.touched)">
+                Este campo es obligatorio *.</span>
         </div>
-
         <div class="col-md-4">
-            <label class="control-label" for="nombre">Nombre:</label>
-            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
+            <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
+            <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
+                placeholder="Ingresa primer Apellido" />
+            <span class="campo-obligatorio" *ngIf="f.primerApellido?.errors?.required &&
+          (f.primerApellido?.dirty || f.primerApellido?.touched)">
+                Este campo es obligatorio *.</span>
         </div>
-
     </div>
     <div class="row mb-3">
         <div class="col-md-4">
-            <label class="control-label" for="primerApellido">Primer apellido:</label>
-            <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
-                placeholder="Ingresa primerApellido">
+            <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
+            <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
+                placeholder="Ingresa segundo apellido" />
+            <span class="campo-obligatorio" *ngIf="
+          f.segundoApellido?.errors?.required &&
+          (f.segundoApellido?.dirty || f.segundoApellido?.touched)
+        ">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-4">
-            <label class="control-label" for="segundoApellido">Segundo apellido:</label>
-            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
+            <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
+            <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"
+                dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual" (onSelect)="calcularEdad()"
+                (change)="calcularEdad()"></p-calendar>
+            <span class="campo-obligatorio" *ngIf="
+          f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)
+        ">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-4">
-            <label class="control-label" for="edad">Edad:</label>
-            <input id="edad" type="text" class="form-control" formControlName="edad" placeholder="Ingresa edad">
+            <label class="control-label" for="edad">Edad<span class="req">*</span>:</label>
+            <input id="edad" type="text" class="form-control" formControlName="edad" placeholder="Ingresa edad" />
         </div>
-
     </div>
     <div class="row mb-3">
         <div class="col-md-4">
             <label class="control-label" for="parentesco">Parentesco<span class="req">*</span>:</label>
             <p-dropdown id="parentesco" class="form-control" formControlName="parentesco" appendTo="body"
-                placeholder="Selecciona parentesco" [options]="dummyDropdown" [filter]="true"
+                placeholder="Selecciona parentesco" [options]="parentesco" [filter]="true"
                 filterBy="label"></p-dropdown>
+            <span class="campo-obligatorio" *ngIf="
+          f.parentesco?.errors?.required &&
+          (f.parentesco?.dirty || f.parentesco?.touched)
+        ">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-4">
-            <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
-            <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa curp">
-            <span class="campo-obligatorio" *ngIf="f.curp?.errors?.required  && (f.curp?.dirty || f.curp?.touched)">Este
+            <label class="control-label" for="rfc">RFC<span class="req">*</span>:</label>
+            <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa rfc"
+                (blur)="validarRFC()" />
+            <span class="campo-obligatorio" *ngIf="f.rfc?.errors?.required && (f.rfc?.dirty || f.rfc?.touched)">Este
                 campo es obligatorio *.</span>
         </div>
         <div class="col-md-4">
-            <label class="control-label" for="rfc">RFC:</label>
-            <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa rfc">
+            <label class="control-label" for="actaNacimiento" *ngIf="esMenorEdad; else elseMenorEdad">INE<span
+                    class="req">*</span>:</label>
+            <ng-template #elseMenorEdad>
+                <label class="control-label" for="actaNacimiento">Acta de
+                    nacimieno<span class="req">*</span>:</label></ng-template>
+            <div (click)="handleClick('archivo')">
+                <!--Adaptarlo a sus necesidades :) -->
+                <input class="hidden" type="file" id="upload-file" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
+                    ngf-max-size="5MB" (change)="addAttachment($event)" />
+                <input id="actaNacimiento" class="form-control" formControlName="actaNacimiento" readonly />
+                <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver" />
+            </div>
+            <span class="campo-obligatorio" *ngIf="
+          f.actaNacimiento?.errors?.required &&
+          (f.actaNacimiento?.dirty || f.actaNacimiento?.touched)
+        ">Este campo es obligatorio *.</span>
         </div>
     </div>
 
     <div class="row mb-3">
         <div class="col-md-4">
-            <label class="control-label" for="archivoXml">Acta de nacimiento:</label>
-            <div (click)="handleClick('archivoXml', 'xml')" class="file-container">
-                <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml"
-                    ngf-max-size="2MB" (change)="addAttachment($event)">
-                <input id="archivoXml" class="form-control" formControlName="actaNacimiento" >
-                <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
-            </div>
+            <label class="control-label" for="correo">Correo electrónico:</label>
+            <input id="correo" type="text" class="form-control" formControlName="correo"
+                placeholder="Ingresa correo electronico" (blur)="validarCorreoElectronico()" />
+            <span class="campo-obligatorio" *ngIf="
+          f.correo?.errors?.required && (f.correo?.dirty || f.correo?.touched)
+        ">Este campo es obligatorio *.</span>
         </div>
-
         <div class="col-md-4">
-            <label class="control-label" for="correoElectronico">Correo electrónico:</label>
-            <input id="correoElectronico" type="text" class="form-control" formControlName="correoElectronico"
-                placeholder="Ingresa correo electronico">
+            <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
+            <input id="velatorio" type="text" class="form-control" formControlName="velatorio" placeholder=" " />
         </div>
-
         <div class="col-md-4">
-            <label class="control-label" for="telefono">Teléfono:</label>
+            <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
             <input id="telefono" type="text" class="form-control" formControlName="telefono"
-                placeholder="Ingresa telefono">
+                placeholder="Ingresa telefono" />
+            <span class="campo-obligatorio" *ngIf="
+          f.telefono?.errors?.required &&
+          (f.telefono?.dirty || f.telefono?.touched)
+        ">Este campo es obligatorio *.</span>
         </div>
     </div>
 
@@ -85,8 +115,12 @@
                 *Campos obligatorios
             </span>
             <div class="flex justify-content-end align-items-center">
-                <button class="btn btn-gold btn-md">Cancelar</button>
-                <button class="btn btn-primary btn-md ml-5">Guardar</button>
+                <button class="btn btn-gold btn-md" type="button" (click)="cerrarModal()">
+                    Cancelar
+                </button>
+                <button class="btn btn-primary btn-md ml-5" type="submit" [disabled]="!this.form.valid">
+                    Guardar
+                </button>
             </div>
         </div>
     </div>

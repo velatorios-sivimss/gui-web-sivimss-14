@@ -32,8 +32,8 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
   datosGeneralesRenovacion: DatosGeneralesRenovacion =
     {} as DatosGeneralesRenovacion;
   documento: string = '';
-  nombreIne: string = '';
-  nombreActa: string = '';
+  nombreIne: string | null = null;
+  nombreActa: string | null = null;
   esMenorEdad: boolean = false;
 
   constructor(
@@ -264,9 +264,11 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
       reader.onerror = (error) => reject(error);
     });
   }
+
   addAttachment(fileInput: any) {
     const maxSize = 5000000;
     const fileReaded = fileInput.target.files[0];
+    const tipoArchivo = fileReaded.type.split('/');
 
     if (fileReaded.size > maxSize) {
       const tamanioEnMb = maxSize / 1000000;
@@ -279,13 +281,22 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
       return;
     }
 
-    this.nombreIne = this.f.edad.value >= 18 ? fileReaded.name : null;
-    this.nombreActa = this.f.edad.value < 18 ? fileReaded.name : null;
+    this.nombreIne =
+      this.f.edad.value >= 18
+        ? 'INE-' + this.f.curp.value + '.' + tipoArchivo[1]
+        : null;
+    this.nombreActa =
+      this.f.edad.value < 18
+        ? 'ACTA-' + this.f.curp.value + '.' + tipoArchivo[1]
+        : null;
+
     this.f.nombreIne.setValue(this.nombreIne);
     this.f.nombreActa.setValue(this.nombreActa);
+    this.f.actaNacimiento.setValue(this.nombreActa);
 
-    //this.f.actaNacimiento = fileReaded.name;
-    this.f.actaNacimiento.setValue(fileReaded.name);
+    if (this.f.edad.value >= 18) {
+      this.f.actaNacimiento.setValue(this.nombreIne);
+    }
 
     this.getBase64(fileReaded).then((data: any) => {
       this.documento = data;
@@ -294,25 +305,21 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
   }
 
   consultarCURP() {
-    if (!this.f.curp.value) {
-      return;
-    }
+    if (!this.f.curp.value) return;
+
     if (this.f.curp?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no valido.');
       return;
     }
-    if (this.f.curp.value.includes('XEXX010101HNEXXXA4')) {
-      return;
-    }
-    if (this.f.curp.value.includes('XEXX010101MNEXXXA8')) {
-      return;
-    }
+    if (this.f.curp.value.includes('XEXX010101HNEXXXA4')) return;
+
+    if (this.f.curp.value.includes('XEXX010101MNEXXXA8')) return;
+
     if (this.form.controls.curp?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
       return;
     }
     if (!this.f.curp.value) return;
-
     this.buscarCurpRFC(this.f.curp.value, '');
   }
 
@@ -347,14 +354,14 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
             this.mostrarMensaje(Number(respuesta.mensaje));
             return;
           }
-          console.log(respuesta.datos);
+
           if (respuesta.mensaje == 'Exito') {
             if (curp != '') {
               let valores = respuesta.datos[0];
 
               let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
               let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
-              console.log([diaD, mesD, anioD]);
+
               [diaD, mesD, anioD] = [anioD, mesD, diaD];
               this.f.idPersona.setValue(valores.idPersona);
               this.f.nombre.setValue(valores.nomPersona);
@@ -371,16 +378,40 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
-          );
+          this.mostrarMensaje(0);
         },
       });
   }
 
   mostrarMensaje(numero: number): void {
     switch (numero) {
+      case 5:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Error al guardar la información. Intenta nuevamente.'
+        );
+        break;
+      case 33:
+        this.alertaService.mostrar(TipoAlerta.Info, 'R.F.C. no valido.');
+        break;
+      case 52:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Error al consultar la información.'
+        );
+        break;
+      case 184:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El servicio de RENAPO  no esta disponible.'
+        );
+        break;
+      case 185:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El código postal no existe.'
+        );
+        break;
       case 186:
         this.alertaService.mostrar(
           TipoAlerta.Error,
@@ -393,33 +424,14 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
           'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
         );
         break;
-      case 33:
-        this.alertaService.mostrar(TipoAlerta.Info, 'R.F.C. no valido.');
-        break;
-
-      case 52:
-        this.alertaService.mostrar(
-          TipoAlerta.Error,
-          'Error al consultar la información.'
-        );
-        break;
-      case 5:
-        this.alertaService.mostrar(
-          TipoAlerta.Error,
-          'Error al guardar la información. Intenta nuevamente.'
-        );
-        break;
-      case 184:
-        this.alertaService.mostrar(
-          TipoAlerta.Info,
-          'El servicio de RENAPO  no esta disponible.'
-        );
-        break;
       case 802:
         this.alertaService.mostrar(
           TipoAlerta.Info,
           'El beneficiario ya fue registrado con anterioridad, ingrese un beneficiario diferente.'
         );
+        break;
+      case 900:
+        this.alertaService.mostrar(TipoAlerta.Info, 'Selecciona un paquete.');
         break;
       default:
         this.alertaService.mostrar(
@@ -445,6 +457,7 @@ export class ModalRegistrarNuevoBeneficiarioComponent implements OnInit {
     if (!this.form.valid) {
       return;
     }
+
     this.loaderService.activar();
     this.f.validaIne.setValue(Number(this.f.edad.value) >= 18 ? 1 : null);
     this.f.validaActa.setValue(Number(this.f.edad.value) < 18 ? 1 : null);

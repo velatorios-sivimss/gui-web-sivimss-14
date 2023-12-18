@@ -22,8 +22,8 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
   beneficiarios: Beneficiarios = {} as Beneficiarios;
   form!: FormGroup;
   documento: string = '';
-  nombreIne: string = '';
-  nombreActa: string = '';
+  nombreIne: string | null = null;
+  nombreActa: string | null = null;
   actualizaArchivo: boolean = false;
   fechaActual = new Date();
   esMenorEdad: boolean = false;
@@ -145,10 +145,9 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
     });
   }
 
-  handleClick(controlName: string) {
+  handleClick() {
     let elements = document.getElementById(`upload-file`);
-    console.log(elements);
-    controlName = controlName;
+
     elements?.click();
   }
 
@@ -160,10 +159,11 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
       reader.onerror = (error) => reject(error);
     });
   }
+
   addAttachment(fileInput: any) {
     const maxSize = 5000000;
     const fileReaded = fileInput.target.files[0];
-
+    const tipoArchivo = fileReaded.type.split('/');
     if (fileReaded.size > maxSize) {
       const tamanioEnMb = maxSize / 1000000;
       this.alertaService.mostrar(
@@ -176,11 +176,22 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
       return;
     }
 
-    this.actualizaArchivo = true;
-    this.nombreIne = this.beneficiarios.edad >= 18 ? fileReaded.name : null;
-    this.nombreActa = this.beneficiarios.edad < 18 ? fileReaded.name : null;
-    this.f.actaNacimiento.setValue(fileReaded.name);
+    this.nombreIne =
+      this.f.edad.value >= 18
+        ? 'INE-' + this.f.curp.value + '.' + tipoArchivo[1]
+        : null;
+    this.nombreActa =
+      this.f.edad.value < 18
+        ? 'ACTA-' + this.f.curp.value + '.' + tipoArchivo[1]
+        : null;
 
+    this.f.nombreIne.setValue(this.nombreIne);
+    this.f.nombreActa.setValue(this.nombreActa);
+    this.f.actaNacimiento.setValue(this.nombreActa);
+
+    if (this.f.edad.value >= 18) {
+      this.f.actaNacimiento.setValue(this.nombreIne);
+    }
     this.getBase64(fileReaded).then((data: any) => {
       this.documento = data;
     });
@@ -224,11 +235,17 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajeError);
             return;
           }
-          this.alertaService.mostrar(
-            TipoAlerta.Exito,
-            'Beneficiario actualizado correctamente'
-          );
-          this.ref.close(this.beneficiarios);
+
+          if (respuesta.mensaje === 'Exito') {
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              'Beneficiario actualizado correctamente'
+            );
+            this.ref.close(this.beneficiarios);
+          } else {
+            this.mostrarMensaje(Number(respuesta.mensaje));
+            console.log(respuesta);
+          }
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
@@ -250,6 +267,64 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
         TipoAlerta.Precaucion,
         'Tu correo electrónico no es válido. '
       );
+    }
+  }
+
+  mostrarMensaje(numero: number): void {
+    switch (numero) {
+      case 5:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Error al guardar la información. Intenta nuevamente.'
+        );
+        break;
+      case 33:
+        this.alertaService.mostrar(TipoAlerta.Info, 'R.F.C. no valido.');
+        break;
+      case 52:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Error al consultar la información.'
+        );
+        break;
+      case 184:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El servicio de RENAPO  no esta disponible.'
+        );
+        break;
+      case 185:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El código postal no existe.'
+        );
+        break;
+      case 186:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'El servicio no responde, no permite más llamadas.'
+        );
+        break;
+      case 187:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+        );
+        break;
+      case 802:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El beneficiario ya fue registrado con anterioridad, ingrese un beneficiario diferente.'
+        );
+        break;
+      case 900:
+        this.alertaService.mostrar(TipoAlerta.Info, 'Selecciona un paquete.');
+        break;
+      default:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+        );
     }
   }
 }

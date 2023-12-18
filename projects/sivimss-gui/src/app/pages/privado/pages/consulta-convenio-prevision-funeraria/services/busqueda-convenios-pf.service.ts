@@ -75,4 +75,40 @@ export class BusquedaConveniosPFServic extends BaseService<
       parametros
     );
   }
+
+  buscarDatosGeneralesContratante(
+    idVelatorio: Number
+  ): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      this._base + 'convenio-pf/datos-generales-contratante/' + idVelatorio
+    );
+  }
+
+  buscarPaquetes(idVelatorio: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      this._base + 'catalogo/paquetes/' + idVelatorio
+    );
+  }
+
+  buscarPromotores(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      this._base + 'catalogo/promotores'
+    );
+  }
+  buscarCodigoPostal(codigoPostal: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      this._base + 'consultar/codigo-postal/' + codigoPostal
+    );
+  }
+
+  buscarPaises(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base + 'consultar/paises');
+  }
+
+  agregarContratoPersona(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `convenio-pf/alta-plan-pf/persona`,
+      parametros
+    );
+  }
 }

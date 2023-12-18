@@ -122,7 +122,6 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
     this.ref.onClose.subscribe((respuesta: any) => {
       if (respuesta == 'exito') {
         this.detalleConvenio();
-        console.log(respuesta);
       }
     });
   }
@@ -181,7 +180,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   validarAlta(): void {
-    this.agregarBeneficiarios = true;
+    // this.agregarBeneficiarios = true; se descomenta solo para hacer pruebas de actualziacion
     if (this.datosGeneralesRenovacion.tipoPrevision === 1) {
       if (this.beneficiarios.length < 3) {
         if (this.datosGeneralesRenovacion.periodoRenovacion === 1) {
