@@ -136,16 +136,14 @@ export class ReciboPagoTramitesComponent implements OnInit {
 
   cambiarTramite(): void {
     const tramite = this.FormReciboPago.get('tramite')?.value;
-    const descripcion: string = this.catalogoTramites.find(t => (t.value === tramite))?.label || '';
     this.totalTramite = +tramite;
-    this.FormReciboPago.get('descripcionTramite')?.patchValue(descripcion);
+    this.FormReciboPago.get('descripcionTramite')?.patchValue(tramite);
   }
 
   cambiarDerechos(): void {
     const derecho = this.FormReciboPago.get('derecho')?.value;
-    const descripcion: string = this.catalogoDerechos.find(t => (t.value === derecho))?.label || '';
     this.totalDerecho = +derecho;
-    this.FormReciboPago.get('descripcionDerecho')?.patchValue(descripcion);
+    this.FormReciboPago.get('descripcionDerecho')?.patchValue(derecho);
   }
 
   generarVistaPrevia(): void {
