@@ -22,7 +22,7 @@
       <div class="col-md-4">
         <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
         <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa curp"
-               maxlength="18" (blur)="consultarCURP()" (keyup)="convertirAMayusculas(0)">
+               maxlength="18" (blur)="consultarCurpContratante()" (keyup)="convertirAMayusculas(0)">
         <span class="campo-obligatorio"
               *ngIf="datosContratante.curp?.errors?.required && (datosContratante.curp?.dirty || datosContratante.curp?.touched)">Este campo es obligatorio *.</span>
       </div>

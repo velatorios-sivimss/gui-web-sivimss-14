@@ -7,7 +7,7 @@ import {
   ChangeDetectorRef, ViewChild,
 } from '@angular/core';
 
-import {SERVICIO_BREADCRUMB, SERVICIO_BREADCRUMB_SFPA} from '../../../constants/breadcrumb';
+import {SERVICIO_BREADCRUMB_SFPA} from '../../../constants/breadcrumb';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 import {ContratanteInterface} from '../../../models/Contratante.interface';
@@ -372,9 +372,10 @@ export class ModificarDatosContratanteSFComponent
     }
     this.idDomicilio = datos.contratante.cp.idDomicilio
 
-    let matricula: string
+    let matricula: string = ""
     if (typeof datos.contratante.matricula == 'string') {
-      datos.contratante.matricula.includes('null') ? matricula = '' : matricula = datos.contratante.matricula
+      if(datos.contratante.matricula.includes('null'))matricula = '';
+      if(!datos.contratante.matricula.includes('null'))matricula = datos.contratante.matricula;
     } else {
       matricula = datos.contratante.matricula;
     }
@@ -390,12 +391,7 @@ export class ModificarDatosContratanteSFComponent
         ],
         matriculaCheck: [
           {
-            value:
-              datos.contratante.matricula == null ||
-              datos.contratante.matricula == '' ||
-              datos.contratante.matricula == 'null'
-                ? false
-                : true,
+            value: datos.contratante.matricula != null && datos.contratante.matricula != '' && datos.contratante.matricula != 'null',
             disabled: false,
           },
         ],
@@ -600,7 +596,6 @@ export class ModificarDatosContratanteSFComponent
     if (!this.datosContratante.curp.value) {
       return;
     }
-    // this.limpiarFormularioConsultaRfcCurp('curp');
     if (this.datosContratante.curp?.errors?.pattern) {
       this.alertaService.mostrar(
         TipoAlerta.Precaucion,
@@ -694,7 +689,6 @@ export class ModificarDatosContratanteSFComponent
             }
             return;
           }
-          // this.limpiarConsultaDatosPersonales();
           this.alertaService.mostrar(
             TipoAlerta.Precaucion,
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -751,8 +745,6 @@ export class ModificarDatosContratanteSFComponent
   }
 
   limpiarFormularioConsultaRfcCurp(origen: string): void {
-    // if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
-    // if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
     this.datosContratante.nombre.patchValue(null)
     this.datosContratante.primerApellido.patchValue(null)
     this.datosContratante.segundoApellido.patchValue(null)
@@ -835,7 +827,6 @@ export class ModificarDatosContratanteSFComponent
             this.direccion.noExterior.setValue(datos.numExterior);
             this.idDomicilio = datos.idDomicilio;
           }
-          // this.limpiarConsultaDatosPersonales();
         },
         error: (error: HttpErrorResponse) => {
           console.log(error);
@@ -938,7 +929,6 @@ export class ModificarDatosContratanteSFComponent
     this.datosContratante.lugarNacimiento.clearValidators();
     this.datosContratante.lugarNacimiento.reset();
     this.datosContratante.paisNacimiento.enable();
-    // this.datosContratante.paisNacimiento.setValidators(Validators.required);
   }
 
   continuar() {
@@ -1002,7 +992,6 @@ export class ModificarDatosContratanteSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    // this.seleccionarEtapa.emit(1);
     this.seleccionarEtapa.emit({idEtapaSeleccionada:1, detalle_orden_servicio: true});
     this.datosAlta();
   }
@@ -1061,13 +1050,11 @@ export class ModificarDatosContratanteSFComponent
     this.contratante.otroSexo = datos.contratante.primerApellido;
     if(typeof datos.contratante.fechaNac == 'string'){
       let [dia, mes, anio] = datos.contratante.fechaNac.split('/');
-      dia = dia.substr(0, 2);
-      const fecha = new Date(anio + "-" + mes + "-" + dia)
+      dia = dia.substring(0, 2);
       this.contratante.fechaNac = anio + "-" + mes + "-" + dia;
     }else{
 
       this.contratante.fechaNac = moment(datos.contratante.fechaNac).format('YYYY-MM-DD')
-        // anio + "-" + mes + "-" + dia;
     }
 
     this.contratante.idPais = datos.contratante.idPais == 0 ? null : datos.contratante.idPais;

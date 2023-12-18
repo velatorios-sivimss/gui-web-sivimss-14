@@ -953,7 +953,7 @@ export class CaracteristicasPresupuestoSFComponent
         traslado.totalKilometros = datos.kilometraje ?? null;
         detalle.servicioDetalleTraslado = traslado ?? null;
       }
-      detalle.activo =  datos.utilizarArticulo ? (datos.utilizarArticulo.includes("true") ? 1 : 0) : null;
+      detalle.activo =  this.validarUsoArticulo(datos.utilizarArticulo);
       this.detallePaquete.push(detalle);
     });
 
@@ -971,8 +971,8 @@ export class CaracteristicasPresupuestoSFComponent
       detalle.idTipoServicio =
         datos.idTipoServicio == '' ? null : Number(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
-      detalle.importeMonto = Number(datos.importe) ?? null;
-      detalle.totalPaquete = Number(datos.totalPaquete) ?? null;
+      detalle.importeMonto = Number(datos.importe);
+      detalle.totalPaquete = Number(datos.totalPaquete);
       detalle.idCategoriaPaquete = datos.idCategoria === "" ? null : Number(datos.idCategoria)
 
       if (Number(datos.idTipoServicio) == 4) {
@@ -1027,9 +1027,6 @@ export class CaracteristicasPresupuestoSFComponent
         this.caracteristicasPaquete;
       this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
     }
-
-    // this.detallePresupuesto = arrayDatosPresupuesto;
-
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
@@ -1087,10 +1084,16 @@ export class CaracteristicasPresupuestoSFComponent
     if (this.dd || this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete) {
       const drop:any = this.dd;
       if(drop == 3){
-        return this.selecionaTipoOtorgamiento != null ? false: true;
+        return this.selecionaTipoOtorgamiento == null
       }
       return false;
     }
     return true;
+  }
+  validarUsoArticulo(articulo:any):any {
+    if(articulo){
+      return articulo.includes("true") ? 1 : 0
+    }
+    return null
   }
 }

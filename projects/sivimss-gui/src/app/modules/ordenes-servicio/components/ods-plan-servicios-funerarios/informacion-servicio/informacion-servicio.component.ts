@@ -804,8 +804,6 @@ export class InformacionServicioSFComponent implements OnInit {
     this.altaODS.idEstatus = 1;
     window.scrollTo(0, 0);
     this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
-    return
-    this.guardarODS();
   }
 
   generada(): void {
@@ -813,8 +811,6 @@ export class InformacionServicioSFComponent implements OnInit {
     this.altaODS.idEstatus = 2;
     window.scrollTo(0, 0);
     this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
-    return
-    this.guardarODS();
   }
 
   consultaCP(): void {

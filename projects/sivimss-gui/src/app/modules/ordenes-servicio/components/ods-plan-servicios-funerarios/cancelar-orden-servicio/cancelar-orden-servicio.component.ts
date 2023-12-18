@@ -38,7 +38,7 @@ export class CancelarOrdenServicioSFComponent implements OnInit {
   ngOnInit(): void {
     this.ODSSeleccionada = this.config.data.ods;
     this.consultarPrecioCancelacion();
-    this.config.data.ods.tiempoGeneracionODSHrs > 24 ? this.horasExcedidas = true : this.horasExcedidas = false;
+    this.horasExcedidas = this.config.data.ods.tiempoGeneracionODSHrs > 24
     this.mensajeCancelacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(62);
     this.inicializarForm();
   }

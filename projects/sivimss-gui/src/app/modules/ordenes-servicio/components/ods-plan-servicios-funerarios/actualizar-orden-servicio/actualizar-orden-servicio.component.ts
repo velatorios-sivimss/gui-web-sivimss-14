@@ -169,7 +169,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
     let mostrarOtorgamiento = false;
     let salidaPaquete = [];
     let salidaPresupuesto = [];
-    if (datosPaquete != null && datosPaquete.caracteristicasPaqueteResponse != null && datosPaquete.caracteristicasDelPresupuesto != null) {
+    if (datosPaquete.caracteristicasPaqueteResponse != null && datosPaquete.caracteristicasDelPresupuesto != null) {
       let caracteristicasPaquete = datosPaquete.caracteristicasPaqueteResponse;
       observaciones = datosPaquete.caracteristicasDelPresupuesto.observaciones;
       notasServicio = datosPaquete.caracteristicasDelPresupuesto.notasServicio;
@@ -242,7 +242,6 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
 
       total = detallePresupuesto[0].importeMonto
       for (let element of detallePresupuesto) {
-        // total += Number(element.importeMonto * element.cantidad);
         let utilizarArticulo = false;
         if (element.servicioDetalleTraslado == 'paquete') {
           utilizarArticulo = true;
@@ -312,10 +311,6 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
 
   datosInformacionServicio(datos: any): void {
     let validaPromotor = false;
-    // let idPromotor = datos.informacionServicioVelacion.idPromotor ?? null;
-    // if (idPromotor != null && Number(idPromotor) > 0) {
-    //   validaPromotor = true;
-    // }
 
     let cp = datos.informacionServicioVelacion.cp;
     let codigoPostal = null;
@@ -327,7 +322,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
     let estado = null;
     let idDomicilio = null;
 
-    if (cp != null) {
+    if (cp) {
       codigoPostal = cp.codigoPostal;
       calle = cp.desCalle;
       interior = cp.numInterior;
@@ -339,23 +334,21 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
     }
 
     let datosEtapaInformacionServicio = {
-      fechaCortejo: datos.fechaCortejo ?? null,
-      fechaCremacion: datos.fechaCremacion ?? null,
-      fechaRecoger: datos.fechaRecoger ?? null,
-      horaRecoger: datos.horaRecoger ?? null,
-      horaCortejo: datos.horaCortejo ?? null,
-      horaCremacion: datos.horaCremacion ?? null,
-      idPanteon: datos.panteon?.idPanteon ?? null,
-      panteon: datos.panteon ?? null,
-      idPromotor: datos.idPromotor ?? null,
-      idSala: datos.idSala ?? null,
-      fechaInstalacion:
-        datos.informacionServicioVelacion.fechaInstalacion ?? null,
-      fechaVelacion: datos.informacionServicioVelacion.fechaVelacion ?? null,
-      horaInstalacion:
-        datos.informacionServicioVelacion.horaInstalacion ?? null,
-      horaVelacion: datos.informacionServicioVelacion.horaVelacion ?? null,
-      idCapilla: datos.informacionServicioVelacion.idCapilla ?? null,
+      fechaCortejo: datos.fechaCortejo ? datos.fechaCortejo : null,
+      fechaCremacion: datos.fechaCremacion ? datos.fechaCremacion : null,
+      fechaRecoger: datos.fechaRecoger ? datos.fechaRecoger : null,
+      horaRecoger: datos.horaRecoger ? datos.horaRecoger : null,
+      horaCortejo: datos.horaCortejo ? datos.horaCortejo : null,
+      horaCremacion: datos.horaCremacion ? datos.horaCremacion : null,
+      idPanteon: datos.panteon ? datos.panteon : null,
+      panteon: datos.panteon ? datos.panteon : null,
+      idPromotor: datos.idPromotor ? datos.idPromotor : null,
+      idSala: datos.idSala ? datos.idSala : null,
+      fechaInstalacion: datos.informacionServicioVelacion.fechaInstalacion ? datos.informacionServicioVelacion.fechaInstalacion : null,
+      fechaVelacion: datos.informacionServicioVelacion.fechaVelacion ? datos.informacionServicioVelacion.fechaVelacion : null,
+      horaInstalacion: datos.informacionServicioVelacion.horaInstalacion ? datos.informacionServicioVelacion.horaInstalacion : null,
+      horaVelacion: datos.informacionServicioVelacion.horaVelacion ? datos.informacionServicioVelacion.horaVelacion : null,
+      idCapilla: datos.informacionServicioVelacion.idCapilla ? datos.informacionServicioVelacion.idCapilla : null,
       cp: codigoPostal,
       calle: calle,
       interior: interior,
