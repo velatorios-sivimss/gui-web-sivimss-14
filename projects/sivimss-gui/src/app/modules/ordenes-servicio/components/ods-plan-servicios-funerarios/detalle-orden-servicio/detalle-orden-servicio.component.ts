@@ -42,15 +42,6 @@ export class DetalleOrdenServicioComponent implements OnInit {
     this.gestionarEtapasService.altaODS$.asObservable().subscribe(
       (datodPrevios) => this.llenarAlta(datodPrevios)
     );
-    this.dropDownODS
-  }
-
-  generada(): void {
-
-  }
-
-  preorden(): void{
-
   }
 
   guardarODS(): void {
@@ -60,7 +51,6 @@ export class DetalleOrdenServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
           if (respuesta.error) {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(

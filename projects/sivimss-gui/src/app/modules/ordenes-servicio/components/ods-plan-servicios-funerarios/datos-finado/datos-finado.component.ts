@@ -36,7 +36,6 @@ import {DetallePresupuestoInterface} from '../../../models/DetallePresupuesto.in
 import {InformacionServicioVelacionInterface} from '../../../models/InformacionServicioVelacion.interface';
 import {InformacionServicioInterface} from '../../../models/InformacionServicio.interface';
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
-import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 import {ModalConvenioSfpaComponent} from "../modal-convenio-sfpa/modal-convenio-sfpa.component";
 import {Contratante} from "../../../models/contrato-sfpa.interface";
@@ -227,9 +226,7 @@ export class DatosFinadoSFComponent implements OnInit {
       }),
     });
     this.colonias = [{label:datosEtapaFinado.direccion.colonia, value:datosEtapaFinado.direccion.colonia}];
-    datosEtapaFinado.datosFinado.folioValido;
-    datosEtapaFinado.datosFinado.folioValido ? this.folioInvalido = false : this.folioInvalido = true
-    this.colonias =  [{label:datosEtapaFinado.direccion.colonia, value:datosEtapaFinado.direccion.colonia}] || []
+    this.folioInvalido = datosEtapaFinado.datosFinado.folioValido
   }
 
   limpiarConsultaDatosPersonales(): void {

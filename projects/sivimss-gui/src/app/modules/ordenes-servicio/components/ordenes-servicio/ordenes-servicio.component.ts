@@ -192,7 +192,7 @@ export class OrdenesServicioComponent implements OnInit {
     this.paginarPorFiltros()
   }
 
-  paginarPorFiltros(botonBusqueda?:boolean): void {
+  paginarPorFiltros(botonBusqueda?:boolean): void {2
     if(botonBusqueda)this.numPaginaActual=0;
     this.totalElementos = 0;
     this.ordenesServicio = [];

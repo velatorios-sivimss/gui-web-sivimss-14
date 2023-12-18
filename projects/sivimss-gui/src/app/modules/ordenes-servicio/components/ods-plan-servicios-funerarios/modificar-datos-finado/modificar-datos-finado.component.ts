@@ -168,7 +168,6 @@ export class ModificarDatosFinadoSFComponent
     this.unidadesMedicas = respuesta[this.POSICION_UNIDADES_MEDICAS];
     this.tipoPension = respuesta[this.POSICION_PENSION];
     this.folioInvalido = false;
-    // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
     else this.ocultarFolioEstatus = false;
@@ -183,49 +182,7 @@ export class ModificarDatosFinadoSFComponent
 
 
     this.desabilitarTodo();
-    setTimeout(() => {
-      // this.cambiarValidacionMatricula();
-      // this.inicializarCalcularEdad();
-      // this.cambiarValidacionNSS();
-      // this.changeTipoOrden(true);
-      // this.cambiarTipoSexo();
-      // this.datosFinado.esParaExtremidad.value;
-    }, 500)
   }
-
-
-  // consultarNSS(): void {
-  //   this.loaderService.activar();
-  //   if (!this.datosFinado.nss.value) {
-  //     return;
-  //   }
-  //   this.gestionarOrdenServicioService
-  //     .consultarNSS(this.datosFinado.nss.value)
-  //     .pipe(finalize(() => this.loaderService.desactivar()))
-  //     .subscribe(
-  //       (respuesta: HttpRespuesta<any>) => {
-  //         this.loaderService.desactivar();
-  //         if (respuesta) {
-  //
-  //           this.datosFinado.curp.setValue(respuesta.datos.curp);
-  //           this.datosFinado.nombre.setValue(respuesta.datos?.nombre);
-  //           this.datosFinado.primerApellido.setValue(respuesta.datos.primerApellido);
-  //           this.datosFinado.segundoApellido.setValue(respuesta.datos.segundoApellido);
-  //           this.datosFinado.sexo.setValue(respuesta.datos.sexo.idSexo == 1 ? 2 : 1 );
-  //
-  //           //TODO verificar más escenarios, actualmente la nacionalidad lo regresa como null
-  //           this.datosFinado.nacionalidad.setValue(1);
-  //
-  //         }
-  //         this.direccion.colonia.patchValue(null);
-  //         this.direccion.municipio.patchValue(null);
-  //         this.direccion.estado.patchValue(null);
-  //       },
-  //       (error: HttpErrorResponse) => {
-  //         console.log(error);
-  //       }
-  //     );
-  // }
 
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
@@ -261,24 +218,13 @@ export class ModificarDatosFinadoSFComponent
     let extremidad: boolean;
     let horaDeceso: any;
     let fechaDeceso: any;
-    if (typeof datosEtapaFinado.datosFinado.esObito == "string") {
-      datosEtapaFinado.datosFinado.esObito.includes("true") ? esObito = true : esObito = false;
-    } else {
-      esObito = datosEtapaFinado.datosFinado.esObito;
-    }
 
-    if (typeof datosEtapaFinado.datosFinado.esParaExtremidad == "string") {
-      datosEtapaFinado.datosFinado.esParaExtremidad.includes("true") ? extremidad = true : extremidad = false;
-    } else {
-      extremidad = datosEtapaFinado.datosFinado.esParaExtremidad;
-    }
     if (typeof datosEtapaFinado.datosFinado.horaDeceso == "string") {
       const [horas, minutos] = datosEtapaFinado.datosFinado.horaDeceso.split(':')
       datosEtapaFinado.datosFinado.horaDeceso = new Date(+anio, +mes, +dia, +horas, +minutos)
     }
     if (typeof datosEtapaFinado.datosFinado.fechaDefuncion == "string") {
       const [dia, mes, anio] = datosEtapaFinado.datosFinado.fechaDefuncion.split('/');
-      // fechaDeceso = new Date(anio + '/' + mes + '/' + dia);
       datosEtapaFinado.datosFinado.fechaDefuncion = new Date(anio + '/' + mes + '/' + dia);
     }
 
@@ -318,7 +264,7 @@ export class ModificarDatosFinadoSFComponent
           [Validators.required]],
         fechaNacimiento: [{value: fechaNacimiento, disabled: false},
           [Validators.required]],
-        edad: [{value: edad ? edad : null, disabled: true},
+        edad: [{value: edad, disabled: true},
           [Validators.required]],
         sexo: [{value: datosEtapaFinado.datosFinado.sexo, disabled: false},
           [Validators.required]],
@@ -510,7 +456,6 @@ export class ModificarDatosFinadoSFComponent
     const formDireccion = this.form.controls['direccion'] as FormGroup;
 
     Object.keys(this.datosFinado).forEach((key) => {
-      const form = this.form.controls['datosFinado'] as FormGroup;
       if (formFinadoExentos.includes(key)) {
         return
       } else {

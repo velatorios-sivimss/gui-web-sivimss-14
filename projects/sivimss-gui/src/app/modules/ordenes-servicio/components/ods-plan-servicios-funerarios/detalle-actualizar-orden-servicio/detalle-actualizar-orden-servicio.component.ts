@@ -1,5 +1,4 @@
 import {Component, EventEmitter, OnInit, Output, Renderer2} from '@angular/core';
-import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
 import {AltaODSInterface} from "../../../models/AltaODS.interface";
@@ -46,8 +45,8 @@ export class DetalleActualizarOrdenServicioComponent implements OnInit {
     this.gestionarEtapasService.altaODS$
       .asObservable()
       .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
-    this.dropDownODS.tablaPaquete.map((valor:any) => {
-      if(valor.utilizarArticulo == true){
+    this.dropDownODS.tablaPaquete.forEach((valor:any) => {
+      if(valor.utilizarArticulo){
         valor.utilizarArticulo = valor.utilizarArticulo.toString();
       }
     })
@@ -135,14 +134,12 @@ export class DetalleActualizarOrdenServicioComponent implements OnInit {
   }
 
   guardarODS(consumoTablas: number): void {
-    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
     this.loaderService.activar();
     this.generarODSSF.actualizarODSSF(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         {
           next: (respuesta: HttpRespuesta<any>) => {
-            const datos = respuesta.datos;
             if (respuesta.error) {
               const errorMsg: string =
                 this.mensajesSistemaService.obtenerMensajeSistemaPorId(

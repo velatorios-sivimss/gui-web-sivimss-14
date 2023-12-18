@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {Contratante, ContratoSfpaInterface} from "../../../models/contrato-sfpa.interface";
+import { ContratoSfpaInterface} from "../../../models/contrato-sfpa.interface";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
-import {appendHtmlElementToHead} from "@angular/cdk/schematics";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 
 @Component({
