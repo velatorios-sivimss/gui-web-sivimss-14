@@ -140,7 +140,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       descripcionDerecho: [{value: null, disabled: true}],
       total: [{value: null, disabled: false}]
     });
-    this.FormReciboPago.get('fechaTramite')?.patchValue(new Date(this.recibo.fecha));
+    this.FormReciboPago.get('fechaTramite')?.patchValue(new Date(this.diferenciaUTC(this.recibo.fecha, '-')));
     this.obtenerValoresFecha();
   }
 
@@ -211,6 +211,12 @@ export class ReciboPagoTramitesComponent implements OnInit {
   convertirMoneda(valor: number): string {
     const formatter: Intl.NumberFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'});
     return formatter.format(valor);
+  }
+
+  diferenciaUTC(fecha: string, divisor: string = "/"): number {
+    const [anio, mes, dia]: string[] = fecha.split(divisor);
+    const objetoFecha: Date = new Date(+anio, +mes - 1, +dia);
+    return objetoFecha.setMinutes(objetoFecha.getMinutes() + objetoFecha.getTimezoneOffset());
   }
 
   get totalServicios() {
