@@ -56,7 +56,6 @@ export class DesactivarConvenioComponent implements OnInit {
 
   cargarCatalogos(): void {
     this.convenioPersona = this.activatedRoute.snapshot.data["respuesta"].datos[0];
-    console.log(this.convenioPersona)
   }
 
   paginar(event: LazyLoadEvent): void {
