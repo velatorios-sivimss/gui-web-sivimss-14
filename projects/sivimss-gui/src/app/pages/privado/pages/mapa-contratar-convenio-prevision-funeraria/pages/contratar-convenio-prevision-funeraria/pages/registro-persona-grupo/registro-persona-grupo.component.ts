@@ -607,12 +607,8 @@ export class RegistroPersonaGrupoComponent implements OnInit {
           if (respuesta.mensaje == 'Exito') {
             if (curp != '') {
               let valores = respuesta.datos[0];
-              console.log(valores);
 
               let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
-              let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
-
-              [diaD, mesD, anioD] = [anioD, mesD, diaD];
               this.datosPersonales.idPersona.setValue(valores.idPersona);
               this.datosPersonales.nombre.setValue(valores.nomPersona);
               this.datosPersonales.primerApellido.setValue(
@@ -659,7 +655,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
       idPaquete: this.idPaquete,
       idEnfermedad: this.domicilio.enfermedadPrexistente.value,
       otraEnfermedad: this.domicilio.otro.value,
-      idPersona: idPersona, // validar si es null poner un 0
+      idPersona: idPersona,
       cveMatricula: this.datosPersonales.matricula.value,
       calle: this.domicilio.calle.value,
       noExterior: this.domicilio.numeroExterior.value,
@@ -686,9 +682,8 @@ export class RegistroPersonaGrupoComponent implements OnInit {
       idPais: this.datosPersonales.lugarNacimiento.value,
       telefono: this.domicilio.telefono.value,
       correo: this.domicilio.correoElectronico.value,
-      idConvenioPF: this.idConvenioPF, //
+      idConvenioPF: this.idConvenioPF,
     };
-    console.log(parametros);
 
     this.consultaConveniosService
       .agregarPersona(parametros)
