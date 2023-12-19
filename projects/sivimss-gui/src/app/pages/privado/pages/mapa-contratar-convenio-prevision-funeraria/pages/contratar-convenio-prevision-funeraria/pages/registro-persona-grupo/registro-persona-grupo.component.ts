@@ -776,7 +776,12 @@ export class RegistroPersonaGrupoComponent implements OnInit {
           'El beneficiario ya fue registrado con anterioridad, ingrese un beneficiario diferente.'
         );
         break;
-
+      case 803:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'La persona ya fue registrada anteriormente. Ingrese un curp diferente'
+        );
+        break;
       case 900:
         this.alertaService.mostrar(TipoAlerta.Info, 'Selecciona un paquete.');
         break;
