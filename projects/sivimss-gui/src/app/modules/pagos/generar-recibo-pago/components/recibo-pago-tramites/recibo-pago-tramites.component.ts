@@ -89,9 +89,9 @@ export class ReciboPagoTramitesComponent implements OnInit {
 
   generarSolicitudGuardarReporte(): SolicitudReciboPago {
     const tramite = this.FormReciboPago.get('tramite')?.value;
-    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
+    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.label;
     const derecho = this.FormReciboPago.get('derecho')?.value;
-    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.label;
     const total = this.FormReciboPago.get('total')?.value || 0;
     return {
       numFolio: this.recibo.claveFolio,
