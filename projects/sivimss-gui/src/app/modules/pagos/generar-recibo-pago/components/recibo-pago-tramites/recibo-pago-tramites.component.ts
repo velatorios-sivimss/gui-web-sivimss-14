@@ -34,7 +34,6 @@ export class ReciboPagoTramitesComponent implements OnInit {
   catalogoDerechos: TipoDropdown[] = [];
 
   idBitacoraPago!: number;
-
   FormReciboPago!: FormGroup;
 
   constructor(
@@ -46,13 +45,17 @@ export class ReciboPagoTramitesComponent implements OnInit {
     private router: Router,
     private alertaService: AlertaService,
   ) {
-    this.recibo = this.route.snapshot.data["respuesta"].datos[0];
-    this.obtenerCatalogosPorVelatorio();
-    this.idBitacoraPago = this.route.snapshot.params['idPagoBitacora'];
+    this.obtenerCatalogos();
   }
 
   ngOnInit(): void {
     this.inicializarForm();
+  }
+
+  obtenerCatalogos(): void {
+    this.recibo = this.route.snapshot.data["respuesta"].datos[0];
+    this.obtenerCatalogosPorVelatorio();
+    this.idBitacoraPago = this.route.snapshot.params['idPagoBitacora'];
   }
 
   obtenerValoresFecha(): void {
@@ -68,15 +71,20 @@ export class ReciboPagoTramitesComponent implements OnInit {
     this.generarReciboService.guardar(solicitudGuardar).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Recibo generado exitosamente.')
-        void this.router.navigate(['../../'], {relativeTo: this.route});
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error, "Error al guardar la información del Recibo de Pago. Intenta nuevamente.");
-      }
+      next: (): void => this.mostrarMensajeCorrectoRecibo(),
+      error: (error: HttpErrorResponse): void => this.mostrarMensajeErrorRecibo(error)
     });
+  }
+
+  mostrarMensajeCorrectoRecibo(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Recibo generado exitosamente.')
+    void this.router.navigate(['../../'], {relativeTo: this.route});
+  }
+
+  mostrarMensajeErrorRecibo(error: HttpErrorResponse): void {
+    console.error(error);
+    const ERROR: string = "Error al guardar la información del Recibo de Pago. Intenta nuevamente.";
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
   }
 
   generarSolicitudGuardarReporte(): SolicitudReciboPago {
@@ -110,15 +118,17 @@ export class ReciboPagoTramitesComponent implements OnInit {
     const $tramites: Observable<HttpRespuesta<any>> = this.generarReciboService.obtenerCatalogoTramites(idVelatorio);
     const $derechos: Observable<HttpRespuesta<any>> = this.generarReciboService.obtenerCatalogoDerechos(idVelatorio);
     forkJoin([$tramites, $derechos]).subscribe({
-      next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void => {
-        const POSICION_TRAMITES: number = 0;
-        const POSICION_DERECHOS: number = 1;
-        const tramites = respuesta[POSICION_TRAMITES].datos;
-        const derechos = respuesta[POSICION_DERECHOS].datos;
-        this.catalogoTramites = mapearArregloTipoDropdown(tramites, "desTramite", "importe");
-        this.catalogoDerechos = mapearArregloTipoDropdown(derechos, "desDerecho", "importe");
-      }
+      next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void => this.obtenerCatalogosTramitesDerechos(respuesta)
     });
+  }
+
+  obtenerCatalogosTramitesDerechos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void {
+    const POSICION_TRAMITES: number = 0;
+    const POSICION_DERECHOS: number = 1;
+    const tramites = respuesta[POSICION_TRAMITES].datos;
+    const derechos = respuesta[POSICION_DERECHOS].datos;
+    this.catalogoTramites = mapearArregloTipoDropdown(tramites, "desTramite", "importe");
+    this.catalogoDerechos = mapearArregloTipoDropdown(derechos, "desDerecho", "importe");
   }
 
   inicializarForm(): void {
@@ -151,15 +161,21 @@ export class ReciboPagoTramitesComponent implements OnInit {
     this.cargadorService.activar();
     this.generarReciboService.descargarReporte(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (response: any): void => {
-        const file: Blob = new Blob([response], {type: 'application/pdf'});
-        const url: string = window.URL.createObjectURL(file);
-        window.open(url);
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error('Error al descargar reporte: ', error.message);
-      }
+      next: (respuesta: any): void => this.mostrarVistaPrevia(respuesta),
+      error: (error: HttpErrorResponse): void => this.mostrarMensajeErrorVistaPrevia(error)
     });
+  }
+
+  mostrarVistaPrevia(respuesta: any): void {
+    const file: Blob = new Blob([respuesta], {type: 'application/pdf'});
+    const url: string = window.URL.createObjectURL(file);
+    window.open(url);
+  }
+
+  mostrarMensajeErrorVistaPrevia(error: HttpErrorResponse): void {
+    console.error(error);
+    const ERROR: string = "Error al mostrarla información del Recibo de Pago. Intenta nuevamente.";
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
   }
 
   generarSolicitudVistaPrevia(): VistaPreviaReciboPago {
