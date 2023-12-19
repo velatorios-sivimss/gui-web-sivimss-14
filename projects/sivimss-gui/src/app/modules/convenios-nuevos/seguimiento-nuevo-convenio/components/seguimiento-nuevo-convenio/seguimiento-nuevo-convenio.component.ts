@@ -215,27 +215,6 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
     // })
   }
 
-  abrirCambioEstatus(servicio: SeguimientoNuevoConvenio): void {
-    void this.router.navigate(['desactivar-convenio'], {relativeTo: this.activatedRoute});
-    /*Preguntar si se puede usar 'let'*/
-    // let header:string = "" ;
-    // servicio.estatus?header="Activar artículo":header="Desactivar artículo";
-    // this.creacionRef = this.dialogService.open(DetalleArticulosComponent, {
-    //   header:header,
-    //   width:"920px",
-    //   data: {servicio:servicio, origen: "estatus"},
-    // })
-
-    // this.creacionRef.onClose.subscribe((servicio:Articulos) => {
-    //   if(servicio.estatus){
-    //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo activado correctamente');
-    //   }else{
-    //     this.alertaService.mostrar(TipoAlerta.Exito, 'Servicio desactivado correctamente');
-    //   }
-    // })
-
-  }
-
   abrirConcluirServicio(): void {
     // this.creacionRef = this.dialogService.open(ModificarArticulosComponent, {
     //   header:"Modificar artículo",

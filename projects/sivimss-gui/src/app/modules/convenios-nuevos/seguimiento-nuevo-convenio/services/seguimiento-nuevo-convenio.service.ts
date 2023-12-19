@@ -34,4 +34,8 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
     return this._http.post<HttpRespuesta<any>>(this.base + `/buscar/${this._filtros}`,
       body);
   }
+
+  buscarConvenioPorPersona(id: number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${this.base}/buscar/persona/${id}`);
+  }
 }

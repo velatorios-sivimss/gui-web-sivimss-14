@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {LazyLoadEvent} from 'primeng/api';
@@ -9,6 +9,7 @@ import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {Documentos} from '../../models/documentos.interface';
 import {SeguimientoNuevoConvenio} from '../../models/seguimiento-nuevo-convenio.interface';
+import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 
 export enum TipoAlerta {
   Exito = 'success',
@@ -23,7 +24,7 @@ export enum TipoAlerta {
   styleUrls: ['./desactivar-convenio.component.scss'],
   providers: [DialogService],
 })
-export class DesactivarConvenioComponent {
+export class DesactivarConvenioComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -37,6 +38,8 @@ export class DesactivarConvenioComponent {
   totalElementos: number = 0;
   infoPersona: boolean = false;
 
+  convenioPersona!: ConvenioPersona
+
   constructor(
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
@@ -45,6 +48,15 @@ export class DesactivarConvenioComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) {
+  }
+
+  ngOnInit(): void {
+    this.cargarCatalogos();
+  }
+
+  cargarCatalogos(): void {
+    this.convenioPersona = this.activatedRoute.snapshot.data["respuesta"].datos[0];
+    console.log(this.convenioPersona)
   }
 
   paginar(event: LazyLoadEvent): void {
@@ -86,7 +98,6 @@ export class DesactivarConvenioComponent {
     }, 0)
   }
 
-
   regresar() {
     this.router.navigate(['seguimiento-nuevo-convenio'], {relativeTo: this.activatedRoute});
   }
@@ -95,7 +106,6 @@ export class DesactivarConvenioComponent {
     //agregar Mensaje
     this.abrirModalModificarServicio();
   }
-
 
   abrirModalModificarServicio(): void {
     // this.creacionRef = this.dialogService.open(ModificarArticulosComponent, {

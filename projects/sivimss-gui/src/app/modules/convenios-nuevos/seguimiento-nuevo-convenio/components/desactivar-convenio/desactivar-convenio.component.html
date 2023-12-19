@@ -1,16 +1,16 @@
-<app-titulo-principal titulo="Activar convenio"></app-titulo-principal>
+<app-titulo-principal titulo="Desactivar convenio"></app-titulo-principal>
 <div class="mb-8">
   <div class="row mb-3">
     <div class="col-md-12">
       <div class="flex justify-content-between align-items-center">
         <label class="control-label" for="velatorio">tipo contrato</label><br>
       </div>
-      </div>
-      <div class="col-md-12">
-        <div class="flex justify-content-between align-items-center">
+    </div>
+    <div class="col-md-12">
+      <div class="flex justify-content-between align-items-center">
         <h2 class="subtitulo sub">por grupo</h2>
       </div>
-      </div>
+    </div>
   </div>
   <p-accordion styleClass="sivimss-accordion">
     <p-accordionTab>
@@ -18,10 +18,10 @@
         <div class="flex justify-content-between align-items-center flex-1">
           <span>Convenio de previsión funeraria</span>
           <div class="contenedor-celda-iconos">
-              <div class="estatusAcordion">
-                <span>Estatus </span>
-                <b>Activo</b>
-              </div>
+            <div class="estatusAcordion">
+              <span>Estatus </span>
+              <b>Activo</b>
+            </div>
           </div>
         </div>
       </ng-template>
@@ -52,7 +52,8 @@
                 <img src="../../../../../../assets/icons/fonts/admiracion.svg" alt="Alerta">
               </div>
               <div class="col-md-11">
-                <p class="mensaje-cancelacion-orden indicaciones">Modifica, elimina o agrega Pesonas y hasta 3 beneficiarios por
+                <p class="mensaje-cancelacion-orden indicaciones">Modifica, elimina o agrega Pesonas y hasta 3
+                  beneficiarios por
                   cada una</p>
               </div>
             </div>
@@ -105,8 +106,8 @@
           </div>
           <section class="mt-5">
             <p-table styleClass="mt-5 mb-8 last-sticky-column" [value]="documentos" [rows]="cantElementosPorPagina"
-              [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-              (onLazyLoad)="paginar($event)">
+                     [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+                     (onLazyLoad)="paginar($event)">
 
               <ng-template pTemplate="header">
                 <tr>
@@ -118,9 +119,9 @@
               </ng-template>
               <ng-template pTemplate="body" let-documento>
                 <tr>
-                  <td> {{documento.numeroDocumento}} </td>
-                  <td> {{documento.tipoDocumento}} </td>
-                  <td> {{documento.linkDocumento}} </td>
+                  <td> {{ documento.numeroDocumento }}</td>
+                  <td> {{ documento.tipoDocumento }}</td>
+                  <td> {{ documento.linkDocumento }}</td>
                   <td>
                     <div class="contenedor-celda-iconos">
                       <a>
@@ -137,31 +138,61 @@
     </p-accordionTab>
   </p-accordion>
 
-  <div class="border-panel mb-3 laterales">
-    <div class="row mt-3">
-    <div class="row mt-4">
-      <div class="col-md-12">
-        <p class="mensaje-cancelacion-orden">¿Estás seguro que deseas activar este convenio?</p>
-      </div>
-    </div>
+  <p-accordion styleClass="sivimss-accordion mt-3">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <div class="flex justify-content-between align-items-center flex-1">
+          <span>Datos de la persona</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <app-resumen-persona [matricula]="convenioPersona.matricula" [rfc]="convenioPersona.rfc"
+                             [curp]="convenioPersona.curp" [nombre]="convenioPersona.nombre"
+                             [primerApellido]="convenioPersona.primerApellido"
+                             [segundoApellido]="convenioPersona.segundoApellido" [calle]="convenioPersona.calle"
+                             [numeroExterior]="convenioPersona.numExt"
+                             [numeroInterior]="convenioPersona.numInt" [codigoPostal]="convenioPersona.cp.toString()"
+                             [colonia]="convenioPersona.colonia" [municipio]="convenioPersona.municipio"
+                             [estado]="convenioPersona.estado" [nacionalidad]="''" [paisNacimiento]="''"
+                             [lugarNacimiento]="convenioPersona.lugarNac" [correoElectronico]="convenioPersona.correo"
+                             [telefono]="convenioPersona.telFijo" [enfermedad]="''"
+        ></app-resumen-persona>
+      </ng-template>
+    </p-accordionTab>
+  </p-accordion>
 
-    <div class="row mt-6">
-      <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-default btn-md" routerLink="../">Regresar</button>
+  <p-accordion styleClass="sivimss-accordion mt-3">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <div class="flex justify-content-between align-items-center flex-1">
+          <span>Características del convenio</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+      </ng-template>
+    </p-accordionTab>
+  </p-accordion>
+
+  <div class="row mt-3">
+    <div class="row ">
+      <div class="col-md-12 mt-4">
+        <p class="mensaje-cancelacion-orden">¿Está seguro de desactivar el registro seleccionado?</p>
+      </div>
+      <div class="col-md-12 flex justify-content-end mt-6">
+        <button type="submit" class="btn btn-default btn-md" routerLink="../">Cancelar</button>
         <button type="submit" class="btn btn-primary btn-md ml-5" routerLink="../" (click)="aceptar()">Aceptar</button>
       </div>
     </div>
   </div>
-</div>
 
-<p-overlayPanel #overlayPanel>
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Generar tarjeta identificación"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar"
-        routerLink="../modificar-orden-de-servicio"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Cancelar orden"
-        routerLink="../cancelar-orden-de-servicio"></app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
-  </ng-template>
-</p-overlayPanel>
+  <p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+      <app-overlay-panel-opciones>
+        <app-overlay-panel-opcion titulo="Generar tarjeta identificación"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion titulo="Modificar"
+                                  routerLink="../modificar-orden-de-servicio"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion titulo="Cancelar orden"
+                                  routerLink="../cancelar-orden-de-servicio"></app-overlay-panel-opcion>
+      </app-overlay-panel-opciones>
+    </ng-template>
+  </p-overlayPanel>
