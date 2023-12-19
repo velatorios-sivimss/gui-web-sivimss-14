@@ -88,7 +88,7 @@ export class DetallePagoTramitesComponent {
       folio: this.recibo.folio,
       delegacion: this.recibo.delegacion,
       velatorio: this.recibo.velatorio,
-      lugar: "Mexico CDMX",
+      lugar: this.recibo.lugar,
       fecha: `${this.dia} de ${this.colocarTitleCase(this.mes)} del ${this.anio}`,
       recibimos: this.recibo.recibimos,
       cantidad: this.recibo.cantidad,

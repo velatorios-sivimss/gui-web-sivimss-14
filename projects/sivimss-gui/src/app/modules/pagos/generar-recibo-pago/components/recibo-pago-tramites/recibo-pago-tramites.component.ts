@@ -172,7 +172,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       folio: "XXXXXX",
       delegacion: this.recibo.delegacion,
       velatorio: this.recibo.velatorio,
-      lugar: "Mexico CDMX",
+      lugar: this.recibo.lugar,
       fecha: `${this.dia} de ${this.colocarTitleCase(this.mes)} del ${this.anio}`,
       recibimos: this.recibo.recibimos,
       cantidad: `${this.convertirMoneda(+this.recibo.cantidad)} (${this.recibo.cantidadLetra})`,
@@ -184,7 +184,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       totalFinal: this.convertirMoneda(total),
       rutaNombreReporte: "reportes/plantilla/DetalleRecPagos.jrxml",
       tipoReporte: "pdf",
-      folioPF: this.recibo.folioPF
+      folioPF: this.recibo.claveFolio
     }
   }
 
