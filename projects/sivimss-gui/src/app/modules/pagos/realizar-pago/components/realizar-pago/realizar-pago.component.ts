@@ -212,12 +212,12 @@ export class RealizarPagoComponent implements OnInit {
 
   private manejarMensajeErrorDescarga(error: HttpErrorResponse): void {
     const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-    this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+    this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento. Intenta nuevamente.');
   }
 
   private manejarMensajeDescargaExitosa(respuesta: boolean): void {
     if (!respuesta) return;
-    this.mostrarModalDescargaExitosa = !this.mostrarModalDescargaExitosa;
+    this.mostrarModalDescargaExitosa = true;
   }
 
   crearSolicituDescarga(tipoReporte: string = 'pdf'): SolicitudDescargaArchivo {
