@@ -1,6 +1,8 @@
 <div class="actualizar-contrasenia">
   <form [formGroup]="form" (ngSubmit)="restablecerContrasenia()">
-    <h1>Restablecer contraseña</h1>
+    <h1>CONSULTAR MIS SERVICIOS EN LÍNEA</h1>
+    <hr>
+    <h2>{{autenticacionContratanteService.cambiarPwd ? autenticacionContratanteService.tituloCambiarPwd : 'Restablecer contraseña'}}</h2>
     <div class="form-group mb-3">
       <label class="control-label" for="usuario">Usuario<span class="req">*</span>:</label>
       <div class="form-icon">
@@ -10,11 +12,24 @@
       <span class="campo-obligatorio"
             *ngIf="f.usuario?.errors?.required && (f.usuario?.dirty || f.usuario?.touched)">Este campo es obligatorio *.</span>
     </div>
+    <div class="form-group mb-3" *ngIf="autenticacionContratanteService.cambiarPwd">
+      <label class="control-label" for="contraseniaAnterior">Contraseña anterior<span class="req">*</span>:</label>
+      <div class="form-icon">
+        <input #contraseniaAnterior class="form-control" id="contraseniaAnterior" formControlName="contraseniaAnterior"
+               placeholder="Nueva contraseña" type="password" [minlength]="8" [maxlength]="15">
+        <i class="cursor-pointer icon pi pi-eye"
+           (click)="contraseniaAnterior.type = contraseniaAnterior.type==='password'?'text':'password'"></i>
+      </div>
+      <span class="campo-obligatorio"
+            *ngIf="f.contraseniaAnterior?.errors?.required && (f.contraseniaAnterior?.dirty || f.contraseniaAnterior?.touched)">
+        Este campo es obligatorio *.
+      </span>
+    </div>
     <div class="form-group mb-3">
       <label class="control-label" for="contraseniaNueva">Nueva contraseña<span class="req">*</span>:</label>
       <div class="form-icon">
-        <input #contraseniaNueva class="form-control" id="contraseniaNueva" formControlName="contraseniaNueva"
-               placeholder="Nueva contraseña" type="password" [minlength]="8" (blur)="validarContrasenia()">
+        <input #contraseniaNueva class="form-control" id="contraseniaNueva" formControlName="contraseniaNueva" autocomplete="off"
+               placeholder="Nueva contraseña" type="password" [minlength]="8" [maxlength]="15" (blur)="validarContrasenia()">
         <i class="cursor-pointer icon pi pi-eye"
            (click)="contraseniaNueva.type = contraseniaNueva.type==='password'?'text':'password'"></i>
       </div>
@@ -29,7 +44,7 @@
       <div class="form-icon">
         <input #contraseniaConfirmacion class="form-control" id="contraseniaConfirmacion"
                formControlName="contraseniaConfirmacion"
-               placeholder="Confirmar contraseña" type="password" [minlength]="8">
+               placeholder="Confirmar contraseña" type="password" [minlength]="8" [maxlength]="15">
         <i class="cursor-pointer icon pi pi-eye"
            (click)="contraseniaConfirmacion.type = contraseniaConfirmacion.type==='password'?'text':'password'"></i>
       </div>
@@ -45,7 +60,11 @@
       </span>
     </div>
     <div class="flex justify-content-end align-items-center mt-3 mb-4 flex-wrap">
-      <button class="btn btn-primary btn-lg ml-5" [disabled]="form.invalid">Restablacer</button>
+      <button class="btn btn-md btn-gold" type="button"
+                    routerLink="../inicio-sesion">Cancelar</button>
+      <button class="btn btn-primary btn-lg ml-5" [disabled]="form.invalid || !f.usuario.value">
+        {{autenticacionContratanteService.cambiarPwd ? 'Cambiar contraseña' : 'Restablecer'}}
+      </button>
     </div>
   </form>
 </div>

@@ -12,7 +12,7 @@ import {FormatoDetalleComisiones, OpcionesArchivos} from '../../models/formato-d
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ActivatedRoute} from '@angular/router';
 import {CalculoComisionesService} from '../../services/calculo-comisiones.service';
-import {finalize} from 'rxjs';
+import {finalize, retry} from 'rxjs';
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -26,6 +26,7 @@ import {ModalComisionComponent} from '../modal-comision/modal-comision.component
 import * as moment from "moment/moment";
 import {LazyLoadEvent} from "primeng/api";
 import {validarUsuarioLogueado} from "../../../../utils/funciones";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-detalle-comision',
@@ -89,30 +90,12 @@ export class DetalleComisionComponent implements OnInit {
       this.detalleConveniosPF = respuesta[this.POSICION_DETALLE_CONVENIOS_PF]?.datos?.content ?? [];
       this.minDate = new Date();
       this.maxDate = new Date();
-      this.importeTotalODS();
-      this.importeTotalConveniosPf();
     } else {
       window.scrollTo(0, 0);
 
       this.detallePromotor = this.detalleForm;
     }
     this.inicializarFiltroForm();
-  }
-
-  importeTotalODS(): void {
-    this.totalODS = this.detalleODS.reduce((
-        acc,
-        obj,
-      ) => acc + (obj.importeODS!),
-      0);
-  }
-
-  importeTotalConveniosPf(): void {
-    this.totalConveniosPF = this.detalleConveniosPF.reduce((
-        acc,
-        obj,
-      ) => acc + (obj.importeCPF!),
-      0);
   }
 
   inicializarFiltroForm(): void {
@@ -161,11 +144,13 @@ export class DetalleComisionComponent implements OnInit {
   private manejarRespuestaBusquedaConvenios(respuesta: HttpRespuesta<any>): void {
     this.detalleConveniosPF = respuesta.datos.content ?? [];
     this.totalElementosConvenios = respuesta.datos.totalElements;
+    this.totalConveniosPF = respuesta.datos.content[0]?.importePagado;
   }
 
   private manejarRespuestaBusquedaODS(respuesta: HttpRespuesta<any>): void {
     this.detalleODS = respuesta.datos.content ?? [];
     this.totalElementosOrdenes = respuesta.datos.totalElements;
+    this.totalODS = respuesta.datos.content[0]?.importePagado;
   }
 
   private manejarMensajeError(error: HttpErrorResponse): void {
@@ -178,11 +163,17 @@ export class DetalleComisionComponent implements OnInit {
     if (this.detallePromotor.idPromotor) {
       const filtros: FiltroComisiones = this.filtrosCalculoComision();
       this.calculoComisionesService.obtenerDetalleComisiones(filtros).pipe(
+        map(respuesta => {
+            if (!respuesta.datos.content[0]) throw new Error("Invalid Value");
+            return respuesta;
+          }
+        ),
+        retry(2),
         finalize(() => this.loaderService.desactivar())
       ).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
-            this.listaComisiones = respuesta.datos;
+            this.listaComisiones = respuesta.datos.content;
             this.mostrarExportar = true;
             this.calcularComisiones();
           }

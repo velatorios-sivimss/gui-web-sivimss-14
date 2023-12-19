@@ -58,6 +58,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
   public mode: 'detail' | 'create' = 'create';
   public mostrarModalConfirmacion: boolean = false;
   public mensajeArchivoConfirmacion: string = "";
+  public folioFiscal: string = "";
   public folio: string = "";
   public delegacionSeleccionada: string = "";
   public velatorioSeleccionado: string = "";
@@ -193,6 +194,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
     this.totalArticulo = hojaConsignacionDetalle.totalArt ?? 0;
     this.totalCosto = hojaConsignacionDetalle.totalCosto ?? '';
     this.folio = hojaConsignacionDetalle.folio ?? '';
+    this.folioFiscal = hojaConsignacionDetalle.folioFiscal ?? '';
     this.delegacionSeleccionada = hojaConsignacionDetalle.delegacion ?? '';
     this.velatorioSeleccionado = hojaConsignacionDetalle.velatorio ?? '';
     this.fechaActual = hojaConsignacionDetalle.fecElaboracion ?? '';
@@ -241,7 +243,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
           this.hojaGenerada = true;
           this.idHojaConsig = respuesta.datos;
           this.obtenerDetalle();
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Agregado correctamente');
+          this.alertaService.mostrar(TipoAlerta.Exito, 'Hoja de consignación agregada correctamente');
         }
       },
       error: (error: HttpErrorResponse) => {

@@ -33,6 +33,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
   catalogoTramites: TipoDropdown[] = [];
   catalogoDerechos: TipoDropdown[] = [];
 
+  idBitacoraPago!: number;
+
   FormReciboPago!: FormGroup;
 
   constructor(
@@ -42,10 +44,11 @@ export class ReciboPagoTramitesComponent implements OnInit {
     private cargadorService: LoaderService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private alertaService: AlertaService
+    private alertaService: AlertaService,
   ) {
     this.recibo = this.route.snapshot.data["respuesta"].datos[0];
     this.obtenerCatalogosPorVelatorio();
+    this.idBitacoraPago = this.route.snapshot.params['idPagoBitacora'];
   }
 
   ngOnInit(): void {
@@ -81,11 +84,12 @@ export class ReciboPagoTramitesComponent implements OnInit {
     const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
     const derecho = this.FormReciboPago.get('derecho')?.value;
     const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    const total = this.FormReciboPago.get('total')?.value || 0;
     return {
       numFolio: this.recibo.claveFolio,
       idDelegacion: this.recibo.idDelegacion,
       idVelatorio: this.recibo.idVelatorio,
-      idPagoDetalle: this.recibo.idPagoDetalle,
+      idPagoDetalle: this.idBitacoraPago,
       fecReciboPago: moment(new Date()).format('YYYY-MM-DD HH:mm'),
       nomContratante: this.recibo.recibimos,
       canReciboPago: `${this.convertirMoneda(+this.recibo.cantidad)} (${this.recibo.cantidadLetra})`,
@@ -94,7 +98,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       canDerechos: this.convertirMoneda(this.totalDerecho),
       descDerechos: descripcionDerecho ?? '',
       canSuma: this.convertirMoneda(this.totalServicios),
-      canTotal: this.convertirMoneda(this.total),
+      canTotal: this.convertirMoneda(total),
       agenteFuneMat: "",
       recibeMat: ""
     }
@@ -111,8 +115,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
         const POSICION_DERECHOS: number = 1;
         const tramites = respuesta[POSICION_TRAMITES].datos;
         const derechos = respuesta[POSICION_DERECHOS].datos;
-        this.catalogoTramites = mapearArregloTipoDropdown(tramites, "importe", "desTramite");
-        this.catalogoDerechos = mapearArregloTipoDropdown(derechos, "importe", "desDerecho");
+        this.catalogoTramites = mapearArregloTipoDropdown(tramites, "desTramite", "importe");
+        this.catalogoDerechos = mapearArregloTipoDropdown(derechos, "desDerecho", "importe");
       }
     });
   }
@@ -123,7 +127,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
       fechaTramite: [{value: null, disable: true}, [Validators.required]],
       descripcionTramite: [{value: null, disabled: true}],
       derecho: [{value: null, disable: false}, [Validators.required]],
-      descripcionDerecho: [{value: null, disabled: true}]
+      descripcionDerecho: [{value: null, disabled: true}],
+      total: [{value: null, disabled: false}]
     });
     this.FormReciboPago.get('fechaTramite')?.patchValue(new Date(this.recibo.fecha));
     this.obtenerValoresFecha();
@@ -131,16 +136,14 @@ export class ReciboPagoTramitesComponent implements OnInit {
 
   cambiarTramite(): void {
     const tramite = this.FormReciboPago.get('tramite')?.value;
-    const descripcion = this.catalogoTramites.find(t => (t.value === tramite))?.value;
-    this.totalTramite = +this.catalogoTramites.find(t => (t.value === tramite))!.label;
-    this.FormReciboPago.get('descripcionTramite')?.patchValue(descripcion);
+    this.totalTramite = +tramite;
+    this.FormReciboPago.get('descripcionTramite')?.patchValue(tramite);
   }
 
   cambiarDerechos(): void {
     const derecho = this.FormReciboPago.get('derecho')?.value;
-    const descripcion = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
-    this.totalDerecho = +this.catalogoDerechos.find(t => (t.value === derecho))!.label;
-    this.FormReciboPago.get('descripcionDerecho')?.patchValue(descripcion);
+    this.totalDerecho = +derecho;
+    this.FormReciboPago.get('descripcionDerecho')?.patchValue(derecho);
   }
 
   generarVistaPrevia(): void {
@@ -161,14 +164,15 @@ export class ReciboPagoTramitesComponent implements OnInit {
 
   generarSolicitudVistaPrevia(): VistaPreviaReciboPago {
     const tramite = this.FormReciboPago.get('tramite')?.value;
-    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
+    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.label;
     const derecho = this.FormReciboPago.get('derecho')?.value;
-    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.label;
+    const total = this.FormReciboPago.get('total')?.value || 0;
     return {
       folio: "XXXXXX",
       delegacion: this.recibo.delegacion,
       velatorio: this.recibo.velatorio,
-      lugar: "Mexico CDMX",
+      lugar: this.recibo.lugar,
       fecha: `${this.dia} de ${this.colocarTitleCase(this.mes)} del ${this.anio}`,
       recibimos: this.recibo.recibimos,
       cantidad: `${this.convertirMoneda(+this.recibo.cantidad)} (${this.recibo.cantidadLetra})`,
@@ -177,10 +181,10 @@ export class ReciboPagoTramitesComponent implements OnInit {
       derechos: this.convertirMoneda(this.totalDerecho),
       descDerechos: descripcionDerecho ?? '',
       total: this.convertirMoneda(this.totalServicios),
-      totalFinal: this.convertirMoneda(this.total),
+      totalFinal: this.convertirMoneda(total),
       rutaNombreReporte: "reportes/plantilla/DetalleRecPagos.jrxml",
       tipoReporte: "pdf",
-      folioPF: this.recibo.folioPF
+      folioPF: this.recibo.claveFolio
     }
   }
 
@@ -197,11 +201,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
     return this.totalTramite + this.totalDerecho;
   }
 
-  get total() {
-    return this.totalTramite + this.totalDerecho - +this.recibo.cantidad;
-  }
-
   get f() {
     return this.FormReciboPago?.controls;
   }
+
 }

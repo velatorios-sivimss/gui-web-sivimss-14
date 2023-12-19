@@ -22,7 +22,7 @@ export interface UsuarioContratante {
   calle?: string;
   numExt?: string;
   numInt?: string;
-  cp?: number;
+  cp?: string;
   colonia?: string | null;
   municipio?: string;
   estado?: string;

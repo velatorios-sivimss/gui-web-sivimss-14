@@ -39,6 +39,8 @@ export interface ControlVehiculoConsultaDia {
 }
 
 export interface GenerarReporteCalendar {
+  idDelegacion?: number,
+  idVelatorio?: number,
   fecIniRepo?: string;
   fecFinRepo?: string;
   tipoReporte?: string;

@@ -522,7 +522,7 @@ export class DatosFinadoSFComponent implements OnInit {
           this.datosFinado.sexo.setValue(+respuesta.datos.contratante.sexo);
           this.datosFinado.otroTipoSexo.setValue(respuesta.datos.contratante.otroSexo);
           this.datosFinado.fechaNacimiento.setValue(fecha);
-          this.datosFinado.nacionalidad.setValue(+respuesta.datos.contratante.nacionalidad);
+          this.datosFinado.nacionalidad.setValue(+respuesta.datos.contratante.idEstado ? 1 : 2);
           this.datosFinado.lugarNacimiento.setValue(+respuesta.datos.contratante.idEstado);
           this.datosFinado.paisNacimiento.setValue(respuesta.datos.contratante.idPais ? +respuesta.datos.contratante.idPais : null);
           this.datosFinado.velatorioPrevision.setValue(respuesta.datos.nombreVelatorio);

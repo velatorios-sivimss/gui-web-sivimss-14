@@ -5,10 +5,11 @@ import { finalize } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { confirmacionContraseniadValidator } from '../actualizar-contrasenia/actualizar-contrasenia.component';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
+// import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { PATRON_CONTRASENIA } from 'projects/sivimss-gui/src/app/utils/regex';
+import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
 
 @Component({
   selector: 'app-restablecer-contrasenia',
@@ -17,34 +18,31 @@ import { PATRON_CONTRASENIA } from 'projects/sivimss-gui/src/app/utils/regex';
 })
 export class RestablecerContraseniaComponent implements OnInit {
   form!: FormGroup;
-  usuario: string = '';
   mostrarModalFormatoContrasenia: boolean = false;
 
   constructor(
-    private readonly autenticacionService: AutenticacionService,
+    public autenticacionContratanteService: AutenticacionService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     private readonly alertaService: AlertaService,
     private readonly formBuilder: FormBuilder,
     private readonly loaderService: LoaderService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe((params) => {
-      this.usuario = params['usuario'];
-    });
     this.inicializarForm();
   }
 
   inicializarForm(): void {
     this.form = this.formBuilder.group(
       {
-        usuario: [{ value: this.usuario, disabled: true }],
+        usuario: [{ value: this.autenticacionContratanteService.usuario, disabled: true }, [Validators.required]],
+        contraseniaAnterior: [{ value: this.autenticacionContratanteService.contrasenia, disabled: true }],
         contraseniaNueva: [
-          '',
-          [Validators.required, Validators.pattern(PATRON_CONTRASENIA)],
+          '', [Validators.required, Validators.pattern(PATRON_CONTRASENIA)],
         ],
-        contraseniaConfirmacion: ['', [Validators.required]],
+        contraseniaConfirmacion: [
+          '', [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
       },
       { validators: [confirmacionContraseniadValidator] }
     );
@@ -54,8 +52,8 @@ export class RestablecerContraseniaComponent implements OnInit {
     if (this.form.invalid) return;
     const form = this.form.getRawValue();
     this.loaderService.activar();
-    this.autenticacionService
-      .actualizarContrasenia(form.usuario, '', form.contraseniaNueva)
+    this.autenticacionContratanteService
+      .actualizarContraseniaNewLogin(form.usuario, '', form.contraseniaNueva)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<unknown>): void => {
@@ -64,7 +62,7 @@ export class RestablecerContraseniaComponent implements OnInit {
               TipoAlerta.Exito,
               'Contraseña actualizada correctamente.'
             );
-            void this.router.navigate(['../'], {
+            void this.router.navigate(['/externo-publico/autenticacion/inicio-sesion'], {
               relativeTo: this.activatedRoute,
             });
           }

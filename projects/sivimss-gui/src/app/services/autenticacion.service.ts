@@ -434,6 +434,11 @@ export class AutenticacionService {
 
   subsSesionInactivaTemporizador!: Subscription;
 
+  cambiarPwd: boolean = false;
+  tituloCambiarPwd: string = '';
+  usuario: string = '';
+  contrasenia: string = '';
+
   constructor(
     private readonly httpClient: HttpClient,
     private readonly router: Router,
@@ -620,6 +625,55 @@ export class AutenticacionService {
   obtenerCatalogoDeLocalStorage<T>(propiedad: string): any {
     const catalogo = JSON.parse(localStorage.getItem(propiedad) as string);
     return catalogo ?? [];
+  }
+
+
+  //////////////////////////////////////////////////////////////
+
+  iniciarSesionNewLogin(usuario: string, contrasenia: string, mostrarMsjContraseniaProxVencer: boolean = true): Observable<string> {
+    return this.httpClient.post<any>(environment.api.loginContratante + `/login/ext`, { usuario, contrasenia }).pipe(
+      concatMap((respuesta: HttpRespuesta<any>) => {
+        if (this.esInicioSesionCorrecto(respuesta.mensaje) || (respuesta.mensaje === MensajesRespuestaAutenticacion.ContraseniaProximaVencer && !mostrarMsjContraseniaProxVencer)) {
+          const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(respuesta.datos);
+          return this.obtenerPermisos(usuario.idRol).pipe(map((respuestaPermisos: HttpRespuesta<any>) => {
+            this.crearSesion(respuesta.datos, usuario, respuestaPermisos.datos.permisosUsuario);
+            this.paginaCargadaSubject.next(true);
+            return MensajesRespuestaAutenticacion.InicioSesionCorrecto;
+          }));
+        } else if (this.esMensajeRespuestaValido(MensajesRespuestaAutenticacion, respuesta.mensaje)) {
+          return of<string>(respuesta.mensaje);
+        } else {
+          return 'Ocurrió un error al intentar iniciar sesión';
+        }
+      }),
+    );
+  }
+
+  actualizarContraseniaNewLogin(usuario: string, contraseniaAnterior: string, contraseniaNueva: string): Observable<HttpRespuesta<any>> {
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.loginContratante + `/contrasenia/ext/cambiar`, {
+      usuario,
+      contraseniaAnterior,
+      contraseniaNueva
+    });
+  }
+
+  validarCodigoRestablecerContraseniaNewLogin(usuario: string, codigo: string): Observable<string> {
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.loginContratante + `/contrasenia/ext/valida-codigo`, {
+      usuario,
+      codigo
+    }).pipe(
+      concatMap((respuesta: HttpRespuesta<any>) => {
+        if (existeMensajeEnEnum(MensajesRespuestaCodigo, respuesta.mensaje)) {
+          return of<string>(respuesta.mensaje);
+        } else {
+          return 'Ocurrió un error al intentar validar el código para recuperar contraseña';
+        }
+      })
+    );
+  }
+
+  generarCodigoRestablecerContraseniaNewLogin(usuario: string): Observable<HttpRespuesta<any>> {
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.loginContratante + `/contrasenia/ext/genera-codigo`, { usuario });
   }
 
 

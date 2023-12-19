@@ -62,7 +62,7 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
   }
 
   obtenerDetalleComisiones(body: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detcomi-comisiones`,body);
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/detcomi-comisiones`,body);
   }
 
   obtenerPromotores(body: any): Observable<HttpRespuesta<any>> {

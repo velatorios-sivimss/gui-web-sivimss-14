@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {FacturacionService} from "../../services/facturacion.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";

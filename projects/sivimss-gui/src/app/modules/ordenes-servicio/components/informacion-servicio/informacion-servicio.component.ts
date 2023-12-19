@@ -811,16 +811,16 @@ export class InformacionServicioComponent implements OnInit {
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if (!this.lugarVelacion.cp.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consutaCP(this.lugarVelacion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
             this.lugarVelacion.municipio.setValue(
@@ -831,6 +831,9 @@ export class InformacionServicioComponent implements OnInit {
             );
             return;
           }
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(185));
+          this.colonias = [];
           this.lugarVelacion.colonia.patchValue(null);
           this.lugarVelacion.municipio.patchValue(null);
           this.lugarVelacion.estado.patchValue(null);

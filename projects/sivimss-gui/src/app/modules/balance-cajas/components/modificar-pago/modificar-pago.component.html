@@ -133,7 +133,7 @@
   </div>
   <div class="row mb-3" *ngIf="esModificacion">
     <div class="col-md-12 flex justify-content-end align-items-center">
-      <button class="ml-4 btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+      <button class="ml-4 btn btn-default btn-md" routerLink="../">Cancelar</button>
       <button class="ml-4 btn btn-md btn-primary" [disabled]="modificarPagoForm.invalid" (click)="modificarPago()">
         Aceptar
       </button>

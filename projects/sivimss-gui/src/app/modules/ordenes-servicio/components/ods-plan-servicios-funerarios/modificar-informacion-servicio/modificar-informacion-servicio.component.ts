@@ -278,11 +278,11 @@ export class ModificarInformacionServicioSFComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor ?? false, disabled: true},
+          {value: false, disabled: true},
           [Validators.required],
         ],
         promotor: [
-          {value: datos.promotor, disabled: false},
+          {value: null, disabled: true},
           [Validators.required],
         ],
       }),
@@ -604,17 +604,17 @@ export class ModificarInformacionServicioSFComponent
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if (!this.lugarVelacion.cp.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consutaCP(this.lugarVelacion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
             this.lugarVelacion.municipio.setValue(
               respuesta.datos[0].municipio.nombre
@@ -624,6 +624,9 @@ export class ModificarInformacionServicioSFComponent
             );
             return;
           }
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(185));
+          this.colonias = [];
           this.lugarVelacion.colonia.patchValue(null);
           this.lugarVelacion.municipio.patchValue(null);
           this.lugarVelacion.estado.patchValue(null);
@@ -660,9 +663,11 @@ export class ModificarInformacionServicioSFComponent
 
               return;
             }
-            this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+            this.descargarOrdenServicio(respuesta.datos.idOrdenServicio,respuesta.datos.idEstatus);
             if(this.altaODS.idEstatus != 1){
-              this.descargarOrdenServicio(respuesta.datos.idOrdenServicio,respuesta.datos.idEstatus);
+              if(localStorage.getItem("ataudDonado") == 'S' as string){
+                this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+              }
             }
             if (this.altaODS.idEstatus == 2) {
               const ExitoMsg: string =
@@ -790,7 +795,7 @@ export class ModificarInformacionServicioSFComponent
       colonia: formulario.lugarVelacion.colonia,
       municipio: formulario.lugarVelacion.municipio,
       estado: formulario.lugarVelacion.estado,
-      gestionadoPorPromotor: formulario.cortejo.gestionadoPorPromotor,
+      gestionadoPorPromotor: null,
       promotor: formulario.cortejo.promotor,
     };
     this.informacionServicio.fechaCortejo =
