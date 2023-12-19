@@ -1,6 +1,6 @@
 <div class="container-sivimss px-5 registro-en-linea my-5">
     <app-titulo-principal titulo="REGISTRO DE PERSONA DEL GRUPO">
-        <app-btn-regresar routerLink="../"></app-btn-regresar>
+        <app-btn-regresar [routerLink]="['../']" [queryParams]="queryParams"></app-btn-regresar>
     </app-titulo-principal>
 
     <div>
@@ -12,17 +12,18 @@
                         <div class="col-md-3">
                             <label class="control-label" for="matricula">Matrícula:</label>
                             <input id="matricula" type="text" class="form-control" formControlName="matricula"
-                                placeholder="Ingresa matrícula">
+                                placeholder="Ingresa matrícula" [readonly]="readonlyInputs">
                         </div>
                         <div class="col-md-3">
                             <label class="control-label" for="rfc">R.F.C.:</label>
-                            <input id="rfc" type="text" class="form-control" formControlName="rfc"
-                                placeholder="Ingresa R.F.C.">
+                            <input id="rfc" type="text" class="form-control" formControlName="rfc" (blur)="validarRFC()"
+                                placeholder="Ingresa R.F.C." [readonly]="readonlyInputs">
                         </div>
                         <div class="col-md-3">
                             <label class="control-label" for="curp">CURP <span class="req">*</span>:</label>
                             <input id="curp" type="text" class="form-control" formControlName="curp"
-                                placeholder="Ingresa CURP">
+                                placeholder="Ingresa CURP" (blur)="consultarCURP()" (keyup)="convertirAMayusculas(0)"
+                                [readonly]="readonlyInputs">
                             <span class="campo-obligatorio"
                                 *ngIf="datosPersonales.curp?.errors?.required && (datosPersonales.curp?.dirty || datosPersonales.curp?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -57,30 +58,43 @@
                         </div>
                         <div class="col-md-3">
                             <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
-                            <input id="sexo" type="text" class="form-control" formControlName="sexo"
-                                placeholder="Ingresa segundo apellido">
+                            <p-dropdown id="sexo" class="form-control" formControlName="sexo"
+                                placeholder="Selecciona sexo" (onChange)="cambioTipoSexo()" [readonly]="readonlyInputs"
+                                [options]="tipoSexo"></p-dropdown>
+                            <span class="campo-obligatorio"
+                                *ngIf="datosPersonales.sexo?.errors?.required && (datosPersonales.sexo?.dirty || datosPersonales.sexo?.touched)">Este
+                                campo es obligatorio *.</span>
+                        </div>
+                        <div class="col-md-3" *ngIf="validaSexo">
+                            <label class="control-label" for="otroSexo">Otro:</label>
+                            <input id="otroSexo" class="form-control" formControlName="otroSexo"
+                                placeholder="Ingresa sexo" maxlength="15" [readonly]="readonlyInputs">
+                            <span class="campo-obligatorio"
+                                *ngIf="datosPersonales.otroSexo?.errors?.required && (datosPersonales.otroSexo?.dirty || datosPersonales.otroSexo?.touched)">Este
+                                campo es obligatorio *.</span>
+                        </div>
 
-                        </div>
-                        <div class="col-md-3" *ngIf="datosGeneralesContrante.idSexo==3">
-                            <label class="control-label" for="otro">Otro:</label>
-                            <input id="otro" type="text" class="form-control" formControlName="otro"
-                                placeholder="Ingresa otro">
-                        </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span
                                     class="req">*</span>:</label>
-                            <input id="lugarNacimiento" type="text" class="form-control"
-                                formControlName="lugarNacimiento" placeholder="Ingresa otro">
+                            <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
+                                [readonly]="readonlyInputs" appendTo="body" placeholder="Selecciona promotor"
+                                [options]="estado" [filter]="true" filterBy="label"></p-dropdown>
+
+                            <span class="campo-obligatorio"
+                                *ngIf="datosPersonales.lugarNacimiento?.errors?.required && (datosPersonales.lugarNacimiento?.dirty || datosPersonales.lugarNacimiento?.touched)">Este
+                                campo es obligatorio *.</span>
+
+
 
                         </div>
                         <div class="col-md-3">
                             <label class="control-label" for="fechaNacimiento">Fecha de nacimiento<span
                                     class="req">*</span>:</label>
-                            <input id="fechaNacimiento" type="text" class="form-control"
-                                formControlName="fechaNacimiento" placeholder="Ingresa otro">
-
+                            <input id="fechaNacimiento" type="text" class="form-control" [readonly]="readonlyInputs"
+                                formControlName="fechaNacimiento" placeholder="Ingresa municipio">
                         </div>
                     </div>
                 </ng-container>
@@ -90,7 +104,8 @@
                         <div class="col-md-3">
                             <label class="control-label" for="codigoPostal">C.P. <span class="req">*</span>:</label>
                             <input id="codigoPostal" type="text" class="form-control" formControlName="codigoPostal"
-                                (change)="buscarCodigoPostal()" placeholder="Ingresa código postal">
+                                (change)="buscarCodigoPostal()" placeholder="Ingresa código postal"
+                                [readonly]="readonlyInputs">
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.codigoPostal?.errors?.required && (domicilio.codigoPostal?.dirty || domicilio.codigoPostal?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -98,7 +113,7 @@
                         <div class="col-md-3">
                             <label class="control-label" for="asentamientoColonia">Asentamiento / Colonia <span
                                     class="req">*</span>:</label>
-                            <p-dropdown id="asentamientoColonia" class="form-control"
+                            <p-dropdown id="asentamientoColonia" class="form-control" [readonly]="readonlyInputs"
                                 formControlName="asentamientoColonia" appendTo="body" placeholder="Selecciona colonia"
                                 [options]="colonias" [filter]="true" filterBy="label"></p-dropdown>
                             <span class="campo-obligatorio"
@@ -116,7 +131,8 @@
                         <div class="col-md-3">
                             <label class="control-label" for="estado">Estado <span class="req">*</span>:</label>
                             <input id="estado" type="text" class="form-control" formControlName="estado"
-                                placeholder="Ingresa estado">
+                                placeholder="Ingresa otro">
+
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.estado?.errors?.required && (domicilio.estado?.dirty || domicilio.estado?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -127,7 +143,7 @@
                             <label class="control-label" for="pais">País <span class="req">*</span>:</label>
                             <p-dropdown id="pais" class="form-control" formControlName="pais" appendTo="body"
                                 placeholder="Selecciona país" [options]="paises" [filter]="true"
-                                filterBy="label"></p-dropdown>
+                                [readonly]="readonlyInputs" filterBy="label"></p-dropdown>
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.pais?.errors?.required && (domicilio.pais?.dirty || domicilio.pais?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -135,7 +151,7 @@
                         <div class="col-md-3">
                             <label class="control-label" for="calle">Calle <span class="req">*</span>:</label>
                             <input id="calle" type="text" class="form-control" formControlName="calle"
-                                placeholder="Ingresa calle">
+                                [readonly]="readonlyInputs" placeholder="Ingresa calle">
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.calle?.errors?.required && (domicilio.calle?.dirty || domicilio.calle?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -144,7 +160,7 @@
                             <label class="control-label" for="numeroExterior">Número exterior <span
                                     class="req">*</span>:</label>
                             <input id="numeroExterior" type="text" class="form-control" formControlName="numeroExterior"
-                                placeholder="Ingresa número exterior">
+                                [readonly]="readonlyInputs" placeholder="Ingresa número exterior">
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.numeroExterior?.errors?.required && (domicilio.numeroExterior?.dirty || domicilio.numeroExterior?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -152,7 +168,7 @@
                         <div class="col-md-3">
                             <label class="control-label" for="numeroInterior">Número interior:</label>
                             <input id="numeroInterior" type="text" class="form-control" formControlName="numeroInterior"
-                                placeholder="Ingresa número interior">
+                                [readonly]="readonlyInputs" placeholder="Ingresa número interior">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -160,7 +176,8 @@
                             <label class="control-label" for="correoElectronico">Correo electrónico <span
                                     class="req">*</span>:</label>
                             <input id="correoElectronico" type="text" class="form-control"
-                                formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
+                                formControlName="correoElectronico" placeholder="Ingresa correo electrónico"
+                                [readonly]="readonlyInputs">
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.correoElectronico?.errors?.required && (domicilio.correoElectronico?.dirty || domicilio.correoElectronico?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -168,7 +185,7 @@
                         <div class="col-md-3">
                             <label class="control-label" for="telefono">Teléfono <span class="req">*</span>:</label>
                             <input id="telefono" type="text" class="form-control" formControlName="telefono"
-                                placeholder="Ingresa teléfono">
+                                [readonly]="readonlyInputs" placeholder="Ingresa teléfono">
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.telefono?.errors?.required && (domicilio.telefono?.dirty || domicilio.telefono?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -176,14 +193,14 @@
                         <div class="col-md-3">
                             <label class="control-label" for="enfermedadPrexistente">Enfermedad prexistente:</label>
                             <p-dropdown id="enfermedadPrexistente" class="form-control"
-                                formControlName="enfermedadPrexistente" appendTo="body"
+                                formControlName="enfermedadPrexistente" appendTo="body" [readonly]="readonlyInputs"
                                 placeholder="Selecciona promotor" (onChange)="cambioEnfermedadPrexistente()"
                                 [options]="enfermedadPrexistenteArray" [filter]="true" filterBy="label"></p-dropdown>
                         </div>
                         <div class="col-md-3" *ngIf="muestraOtraEnfermedad">
                             <label class="control-label" for="otro">Otro:</label>
                             <input id="otro" type="text" class="form-control" formControlName="otro"
-                                placeholder="Ingresa otro">
+                                [readonly]="readonlyInputs" placeholder="Ingresa otro">
                         </div>
                     </div>
                 </ng-container>
@@ -245,7 +262,7 @@
                         <div class="paquete" *ngFor="let item of paquetes;">
                             <div class="paquete-titulo">
                                 <input type="radio" name="paquetes" [value]="item.idPaquete"
-                                    (click)="seleccionaPaquete(item.idPaquete)" />
+                                    (click)="seleccionaPaquete(item.idPaquete)" [readonly]="readonlyInputs" />
                                 <span>{{item.nomPaquete}}</span>
                             </div>
                             <div>
@@ -288,7 +305,7 @@
                     </div>
                     <div class="col-md-2 flex flex-column">
                         <span class="etiqueta-base font-bold">Fecha</span>
-                        <span class="texto-base font-normal">{{fecha}}</span>
+                        <span class="texto-base font-normal">{{fecha| date:'dd-mm-yyyy'}}</span>
                     </div>
                 </div>
                 <div class="row mb-8">
@@ -296,7 +313,8 @@
                         <label class="control-label" for="curp">Copia INE:</label>
                         <div (click)="handleClick('archivoIneUpload')" class="file-container">
                             <input class="hidden" type="file" id="archivoIneUpload" name="archivoIneUpload"
-                                accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB" (change)="addAttachment($event)">
+                                [readonly]="readonlyInputs" accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB"
+                                (change)="addAttachment($event)">
                             <input id="archivoIne" class="form-control" formControlName="archivoIne" readonly>
                             <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
                         </div>
@@ -305,7 +323,8 @@
                         <label class="control-label" for="curp">Copia CURP:</label>
                         <div (click)="handleClick('archivoCURPUpload')" class="file-container">
                             <input class="hidden" type="file" id="archivoCURPUpload" name="archivoCURPUpload"
-                                accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB" (change)="addAttachment($event)">
+                                [readonly]="readonlyInputs" accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB"
+                                (change)="addAttachment($event)">
                             <input id="archivoCurp" class="form-control" formControlName="archivoCurp" readonly>
                             <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
                         </div>
@@ -315,7 +334,8 @@
                         <label class="control-label" for="rfc">Copia RFC:</label>
                         <div (click)="handleClick('archivoRFCUpload')" class="file-container">
                             <input class="hidden" type="file" id="archivoRFCUpload" name="archivoRFCUpload"
-                                accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB" (change)="addAttachment($event)">
+                                [readonly]="readonlyInputs" accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB"
+                                (change)="addAttachment($event)">
                             <input id="archivoRfc" class="form-control" formControlName="archivoRfc" readonly>
                             <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
                         </div>

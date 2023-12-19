@@ -7,6 +7,8 @@ import { ModalEditarBeneficiarioComponent } from '../../components/modal-editar-
 import {
   DIEZ_ELEMENTOS_POR_PAGINA,
   PATRON_CORREO,
+  PATRON_CURP,
+  PATRON_RFC,
 } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { ModalDesactivarBeneficiarioComponent } from '../../components/modal-desactivar-beneficiario/modal-desactivar-beneficiario.component';
 import { BusquedaConveniosPFServic } from '../../../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
@@ -18,10 +20,13 @@ import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DatosGeneralesContratante } from '../../../../../consulta-convenio-prevision-funeraria/models/DatosGeneralesContratante.interface';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { CATALOGO_ENFERMEDAD_PREEXISTENTE } from 'projects/sivimss-gui/src/app/modules/convenios-prevision-funeraria/constants/catalogos-funcion';
+import {
+  CATALOGO_ENFERMEDAD_PREEXISTENTE,
+  CATALOGO_SEXO,
+} from 'projects/sivimss-gui/src/app/modules/convenios-prevision-funeraria/constants/catalogos-funcion';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { Beneficiarios } from '../../../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
 
@@ -38,13 +43,11 @@ export class RegistroPersonaGrupoComponent implements OnInit {
   personasGrupo: any[] = [];
   colonias: any[] = [];
   coloniasEmpresa: any[] = [];
-  datosGeneralesContrante: DatosGeneralesContratante =
-    {} as DatosGeneralesContratante;
+  estado: any[] = [];
   fechaActual: Date = new Date();
   enfermedadPrexistenteArray: TipoDropdown[] = CATALOGO_ENFERMEDAD_PREEXISTENTE;
   parentesco: any[] = [];
   itemBeneficiarios: Beneficiarios = {} as Beneficiarios;
-
   @ViewChild('overlayPanel')
   overlayPanel!: OverlayPanel;
   @ViewChild('overlayPanelGrupo')
@@ -64,12 +67,14 @@ export class RegistroPersonaGrupoComponent implements OnInit {
   mostrarBotonAgregarBeneficiario: boolean = false;
   deshabilitarTipo: boolean = false;
   seleccionarPromotorEmpresa: boolean = false;
+  validaSexo: boolean = false;
+  readonlyInputs: boolean = false;
 
   velatorio: string = '';
   folioConvenio: string = '';
   nombreCompleto: string = '';
   delegacion: string = '';
-  fecha: string = '';
+  fecha: number = this.fechaActual.setDate(this.fechaActual.getDate() + 1);
   inputSeleccionado: string = '';
 
   nombreIne: string | null = null;
@@ -87,7 +92,9 @@ export class RegistroPersonaGrupoComponent implements OnInit {
   idVelatorio: number | null = null;
   idContratante: number | null = null;
   idConvenioPF: number = 0;
+  tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
 
+  queryParams: any = {};
   constructor(
     private readonly formBuilder: FormBuilder,
     public readonly dialogService: DialogService,
@@ -99,12 +106,30 @@ export class RegistroPersonaGrupoComponent implements OnInit {
 
   ngOnInit(): void {
     this.formPersona = this.crearFormPersona();
-    this.buscarPaises();
-    this.buscarPaquete();
-    this.buscarParentesco();
+    setTimeout(() => {
+      this.buscarPaises();
+    }, 800);
+
+    setTimeout(() => {
+      this.buscarPaquete();
+    }, 1200);
+    setTimeout(() => {
+      this.buscarParentesco();
+    }, 1400);
+    setTimeout(() => {
+      this.buscarEstado();
+    }, 1600);
+
     this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
     this.velatorio = this.rutaActiva.snapshot.queryParams.velatorio;
     this.idConvenioPF = this.rutaActiva.snapshot.queryParams.idConvenio;
+    this.queryParams = {
+      idVelatorio: this.rutaActiva.snapshot.queryParams.idVelatorio,
+      velatorio: this.rutaActiva.snapshot.queryParams.velatorio,
+      idConvenio: this.rutaActiva.snapshot.queryParams.idConvenio,
+    };
+    this.delegacion = this.rutaActiva.snapshot.queryParams.delegacion;
+    this.folioConvenio = this.rutaActiva.snapshot.queryParams.delegacion;
   }
 
   crearFormPersona(): FormGroup {
@@ -115,40 +140,44 @@ export class RegistroPersonaGrupoComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.nullValidator],
+          [Validators.nullValidator, Validators.maxLength(5)],
         ],
         rfc: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.nullValidator],
+          [
+            Validators.required,
+            Validators.pattern(PATRON_RFC),
+            Validators.maxLength(13),
+          ],
         ],
         curp: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.required],
+          [Validators.required, Validators.pattern(PATRON_CURP)],
         ],
         nombre: [
           {
             value: null,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
         primerApellido: [
           {
             value: null,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
         segundoApellido: [
           {
             value: null,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
@@ -159,7 +188,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
           },
           [Validators.required],
         ],
-        otro: [
+        otroSexo: [
           {
             value: null,
             disabled: false,
@@ -176,7 +205,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
         fechaNacimiento: [
           {
             value: null,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
@@ -330,9 +359,9 @@ export class RegistroPersonaGrupoComponent implements OnInit {
             return;
           }
 
-          if (respuesta.mensaje === 'Exito') {
-            this.paises = respuesta.datos;
-          } else this.mostrarMensaje(Number(respuesta.mensaje));
+          if (respuesta.mensaje === 'Exito')
+            this.paises = respuesta.datos || [];
+          else this.mostrarMensaje(Number(respuesta.mensaje));
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
@@ -401,6 +430,32 @@ export class RegistroPersonaGrupoComponent implements OnInit {
       });
   }
 
+  buscarEstado(): void {
+    this.consultaConveniosService
+      .estado()
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            console.log(respuesta.mensaje);
+            this.mostrarMensaje(Number(respuesta.mensaje));
+            return;
+          }
+          if (respuesta.mensaje === 'Exito') this.estado = respuesta.datos;
+          else {
+            this.mostrarMensaje(Number(respuesta.mensaje));
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(
+            TipoAlerta.Error,
+            'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+          );
+        },
+      });
+  }
+
   get f() {
     return this.formPersona.controls;
   }
@@ -430,6 +485,18 @@ export class RegistroPersonaGrupoComponent implements OnInit {
       reader.onload = () => resolve(reader.result);
       reader.onerror = (error) => reject(error);
     });
+  }
+
+  cambioTipoSexo(): void {
+    if (this.datosPersonales.sexo.value == 3) {
+      this.validaSexo = true;
+      this.datosPersonales.otroSexo.setValidators(Validators.required);
+    } else {
+      this.datosPersonales.otroSexo.patchValue(null);
+      this.datosPersonales.otroSexo.clearValidators();
+      this.validaSexo = false;
+    }
+    this.datosPersonales.otroSexo.updateValueAndValidity();
   }
 
   addAttachment(fileInput: any): void {
@@ -483,6 +550,97 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     });
   }
 
+  validarRFC(): void {
+    if (!this.datosPersonales.rfc) return;
+    this.datosPersonales.rfc.clearValidators();
+    this.datosPersonales.rfc.updateValueAndValidity();
+    if (this.datosPersonales.rfc.value.includes('XAXX010101000')) return;
+    if (!this.datosPersonales.rfc.value.match(PATRON_RFC)) {
+      this.mostrarMensaje(33);
+      this.datosPersonales.rfc.setValidators(Validators.pattern(PATRON_RFC));
+      this.datosPersonales.rfc.updateValueAndValidity();
+    }
+  }
+
+  consultarCURP() {
+    if (!this.datosPersonales.curp.value) return;
+
+    if (this.datosPersonales.curp?.errors?.pattern) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no valido.');
+      return;
+    }
+    if (this.datosPersonales.curp.value.includes('XEXX010101HNEXXXA4')) return;
+
+    if (this.datosPersonales.curp.value.includes('XEXX010101MNEXXXA8')) return;
+
+    if (this.datosPersonales.curp.value?.errors?.pattern) {
+      this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
+      return;
+    }
+    if (!this.datosPersonales.curp.value) return;
+    this.buscarCurpRFC(this.datosPersonales.curp.value, '');
+  }
+
+  convertirAMayusculas(posicionFormulario: number): void {
+    const formularios = [this.datosPersonales.curp, this.datosPersonales.rfc];
+    formularios[posicionFormulario].setValue(
+      formularios[posicionFormulario].value.toUpperCase()
+    );
+  }
+
+  buscarCurpRFC(curp: string, rfc: string): void {
+    let parametros = {
+      curp: curp,
+      rfc: rfc,
+    };
+
+    this.consultaConveniosService
+      .buscarCurpRFC(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            this.mostrarMensaje(Number(respuesta.mensaje));
+            return;
+          }
+
+          if (respuesta.mensaje == 'Exito') {
+            if (curp != '') {
+              let valores = respuesta.datos[0];
+              console.log(valores);
+
+              let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
+              let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
+
+              [diaD, mesD, anioD] = [anioD, mesD, diaD];
+              this.datosPersonales.idPersona.setValue(valores.idPersona);
+              this.datosPersonales.nombre.setValue(valores.nomPersona);
+              this.datosPersonales.primerApellido.setValue(
+                valores.primerApellido
+              );
+              this.datosPersonales.segundoApellido.setValue(
+                valores.segundoApellido
+              );
+              this.datosPersonales.fechaNacimiento.setValue(
+                valores.fechaNacimiento
+              );
+
+              this.nombreCompleto =
+                valores.nomPersona +
+                ' ' +
+                valores.primerApellido +
+                ' ' +
+                valores.segundoApellido;
+            }
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.mostrarMensaje(0);
+        },
+      });
+  }
+
   guardarPersona(): void {
     if (!this.formPersona.valid) {
       return;
@@ -493,12 +651,16 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     }
 
     this.loaderService.activar();
+    let idPersona =
+      this.datosPersonales.idPersona.value == null
+        ? 0
+        : this.datosPersonales.idPersona.value;
     let parametros = {
       idPaquete: this.idPaquete,
       idEnfermedad: this.domicilio.enfermedadPrexistente.value,
       otraEnfermedad: this.domicilio.otro.value,
-      idPersona: this.datosGeneralesContrante.idPersona, // validar si es null poner un 0
-      cveMatricula: this.datosGeneralesContrante.matricula,
+      idPersona: idPersona, // validar si es null poner un 0
+      cveMatricula: this.datosPersonales.matricula.value,
       calle: this.domicilio.calle.value,
       noExterior: this.domicilio.numeroExterior.value,
       noInterior: this.domicilio.numeroInterior.value,
@@ -515,20 +677,21 @@ export class RegistroPersonaGrupoComponent implements OnInit {
       archivoIne: this.archivoIne,
       archivoCurp: this.archivoCurp,
       archivoRfc: this.archivoRfc,
-      rfc: 'rfc',
-      curp: 'curp',
-      nombre: 'nombreIne',
-      primerApellido: 'apelldio1',
-      segundoApellido: 'apelldio2',
-      fechaNacimiento: '1991-04-27',
-      idPais: 119,
-      telefono: '123456789',
-      correo: 'correo@mail.com',
-      idConvenioPF: 234, //
+      rfc: this.datosPersonales.rfc.value,
+      curp: this.datosPersonales.curp.value,
+      nombre: this.datosPersonales.nombre.value,
+      primerApellido: this.datosPersonales.primerApellido.value,
+      segundoApellido: this.datosPersonales.segundoApellido.value,
+      fechaNacimiento: this.datosPersonales.lugarNacimiento.value, //'1991-04-27'
+      idPais: this.datosPersonales.lugarNacimiento.value,
+      telefono: this.domicilio.telefono.value,
+      correo: this.domicilio.correoElectronico.value,
+      idConvenioPF: this.idConvenioPF, //
     };
+    console.log(parametros);
 
     this.consultaConveniosService
-      .agregarContratoPersona(parametros)
+      .agregarPersona(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
@@ -543,7 +706,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
               TipoAlerta.Exito,
               'Beneficiario actualizado correctamente'
             );
-
+            this.readonlyInputs = true;
             let datos = respuesta.datos;
 
             this.mostrarBontonGaurdarPersona = false;
@@ -655,8 +818,8 @@ export class RegistroPersonaGrupoComponent implements OnInit {
             return;
           }
 
-          if (respuesta.datos === 'Exito') {
-            if (this.paquetes.length == 0) {
+          if (respuesta.mensaje === 'Exito') {
+            if (respuesta.datos.length == 0) {
               this.limpiaInputsCp();
               this.alertaService.mostrar(
                 TipoAlerta.Info,
