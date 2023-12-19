@@ -467,7 +467,7 @@ export class ModificarDatosFinadoComponent
         this.datosFinado.matricula.disable();
         this.datosFinado.matriculaCheck.setValue(false);
       } else {
-        this.datosFinado.matricula.disable();
+        this.datosFinado.matricula.enable();
         this.datosFinado.matriculaCheck.setValue(true);
       }
 
