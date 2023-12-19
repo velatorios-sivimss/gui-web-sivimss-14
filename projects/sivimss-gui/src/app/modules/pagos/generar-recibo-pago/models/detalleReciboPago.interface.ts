@@ -17,5 +17,6 @@ export interface DetalleReciboPago {
   cantidad: string,
   claveFolio: string,
   recibeMat: string,
-  canTramites: string
+  canTramites: string,
+  lugar: string
 }
