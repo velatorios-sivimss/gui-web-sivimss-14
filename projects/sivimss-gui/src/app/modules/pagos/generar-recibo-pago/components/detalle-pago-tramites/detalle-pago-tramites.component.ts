@@ -100,7 +100,7 @@ export class DetallePagoTramitesComponent {
       totalFinal: this.recibo.canTotal,
       rutaNombreReporte: this.recibo.rutaNombreReporte,
       tipoReporte: tipoReporte,
-      folioPF: this.recibo.folioPF
+      folioPF: this.recibo.claveFolio
     }
   }
 
