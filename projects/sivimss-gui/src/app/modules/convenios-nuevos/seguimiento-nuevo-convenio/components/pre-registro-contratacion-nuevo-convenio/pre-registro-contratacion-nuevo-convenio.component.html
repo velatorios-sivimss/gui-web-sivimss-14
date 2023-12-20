@@ -34,15 +34,25 @@
     </p-accordionTab>
   </p-accordion>
 
-  <!--  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">-->
-  <!--    <p-accordionTab header="Beneficiarios">-->
-  <!--      <app-datos-beneficiario></app-datos-beneficiario>-->
-  <!--    </p-accordionTab>-->
-  <!--  </p-accordion>-->
+  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+    <p-accordionTab header="Beneficiarios">
+      <app-datos-beneficiario *ngIf="beneficiarios.length > 0 else SinBeneficiarios"></app-datos-beneficiario>
+    </p-accordionTab>
+  </p-accordion>
 
-  <!--  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">-->
-  <!--    <p-accordionTab header="Documentación requerida">-->
-  <!--      <app-documentacion-beneficiario></app-documentacion-beneficiario>-->
-  <!--    </p-accordionTab>-->
-  <!--  </p-accordion>-->
+  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+    <p-accordionTab header="Documentación requerida">
+      <app-documentacion-beneficiario
+        *ngIf="beneficiarios.length > 0 else SinBeneficiarios"></app-documentacion-beneficiario>
+    </p-accordionTab>
+  </p-accordion>
 </form>
+
+
+<ng-template pTemplate="content" #SinBeneficiarios>
+  <div class="row table-panel-row" *ngIf="beneficiarios.length === 0">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">El convenio no tiene beneficiarios registrados.</p>
+    </div>
+  </div>
+</ng-template>
