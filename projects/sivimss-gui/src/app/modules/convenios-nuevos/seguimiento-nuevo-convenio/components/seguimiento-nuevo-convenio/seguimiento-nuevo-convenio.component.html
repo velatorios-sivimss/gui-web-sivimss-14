@@ -81,7 +81,7 @@
         </td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirPanel($event,convenio)" *ngIf="convenio.estatus else emptyDiv">
+            <a (click)="abrirPanel($event,convenio)" *ngIf="!convenio.estatus else emptyDiv">
               <img
                 src="assets/images/imagen-icono-barras-horizontales.svg"
                 alt="icono barras horizontales">
@@ -123,7 +123,7 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Concluir formato"
-                                (click)="abrirPreRegistroNuevoConvenio()"></app-overlay-panel-opcion>
+                                [routerLink]="['pre-registro-nuevo-convenio', convenioSeleccionado.idConvenioPlan]"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

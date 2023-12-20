@@ -8,6 +8,7 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/cons
 import {LazyLoadEvent} from 'primeng/api';
 import {Documentos} from '../../models/documentos.interface';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
@@ -21,16 +22,22 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   overlayPanel!: OverlayPanel;
   overlayPanelPersona!: OverlayPanel;
 
+  readonly POSICION_CONVENIO: number = 0;
+  readonly POSICION_BENEFICIARIO: number = 1;
+
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   infoPersona: boolean = false;
 
+  beneficiarios: any[] = [];
+  convenioPersona!: ConvenioPersona;
 
   documentos: Documentos[] = [];
   documentoSeleccionado: Documentos = {};
 
   preRegistroSiguiente: boolean = false;
+  folio: string = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,6 +47,17 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) {
+  }
+
+  ngOnInit(): void {
+    this.cargarCatalogos();
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"]
+    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos[0];
+    this.folio = this.convenioPersona.folioConvenio.toString();
+    this.beneficiarios = respuesta[this.POSICION_BENEFICIARIO].datos;
   }
 
   abrir(event: MouseEvent) {

@@ -42,8 +42,7 @@ export class DesactivarConvenioComponent implements OnInit {
   totalElementos: number = 0;
   infoPersona: boolean = false;
   beneficiarios: any[] = [];
-
-  convenioPersona!: ConvenioPersona
+  convenioPersona!: ConvenioPersona;
 
   constructor(
     private formBuilder: FormBuilder,

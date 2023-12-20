@@ -11,6 +11,7 @@ import {NgModule} from '@angular/core'
 import {Route, RouterModule} from '@angular/router'
 import {DesactivarConvenioComponent} from './components/desactivar-convenio/desactivar-convenio.component'
 import {DesactivarNuevoConvenioResolver} from "./services/desactivar-nuevo-convenio.resolver";
+import {PreregistroConvenioResolver} from "./services/preregistro-convenio.resolver";
 
 const routes: Route[] = [
   {
@@ -21,10 +22,10 @@ const routes: Route[] = [
     },
   },
   {
-    path: 'pre-registro-nuevo-convenio',
+    path: 'pre-registro-nuevo-convenio/:idConvenio',
     component: PreRegistroContratacionNuevoConvenioComponent,
     resolve: {
-      respuesta: SeguimientoNuevoConvenioResolver,
+      respuesta: PreregistroConvenioResolver,
     },
   },
   {
@@ -54,7 +55,8 @@ const routes: Route[] = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [SeguimientoNuevoConvenioResolver, DesactivarNuevoConvenioResolver],
+  providers: [SeguimientoNuevoConvenioResolver, DesactivarNuevoConvenioResolver,
+    PreregistroConvenioResolver],
 })
 export class SeguimientoNuevoConvenioRoutingModule {
 }

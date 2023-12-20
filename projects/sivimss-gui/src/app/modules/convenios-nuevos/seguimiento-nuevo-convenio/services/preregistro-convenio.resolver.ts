@@ -5,7 +5,7 @@ import {SeguimientoNuevoConvenioService} from "./seguimiento-nuevo-convenio.serv
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 @Injectable({providedIn: 'root'})
-export class DesactivarNuevoConvenioResolver implements Resolve<boolean> {
+export class PreregistroConvenioResolver implements Resolve<boolean> {
   constructor(private seguimientoConvenioService: SeguimientoNuevoConvenioService,
   ) {
   }

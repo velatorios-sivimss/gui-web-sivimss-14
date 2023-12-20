@@ -215,31 +215,12 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
     // })
   }
 
-  abrirConcluirServicio(): void {
-    // this.creacionRef = this.dialogService.open(ModificarArticulosComponent, {
-    //   header:"Modificar artículo",
-    //   width:"920px",
-    // })
-
-    // this.creacionRef.onClose.subscribe((estatus:boolean) => {
-    //   if(estatus){
-    //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo modificado correctamente');
-    //   }
-    // })
-  }
 
   abrirPanel(event: MouseEvent, convenioSeleccionado: SeguimientoNuevoConvenio): void {
     this.convenioSeleccionado = convenioSeleccionado;
     this.overlayPanel.toggle(event);
   }
 
-  abrirModalDetalleCapilla(servicio: SeguimientoNuevoConvenio) {
-    // this.creacionRef = this.dialogService.open(DetalleArticulosComponent, {
-    //   header:"Detalle",
-    //   width:"920px",
-    //   data: {servicio:servicio, origen: "detalle"},
-    // })
-  }
 
   consultaServicioEspecifico(): string {
     return ''
