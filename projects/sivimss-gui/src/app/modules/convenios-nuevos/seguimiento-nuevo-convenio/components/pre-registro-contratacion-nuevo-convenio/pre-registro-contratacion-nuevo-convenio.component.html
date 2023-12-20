@@ -26,7 +26,9 @@
       <div class="row mb-3">
         <div class="col-md-4">
           <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span>:</label>
-          <input id="tipoPaquete" class="form-control" placeholder="Inserta el tipo de paquete">
+          <p-dropdown appendTo="body" id="tipoPaquete" class="form-control" formControlName="tipoPaquete"
+                      [options]="paquetes" placeholder="Selecciona el tipo de paquete">
+          </p-dropdown>
         </div>
       </div>
     </p-accordionTab>

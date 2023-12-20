@@ -42,4 +42,8 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   buscarBeneficiarioPorPersona(id: number): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(`${this.base}/buscar/beneficiarios/${id}`);
   }
+
+  obtenerCatalogoPaquetes(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${this.base}/buscar/paquetes`);
+  }
 }

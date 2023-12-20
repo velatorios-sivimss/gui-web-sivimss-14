@@ -8,6 +8,8 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/cons
 import {Documentos} from '../../models/documentos.interface';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
@@ -23,6 +25,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   readonly POSICION_CONVENIO: number = 0;
   readonly POSICION_BENEFICIARIO: number = 1;
+  readonly POSICION_PAQUETES: number = 2;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
@@ -31,6 +34,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   beneficiarios: any[] = [];
   convenioPersona!: ConvenioPersona;
+  paquetes: TipoDropdown[] = [];
 
   documentos: Documentos[] = [];
   documentoSeleccionado: Documentos = {};
@@ -58,6 +62,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos[0];
     this.folio = this.convenioPersona.folioConvenio.toString();
     this.beneficiarios = respuesta[this.POSICION_BENEFICIARIO].datos;
+    const paquetes = respuesta[this.POSICION_PAQUETES].datos;
+    this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
+    console.log(this.paquetes);
   }
 
   inicializarFormulario(): void {
@@ -82,7 +89,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         correoElectronico: [{value: this.convenioPersona.correo, disabled: false}],
         telefono: [{value: this.convenioPersona.telFijo, disabled: false}],
         enfermedadPreExistente: [{value: null, disabled: false}],
-      })
+      }),
+      tipoPaquete: [{value: this.convenioPersona.idPaquete, disabled: false}]
     });
   }
 
