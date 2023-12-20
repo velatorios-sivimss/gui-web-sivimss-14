@@ -28,6 +28,10 @@ export class DesactivarConvenioComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+
+  readonly POSICION_CONVENIO: number = 0;
+  readonly POSICION_BENEFICIARIO: number = 1;
+
   overlayPanelPersona!: OverlayPanel;
   convenios: SeguimientoNuevoConvenio[] = [];
   convenioSeleccionado: SeguimientoNuevoConvenio = {};
@@ -37,6 +41,7 @@ export class DesactivarConvenioComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   infoPersona: boolean = false;
+  beneficiarios: any[] = [];
 
   convenioPersona!: ConvenioPersona
 
@@ -55,46 +60,9 @@ export class DesactivarConvenioComponent implements OnInit {
   }
 
   cargarCatalogos(): void {
-    this.convenioPersona = this.activatedRoute.snapshot.data["respuesta"].datos[0];
-  }
-
-  paginar(event: LazyLoadEvent): void {
-
-    setTimeout(() => {
-      this.documentos = [
-        {
-          id: 1,
-          nombre: "Marta",
-          apellidoMaterno: "eugenia",
-          ApellidoPaterno: "eugenia",
-          nombreDocumento: "Carta poder",
-          numeroDocumento: 23,
-          tipoDocumento: "ningunDocumento",
-          linkDocumento: "LinkDocumento",
-        },
-        {
-          id: 2,
-          nombre: "Marta",
-          apellidoMaterno: "eugenia",
-          ApellidoPaterno: "eugenia",
-          nombreDocumento: "Carta poder",
-          numeroDocumento: 23,
-          tipoDocumento: "ningunDocumento",
-          linkDocumento: "LinkDocumento",
-        },
-        {
-          id: 3,
-          nombre: "Marta",
-          apellidoMaterno: "eugenia",
-          ApellidoPaterno: "eugenia",
-          nombreDocumento: "Carta poder",
-          numeroDocumento: 23,
-          tipoDocumento: "ningunDocumento",
-          linkDocumento: "LinkDocumento",
-        }
-      ];
-      this.totalElementos = this.documentos.length;
-    }, 0)
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"]
+    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos[0];
+    this.beneficiarios = respuesta[this.POSICION_BENEFICIARIO].datos;
   }
 
   regresar() {
@@ -103,21 +71,7 @@ export class DesactivarConvenioComponent implements OnInit {
 
   aceptar() {
     //agregar Mensaje
-    this.abrirModalModificarServicio();
   }
 
-  abrirModalModificarServicio(): void {
-    // this.creacionRef = this.dialogService.open(ModificarArticulosComponent, {
-    //   header:"Modificar servicio",
-    //   width:"920px",
-    // })
-
-    // this.creacionRef.onClose.subscribe((estatus:boolean) => {
-    //   if(estatus){
-    this.alertaService.mostrar(TipoAlerta.Exito, 'Servicio modificado correctamente');
-    // this.ref.close();
-    //   }
-    // })
-  }
 
 }

@@ -250,4 +250,5 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   }
 
 
+  protected readonly event = event;
 }

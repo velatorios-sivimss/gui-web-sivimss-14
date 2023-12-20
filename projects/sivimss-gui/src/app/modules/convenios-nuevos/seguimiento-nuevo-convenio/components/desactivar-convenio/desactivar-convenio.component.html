@@ -1,5 +1,7 @@
 <app-titulo-principal titulo="Desactivar convenio"></app-titulo-principal>
 
+<app-convenio-header></app-convenio-header>
+
 <p-accordion styleClass="sivimss-accordion mt-3">
   <p-accordionTab>
     <ng-template pTemplate="header">
@@ -15,7 +17,7 @@
                            [numeroExterior]="convenioPersona.numExt"
                            [numeroInterior]="convenioPersona.numInt" [codigoPostal]="convenioPersona.cp.toString()"
                            [colonia]="convenioPersona.colonia" [municipio]="convenioPersona.municipio"
-                           [estado]="convenioPersona.estado" [nacionalidad]="''" [paisNacimiento]="''"
+                           [estado]="convenioPersona.estado" [nacionalidad]="''" [paisNacimiento]="convenioPersona.pais"
                            [lugarNacimiento]="convenioPersona.lugarNac" [correoElectronico]="convenioPersona.correo"
                            [telefono]="convenioPersona.telFijo" [enfermedad]="''"
       ></app-resumen-persona>
@@ -35,7 +37,7 @@
         <div class="col-md-4">
           <div class="table-panel-column">
             <label>Tipo de paquete</label>
-            <span></span>
+            <span>Sencillo</span>
           </div>
         </div>
       </div>
@@ -49,9 +51,6 @@
       <div class="flex justify-content-between align-items-center flex-1">
         <span>Beneficiarios</span>
       </div>
-    </ng-template>
-    <ng-template pTemplate="content">
-
     </ng-template>
   </p-accordionTab>
 </p-accordion>
@@ -68,12 +67,12 @@
   </p-accordionTab>
 </p-accordion>
 
-<div class="row mt-3">
+<div class="row mt-3 mb-2">
   <div class="col-md-12 mt-4">
     <p class="mensaje-cancelacion-orden">¿Está seguro de desactivar el registro seleccionado?</p>
   </div>
   <div class="col-md-12 flex justify-content-end mt-6">
-    <button type="submit" class="btn btn-default btn-md" routerLink="../">Cancelar</button>
+    <button type="submit" class="btn btn-default btn-md" routerLink="../../">Cancelar</button>
     <button type="submit" class="btn btn-primary btn-md ml-5" routerLink="../" (click)="aceptar()">Aceptar</button>
   </div>
 </div>

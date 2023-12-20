@@ -38,4 +38,8 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   buscarConvenioPorPersona(id: number): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(`${this.base}/buscar/persona/${id}`);
   }
+
+  buscarBeneficiarioPorPersona(id: number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${this.base}/buscar/beneficiarios/${id}`);
+  }
 }

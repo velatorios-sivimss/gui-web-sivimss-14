@@ -73,7 +73,8 @@
         <td>
           <div class="contenedor-inputswitch">
             <p-inputSwitch [(ngModel)]="convenio.estatus"
-                           [routerLink]="['desactivar-convenio', convenio.idConvenioPlan]"></p-inputSwitch>
+                           [routerLink]="['desactivar-convenio', convenio.idConvenioPlan]"
+                           (onChange)="convenio.estatus = false"></p-inputSwitch>
             <span class="activo" *ngIf="convenio.estatus">Activo</span>
             <span class="inactivo" *ngIf="!convenio.estatus">Inactivo</span>
           </div>
