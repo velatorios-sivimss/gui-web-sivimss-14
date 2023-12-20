@@ -11,6 +11,17 @@ export const SERVICIO_BREADCRUMB: ElementoBreadcrumb[] = [
   },
 ]
 
+export const SERVICIO_BREADCRUMB_CANCELAR: ElementoBreadcrumb[] = [
+  {
+    icono: 'imagen-icono-operacion-sivimss.svg',
+    titulo: 'Operación SIVIMSS'
+  },
+  {
+    icono: '',
+    titulo: 'Servicios Funerarios Pago Anticipado'
+  },
+]
+
 export const SERVICIO_BREADCRUMB_CLEAR: ElementoBreadcrumb[] = [
   {
     icono: '',

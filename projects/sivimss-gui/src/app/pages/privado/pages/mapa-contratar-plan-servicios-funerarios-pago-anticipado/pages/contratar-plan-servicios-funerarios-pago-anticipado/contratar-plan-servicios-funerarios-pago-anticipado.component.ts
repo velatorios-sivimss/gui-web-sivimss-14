@@ -1,10 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DialogService } from 'primeng/dynamicdialog';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ModalEditarBeneficiarioComponent } from '../../../consulta-convenio-prevision-funeraria/pages/mi-convenio-prevision-funeraria/components/modal-editar-beneficiario/modal-editar-beneficiario.component';
 import { ModalDesactivarBeneficiarioComponent } from '../../../mapa-contratar-convenio-prevision-funeraria/pages/contratar-convenio-prevision-funeraria/components/modal-desactivar-beneficiario/modal-desactivar-beneficiario.component';
 import { ModalRegistrarBeneficiarioComponent } from '../../../mapa-contratar-convenio-prevision-funeraria/pages/contratar-convenio-prevision-funeraria/components/modal-registrar-beneficiario/modal-registrar-beneficiario.component';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { ContratarPSFPAService } from '../../services/contratar-psfpa.service';
+import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { CATALOGO_NACIONALIDAD, CATALOGO_SEXO } from "projects/sivimss-gui/src/app/modules/contratantes/constants/catalogos-complementarios";
+import { finalize } from 'rxjs/operators';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-contratar-plan-servicios-funerarios-pago-anticipado',
@@ -14,85 +24,63 @@ import { ModalRegistrarBeneficiarioComponent } from '../../../mapa-contratar-con
     './contratar-plan-servicios-funerarios-pago-anticipado.component.scss',
   ],
 })
-export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent
-  implements OnInit
-{
-  form!: FormGroup;
-
-  dummyDropdown: { label: string; value: number }[] = [
-    { label: 'Opción 1', value: 1 },
-    { label: 'Opción 2', value: 2 },
-  ];
-
-  fechaActual: Date = new Date();
-
+export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   @ViewChild('overlayPanel')
   overlayPanel!: OverlayPanel;
 
-  beneficiarios = [
-    {
-      id: 1,
-      curp: 'ABC123456DEF789XYZ',
-      rfc: 'RFC123456XYZ',
-      matricula: 'M12345',
-      nss: 'NSS987654',
-      nombre: 'Juan',
-      primerApellido: 'Pérez',
-      segundoApellido: 'Gómez',
-      sexo: 'Masculino',
-      fechaNacimiento: '1990-05-15',
-      nacionalidad: 'Mexicana',
-      paisNacimiento: 'México',
-      lugarNacimiento: 'Ciudad de México',
-      telefono: '555-123-4567',
-      correoElectronico: 'juan.perez@example.com',
-      calle: 'Calle Principal',
-      noExt: '123',
-      noInt: 'A',
-      cp: '12345',
-      colonia: 'Centro',
-      municipio: 'Ciudad',
-      estado: 'Estado de México',
-    },
-    {
-      id: 2,
-      curp: 'XYZ987654ABC321PQR',
-      rfc: 'RFC789012PQR',
-      matricula: 'M54321',
-      nss: 'NSS123456',
-      nombre: 'María',
-      primerApellido: 'López',
-      segundoApellido: 'Martínez',
-      sexo: 'Femenino',
-      fechaNacimiento: '1985-10-20',
-      nacionalidad: 'Mexicana',
-      paisNacimiento: 'México',
-      lugarNacimiento: 'Guadalajara',
-      telefono: '555-789-1234',
-      correoElectronico: 'maria.lopez@example.com',
-      calle: 'Avenida Principal',
-      noExt: '567',
-      noInt: '',
-      cp: '54321',
-      colonia: 'Residencial',
-      municipio: 'Guadalajara',
-      estado: 'Jalisco',
-    },
-  ];
+  readonly NOT_FOUND_RENAPO: string = "CURP no válido.";
 
+  // dummyDropdown: { label: string; value: number }[] = [
+  //   { label: 'Opción 1', value: 1 },
+  //   { label: 'Opción 2', value: 2 },
+  // ];
+
+  form!: FormGroup;
+  fechaActual: Date = new Date();
+  beneficiarios = [];
   mostrarModalTipoArchivoIncorrecto: boolean = false;
   mostrarModalConfirmacionInformacionCapturada: boolean = false;
+  ocultarBtnGuardar: boolean = false;
   mostrarModalValidacionRegistro: boolean = false;
   mostrarModalDesactivarBeneficiarioGrupo: boolean = false;
   TIPO_CONTRATACION_PERSONA: string = 'persona';
+  tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
+  nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
+  catalogoEstados: TipoDropdown[] = [];
+  catalogoPaises: TipoDropdown[] = [];
+  catPromotores: TipoDropdown[] = [];
+  catColoniasTitular: TipoDropdown[] = [];
+  catColoniasSubstituto: TipoDropdown[] = [];
+  catColoniasBeneficiario1: TipoDropdown[] = [];
+  catColoniasBeneficiario2: TipoDropdown[] = [];
+  paquetes: any[] = [];
+  catNumPagos: { label: string; value: number }[] = [
+    { label: '1', value: 1 },
+    { label: '3', value: 3 },
+    { label: '6', value: 6 },
+    { label: '9', value: 9 },
+    { label: '12', value: 12 },
+  ];
+  idPaquete: string | null = null;
+  velatorio: string = '';
+  idVelatorio: number | null = null;
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly dialogService: DialogService
-  ) {}
+    private readonly dialogService: DialogService,
+    private readonly contratarPSFPAService: ContratarPSFPAService,
+    private alertaService: AlertaService,
+    private readonly loaderService: LoaderService,
+    private rutaActiva: ActivatedRoute,
+  ) { }
 
   ngOnInit(): void {
     this.form = this.crearForm();
+    this.obtenerPaises();
+    this.obtenerEstados();
+    this.obtenerPromotores();
+    this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
+    this.velatorio = this.rutaActiva.snapshot.queryParams.velatorio;
   }
 
   crearForm(): FormGroup {
@@ -126,7 +114,13 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent
           },
           [Validators.nullValidator],
         ],
-
+        nss: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
         nombre: [
           {
             value: null,
@@ -251,14 +245,14 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent
         municipio: [
           {
             value: null,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
         estado: [
           {
             value: null,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
@@ -286,6 +280,13 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent
           [Validators.nullValidator],
         ],
         matricula: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        nss: [
           {
             value: null,
             disabled: false,
@@ -417,16 +418,332 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent
         municipio: [
           {
             value: null,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
         estado: [
           {
             value: null,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
+        ],
+      }),
+      datosPersonalesBeneficiario1: this.formBuilder.group({
+        curp: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        rfc: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        matricula: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        nss: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        nombre: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        primerApellido: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        segundoApellido: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        sexo: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        otro: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        fechaNacimiento: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        nacionalidad: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        paisNacimiento: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        lugarNacimiento: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        telefonoFijo: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        correoElectronico: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+      }),
+      domicilioBeneficiario1: this.formBuilder.group({
+        calle: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        numeroExterior: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        numeroInterior: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        codigoPostal: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        asentamientoColonia: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        municipio: [
+          {
+            value: null,
+            disabled: true,
+          },
+          [Validators.nullValidator],
+        ],
+        estado: [
+          {
+            value: null,
+            disabled: true,
+          },
+          [Validators.nullValidator],
+        ],
+      }),
+      datosPersonalesBeneficiario2: this.formBuilder.group({
+        curp: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        rfc: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        matricula: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        nss: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        nombre: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        primerApellido: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        segundoApellido: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        sexo: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        otro: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        fechaNacimiento: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        nacionalidad: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        paisNacimiento: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        lugarNacimiento: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        telefonoFijo: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        correoElectronico: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+      }),
+      domicilioBeneficiario2: this.formBuilder.group({
+        calle: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        numeroExterior: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        numeroInterior: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        codigoPostal: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        asentamientoColonia: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator],
+        ],
+        municipio: [
+          {
+            value: null,
+            disabled: true,
+          },
+          [Validators.nullValidator],
+        ],
+        estado: [
+          {
+            value: null,
+            disabled: true,
+          },
+          [Validators.nullValidator],
         ],
       }),
       paquetes: this.formBuilder.group({
@@ -451,15 +768,14 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent
           },
           [Validators.nullValidator],
         ],
-        numeroPago: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
       }),
-
+      numeroPago: [
+        {
+          value: null,
+          disabled: false,
+        },
+        [Validators.nullValidator],
+      ],
       gestionadoPorPromotor: [
         {
           value: null,
@@ -477,85 +793,201 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent
     });
   }
 
-  abrirModalDetalleBeneficiarios(event: any) {}
-
-  handleClick(controlName: string, formato: string) {
-    // let elements = document.getElementById(`upload-file-${formato}`);
-    // this.controlName = controlName;
-    // elements?.click();
+  seleccionaPaquete(idPaquete: string): void {
+    this.idPaquete = idPaquete;
   }
 
-  addAttachment(fileInput: any) {
-    // const fileReaded = fileInput.target.files[0];
-    // if (this.controlName === 'archivoXml') {
-    //   this.importeFactura = null;
-    //   this.folioFiscal = null;
-    //   let reader = new FileReader();
-    //   reader.onload = () => {
-    //     let xml_content = reader.result ?? '';
-    //     if (typeof xml_content === 'string') {
-    //       let parser = new DOMParser();
-    //       let xmlDoc = parser.parseFromString(xml_content, 'text/xml');
-    //       let comprobante = xmlDoc.getElementsByTagName('cfdi:Comprobante')[0];
-    //       this.importeFactura = Number(comprobante.getAttribute('Total'));
-    //       let complemento = xmlDoc.getElementsByTagName('cfdi:Complemento')[0];
-    //       this.folioFiscal = complemento.getElementsByTagName('tfd:TimbreFiscalDigital')[0].getAttribute('UUID');
-    //       this.generarHojaConsignacionForm.get('folio')?.setValue(this.folioFiscal);
-    //       const formatter = new Intl.NumberFormat("en-US", {
-    //         style: 'currency',
-    //         currency: 'USD',
-    //         minimumFractionDigits: 2,
-    //       });
-    //       this.importeFacturaFormat = formatter.format(this.importeFactura);
-    //     }
-    //   }
-    //   if (fileReaded) reader.readAsText(fileReaded);
-    // }
-    // if (fileReaded) {
-    //   this.generarHojaConsignacionForm.get(this.controlName)?.setValue(fileReaded.name);
-    // } else {
-    //   this.generarHojaConsignacionForm.get(this.controlName)?.setValue(null);
-    // }
+  obtenerEstados() {
+    this.contratarPSFPAService.obtenerEstados()
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          this.catalogoEstados = mapearArregloTipoDropdown(respuesta.datos, "estado", "idEstado");
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error("ERROR: ", error);
+        }
+      });
   }
 
-  abrirModalRegistroBeneficiario(event: MouseEvent): void {
-    event.stopPropagation();
-    const ref = this.dialogService.open(ModalRegistrarBeneficiarioComponent, {
-      header: 'Registrar beneficiario',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        dato1: null,
-      },
-    });
-    ref.onClose.subscribe((respuesta: any) => {});
+  obtenerPaises() {
+    this.contratarPSFPAService.obtenerPaises()
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          this.catalogoPaises = mapearArregloTipoDropdown(respuesta.datos, "pais", "idPais");
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error("ERROR: ", error);
+        }
+      });
   }
 
-  abrirModalEditarBeneficiario(event: MouseEvent): void {
-    event.stopPropagation();
-    const ref = this.dialogService.open(ModalEditarBeneficiarioComponent, {
-      header: 'Editar beneficiario',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        dato1: null,
-      },
-    });
-    ref.onClose.subscribe((respuesta: any) => {});
-  }
-
-  abrirModalDesactivarBeneficiario(event: MouseEvent): void {
-    event.stopPropagation();
-    const ref = this.dialogService.open(ModalDesactivarBeneficiarioComponent, {
-      header: 'Desactivar beneficiario',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        dato1: null,
-      },
-    });
-    ref.onClose.subscribe((respuesta: any) => {});
+  obtenerPromotores() {
+    this.contratarPSFPAService.obtenerPaises()
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          this.catPromotores = mapearArregloTipoDropdown(respuesta.datos, "promotor", "idPromotor");
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error("ERROR: ", error);
+        }
+      });
   }
 
   abrirPanel(event: MouseEvent): void {
     this.overlayPanel.toggle(event);
+  }
+
+  obtenerCP(formGroupName?: any, catalogo?: string): void {
+    if (!formGroupName.codigoPostal.value || formGroupName.codigoPostal.invalid) {
+      this.setearCatalogoColonias(catalogo ?? '', []);
+      formGroupName.estado.setValue(null);
+      formGroupName.municipio.setValue(null);
+      formGroupName.asentamientoColonia.markAsTouched();
+      return
+    }
+    this.loaderService.activar();
+    this.contratarPSFPAService.consutaCP(formGroupName.codigoPostal.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta && respuesta.length > 0) {
+          this.setearCatalogoColonias(catalogo ?? '', mapearArregloTipoDropdown(respuesta, 'nombre', 'nombre'));
+          formGroupName.estado.setValue(respuesta[0].municipio.entidadFederativa.nombre);
+          formGroupName.municipio.setValue(respuesta[0].municipio.nombre);
+          formGroupName.asentamientoColonia.markAsTouched();
+        } else {
+          this.setearCatalogoColonias(catalogo ?? '', []);
+          formGroupName.estado.setValue(null);
+          formGroupName.municipio.setValue(null);
+          formGroupName.asentamientoColonia.markAsTouched();
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+      }
+    });
+  }
+
+  setearCatalogoColonias(catalogo: string, datos: TipoDropdown[]): any {
+    switch (catalogo) {
+      case 'catColoniasTitular':
+        this.catColoniasTitular = datos;
+        break;
+      case 'catColoniasSubstituto':
+        this.catColoniasSubstituto = datos;
+        break;
+      case 'catColoniasBeneficiario1':
+        this.catColoniasBeneficiario1 = datos;
+        break;
+      case 'catColoniasBeneficiario2':
+        this.catColoniasBeneficiario2 = datos;
+        break;
+    }
+  }
+
+  validarCurp(formGroupName?: any) {
+    if (formGroupName.curp.invalid) {
+      if (formGroupName.curp.value !== '') {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no es válido.');
+      }
+    } else {
+      this.contratarPSFPAService.validarCurpRfc({ rfc: null, curp: formGroupName.curp.value }).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          formGroupName.curp.setErrors({ 'incorrect': true });
+          if (respuesta.mensaje === 'USUARIO REGISTRADO') {
+            this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP ya se encuentra registrado.');
+            formGroupName.curp.patchValue(null);
+          } else if (respuesta.mensaje === 'NO EXISTE CURP') {
+            this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
+          } else {
+            formGroupName.curp.setErrors(null);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error("ERROR: ", error);
+        }
+      });
+    }
+  }
+
+  validarRfc(formGroupName?: any) {
+    if (formGroupName.rfc.value === '' || !formGroupName.rfc.value) {
+      formGroupName.rfc.setErrors(null);
+      formGroupName.rfc.clearValidators();
+      formGroupName.rfc.updateValueAndValidity();
+    } else {
+      formGroupName.rfc.setValidators(Validators.maxLength(13));
+      formGroupName.rfc.updateValueAndValidity();
+      const regex: RegExp = new RegExp(/^([A-Z,Ñ&]{3,4}(\d{2})(0[1-9]|1[0-2])(0[1-9]|1\d|2\d|3[0-1])[A-Z|\d]{3})$/);
+      if (!regex.test(formGroupName.rfc.value)) {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
+        formGroupName.rfc.setErrors({ 'incorrect': true });
+      } else {
+        this.contratarPSFPAService.validarCurpRfc({ rfc: formGroupName.rfc.value, curp: null }).subscribe({
+          next: (respuesta: HttpRespuesta<any>) => {
+            formGroupName.rfc.setErrors({ 'incorrect': true });
+            if (respuesta.mensaje === 'USUARIO REGISTRADO') {
+              this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C ya se encuentra registrado.');
+              formGroupName.rfc.patchValue(null);
+            } else {
+              formGroupName.rfc.setErrors(null);
+            }
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error("ERROR: ", error);
+          }
+        });
+      }
+    }
+  }
+
+  cambioTipoSexo(formGroupName?: any) {
+    formGroupName.otro.patchValue(null);
+  }
+
+  cambioNacionalidad(formGroupName?: any) {
+    formGroupName.paisNacimiento.patchValue(null);
+    formGroupName.lugarNacimiento.patchValue(null);
+    if (formGroupName.nacionalidad.value === 1) {
+      formGroupName.lugarNacimiento.setValidators(Validators.required);
+      formGroupName.lugarNacimiento.updateValueAndValidity();
+      formGroupName.paisNacimiento.setValue(119);
+    } else {
+      formGroupName.lugarNacimiento.clearValidators();
+      formGroupName.lugarNacimiento.updateValueAndValidity();
+    }
+  }
+
+  datosIguales(esIgual: boolean): void {
+    if (!esIgual) {
+      this.form.get('datosPersonalesTitularSubstituto')?.reset();
+      this.form.get('domicilioTitularSubstituto')?.reset();
+      this.form.get('datosPersonalesTitularSubstituto')?.get('sonDatosTitular')?.setValue(false);
+      return
+    }
+    this.form.get('datosPersonalesTitularSubstituto')?.patchValue({
+      ...this.form.get('datosPersonales')?.value
+    });
+    this.form.get('domicilioTitularSubstituto')?.patchValue({
+      ...this.form.get('domicilio')?.value
+    });
+    this.obtenerCP(this.domicilioTitularSubstituto, 'catColoniasSubstituto');
+  }
+
+  guardar(): void {
+    if (this.form.valid) {
+      this.mostrarModalConfirmacionInformacionCapturada = true;
+    }
+    this.mostrarModalConfirmacionInformacionCapturada = true;
+  }
+
+  confirmarGuardar(): void {
+    this.form.disable();
+    this.ocultarBtnGuardar = true;
+    this.mostrarModalValidacionRegistro = true;
   }
 
   get f() {
@@ -570,10 +1002,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent
     return (this.form.controls['domicilio'] as FormGroup).controls;
   }
 
-  get paquetes() {
-    return (this.form.controls['paquetes'] as FormGroup).controls;
-  }
-
   get datosPersonalesTitularSubstituto() {
     return (this.form.controls['datosPersonalesTitularSubstituto'] as FormGroup)
       .controls;
@@ -581,6 +1009,26 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent
 
   get domicilioTitularSubstituto() {
     return (this.form.controls['domicilioTitularSubstituto'] as FormGroup)
+      .controls;
+  }
+
+  get datosPersonalesBeneficiario1() {
+    return (this.form.controls['datosPersonalesBeneficiario1'] as FormGroup)
+      .controls;
+  }
+
+  get domicilioBeneficiario1() {
+    return (this.form.controls['domicilioBeneficiario1'] as FormGroup)
+      .controls;
+  }
+
+  get datosPersonalesBeneficiario2() {
+    return (this.form.controls['datosPersonalesBeneficiario2'] as FormGroup)
+      .controls;
+  }
+
+  get domicilioBeneficiario2() {
+    return (this.form.controls['domicilioBeneficiario2'] as FormGroup)
       .controls;
   }
 }

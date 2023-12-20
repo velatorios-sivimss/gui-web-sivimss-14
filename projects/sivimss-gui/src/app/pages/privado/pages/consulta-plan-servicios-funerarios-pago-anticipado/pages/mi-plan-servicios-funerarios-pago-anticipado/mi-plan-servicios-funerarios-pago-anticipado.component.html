@@ -1,4 +1,4 @@
-<div class="container-sivimss px-5 registro-en-linea my-5">
+<div class="container-sivimss px-5 registro-en-linea my-5" *ngIf="detalleServicioFunerario">
     <app-titulo-principal titulo="MI PLAN DE SERVICIOS FUNERARIOS PAGO ANTICIPADO">
         <app-btn-regresar routerLink="../"></app-btn-regresar>
     </app-titulo-principal>
@@ -6,29 +6,29 @@
     <div class="border-panel mb-5">
         <div class="flex justify-content-between align-items-center">
             <h2 class="subtitulo-base">Datos generales del convenio</h2>
-            <button class="btn btn-primary btn-md">Ver contrato</button>
+            <button class="btn btn-primary btn-md" [disabled]="true">Ver contrato</button>
         </div>
 
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Velatorio</span>
-                <span class="texto-base font-normal">A6SD5746287</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.velatorio}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Folio del convenio</span>
-                <span class="texto-base font-normal">0000000000</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.folioConvenio}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Estatus del convenio</span>
-                <span class="texto-base font-normal">Vigente</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.estatusConvenio}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Tipo de paquete</span>
-                <span class="texto-base font-normal">Básico</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.tipoPaquete}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Número de pagos</span>
-                <span class="texto-base font-normal">00</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.numPagos}}</span>
             </div>
         </div>
     </div>
@@ -38,96 +38,96 @@
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">CURP</span>
-                <span class="texto-base font-normal">ASDNGI4934900MDJ</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.curp}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">RFC</span>
-                <span class="texto-base font-normal">ASDF9345798MD</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.rfc}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Matrícula</span>
-                <span class="texto-base font-normal">00000000000</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.matricula}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">NSS</span>
-                <span class="texto-base font-normal">0000000000</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.nss}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Nombre(s) del titular</span>
-                <span class="texto-base font-normal">Irma</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.nombre}}</span>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Primer apellido</span>
-                <span class="texto-base font-normal">Jimenez</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.primerApellido}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Segundo apellido</span>
-                <span class="texto-base font-normal">Loranca</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.segundoApellido}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Sexo</span>
-                <span class="texto-base font-normal">Masculino</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.sexo}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Fecha de nacimiento</span>
-                <span class="texto-base font-normal">00-00-0000</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.fechaNacimiento}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Nacionalidad</span>
-                <span class="texto-base font-normal">Mexicana</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.nacionalidad}}</span>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">País de nacimiento</span>
-                <span class="texto-base font-normal">México</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.paisNacimiento}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Lugar de nacimiento</span>
-                <span class="texto-base font-normal">Loranca</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.lugarNacimiento}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Teléfono</span>
-                <span class="texto-base font-normal">00 00 00 00 00</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.telefono}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Correo electrónico</span>
-                <span class="texto-base font-normal">nombre.apellido@correo.com</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.correo}}</span>
             </div>
         </div>
         <h2 class="subtitulo-base">Domicilio del titular</h2>
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Calle</span>
-                <span class="texto-base font-normal">Nombre de calle</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.calle}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Número exterior</span>
-                <span class="texto-base font-normal">Loranca</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.numExterior}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Número interior</span>
-                <span class="texto-base font-normal">00</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.numInterior}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">C.P.</span>
-                <span class="texto-base font-normal">00 000</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.cp}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Colonia</span>
-                <span class="texto-base font-normal">Nombre de colonia</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.colonia}}</span>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Municipio</span>
-                <span class="texto-base font-normal">Nombre de municipio</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.municipio}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Estado</span>
-                <span class="texto-base font-normal">Nombre de estado</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titular?.estado}}</span>
             </div>
         </div>
     </div>
@@ -138,96 +138,96 @@
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">CURP</span>
-                <span class="texto-base font-normal">ASDNGI4934900MDJ</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.curp}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">RFC</span>
-                <span class="texto-base font-normal">ASDF9345798MD</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.rfc}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Matrícula</span>
-                <span class="texto-base font-normal">00000000000</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.matricula}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">NSS</span>
-                <span class="texto-base font-normal">0000000000</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.nss}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Nombre(s) del titular substituto</span>
-                <span class="texto-base font-normal">Irma</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.nombre}}</span>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Primer apellido</span>
-                <span class="texto-base font-normal">Jimenez</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.primerApellido}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Segundo apellido</span>
-                <span class="texto-base font-normal">Loranca</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.segundoApellido}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Sexo</span>
-                <span class="texto-base font-normal">Masculino</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.sexo}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Fecha de nacimiento</span>
-                <span class="texto-base font-normal">00-00-0000</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.fechaNacimiento}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Nacionalidad</span>
-                <span class="texto-base font-normal">Mexicana</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.nacionalidad}}</span>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">País de nacimiento</span>
-                <span class="texto-base font-normal">México</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.paisNacimiento}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Lugar de nacimiento</span>
-                <span class="texto-base font-normal">Loranca</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.lugarNacimiento}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Teléfono</span>
-                <span class="texto-base font-normal">00 00 00 00 00</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.telefono}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Correo electrónico</span>
-                <span class="texto-base font-normal">nombre.apellido@correo.com</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.correo}}</span>
             </div>
         </div>
         <h2 class="subtitulo-base">Domicilio del titular substituto</h2>
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Calle</span>
-                <span class="texto-base font-normal">Nombre de calle</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.calle}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Número exterior</span>
-                <span class="texto-base font-normal">Loranca</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.numExterior}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Número interior</span>
-                <span class="texto-base font-normal">00</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.numInterior}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">C.P.</span>
-                <span class="texto-base font-normal">00 000</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.cp}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Colonia</span>
-                <span class="texto-base font-normal">Nombre de colonia</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.colonia}}</span>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Municipio</span>
-                <span class="texto-base font-normal">Nombre de municipio</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.municipio}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Estado</span>
-                <span class="texto-base font-normal">Nombre de estado</span>
+                <span class="texto-base font-normal">{{detalleServicioFunerario.titularSubstituto?.estado}}</span>
             </div>
         </div>
     </div>
@@ -236,7 +236,7 @@
 
     <div class="border-panel mb-5">
         <h2 class="subtitulo-base">Beneficiarios</h2>
-        <p-table styleClass="mt-5 mb-8" [value]="registros" [resizableColumns]="true" [columnResizeMode]="'expand'">
+        <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true" [columnResizeMode]="'expand'">
             <ng-template pTemplate="header">
                 <tr>
                     <th scope="col">RFC</th>
@@ -252,19 +252,19 @@
                     <th scope="col">Estado</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-convenio>
+            <ng-template pTemplate="body" let-beneficiario>
                 <tr>
-                    <td>{{convenio.rfc}}</td>
-                    <td>{{convenio.fechaNacimiento}}</td>
-                    <td>{{convenio.nombreCompleto}}</td>
-                    <td>{{convenio.telefono}}</td>
-                    <td>{{convenio.calle}}</td>
-                    <td>{{convenio.noExt}}</td>
-                    <td>{{convenio.noInt}}</td>
-                    <td>{{convenio.codigoPostal}}</td>
-                    <td>{{convenio.colonia}}</td>
-                    <td>{{convenio.municipio}}</td>
-                    <td>{{convenio.estado}}</td>
+                    <td>{{beneficiario.rfc}}</td>
+                    <td>{{beneficiario.fechaNacimiento}}</td>
+                    <td>{{beneficiario.nombreCompleto}}</td>
+                    <td>{{beneficiario.telefono}}</td>
+                    <td>{{beneficiario.calle}}</td>
+                    <td>{{beneficiario.noExt}}</td>
+                    <td>{{beneficiario.noInt}}</td>
+                    <td>{{beneficiario.codigoPostal}}</td>
+                    <td>{{beneficiario.colonia}}</td>
+                    <td>{{beneficiario.municipio}}</td>
+                    <td>{{beneficiario.estado}}</td>
                 </tr>
             </ng-template>
         </p-table>
@@ -275,7 +275,7 @@
             <h2 class="subtitulo-base">Detalles de pagos</h2>
             <button class="btn btn-primary btn-md">Realizar pago</button>
         </div>
-        <p-table styleClass="mt-5 mb-8" [value]="registros2" [resizableColumns]="true" [columnResizeMode]="'expand'">
+        <p-table styleClass="mt-5 mb-8" [value]="pagos" [resizableColumns]="true" [columnResizeMode]="'expand'">
             <ng-template pTemplate="header">
                 <tr>
                     <th scope="col">Pagos</th>
@@ -286,14 +286,14 @@
                     <th scope="col">No. Recibo de pago</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-convenio>
+            <ng-template pTemplate="body" let-pago>
                 <tr>
-                    <td>{{convenio.pago}}</td>
-                    <td>{{convenio.fechaPago}}</td>
-                    <td>{{convenio.monto}}</td>
-                    <td>{{convenio.metodoPago}}</td>
-                    <td>{{convenio.estatus}}</td>
-                    <td>{{convenio.noReciboPago}}</td>
+                    <td>{{pago.pago}}</td>
+                    <td>{{pago.fechaPago}}</td>
+                    <td>{{pago.monto}}</td>
+                    <td>{{pago.metodoPago}}</td>
+                    <td>{{pago.estatus}}</td>
+                    <td>{{pago.noReciboPago}}</td>
                 </tr>
             </ng-template>
         </p-table>
