@@ -13,26 +13,27 @@
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
-                        <input id="curp" type="text" class="form-control" formControlName="curp"
-                            placeholder="Ingresa curp">
+                        <input id="curp" type="text" class="form-control" formControlName="curp" alphanumericOnly
+                            trimmer (blur)="validarCurp();" oninput="this.value = this.value.toUpperCase()"
+                            maxlength="18" placeholder="Ingresa curp">
                         <span class="campo-obligatorio"
                             *ngIf="datosGenerales.curp?.errors?.required  && (datosGenerales.curp?.dirty || datosGenerales.curp?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="nss">NSS:</label>
-                        <input id="nss" type="text" class="form-control" formControlName="nss"
-                            placeholder="Ingresa nss">
+                        <input id="nss" type="text" class="form-control" formControlName="nss" placeholder="Ingresa nss"
+                            maxlength="11">
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="rfc">R.F.C.:</label>
-                        <input id="rfc" type="text" class="form-control" formControlName="rfc"
-                            placeholder="Ingresa rfc">
+                        <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa rfc"
+                            maxlength="13" trimmer folioOdsAlphanumeric (blur)="validarRfc()">
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="nombre">Nombre(s)<span class="req">*</span>:</label>
                         <input id="nombre" type="text" class="form-control" formControlName="nombre"
-                            placeholder="Ingresa nombre">
+                            placeholder="Ingresa nombre" maxlength="30" trimmer alphanumericOnly>
                         <span class="campo-obligatorio"
                             *ngIf="datosGenerales.nombre?.errors?.required && (datosGenerales.nombre?.dirty || datosGenerales.nombre?.touched)">Este
                             campo es obligatorio *.</span>
@@ -43,7 +44,7 @@
                         <label class="control-label" for="primerApellido">Primer apellido<span
                                 class="req">*</span>:</label>
                         <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
-                            placeholder="Ingresa primer apellido">
+                            placeholder="Ingresa primer apellido" maxlength="20" trimmer alphanumericOnly>
                         <span class="campo-obligatorio"
                             *ngIf="datosGenerales.primerApellido?.errors?.required && (datosGenerales.primerApellido?.dirty || datosGenerales.primerApellido?.touched)">Este
                             campo es obligatorio *.</span>
@@ -52,7 +53,7 @@
                         <label class="control-label" for="segundoApellido">Segundo apellido<span
                                 class="req">*</span>:</label>
                         <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
-                            placeholder="Ingresa segundo apellido">
+                            placeholder="Ingresa segundo apellido" maxlength="20" trimmer alphanumericOnly>
                         <span class="campo-obligatorio"
                             *ngIf="datosGenerales.segundoApellido?.errors?.required && (datosGenerales.segundoApellido?.dirty || datosGenerales.segundoApellido?.touched)">Este
                             campo es obligatorio *.</span>
@@ -67,41 +68,42 @@
                             *ngIf="datosGenerales.fechaNacimiento?.errors?.required && (datosGenerales.fechaNacimiento?.dirty || datosGenerales.fechaNacimiento?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
+                </div>
+                <div class="row mb-3">
                     <div class="col-md-3">
                         <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
                         <p-dropdown id="sexo" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
-                            [options]="dummyDropdown" [filter]="true" filterBy="label"></p-dropdown>
+                            (onChange)="cambioTipoSexo()" [options]="tipoSexo" [filter]="true"
+                            filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
                             *ngIf="datosGenerales.sexo?.errors?.required && (datosGenerales.sexo?.dirty || datosGenerales.sexo?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3">
+                    <div class="col-md-3" *ngIf="datosGenerales.sexo.value === 3">
                         <label class="control-label" for="otro">Otro:</label>
                         <input id="otro" type="text" class="form-control" formControlName="otro"
-                            placeholder="Ingresa otro">
+                            placeholder="Ingresa otro" maxlength="10">
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
-                        <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
-                            placeholder="Selecciona nacionalidad" [options]="dummyDropdown" [filter]="true"
+                        <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad" (onChange)="cambioNacionalidad()"
+                            placeholder="Selecciona nacionalidad" [options]="nacionalidad" [filter]="true"
                             filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
                             *ngIf="datosGenerales.nacionalidad?.errors?.required && (datosGenerales.nacionalidad?.dirty || datosGenerales.nacionalidad?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" *ngIf="datosGenerales.nacionalidad.value === 2">
                         <label class="control-label" for="paisNacimiento">Pais de nacimiento:</label>
                         <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
-                            placeholder="Selecciona país de nacimiento" [options]="dummyDropdown" [filter]="true"
+                            placeholder="Selecciona país de nacimiento" [options]="catalogoPaises" [filter]="true"
                             filterBy="label"></p-dropdown>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" *ngIf="datosGenerales.nacionalidad.value === 1">
                         <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span
                                 class="req">*</span>:</label>
                         <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
-                            placeholder="Selecciona lugar de nacimiento" [options]="dummyDropdown" [filter]="true"
+                            placeholder="Selecciona lugar de nacimiento" [options]="catalogoEstados" [filter]="true"
                             filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
                             *ngIf="datosGenerales.lugarNacimiento?.errors?.required && (datosGenerales.lugarNacimiento?.dirty || datosGenerales.lugarNacimiento?.touched)">Este
@@ -112,18 +114,30 @@
                     <div class="col-md-3">
                         <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
                         <input id="telefono" type="text" class="form-control" formControlName="telefono"
-                            placeholder="Ingresa telefono">
+                            placeholder="Ingresa telefono" trimmer numbersOnly maxlength="10">
                         <span class="campo-obligatorio"
                             *ngIf="datosGenerales.telefono?.errors?.required && (datosGenerales.telefono?.dirty || datosGenerales.telefono?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-3">
                         <label class="control-label" for="correo">Correo<span class="req">*</span>:</label>
                         <input id="correo" type="text" class="form-control" formControlName="correo"
-                            placeholder="Ingresa correo">
+                            (blur)="validarEmail()" placeholder="Ingresa correo" maxlength="45" trimmer>
                         <span class="campo-obligatorio"
                             *ngIf="datosGenerales.correo?.errors?.required && (datosGenerales.correo?.dirty || datosGenerales.correo?.touched)">Este
                             campo es obligatorio *.</span>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="control-label" for="correoConfirmacion">Confirmar correo<span
+                                class="req">*</span>:</label>
+                        <input id="correoConfirmacion" type="text" class="form-control"
+                            formControlName="correoConfirmacion" placeholder="Confirmar correo" (blur)="validarEmail()"
+                            maxlength="45" trimmer>
+                        <span class="campo-obligatorio"
+                            *ngIf="datosGenerales.correoConfirmacion?.errors?.required && (datosGenerales.correoConfirmacion?.dirty || datosGenerales.correoConfirmacion?.touched)">Este
+                            campo es obligatorio *.</span>
+                        <span class="validacion-contrasenias campo-obligatorio" *ngIf="form.errors?.correosDiferentes">
+                            Los correos ingresados no coinciden.</span>
                     </div>
                 </div>
             </ng-container>
@@ -135,7 +149,7 @@
                     <div class="col-md-6">
                         <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
                         <input id="calle" type="text" class="form-control" formControlName="calle"
-                            placeholder="Ingresa calle">
+                            placeholder="Ingresa calle" maxlength="30" trimmer textOnly>
                         <span class="campo-obligatorio"
                             *ngIf="domicilio.calle?.errors?.required  && (domicilio.calle?.dirty || domicilio.calle?.touched)">Este
                             campo es obligatorio *.</span>
@@ -144,7 +158,7 @@
                         <label class="control-label" for="numeroExterior">Número exterior<span
                                 class="req">*</span>:</label>
                         <input id="numeroExterior" type="text" class="form-control" formControlName="numeroExterior"
-                            placeholder="Ingresa número exterior">
+                            placeholder="Ingresa número exterior" maxlength="10" trimmer alphanumericOnly>
                         <span class="campo-obligatorio"
                             *ngIf="domicilio.numeroExterior?.errors?.required  && (domicilio.numeroExterior?.dirty || domicilio.numeroExterior?.touched)">Este
                             campo es obligatorio *.</span>
@@ -152,14 +166,14 @@
                     <div class="col-md-3">
                         <label class="control-label" for="numeroInterior">Número interior:</label>
                         <input id="numeroInterior" type="text" class="form-control" formControlName="numeroInterior"
-                            placeholder="Ingresa número interior">
+                            placeholder="Ingresa número interior" maxlength="10" trimmer alphanumericOnly>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <label class="control-label" for="codigoPostal">C.P.<span class="req">*</span>:</label>
                         <input id="codigoPostal" type="text" class="form-control" formControlName="codigoPostal"
-                            placeholder="Ingresa C.P.">
+                            placeholder="Ingresa C.P." maxlength="5" trimmer numbersOnly (blur)="obtenerCP()">
                         <span class="campo-obligatorio"
                             *ngIf="domicilio.codigoPostal?.errors?.required  && (domicilio.codigoPostal?.dirty || domicilio.codigoPostal?.touched)">Este
                             campo es obligatorio *.</span>
@@ -167,7 +181,7 @@
                     <div class="col-md-3">
                         <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
                         <p-dropdown id="colonia" class="form-control" formControlName="colonia"
-                            placeholder="Selecciona colonia" [options]="dummyDropdown" [filter]="true"
+                            placeholder="Selecciona colonia" [options]="colonias" [filter]="true"
                             filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
                             *ngIf="domicilio.colonia?.errors?.required  && (domicilio.colonia?.dirty || domicilio.colonia?.touched)">Este
@@ -203,7 +217,8 @@
             <div class="col-md-12 flex justify-content-end align-items-center">
                 <button class="btn btn-md btn-gold" type="button"
                     routerLink="../autenticacion/inicio-sesion">Cancelar</button>
-                <button class="btn btn-md btn-primary ml-5" type="submit" [disabled]="form.invalid">Registrarme</button>
+                <button class="btn btn-md btn-primary ml-5" type="button" [disabled]="form.invalid"
+                    (click)="registrarContratante()">Registrarme</button>
             </div>
         </div>
     </form>

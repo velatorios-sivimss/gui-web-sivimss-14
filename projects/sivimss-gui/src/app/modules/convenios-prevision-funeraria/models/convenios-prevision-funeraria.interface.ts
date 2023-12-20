@@ -39,6 +39,7 @@ export interface ConveniosPrevisionFunerariaInterface {
   descTipoPaquete?: string;
   beneficiario?: BeneficiarioInterface[],
   cantidadBeneficiarios?: number;
+  velatorio?: string;
 }
 
 export interface ObtenerCatalogo {

@@ -21,8 +21,6 @@ import {ReportesService} from "../../services/reportes.service";
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {TIPO_ARCHIVO} from "../../constants/tipo-archivo";
-import {of} from "rxjs";
-import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {MESES} from "../../constants/meses";
 import {Dropdown} from "primeng/dropdown";
@@ -190,6 +188,15 @@ export class Reportes implements OnInit {
         respuesta.datos.push({"idVelatorio": null, "nomVelatorio": "Todos"})
         this.velatorios = mapearArregloTipoDropdown(respuesta.datos, "nomVelatorio", "idVelatorio");
         this.seleccionarValidaciones();
+
+        if(configuracionInicial){
+          const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+          this.filtroFormDir.resetForm({
+            nivel: obtenerNivelUsuarioLogueado(usuario),
+            delegacion: obtenerDelegacionUsuarioLogueado(usuario),
+            velatorio: obtenerVelatorioUsuarioLogueado(usuario)
+          });
+        }
       },
       error: (error: HttpErrorResponse): void => {
         this.mensajesSistemaService.mostrarMensajeError(error);
@@ -198,7 +205,6 @@ export class Reportes implements OnInit {
   }
 
   estatusODS(estatusODS: number, valorODS: boolean): void {
-    let listadoEstatus = ['preorden', 'generada', 'cancelada', 'pagada', 'enTransito', 'concluida', 'todos'];
     if (estatusODS != 1) this.ff.preorden.reset()
     if (estatusODS != 2) this.ff.generada.reset()
     if (estatusODS != 0) this.ff.cancelada.reset()
@@ -266,17 +272,6 @@ export class Reportes implements OnInit {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-
-        // this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-        //   finalize(() => this.loaderService.desactivar())
-        // ).subscribe({
-        //   next: (repuesta): void => {
-        //     //TODO verificar si se necesita agregar mensaje de confirmación
-        //   },
-        //   error: (error): void => {
-        //     this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-        //   }
-        // })
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64));
@@ -311,7 +306,6 @@ export class Reportes implements OnInit {
           fechaFin: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
           tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls',
         }
-        break;
       case 2:
       return {
         idVelatorio: this.ff.velatorio.value,
@@ -319,7 +313,6 @@ export class Reportes implements OnInit {
         fechaFin: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
         tipoReporte:this.ff.exportar.value == 1 ? 'pdf' : 'xls'
       }
-        break;
       case 3:
         return {
           id_delegacion: this.ff.delegacion.value,
@@ -328,7 +321,6 @@ export class Reportes implements OnInit {
           fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
           tipoReporte: this.regresarTipoReporte(this.ff.exportar.value)
         }
-        break;
       case 4:
         return {
           id_delegacion: this.ff.delegacion.value,
@@ -338,7 +330,6 @@ export class Reportes implements OnInit {
           fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
           tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
         }
-        break;
       case 5:
         return {
           id_velatorio: this.ff.velatorio.value,
@@ -347,7 +338,6 @@ export class Reportes implements OnInit {
           fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
           tipoReporte: this.regresarTipoReporte(this.ff.exportar.value)
         }
-        break;
       case 6:
         return {
           id_delegacion: this.ff.delegacion.value,
@@ -359,7 +349,6 @@ export class Reportes implements OnInit {
           nombreVelatorio: this.velatorioDD.selectedOption.label,
           tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
         }
-        break;
       case 7:
         return {
           id_delegacion: this.ff.delegacion.value,
@@ -369,7 +358,6 @@ export class Reportes implements OnInit {
           fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
           tipoReporte: this.regresarTipoReporte(this.ff.exportar.value)
         }
-        break;
       case 8:
         return {
           tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls',
@@ -380,7 +368,6 @@ export class Reportes implements OnInit {
           fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
           fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
         }
-        break;
       case 9:
         return {
           id_delegacion: this.ff.delegacion.value,
@@ -390,10 +377,8 @@ export class Reportes implements OnInit {
           nombreVelatorio: this.velatorioDD.selectedOption.label,
           tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
         }
-        break;
       default:
         break;
-
     }
   }
 
@@ -614,7 +599,6 @@ export class Reportes implements OnInit {
 
   consultarValidaciones(): boolean {
     return this.filtroForm.invalid
-    console.log(this.filtroForm);
   }
 
   limpiarTiposExportacion(): TipoDropdown[] {

@@ -62,15 +62,18 @@ export function validarUsuarioLogueado(): boolean {
 }
 
 export function obtenerNivelUsuarioLogueado(usuario: UsuarioEnSesion): number {
+  if (!usuario) return 0;
   return +usuario.idOficina
 }
 
 export function obtenerDelegacionUsuarioLogueado(usuario: UsuarioEnSesion): number | null {
+  if (!usuario) return null;
   const {idDelegacion} = usuario;
   return +idDelegacion === 0 ? null : +idDelegacion;
 }
 
 export function obtenerVelatorioUsuarioLogueado(usuario: UsuarioEnSesion): number | null {
+  if (!usuario) return null;
   const {idVelatorio} = usuario;
   return +idVelatorio === 0 ? null : +idVelatorio;
 }

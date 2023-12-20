@@ -267,9 +267,8 @@ export class ModalAgregarPanteonComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
-            // this.f.colonia.setValue(respuesta.datos[0].nombre);
             this.f.municipio.setValue(
               respuesta.datos[0].municipio.nombre
             );
@@ -278,6 +277,9 @@ export class ModalAgregarPanteonComponent implements OnInit {
             );
             return;
           }
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(185));
+          this.colonias = [];
           this.f.colonia.patchValue(null);
           this.f.municipio.patchValue(null);
           this.f.estado.patchValue(null);

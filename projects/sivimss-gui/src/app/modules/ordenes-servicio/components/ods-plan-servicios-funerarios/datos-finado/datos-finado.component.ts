@@ -512,6 +512,7 @@ export class DatosFinadoSFComponent implements OnInit {
             data: {contratantes: respuesta.datos},
           });
 
+<<<<<<< HEAD
           ref.onClose.subscribe((idContrato: number) => {
             if(idContrato){
               this.llenarDatosFinado(
@@ -524,6 +525,32 @@ export class DatosFinadoSFComponent implements OnInit {
               this.datosFinado.velatorioPrevision.setValue(respuesta.datos.nombreVelatorio);
             }
           });
+=======
+          this.direccion.calle.setValue(respuesta.datos.contratante.cp.desCalle);
+          this.direccion.noExterior.setValue(respuesta.datos.contratante.cp.numExterior);
+          this.direccion.noInterior.setValue(respuesta.datos.contratante.cp.numInterior);
+          this.direccion.cp.setValue(respuesta.datos.contratante.cp.codigoPostal);
+          this.direccion.colonia.setValue(respuesta.datos.contratante.cp.desColonia);
+          this.direccion.municipio.setValue(respuesta.datos.contratante.cp.desMunicipio);
+          this.direccion.estado.setValue(respuesta.datos.contratante.cp.desEstado);
+
+          this.datosFinado.curp.setValue(respuesta.datos.contratante.curp);
+          this.datosFinado.nss.setValue(respuesta.datos.contratante.nss);
+          this.datosFinado.nombre.setValue(respuesta.datos.contratante.nomPersona);
+          this.datosFinado.primerApellido.setValue(respuesta.datos.contratante.primerApellido);
+          this.datosFinado.segundoApellido.setValue(respuesta.datos.contratante.segundoApellido);
+          this.datosFinado.sexo.setValue(+respuesta.datos.contratante.sexo);
+          this.datosFinado.otroTipoSexo.setValue(respuesta.datos.contratante.otroSexo);
+          this.datosFinado.fechaNacimiento.setValue(fecha);
+          this.datosFinado.nacionalidad.setValue(+respuesta.datos.contratante.idEstado ? 1 : 2);
+          this.datosFinado.lugarNacimiento.setValue(+respuesta.datos.contratante.idEstado);
+          this.datosFinado.paisNacimiento.setValue(respuesta.datos.contratante.idPais ? +respuesta.datos.contratante.idPais : null);
+          this.datosFinado.velatorioPrevision.setValue(respuesta.datos.nombreVelatorio);
+          this.datosFinado.matricula.setValue(respuesta.datos.contratante.matricula);
+          this.datosFinado.edad.setValue(moment().diff(moment(this.datosFinado.fechaNacimiento.value), 'years'));
+          this.cambiarTipoSexo();
+          this.cambiarNacionalidad();
+>>>>>>> 6d4bc21827f2e25546fd5a608b5775f5cd0acc3d
           return
         }
         this.folioInvalido = true

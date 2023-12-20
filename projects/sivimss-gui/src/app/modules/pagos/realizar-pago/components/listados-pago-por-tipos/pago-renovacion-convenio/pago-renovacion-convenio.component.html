@@ -24,7 +24,8 @@
       <td>
         <div class="contenedor-celda-iconos">
           <a (click)="abrirPanel($event,pago)">
-            <img src="../../../../../../../assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            <img src="../../../../../../../assets/images/imagen-icono-barras-horizontales.svg"
+                 alt="icono barras horizontales">
           </a>
         </div>
       </td>
@@ -55,16 +56,14 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Registrar pago" (click)="registrarPago()"></app-overlay-panel-opcion>
-      <ng-container *ngIf="rol === 13">
-        <app-overlay-panel-opcion *ngIf="+pagoSeleccionado.totalPagado > 0" titulo="Modificar método de pago"
-                                  [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
-        </app-overlay-panel-opcion>
-      </ng-container>
+      <app-overlay-panel-opcion titulo="Modificar método de pago"
+                                [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
 
-<p-dialog header="Pagar renovacion convenio" [(visible)]="pagoConvenioModal" [style]="{width: '50vw'}">
+<p-dialog header="Pagar renovacion convenio" [(visible)]="pagoConvenioModal" [style]="{width: '50vw'}" [modal]="true">
   <div class="row mb-3" [formGroup]="pagoForm">
     <div class="col-md-12">
       <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span></label>

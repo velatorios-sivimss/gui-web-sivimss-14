@@ -1,6 +1,6 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {DialogService} from 'primeng/dynamicdialog';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {
   AlertaService,
   TipoAlerta,
@@ -44,7 +44,7 @@ import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
   templateUrl: './datos-finado.component.html',
   styleUrls: ['./datos-finado.component.scss'],
 })
-export class DatosFinadoComponent implements OnInit {
+export class DatosFinadoComponent implements OnInit, OnDestroy{
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
 
@@ -101,6 +101,7 @@ export class DatosFinadoComponent implements OnInit {
 
   idPersona: number | null = null;
   colonias: TipoDropdown[] = [];
+  public detalleRef!: DynamicDialogRef;
 
   constructor(
     private route: ActivatedRoute,
@@ -952,10 +953,10 @@ export class DatosFinadoComponent implements OnInit {
   }
 
   consultarNSS(): void {
-    this.loaderService.activar();
     if (!this.datosFinado.nss.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarNSS(this.datosFinado.nss.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -1075,7 +1076,7 @@ export class DatosFinadoComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
@@ -1086,6 +1087,9 @@ export class DatosFinadoComponent implements OnInit {
             );
             return;
           }
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+          this.mensajesSistemaService.obtenerMensajeSistemaPorId(185));
+          this.colonias = [];
           this.direccion.colonia.patchValue(null);
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
@@ -1098,12 +1102,12 @@ export class DatosFinadoComponent implements OnInit {
 
   consultarFolioPf(event: any): void {
     if (!this.datosFinado.noContrato.value) return;
-    const ref = this.dialogService.open(ModalConvenioPfComponent, {
+    this.detalleRef = this.dialogService.open(ModalConvenioPfComponent, {
       header: 'Número de contrato',
       style: {maxWidth: '876px', width: '100%'},
       data: {folio: this.datosFinado.noContrato.value},
     });
-    ref.onClose.subscribe((persona: any) => {
+    this.detalleRef.onClose.subscribe((persona: any) => {
       let [anio, mes, dia]: any = persona.finado.fechaNac?.split('-');
       this.validacionPersonaConvenio = true;
       dia = dia.substr(0, 2);
@@ -1174,5 +1178,11 @@ export class DatosFinadoComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  ngOnDestroy(): void {
+    if (this.detalleRef) {
+      this.detalleRef.destroy();
+    }
   }
 }

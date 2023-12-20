@@ -15,7 +15,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-pago>
     <tr>
-      <td>{{pago.fechaPago | date:'dd/MM/YYYY'}}</td>
+      <td>{{pago.fechaPago}}</td>
       <td>{{pago.folio}}</td>
       <td>{{pago.tipoPago}}</td>
       <td class="font-bold">{{pago.total | currency}}</td>
@@ -65,16 +65,14 @@
         titulo="Generar pagaré"
         [routerLink]="['./../../generar-formato-pagare/formato-pagare', pagoSeleccionado.idRegistro]">
       </app-overlay-panel-opcion>
-      <ng-container *ngIf="rol === 13">
-        <app-overlay-panel-opcion *ngIf="+pagoSeleccionado.totalPagado > 0" titulo="Modificar método de pago"
-                                  [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
-        </app-overlay-panel-opcion>
-      </ng-container>
+      <app-overlay-panel-opcion titulo="Modificar método de pago"
+                                [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
 
-<p-dialog header="Pagar orden" [(visible)]="pagoODSModal" [style]="{width: '50vw'}">
+<p-dialog header="Pagar orden" [(visible)]="pagoODSModal" [style]="{width: '50vw'}" [modal]="true">
   <div class="row mb-3" [formGroup]="pagoForm">
     <div class="col-md-12">
       <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span></label>

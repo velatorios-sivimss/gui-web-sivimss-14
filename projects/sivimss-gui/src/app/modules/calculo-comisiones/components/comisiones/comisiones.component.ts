@@ -3,7 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -16,7 +16,11 @@ import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {
+  mapearArregloTipoDropdown, obtenerDelegacionUsuarioLogueado,
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado,
+  validarUsuarioLogueado
+} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
@@ -31,6 +35,9 @@ type ListadoComisiones = Required<Comisiones> & { id: string }
   providers: [DialogService, DescargaArchivosService]
 })
 export class ComisionesComponent implements OnInit {
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -58,6 +65,8 @@ export class ComisionesComponent implements OnInit {
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
+
+  central!: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -95,10 +104,11 @@ export class ComisionesComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroFormComisiones = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina > 1}],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
+      nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
+      delegacion: [{value: obtenerDelegacionUsuarioLogueado(usuario), disabled: +usuario.idOficina > 1}],
+      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: +usuario.idOficina === 3}],
       promotores: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
@@ -182,12 +192,18 @@ export class ComisionesComponent implements OnInit {
 
   limpiar(): void {
     this.filtroFormComisiones.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroFormComisiones.get('nivel')?.patchValue(+usuario.idOficina);
-    this.filtroFormComisiones.get('delegacion')?.patchValue(+usuario.idDelegacion);
-    this.filtroFormComisiones.get('velatorio')?.patchValue(+usuario.idVelatorio);
-    this.obtenerVelatorios();
-    this.obtenerPromotores();
+    this.catalogoVelatorios = [];
+    if (this.filtroFormComisiones) {
+      const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+      const DEFAULT = {
+        nivel: obtenerNivelUsuarioLogueado(usuario),
+        delegacion: this.central ? null : obtenerDelegacionUsuarioLogueado(usuario),
+        velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)
+      }
+      this.filtroFormDir.resetForm(DEFAULT);
+      if (DEFAULT.delegacion) this.obtenerVelatorios();
+      this.obtenerPromotores();
+    }
     this.paginar();
   }
 

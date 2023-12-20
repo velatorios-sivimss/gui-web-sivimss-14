@@ -78,6 +78,7 @@ export class ReciboFormatoPagareComponent {
     this.generarFormatoPagareService.guardar(crearPagare).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Agregado correctamente');
+        this.regresarPaginaPrevia();
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);

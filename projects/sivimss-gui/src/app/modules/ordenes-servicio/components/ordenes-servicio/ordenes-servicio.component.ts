@@ -594,6 +594,7 @@ export class OrdenesServicioComponent implements OnInit {
 
   limpiarFiltros(): void {
     this.filtroForm.reset();
+    this.inicializarFiltroForm();
     this.paginar();
   }
 
