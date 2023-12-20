@@ -54,8 +54,6 @@ import { ResumenTitularBeneficiarioComponent } from './shared/resumen-titular-be
     DetalleBeneficiarioComponent,
     ModificarBeneficiarioComponent,
     ConvenioHeaderComponent,
-    DatosPersonaComponent,
-    DatosBeneficiarioComponent,
     DocumentacionBeneficiarioComponent,
     DatosEmpresaComponent,
     ResumenPersonaComponent,

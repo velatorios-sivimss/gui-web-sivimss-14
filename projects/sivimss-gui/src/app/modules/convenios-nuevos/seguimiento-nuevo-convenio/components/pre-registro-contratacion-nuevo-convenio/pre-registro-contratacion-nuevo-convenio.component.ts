@@ -51,6 +51,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   ngOnInit(): void {
     this.cargarCatalogos();
+    this.inicializarFormulario();
   }
 
   cargarCatalogos(): void {
@@ -58,6 +59,32 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos[0];
     this.folio = this.convenioPersona.folioConvenio.toString();
     this.beneficiarios = respuesta[this.POSICION_BENEFICIARIO].datos;
+  }
+
+  inicializarFormulario(): void {
+    this.contratacionNuevoConvenioForm = this.formBuilder.group({
+      persona: this.formBuilder.group({
+        matricula: [{value: null, disabled: false}],
+        rfc: [{value: null, disabled: false}],
+        curp: [{value: null, disabled: false}],
+        nombres: [{value: null, disabled: false}],
+        primerApellido: [{value: null, disabled: false}],
+        segundoApellido: [{value: null, disabled: false}],
+        calle: [{value: null, disabled: false}],
+        numeroExterior: [{value: null, disabled: false}],
+        numeroInterior: [{value: null, disabled: false}],
+        codigoPostal: [{value: null, disabled: false}],
+        colonia: [{value: null, disabled: false}],
+        municipio: [{value: null, disabled: false}],
+        estado: [{value: null, disabled: false}],
+        nacionalidad: [{value: null, disabled: false}],
+        paisNacimiento: [{value: null, disabled: false}],
+        lugarNacimiento: [{value: null, disabled: false}],
+        correoElectronico: [{value: null, disabled: false}],
+        telefono: [{value: null, disabled: false}],
+        enfermedadPreExistente: [{value: null, disabled: false}],
+      })
+    })
   }
 
   abrir(event: MouseEvent) {
