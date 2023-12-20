@@ -5,7 +5,6 @@ import {OverlayPanel} from 'primeng/overlaypanel';
 import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {LazyLoadEvent} from 'primeng/api';
 import {Documentos} from '../../models/documentos.interface';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
@@ -64,27 +63,27 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormulario(): void {
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       persona: this.formBuilder.group({
-        matricula: [{value: null, disabled: false}],
-        rfc: [{value: null, disabled: false}],
-        curp: [{value: null, disabled: false}],
-        nombres: [{value: null, disabled: false}],
-        primerApellido: [{value: null, disabled: false}],
-        segundoApellido: [{value: null, disabled: false}],
-        calle: [{value: null, disabled: false}],
-        numeroExterior: [{value: null, disabled: false}],
-        numeroInterior: [{value: null, disabled: false}],
-        codigoPostal: [{value: null, disabled: false}],
-        colonia: [{value: null, disabled: false}],
-        municipio: [{value: null, disabled: false}],
-        estado: [{value: null, disabled: false}],
+        matricula: [{value: this.convenioPersona.matricula, disabled: false}],
+        rfc: [{value: this.convenioPersona.rfc, disabled: false}],
+        curp: [{value: this.convenioPersona.curp, disabled: false}],
+        nombres: [{value: this.convenioPersona.nombre, disabled: false}],
+        primerApellido: [{value: this.convenioPersona.primerApellido, disabled: false}],
+        segundoApellido: [{value: this.convenioPersona.segundoApellido, disabled: false}],
+        calle: [{value: this.convenioPersona.calle, disabled: false}],
+        numeroExterior: [{value: this.convenioPersona.numExt, disabled: false}],
+        numeroInterior: [{value: this.convenioPersona.numInt, disabled: false}],
+        codigoPostal: [{value: this.convenioPersona.cp, disabled: false}],
+        colonia: [{value: this.convenioPersona.colonia, disabled: false}],
+        municipio: [{value: this.convenioPersona.municipio, disabled: false}],
+        estado: [{value: this.convenioPersona.estado, disabled: false}],
         nacionalidad: [{value: null, disabled: false}],
-        paisNacimiento: [{value: null, disabled: false}],
-        lugarNacimiento: [{value: null, disabled: false}],
-        correoElectronico: [{value: null, disabled: false}],
-        telefono: [{value: null, disabled: false}],
+        paisNacimiento: [{value: this.convenioPersona.pais, disabled: false}],
+        lugarNacimiento: [{value: this.convenioPersona.lugarNac, disabled: false}],
+        correoElectronico: [{value: this.convenioPersona.correo, disabled: false}],
+        telefono: [{value: this.convenioPersona.telFijo, disabled: false}],
         enfermedadPreExistente: [{value: null, disabled: false}],
       })
-    })
+    });
   }
 
   abrir(event: MouseEvent) {
@@ -113,45 +112,6 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo agregado correctamente');
     //   }
     // })
-  }
-
-  paginar(event: LazyLoadEvent): void {
-    console.log(event);
-    setTimeout(() => {
-      this.documentos = [
-        {
-          id: 1,
-          nombre: "Marta",
-          apellidoMaterno: "eugenia",
-          ApellidoPaterno: "eugenia",
-          nombreDocumento: "Carta poder",
-          numeroDocumento: 23,
-          tipoDocumento: "ningunDocumento",
-          linkDocumento: "LinkDocumento",
-        },
-        {
-          id: 2,
-          nombre: "Marta",
-          apellidoMaterno: "eugenia",
-          ApellidoPaterno: "eugenia",
-          nombreDocumento: "Carta poder",
-          numeroDocumento: 23,
-          tipoDocumento: "ningunDocumento",
-          linkDocumento: "LinkDocumento",
-        },
-        {
-          id: 3,
-          nombre: "Marta",
-          apellidoMaterno: "eugenia",
-          ApellidoPaterno: "eugenia",
-          nombreDocumento: "Carta poder",
-          numeroDocumento: 23,
-          tipoDocumento: "ningunDocumento",
-          linkDocumento: "LinkDocumento",
-        }
-      ];
-      this.totalElementos = this.documentos.length;
-    }, 0)
   }
 
   abrirModificarDocumento() {

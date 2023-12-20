@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ControlContainer, ReactiveFormsModule} from "@angular/forms";
+import {ControlContainer, FormBuilder, ReactiveFormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-datos-persona',
@@ -16,7 +16,10 @@ import {ControlContainer, ReactiveFormsModule} from "@angular/forms";
 })
 export class DatosPersonaComponent implements OnInit {
 
-  constructor() { }
+
+  constructor(private formBuilder: FormBuilder,
+  ) {
+  }
 
   ngOnInit(): void {
   }
