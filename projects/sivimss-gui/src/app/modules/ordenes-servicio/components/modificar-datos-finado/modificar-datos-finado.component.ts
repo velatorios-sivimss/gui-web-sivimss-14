@@ -459,6 +459,7 @@ export class ModificarDatosFinadoComponent
         ],
       }),
     });
+    this.cambiarNacionalidad();
     setTimeout(() => {
       if (
         datosEtapaFinado.datosFinado.matricula == null ||
