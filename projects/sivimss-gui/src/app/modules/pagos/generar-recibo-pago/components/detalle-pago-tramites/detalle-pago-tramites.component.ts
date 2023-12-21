@@ -9,6 +9,9 @@ import {SolicitudReportePagoTramite} from "../../models/solicitudReporte.interfa
 import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {Observable} from "rxjs";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {obtenerFechaYHoraActual} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-detalle-pago-tramites',
@@ -30,7 +33,9 @@ export class DetallePagoTramitesComponent {
     private route: ActivatedRoute,
     private generarReciboService: GenerarReciboService,
     private cargadorService: LoaderService,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private alertaService: AlertaService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
     this.recibo = this.route.snapshot.data["respuesta"].datos[0];
     this.obtenerValoresFecha();
@@ -54,33 +59,34 @@ export class DetallePagoTramitesComponent {
     const solicitud: SolicitudReportePagoTramite = this.generarSolicitudReporte('xls');
     this.cargadorService.activar();
     const servicio$: Observable<Blob> = this.generarReciboService.descargarReporte(solicitud);
-    const opcionesArchivo: OpcionesArchivos = {nombreArchivo: 'reciboPago', ext: 'xlsx'}
+    const opcionesArchivo: OpcionesArchivos = {nombreArchivo: `Recibo Pago ${obtenerFechaYHoraActual()}`, ext: 'xlsx'}
     this.descargaArchivosService.descargarArchivo(servicio$, opcionesArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta): void => {
-        if (respuesta) this.mostrarModalDescargaExitosa = true;
-        console.log(respuesta)
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error)
-      }
+      next: (respuesta: boolean): void => this.manejarMensajeDescargaExitosa(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeErrorDescarga(error)
     });
   }
 
   generarPDF(): void {
     const solicitud: SolicitudReportePagoTramite = this.generarSolicitudReporte();
     this.cargadorService.activar();
-    const servicio$: Observable<Blob> = this.generarReciboService.descargarReporte(solicitud);
-    this.descargaArchivosService.descargarArchivo(servicio$, {nombreArchivo: 'reciboPago'}).pipe(
+    const servicio$: Observable<Blob> = this.generarReciboService.descargarReporte(solicitud)
+    const opcionesArchivo: OpcionesArchivos = {nombreArchivo: `Recibo Pago ${obtenerFechaYHoraActual()}`}
+    this.descargaArchivosService.descargarArchivo(servicio$, opcionesArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta): void => {
-        if (respuesta) this.mostrarModalDescargaExitosa = true;
-        console.log(respuesta)
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error)
-      }
+      next: (respuesta: boolean): void => this.manejarMensajeDescargaExitosa(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeErrorDescarga(error)
     });
+  }
+
+  private manejarMensajeErrorDescarga(error: HttpErrorResponse): void {
+    const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+    this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento. Intenta nuevamente.');
+  }
+
+  private manejarMensajeDescargaExitosa(respuesta: boolean): void {
+    if (!respuesta) return;
+    this.mostrarModalDescargaExitosa = true;
   }
 
   generarSolicitudReporte(tipoReporte: string = "pdf"): SolicitudReportePagoTramite {
@@ -88,7 +94,7 @@ export class DetallePagoTramitesComponent {
       folio: this.recibo.folio,
       delegacion: this.recibo.delegacion,
       velatorio: this.recibo.velatorio,
-      lugar: "Mexico CDMX",
+      lugar: this.recibo.lugar,
       fecha: `${this.dia} de ${this.colocarTitleCase(this.mes)} del ${this.anio}`,
       recibimos: this.recibo.recibimos,
       cantidad: this.recibo.cantidad,
@@ -100,7 +106,7 @@ export class DetallePagoTramitesComponent {
       totalFinal: this.recibo.canTotal,
       rutaNombreReporte: this.recibo.rutaNombreReporte,
       tipoReporte: tipoReporte,
-      folioPF: this.recibo.folioPF
+      folioPF: this.recibo.claveFolio
     }
   }
 

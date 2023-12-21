@@ -101,16 +101,16 @@
     </ng-template>
     <ng-template pTemplate="body" let-registro>
       <tr>
-        <td pResizableColumn>{{registro.nomVelatorio}}</td>
-        <td pResizableColumn>{{registro.folio}}</td>
-        <td pResizableColumn>{{registro.folioFactura}}</td>
-        <td pResizableColumn>{{registro.fechaFactura | date:'dd-MM-YYYY'}}</td>
-        <td pResizableColumn>{{registro.folioFiscal}}</td>
-        <td pResizableColumn>{{registro.rfc}}</td>
-        <td pResizableColumn>{{registro.razonSocial}}</td>
+        <td pResizableColumn>{{ registro.nomVelatorio }}</td>
+        <td pResizableColumn>{{ registro.folio }}</td>
+        <td pResizableColumn>{{ registro.folioFactura }}</td>
+        <td pResizableColumn>{{ registro.fechaFactura | date:'dd-MM-YYYY' }}</td>
+        <td pResizableColumn>{{ registro.folioFiscal }}</td>
+        <td pResizableColumn>{{ registro.rfc }}</td>
+        <td pResizableColumn>{{ registro.razonSocial }}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 60px'}">
-            <div>{{registro.estatusFactura}}</div>
+            <div>{{ registro.estatusFactura }}</div>
             <div class="contenedor-celda-iconos">
               <a (click)="abrirPanel($event,registro)">
                 <img ngSrc="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales"
@@ -130,7 +130,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{registros.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{ registros.length }} de {{ totalElementos }}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -142,8 +142,7 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Ver factura" class="text-center" onCloseOnNavigation
                                 (click)="descargarFactura()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" [routerLink]="'./enviar-factura'"
-                                *ngIf="false">
+      <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" (click)="enviarFactura()">
       </app-overlay-panel-opcion>
       <ng-container *ngIf="[5,7,8].includes(rol)">
         <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" (click)="cancelarFactura()"
@@ -160,7 +159,7 @@
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>
+      <span class="text-justify">{{ MENSAJE_ARCHIVO_DESCARGA_EXITOSA }}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">

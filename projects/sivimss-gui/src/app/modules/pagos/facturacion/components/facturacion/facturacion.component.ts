@@ -249,6 +249,12 @@ export class FacturacionComponent implements OnInit {
       {relativeTo: this.route, queryParams: {datos_cancelar}});
   }
 
+  enviarFactura(): void {
+    const datos_enviar: string = window.btoa(JSON.stringify(this.crearParamsCancelar()));
+    void this.router.navigate(['./enviar-factura'],
+      {relativeTo: this.route, queryParams: {datos_enviar}});
+  }
+
   crearParamsCancelar(): ParamsCancelar {
     return {
       folioFactura: this.registroSeleccionado.folioFactura,

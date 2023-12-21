@@ -10,7 +10,7 @@ import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/ale
 import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {GenerarReciboService} from '../../services/generar-recibo-pago.service';
-import {ActivatedRoute, ActivatedRouteSnapshot, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {FiltrosReciboPago} from "../../models/filtrosReciboPago.interface";
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -25,6 +25,7 @@ import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mens
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import * as moment from "moment/moment";
+import {FiltrosBasicosReciboPago, FormBasicoReciboPago} from "../../models/filtrosBasicosReciboPago.interface";
 
 type ListadoRecibo = Required<ReciboPago> & { idPagoBitacora: string }
 
@@ -135,22 +136,20 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   paginar(): void {
     this.cargadorService.activar();
-    const filtros = {
+    const filtros: FiltrosBasicosReciboPago = this.crearFiltroBasico();
+    this.generarReciboService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaPaginacion(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
+    });
+  }
+
+  crearFiltroBasico(): FiltrosBasicosReciboPago {
+    return {
       idNivel: this.filtroFormReciboPago.get("nivel")?.value,
       idDelegacion: this.filtroFormReciboPago.get("delegacion")?.value,
       idVelatorio: this.filtroFormReciboPago.get("velatorio")?.value,
     }
-    this.generarReciboService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
-      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.recibosPago = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
-    });
   }
 
   paginarConFiltros(): void {
@@ -158,15 +157,19 @@ export class GenerarReciboPagoComponent implements OnInit {
     this.cargadorService.activar();
     this.generarReciboService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.recibosPago = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaPaginacion(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  procesarRespuestaPaginacion(respuesta: HttpRespuesta<any>): void {
+    this.recibosPago = respuesta.datos.content || [];
+    this.totalElementos = respuesta.datos.totalElements || 0;
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   buscar(): void {
@@ -191,28 +194,32 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   limpiar(): void {
     this.filtroFormReciboPago.reset();
+    const DEFAULT: FormBasicoReciboPago = this.crearFormDefault();
+    this.filtroFormDir.resetForm(DEFAULT);
+    this.obtenerVelatorios();
+    this.paginar();
+  }
+
+  crearFormDefault(): FormBasicoReciboPago {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    const DEFAULT = {
+    return {
       nivel: obtenerNivelUsuarioLogueado(usuario),
       delegacion: obtenerDelegacionUsuarioLogueado(usuario),
       velatorio: obtenerVelatorioUsuarioLogueado(usuario)
     }
-    this.filtroFormDir.resetForm(DEFAULT);
-    this.obtenerVelatorios();
-    this.paginar();
   }
 
   obtenerVelatorios(): void {
     const idDelegacion = this.filtroFormReciboPago.get('delegacion')?.value;
     if (!idDelegacion) return;
     this.generarReciboService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarCatalogoVelatorios(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  manejarCatalogoVelatorios(respuesta: HttpRespuesta<any>): void {
+    this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
   }
 
   obtenerFolios(): void {
@@ -221,14 +228,13 @@ export class GenerarReciboPagoComponent implements OnInit {
     this.filtroFormReciboPago.get('folio')?.patchValue(null);
     if (!idVelatorio) return;
     this.generarReciboService.obtenerFoliosODS(idVelatorio).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.catalogoFolios = mapearArregloTipoDropdown(respuesta.datos, "folioOds", "folioOds");
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarCatalogoFolios(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     })
+  }
+
+  manejarCatalogoFolios(respuesta: HttpRespuesta<any>): void {
+    this.catalogoFolios = mapearArregloTipoDropdown(respuesta.datos, "folioOds", "folioOds");
   }
 
   get f() {

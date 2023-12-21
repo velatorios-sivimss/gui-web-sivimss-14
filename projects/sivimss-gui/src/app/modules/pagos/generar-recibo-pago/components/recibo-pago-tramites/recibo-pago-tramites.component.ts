@@ -34,7 +34,6 @@ export class ReciboPagoTramitesComponent implements OnInit {
   catalogoDerechos: TipoDropdown[] = [];
 
   idBitacoraPago!: number;
-
   FormReciboPago!: FormGroup;
 
   constructor(
@@ -46,13 +45,17 @@ export class ReciboPagoTramitesComponent implements OnInit {
     private router: Router,
     private alertaService: AlertaService,
   ) {
-    this.recibo = this.route.snapshot.data["respuesta"].datos[0];
-    this.obtenerCatalogosPorVelatorio();
-    this.idBitacoraPago = this.route.snapshot.params['idPagoBitacora'];
+    this.obtenerCatalogos();
   }
 
   ngOnInit(): void {
     this.inicializarForm();
+  }
+
+  obtenerCatalogos(): void {
+    this.recibo = this.route.snapshot.data["respuesta"].datos[0];
+    this.obtenerCatalogosPorVelatorio();
+    this.idBitacoraPago = this.route.snapshot.params['idPagoBitacora'];
   }
 
   obtenerValoresFecha(): void {
@@ -68,22 +71,28 @@ export class ReciboPagoTramitesComponent implements OnInit {
     this.generarReciboService.guardar(solicitudGuardar).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Recibo generado exitosamente.')
-        void this.router.navigate(['../../'], {relativeTo: this.route});
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error, "Error al guardar la información del Recibo de Pago. Intenta nuevamente.");
-      }
+      next: (): void => this.mostrarMensajeCorrectoRecibo(),
+      error: (error: HttpErrorResponse): void => this.mostrarMensajeErrorRecibo(error)
     });
+  }
+
+  mostrarMensajeCorrectoRecibo(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Recibo generado exitosamente.')
+    void this.router.navigate(['../../'], {relativeTo: this.route});
+  }
+
+  mostrarMensajeErrorRecibo(error: HttpErrorResponse): void {
+    console.error(error);
+    const ERROR: string = "Error al guardar la información del Recibo de Pago. Intenta nuevamente.";
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
   }
 
   generarSolicitudGuardarReporte(): SolicitudReciboPago {
     const tramite = this.FormReciboPago.get('tramite')?.value;
-    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
+    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.label;
     const derecho = this.FormReciboPago.get('derecho')?.value;
-    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.label;
+    const total = this.FormReciboPago.get('total')?.value || 0;
     return {
       numFolio: this.recibo.claveFolio,
       idDelegacion: this.recibo.idDelegacion,
@@ -97,7 +106,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       canDerechos: this.convertirMoneda(this.totalDerecho),
       descDerechos: descripcionDerecho ?? '',
       canSuma: this.convertirMoneda(this.totalServicios),
-      canTotal: this.convertirMoneda(this.total),
+      canTotal: this.convertirMoneda(total),
       agenteFuneMat: "",
       recibeMat: ""
     }
@@ -109,15 +118,17 @@ export class ReciboPagoTramitesComponent implements OnInit {
     const $tramites: Observable<HttpRespuesta<any>> = this.generarReciboService.obtenerCatalogoTramites(idVelatorio);
     const $derechos: Observable<HttpRespuesta<any>> = this.generarReciboService.obtenerCatalogoDerechos(idVelatorio);
     forkJoin([$tramites, $derechos]).subscribe({
-      next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void => {
-        const POSICION_TRAMITES: number = 0;
-        const POSICION_DERECHOS: number = 1;
-        const tramites = respuesta[POSICION_TRAMITES].datos;
-        const derechos = respuesta[POSICION_DERECHOS].datos;
-        this.catalogoTramites = mapearArregloTipoDropdown(tramites, "importe", "desTramite");
-        this.catalogoDerechos = mapearArregloTipoDropdown(derechos, "importe", "desDerecho");
-      }
+      next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void => this.obtenerCatalogosTramitesDerechos(respuesta)
     });
+  }
+
+  obtenerCatalogosTramitesDerechos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void {
+    const POSICION_TRAMITES: number = 0;
+    const POSICION_DERECHOS: number = 1;
+    const tramites = respuesta[POSICION_TRAMITES].datos;
+    const derechos = respuesta[POSICION_DERECHOS].datos;
+    this.catalogoTramites = mapearArregloTipoDropdown(tramites, "desTramite", "importe");
+    this.catalogoDerechos = mapearArregloTipoDropdown(derechos, "desDerecho", "importe");
   }
 
   inicializarForm(): void {
@@ -126,24 +137,23 @@ export class ReciboPagoTramitesComponent implements OnInit {
       fechaTramite: [{value: null, disable: true}, [Validators.required]],
       descripcionTramite: [{value: null, disabled: true}],
       derecho: [{value: null, disable: false}, [Validators.required]],
-      descripcionDerecho: [{value: null, disabled: true}]
+      descripcionDerecho: [{value: null, disabled: true}],
+      total: [{value: null, disabled: false}]
     });
-    this.FormReciboPago.get('fechaTramite')?.patchValue(new Date(this.recibo.fecha));
+    this.FormReciboPago.get('fechaTramite')?.patchValue(new Date(this.diferenciaUTC(this.recibo.fecha, '-')));
     this.obtenerValoresFecha();
   }
 
   cambiarTramite(): void {
     const tramite = this.FormReciboPago.get('tramite')?.value;
-    const descripcion = this.catalogoTramites.find(t => (t.value === tramite))?.value;
-    this.totalTramite = +this.catalogoTramites.find(t => (t.value === tramite))!.label;
-    this.FormReciboPago.get('descripcionTramite')?.patchValue(descripcion);
+    this.totalTramite = +tramite;
+    this.FormReciboPago.get('descripcionTramite')?.patchValue(tramite);
   }
 
   cambiarDerechos(): void {
     const derecho = this.FormReciboPago.get('derecho')?.value;
-    const descripcion = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
-    this.totalDerecho = +this.catalogoDerechos.find(t => (t.value === derecho))!.label;
-    this.FormReciboPago.get('descripcionDerecho')?.patchValue(descripcion);
+    this.totalDerecho = +derecho;
+    this.FormReciboPago.get('descripcionDerecho')?.patchValue(derecho);
   }
 
   generarVistaPrevia(): void {
@@ -151,27 +161,34 @@ export class ReciboPagoTramitesComponent implements OnInit {
     this.cargadorService.activar();
     this.generarReciboService.descargarReporte(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (response: any): void => {
-        const file: Blob = new Blob([response], {type: 'application/pdf'});
-        const url: string = window.URL.createObjectURL(file);
-        window.open(url);
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error('Error al descargar reporte: ', error.message);
-      }
+      next: (respuesta: any): void => this.mostrarVistaPrevia(respuesta),
+      error: (error: HttpErrorResponse): void => this.mostrarMensajeErrorVistaPrevia(error)
     });
+  }
+
+  mostrarVistaPrevia(respuesta: any): void {
+    const file: Blob = new Blob([respuesta], {type: 'application/pdf'});
+    const url: string = window.URL.createObjectURL(file);
+    window.open(url);
+  }
+
+  mostrarMensajeErrorVistaPrevia(error: HttpErrorResponse): void {
+    console.error(error);
+    const ERROR: string = "Error al mostrarla información del Recibo de Pago. Intenta nuevamente.";
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
   }
 
   generarSolicitudVistaPrevia(): VistaPreviaReciboPago {
     const tramite = this.FormReciboPago.get('tramite')?.value;
-    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
+    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.label;
     const derecho = this.FormReciboPago.get('derecho')?.value;
-    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.label;
+    const total = this.FormReciboPago.get('total')?.value || 0;
     return {
       folio: "XXXXXX",
       delegacion: this.recibo.delegacion,
       velatorio: this.recibo.velatorio,
-      lugar: "Mexico CDMX",
+      lugar: this.recibo.lugar,
       fecha: `${this.dia} de ${this.colocarTitleCase(this.mes)} del ${this.anio}`,
       recibimos: this.recibo.recibimos,
       cantidad: `${this.convertirMoneda(+this.recibo.cantidad)} (${this.recibo.cantidadLetra})`,
@@ -180,10 +197,10 @@ export class ReciboPagoTramitesComponent implements OnInit {
       derechos: this.convertirMoneda(this.totalDerecho),
       descDerechos: descripcionDerecho ?? '',
       total: this.convertirMoneda(this.totalServicios),
-      totalFinal: this.convertirMoneda(this.total),
+      totalFinal: this.convertirMoneda(total),
       rutaNombreReporte: "reportes/plantilla/DetalleRecPagos.jrxml",
       tipoReporte: "pdf",
-      folioPF: this.recibo.folioPF
+      folioPF: this.recibo.claveFolio
     }
   }
 
@@ -196,15 +213,18 @@ export class ReciboPagoTramitesComponent implements OnInit {
     return formatter.format(valor);
   }
 
-  get totalServicios() {
-    return this.totalTramite + this.totalDerecho;
+  diferenciaUTC(fecha: string, divisor: string = "/"): number {
+    const [anio, mes, dia]: string[] = fecha.split(divisor);
+    const objetoFecha: Date = new Date(+anio, +mes - 1, +dia);
+    return objetoFecha.setMinutes(objetoFecha.getMinutes() + objetoFecha.getTimezoneOffset());
   }
 
-  get total() {
-    return this.totalTramite + this.totalDerecho - +this.recibo.cantidad;
+  get totalServicios() {
+    return this.totalTramite + this.totalDerecho;
   }
 
   get f() {
     return this.FormReciboPago?.controls;
   }
+
 }

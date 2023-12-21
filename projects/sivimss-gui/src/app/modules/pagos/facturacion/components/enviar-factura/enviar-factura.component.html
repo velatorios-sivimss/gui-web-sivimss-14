@@ -3,14 +3,14 @@
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
       <div class="table-panel-header-column">
-        <span class="ml-2 font-bold">Folio de la factura DOC-000001</span>
+        <span class="ml-2 font-bold">Folio de la factura {{ registroEnviar.folioFactura }}</span>
       </div>
     </ng-template>
     <div class="row table-panel-row">
       <div class="col-md-12">
         <div class="table-panel-column">
           <label>Folio Fiscal</label>
-          <span>DOC-000002</span>
+          <span>{{ registroEnviar.folioFiscal }}</span>
         </div>
       </div>
     </div>
@@ -22,7 +22,8 @@
              placeholder="Inserta el correo electrónico">
       <span class="campo-obligatorio"
             *ngIf="fc?.correoElectronico?.errors?.required && (fc?.correoElectronico?.dirty || fc?.correoElectronico?.touched)">Este campo es obligatorio *.</span>
-
+      <span class="campo-obligatorio"
+            *ngIf="fc?.correoElectronico?.errors?.pattern && (fc?.correoElectronico?.dirty || fc?.correoElectronico?.touched)">Tu correo electrónico no es válido.</span>
     </div>
   </div>
   <div class="row mb-4">
@@ -33,7 +34,8 @@
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" class="btn btn-default btn-md" [routerLink]="'./..'">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="enviarForm.invalid">Enviar Factura</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="enviarForm.invalid"
+      (click)="mostrarDialogEnviar = true">Enviar Factura</button>
     </div>
   </div>
 </form>
@@ -48,7 +50,7 @@
     </div>
     <div class="flex justify-content-center">
       <button class="btn btn-default btn-md mr-3" (click)="mostrarDialogEnviar = false">Cancelar</button>
-      <button class="btn btn-primary btn-md">Aceptar</button>
+      <button class="btn btn-primary btn-md" (click)="enviarFactura()">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>

@@ -459,6 +459,7 @@ export class ModificarDatosFinadoComponent
         ],
       }),
     });
+    this.cambiarNacionalidad();
     setTimeout(() => {
       if (
         datosEtapaFinado.datosFinado.matricula == null ||
@@ -467,7 +468,7 @@ export class ModificarDatosFinadoComponent
         this.datosFinado.matricula.disable();
         this.datosFinado.matriculaCheck.setValue(false);
       } else {
-        this.datosFinado.matricula.disable();
+        this.datosFinado.matricula.enable();
         this.datosFinado.matriculaCheck.setValue(true);
       }
 
@@ -826,7 +827,7 @@ export class ModificarDatosFinadoComponent
       this.datosFinado.esParaExtremidad.disable();
       this.datosFinado.esObito.disable();
     }
-    this.limpiarODS();
+    if (!modificacion)this.limpiarODS();
   }
 
   limpiarODS(): void {
@@ -1200,10 +1201,10 @@ export class ModificarDatosFinadoComponent
       this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
       this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
       this.finado.fechaNac = moment(
-        datosEtapaFinado.datosFinado.tipoOrden
+        datosEtapaFinado.datosFinado.fechaNacimiento
       ).format('yyyy-MM-DD');
-      this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
-      this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
+      this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
+      this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
       this.finado.fechaDeceso = moment(
         datosEtapaFinado.datosFinado.fechaDefuncion
       ).format('yyyy-MM-DD');

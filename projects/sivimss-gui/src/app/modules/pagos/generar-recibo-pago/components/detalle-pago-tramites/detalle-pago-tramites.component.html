@@ -25,13 +25,13 @@
         </div>
         <div class="col">
               <span>VELATORIO:
-                <span class="etiqueta-formato-val"># {{recibo.idVelatorio}}</span>
+                <span class="etiqueta-formato-val"># {{recibo.idVelatorio}}  {{recibo.velatorio}}</span>
               </span>
         </div>
       </section>
       <section class="border contenido-body">
         <div class="mt-5">
-          <span class="col-md-12 etiqueta-formato-val">MÉXICO CDMX
+          <span class="col-md-12 etiqueta-formato-val">{{recibo.lugar}}
             <span class="etiqueta-base"> A </span>
             <span class="etiqueta-formato-val"> {{dia}} </span>
             <span class="etiqueta-base"> DE </span>
@@ -49,7 +49,7 @@
         <div>
           <span class="col-md-12 etiqueta-base mt-7 mb-3">PARA QUE A SU NOMBRE Y REPRESENTACIÓN PAGUE LOS TRAMITES PARA
             OTORGAR EL CONTRATO DE PRESTACIÓN DE SERVICIOS
-            <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span>
+            <span class="etiqueta-formato-val"> No. {{recibo.claveFolio}} </span>
              EN DEPENDENCIAS OFICIALES, DE ACUERDO AL SIGUIENTE DESGLOSE:
           </span>
           <div class="grid-container">
