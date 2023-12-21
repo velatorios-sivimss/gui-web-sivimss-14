@@ -374,8 +374,6 @@ export class ModalAgregarServicioComponent
         coordOrigen: this.coordOrigen,
         coordDestino: this.coordDestino,
         costoExtraKilometros: this.costoExtraKilometros,
-        // totalPaquete: this.costoExtraKilometros > 0 ? this.costoExtraKilometros :  this.costo,
-        // importe:  this.costoExtraKilometros > 0 ? this.costoExtraKilometros :  this.costo,
       };
     } else if (this.proviene == 'servicios') {
       salida = {
