@@ -37,6 +37,11 @@ export class ContratantesService extends BaseService<HttpRespuesta<any>, any> {
       , datosBusqueda, { responseType: 'blob' as 'json' });
   }
 
+  // descargarReporteTabla(datosBusqueda: ReporteTabla): Observable<Blob> {
+  //   return this._http.post<any>(`https://sivimss-uat.apps.ocp.imss.gob.mx/mssivimss-ctrol-permisos/v1/sivimss/service/40/descargar-mtto-vehicular/generarDocumento/${datosBusqueda.tipoReporte}`
+  //     , datosBusqueda, { responseType: 'blob' as 'json' });
+  // }  
+
   obtenerCatalogoTiposMateriales(): Observable<HttpRespuesta<any>> {
     const params = new HttpParams().append("servicio", "art-tipo-materiales")
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo`, { params });
