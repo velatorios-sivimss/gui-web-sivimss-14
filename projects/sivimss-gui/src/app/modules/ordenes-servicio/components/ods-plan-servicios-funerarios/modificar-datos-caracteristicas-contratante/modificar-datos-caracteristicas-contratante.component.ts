@@ -219,7 +219,6 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     this.datosPaquetes = datos.datosPaquetes;
     this.datosPresupuesto = datos.datosPresupuesto;
     this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
-    this.selecionaTipoOtorgamiento = datos.selecionaTipoOtorgamiento;
     this.selecionaTipoOtorgamiento =
       datos.selecionaTipoOtorgamiento == null
         ? null
@@ -1138,8 +1137,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
 
     //paquete
     this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
-    this.caracteristicasPaquete.otorgamiento =
-      this.selecionaTipoOtorgamiento ?? null;
+    this.caracteristicasPaquete.otorgamiento = this.mostrarTIpoOtorgamiento ? 1 : 0;
 
     this.caracteristicasPaquete.detallePaquete = null;
     this.caracteristicasPresupuesto.caracteristicasPaquete = null;

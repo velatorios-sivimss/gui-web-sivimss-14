@@ -175,6 +175,7 @@ export class ModificarInformacionServicioSFComponent
     this.buscarCapillas();
     this.buscarSalas();
     this.buscarPromotor();
+    this.validarExistenciaPromotor();
   }
 
   llenarFormulario(datos: any): void {
@@ -245,7 +246,7 @@ export class ModificarInformacionServicioSFComponent
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          {value: null, disabled: false}
+          {value:  !!datos.idPanteon, disabled: !!datos.idPanteon}
         ],
       }),
       recoger: this.formBuilder.group({
@@ -1079,5 +1080,9 @@ export class ModificarInformacionServicioSFComponent
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(2);
     this.llenarDatos();
+  }
+
+  validarExistenciaPromotor(): void {
+    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable();
   }
 }
