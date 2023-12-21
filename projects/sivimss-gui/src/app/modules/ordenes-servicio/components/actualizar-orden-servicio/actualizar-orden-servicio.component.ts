@@ -238,7 +238,13 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
       idPaquete = presupuesto.idPaquete;
       observaciones = presupuesto.observaciones;
       notasServicio = presupuesto.notasServicio;
-      total = detallePresupuesto[0].importeMonto
+      if(datosPaquete.caracteristicasPaqueteResponse?.detallePaquete){
+        datosPaquete.caracteristicasPaqueteResponse.detallePaquete.forEach((paq:any) => {
+          if(paq.agregado){
+            total = detallePresupuesto[0].importeMonto
+          }
+        });
+      }
       for (let element of detallePresupuesto) {
         if(element.proviene.includes('presupuesto')){
           total += Number(element.importeMonto * element.cantidad);

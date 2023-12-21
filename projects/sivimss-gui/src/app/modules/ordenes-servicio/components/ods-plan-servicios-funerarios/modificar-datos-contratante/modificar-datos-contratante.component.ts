@@ -1087,7 +1087,7 @@ export class ModificarDatosContratanteSFComponent
         folioConvenioPa: finado.folioConvenioPa,
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
-        idContratoPrevision: finado.idContratoPrevision,
+        idContratoPrevision: finado.idConvenioPrevision,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.idContratoPrevision,
         velatorioPrevision: finado.idVelatorioContratoPrevision,

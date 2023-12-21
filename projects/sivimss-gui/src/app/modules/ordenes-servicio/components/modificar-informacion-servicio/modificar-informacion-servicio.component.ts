@@ -664,7 +664,9 @@ export class ModificarInformacionServicioComponent
 
             return;
           }
-          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+          if(this.altaODS.finado.idTipoOrden == 1){
+            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+          }
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
@@ -722,7 +724,9 @@ export class ModificarInformacionServicioComponent
 
             return;
           }
-          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+          if(this.altaODS.finado.idTipoOrden == 1){
+            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+          }
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus

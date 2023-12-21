@@ -745,7 +745,7 @@ export class DatosFinadoComponent implements OnInit, OnDestroy{
       this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
       this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
       this.finado.fechaNac = moment(
-        datosEtapaFinado.datosFinado.tipoOrden
+        datosEtapaFinado.datosFinado.fechaNacimiento
       ).format('yyyy-MM-DD');
       this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
       this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
