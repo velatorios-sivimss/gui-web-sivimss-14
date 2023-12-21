@@ -278,6 +278,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
           totalKilometros: totalKilometros,
           idArticulo: element.idArticulo,
           idTipoServicio: element.idTipoServicio ?? null,
+          idServicio: element.idServicio,
           idProveedor: element.idProveedor,
           totalPaquete: Number(element.importeMonto * element.cantidad),
           importe: element.importeMonto,
