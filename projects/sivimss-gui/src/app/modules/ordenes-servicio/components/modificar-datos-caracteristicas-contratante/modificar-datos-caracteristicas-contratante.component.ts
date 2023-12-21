@@ -222,6 +222,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.total = datos.total;
     this.f.observaciones.setValue(datos.observaciones);
     this.f.notasServicio.setValue(datos.notasServicio);
+    this.costoServiciosPorPaquete = Number(this.datosPaquetes[0].importe ?? 0);
   }
 
   buscarPaquetes(): void {
@@ -697,6 +698,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       });
       /*Ingresar nuevo costo de tabla paquete si el kilometraje excede los previstos por promotor*/
       if (respuesta.costoExtraKilometros > 0) {
+        this.total = Number(totalImporte);
         this.datosPaquetes.forEach((datoPaquete: any) => {
           datoPaquete.importe = totalImporte;
           datoPaquete.totalPaquete = totalPaquete
