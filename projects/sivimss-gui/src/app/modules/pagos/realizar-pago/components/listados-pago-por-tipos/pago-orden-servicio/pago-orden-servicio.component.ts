@@ -18,8 +18,8 @@ import {MensajesSistemaService} from "../../../../../../services/mensajes-sistem
 import {PagoEspecifico} from "../../../modelos/pagoEspecifico.interface";
 import {validarUsuarioLogueado} from "../../../../../../utils/funciones";
 import {TIPO_PAGO_CATALOGOS_ODS} from "../../../constants/catalogos";
-import {UsuarioEnSesion} from "../../../../../../models/usuario-en-sesion.interface";
 import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
+import {forkJoin, Observable} from "rxjs";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -34,6 +34,13 @@ interface RegistroModal {
   idFinado?: number,
   total: number,
   datosRegistro: DatosRegistro
+}
+
+interface RespuestaAGF {
+  idODS: number,
+  agf: number,
+  nss: null | number,
+  idFinado: null | number
 }
 
 @Component({
@@ -56,10 +63,12 @@ export class PagoOrdenServicioComponent implements OnInit {
 
   pagos: PagoEspecifico[] = [];
   pagoSeleccionado!: PagoEspecifico;
+  agfSeleccionado!: RespuestaAGF;
   pagoODSModal: boolean = false;
-  tipoPago: TipoDropdown[] = TIPO_PAGO_CATALOGOS_ODS;
+  tipoPago: TipoDropdown[] = [];
   pagoForm!: FormGroup;
-  rol!: number;
+
+  banderaAGF: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
               public dialogService: DialogService,
@@ -67,8 +76,6 @@ export class PagoOrdenServicioComponent implements OnInit {
               private cargadorService: LoaderService,
               private mensajesSistemaService: MensajesSistemaService,
   ) {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.rol = +usuario.idRol;
   }
 
   ngOnInit(): void {
@@ -89,19 +96,23 @@ export class PagoOrdenServicioComponent implements OnInit {
     this.paginar();
   }
 
-  private paginar(): void {
+  paginar(): void {
     this.cargadorService.activar();
     this.realizarPagoService.consultarPagosODS(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.pagos = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      },
+      next: (respuesta: HttpRespuesta<any>): void => this.respuestaPaginarODS(respuesta),
+      error: (error: HttpErrorResponse): void => this.mostrarMensajeError(error)
     });
+  }
+
+  private respuestaPaginarODS(respuesta: HttpRespuesta<any>): void {
+    this.pagos = respuesta.datos.content;
+    this.totalElementos = respuesta.datos.totalElements;
+  }
+
+  private mostrarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   abrirPanel(event: MouseEvent, pago: PagoEspecifico): void {
@@ -110,22 +121,37 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   registrarPago(): void {
-    this.tipoPago = this.filtrarCatalogosODS();
-    this.pagoODSModal = !this.pagoODSModal;
+    this.filtroFormDir.resetForm();
+    this.filtrarCatalogosODS();
+    this.pagoODSModal = true;
   }
 
-  filtrarCatalogosODS(): TipoDropdown[] {
-    if (!this.pagoSeleccionado.nss) {
-      return [...TIPO_PAGO_CATALOGOS_ODS].filter(pago => ![1,2].includes(pago.value));
+  validarAGF(idOds: number): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.consultarIdODSAGF(idOds);
+  }
+
+  filtrarCatalogosODS(): void {
+    const ID: number = this.pagoSeleccionado.idRegistro;
+    this.cargadorService.activar();
+    forkJoin([this.validarAGF(ID)]).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: [HttpRespuesta<any>]) => this.procesarRespuestaCatalogos(respuesta)
+    })
+  }
+
+  procesarRespuestaCatalogos(respuesta: [HttpRespuesta<any>]): void {
+    let CATALOGOS: TipoDropdown[] = [...TIPO_PAGO_CATALOGOS_ODS]
+    const POSICION_VALIDACION_AGF: number = 0
+    this.agfSeleccionado = respuesta[POSICION_VALIDACION_AGF].datos;
+    if (this.agfSeleccionado.agf === 0) {
+      CATALOGOS = CATALOGOS.filter((pago: TipoDropdown) => ![2].includes(pago.value as number));
     }
-    if (this.pagoSeleccionado.valeP > 0) {
-      return [...TIPO_PAGO_CATALOGOS_ODS].filter(pago => ![1].includes(pago.value));
-    }
-    return [...TIPO_PAGO_CATALOGOS_ODS]
+    this.tipoPago = CATALOGOS;
   }
 
   seleccionarPago(): void {
-    this.registrarPago();
+    this.pagoODSModal = false;
     const tipoPago = this.pagoForm.get('tipoPago')?.value;
     if (tipoPago === 1) {
       this.abrirModalValeParitaria();
@@ -158,7 +184,7 @@ export class PagoOrdenServicioComponent implements OnInit {
 
   abrirModalAGF(): void {
     const data = {
-      idFinado: this.pagoSeleccionado.idFinado,
+      idFinado: this.agfSeleccionado.idFinado,
       idPagoBitacora: this.pagoSeleccionado.idPagoBitacora,
       idFlujoPago: this.pagoSeleccionado.idFlujoPago,
       idRegistro: this.pagoSeleccionado.idRegistro,
