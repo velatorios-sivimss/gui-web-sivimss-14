@@ -1090,7 +1090,7 @@ export class ModificarDatosContratanteSFComponent
         idContratoPrevision: finado.idConvenioPrevision,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.idContratoPrevision,
-        velatorioPrevision: finado.idVelatorioContratoPrevision,
+        velatorioPrevision: finado.nombreVelatorio,
         esObito: finado.esobito,
         esParaExtremidad: finado.extremidad,
         matricula: matricula,
