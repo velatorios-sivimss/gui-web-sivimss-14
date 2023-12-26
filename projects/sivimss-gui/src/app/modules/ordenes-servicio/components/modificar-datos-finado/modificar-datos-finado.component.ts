@@ -234,6 +234,7 @@ export class ModificarDatosFinadoComponent
       this.colonias = mapearArregloTipoDropdown(coloniasLista, 'nombre', 'nombre')
     }
 
+    this.idContratoPrevision = datosEtapaFinado.datosFinado?.idContratoPrevision ?? null;
     this.idPersona = datosEtapaFinado.datosFinado.idPersona == 0 ? null : datosEtapaFinado.datosFinado.idPersona;
     this.idFinado = datosEtapaFinado.datosFinado.idFinado == 0 ? null : datosEtapaFinado.datosFinado.idFinado;
     this.idDomicilio = datosEtapaFinado.direccion.idDomicilio;

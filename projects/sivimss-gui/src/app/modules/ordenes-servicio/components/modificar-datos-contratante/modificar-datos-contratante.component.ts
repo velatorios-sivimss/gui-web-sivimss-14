@@ -1078,14 +1078,14 @@ export class ModificarDatosContratanteComponent
     let municipio = finado.cp?.desMunicipio ?? null;
     let estado = finado.cp?.desEstado ?? null;
     let idDomicilio = finado.cp?.idDomicilio ?? null;
-
     let datosEtapaFinado = {
       datosFinado: {
+        idContratoPrevision: finado.idContratoPrevision ?? null,
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.folioContrato,
-        velatorioPrevision: finado.idVelatorioContratoPrevision,
+        velatorioPrevision: finado.nombreVelatorio,
         esObito: finado.esobito,
         esParaExtremidad: finado.extremidad,
         matricula: matricula,
