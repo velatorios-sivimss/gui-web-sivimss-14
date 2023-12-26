@@ -373,7 +373,7 @@ export class ModalAgregarServicioComponent
         datosFormulario: this.form.value,
         coordOrigen: this.coordOrigen,
         coordDestino: this.coordDestino,
-        costoExtraKilometros: this.costoExtraKilometros
+        costoExtraKilometros: this.costoExtraKilometros,
       };
     } else if (this.proviene == 'servicios') {
       salida = {

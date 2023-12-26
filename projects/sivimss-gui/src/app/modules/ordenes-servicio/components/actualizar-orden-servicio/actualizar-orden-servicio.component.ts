@@ -238,7 +238,13 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
       idPaquete = presupuesto.idPaquete;
       observaciones = presupuesto.observaciones;
       notasServicio = presupuesto.notasServicio;
-      total = detallePresupuesto[0].importeMonto
+      if(datosPaquete.caracteristicasPaqueteResponse?.detallePaquete){
+        datosPaquete.caracteristicasPaqueteResponse.detallePaquete.forEach((paq:any) => {
+          if(paq.agregado){
+            total = detallePresupuesto[0].importeMonto
+          }
+        });
+      }
       for (let element of detallePresupuesto) {
         if(element.proviene.includes('presupuesto')){
           total += Number(element.importeMonto * element.cantidad);
@@ -281,6 +287,7 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
           totalKilometros: totalKilometros,
           idArticulo: element.idArticulo,
           idTipoServicio: element.idTipoServicio ?? null,
+          idServicio: element.idServicio,
           idProveedor: element.idProveedor,
           totalPaquete: Number(element.importeMonto * element.cantidad),
           importe: element.importeMonto,
@@ -293,7 +300,6 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
         salidaPresupuesto.push(datosPresupuesto);
       }
     }
-
     let datosEtapaCaracteristicas = {
       observaciones: observaciones,
       notasServicio: notasServicio,
@@ -311,7 +317,7 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
   }
 
   datosInformacionServicio(datos: any): void {
-    let idPromotor = datos.informacionServicioVelacion?.idPromotor;
+    let idPromotor = datos?.idPromotor;
     let validaPromotor =  Number(idPromotor) > 0;
 
     let cp = datos.informacionServicioVelacion.cp;
@@ -361,7 +367,7 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
       estado: estado,
       idDomicilio: idDomicilio,
       gestionadoPorPromotor: validaPromotor,
-      promotor: datos.informacionServicioVelacion.idPromotor,
+      promotor: datos.idPromotor,
     };
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(
       datosEtapaInformacionServicio

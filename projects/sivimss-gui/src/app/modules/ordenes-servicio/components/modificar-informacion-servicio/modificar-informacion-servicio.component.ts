@@ -177,6 +177,7 @@ export class ModificarInformacionServicioComponent
     this.buscarCapillas();
     this.buscarSalas();
     this.buscarPromotor();
+    this.validarExistenciaPromotor();
   }
 
   llenarFormulario(datos: any): void {
@@ -194,8 +195,6 @@ export class ModificarInformacionServicioComponent
     } else {
       fechaVelacion = datos.fechaVelacion;
     }
-
-
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
         capilla: [
@@ -245,7 +244,7 @@ export class ModificarInformacionServicioComponent
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          {value: null, disabled: false}
+          {value:  !!datos.idPanteon, disabled: !!datos.idPanteon}
         ],
       }),
       recoger: this.formBuilder.group({
@@ -665,7 +664,9 @@ export class ModificarInformacionServicioComponent
 
             return;
           }
-          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+          if(this.altaODS.finado.idTipoOrden == 1){
+            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+          }
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
@@ -723,7 +724,9 @@ export class ModificarInformacionServicioComponent
 
             return;
           }
-          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+          if(this.altaODS.finado.idTipoOrden == 1){
+            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+          }
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
@@ -1047,5 +1050,9 @@ export class ModificarInformacionServicioComponent
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(2);
     this.llenarDatos();
+  }
+
+  validarExistenciaPromotor(): void {
+    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable();
   }
 }

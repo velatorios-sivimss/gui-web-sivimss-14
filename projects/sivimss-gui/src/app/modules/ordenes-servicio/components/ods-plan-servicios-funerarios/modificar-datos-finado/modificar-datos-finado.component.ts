@@ -170,18 +170,9 @@ export class ModificarDatosFinadoSFComponent
     this.gestionarEtapasService.datosEtapaFinado$
       .asObservable()
       .subscribe((datosEtapaFinado) => this.inicializarForm(datosEtapaFinado));
-    this.datosFinado.tipoOrden.setValue(1);
-
-
     this.desabilitarTodo();
-    setTimeout(() => {
-      // this.cambiarValidacionMatricula();
-      // this.inicializarCalcularEdad();
-      // this.cambiarValidacionNSS();
-      // this.changeTipoOrden(true);
-      // this.cambiarTipoSexo();
-      // this.datosFinado.esParaExtremidad.value;
-    }, 500)
+    this.inicializarCalcularEdad();
+
   }
 
 
@@ -283,13 +274,12 @@ export class ModificarDatosFinadoSFComponent
       let a = moment(anio + '-' + mes + '-' + dia);
       edad = moment().diff(a, 'years');
     }
-
-
+    this.idContratoPrevision = datosEtapaFinado.datosFinado.idContratoPrevision
     this.form = this.formBuilder.group({
       datosFinado: this.formBuilder.group({
         tipoOrden: [{value: datosEtapaFinado.datosFinado.tipoOrden, disabled: false},
           [Validators.required]],
-        noContrato: [{value: datosEtapaFinado.datosFinado.folioConvenioPa, disabled: false},
+        noContrato: [{value: datosEtapaFinado.datosFinado.folioConvenioPa ? datosEtapaFinado.datosFinado.folioConvenioPa : datosEtapaFinado.datosFinado.noContrato , disabled: false},
           [Validators.required]],
         velatorioPrevision: [{value: datosEtapaFinado.datosFinado.velatorioPrevision, disabled: false},
           [Validators.required]],
@@ -312,7 +302,7 @@ export class ModificarDatosFinadoSFComponent
         sexo: [{value: datosEtapaFinado.datosFinado.sexo, disabled: false},
           [Validators.required]],
         otroTipoSexo: [{value: datosEtapaFinado.datosFinado.otroTipoSexo, disabled: false}],
-        nacionalidad: [{value: nacionalidad, disabled: false},
+        nacionalidad: [{value: datosEtapaFinado.datosFinado.nacionalidad, disabled: false},
           [Validators.required]],
         lugarNacimiento: [{value: datosEtapaFinado.datosFinado.lugarNacimiento, disabled: false},
           [Validators.required]],
@@ -348,179 +338,14 @@ export class ModificarDatosFinadoSFComponent
       }),
     });
     setTimeout(() => {
-      // if (
-      //   datosEtapaFinado.datosFinado.matricula == null ||
-      //   datosEtapaFinado.datosFinado.matricula == ''
-      // ) {
-      //   this.datosFinado.matricula.disable();
-      //   this.datosFinado.matriculaCheck.setValue(false);
-      // } else {
-      //   this.datosFinado.matricula.disable();
-      //   this.datosFinado.matriculaCheck.setValue(true);
-      // }
-
-      // if (
-      //   datosEtapaFinado.datosFinado.nss == null ||
-      //   datosEtapaFinado.datosFinado.nss == ''
-      // ) {
-      //   this.datosFinado.nss.disable();
-      //   this.datosFinado.nssCheck.setValue(false);
-      // } else {
-      //   this.datosFinado.nss.enable();
-      //   this.datosFinado.nssCheck.setValue(true);
-      // }
-
-
       if (datosEtapaFinado.datosFinado.procedenciaFinado) {
         this.changeProcedenciaFinado();
       } else if (datosEtapaFinado.datosFinado.unidadProcedencia) {
         this.changeUnidad();
       }
-
-
     }, 2000)
-
-    // if (datosEtapaFinado.datosFinado.esObito != null)
-    //   this.esObito(esObito);
-    // if (datosEtapaFinado.datosFinado.esParaExtremidad != null)
-    //   this.esExtremidad(extremidad);
-    // if (datosEtapaFinado.datosFinado.noContrato == null) {
-    //   this.datosFinado.noContrato.disable();
-    //   this.datosFinado.velatorioPrevision.disable();
-    // } else {
-    //   this.datosFinado.noContrato.enable();
-    //   this.datosFinado.velatorioPrevision.enable();
-    // }
   }
 
-  // consultarCURP(): void {
-  //   if (!this.datosFinado.curp.value) {
-  //     return;
-  //   }
-  //   if (this.datosFinado.curp?.errors?.pattern) {
-  //     this.alertaService.mostrar(
-  //       TipoAlerta.Precaucion,
-  //       this.mensajesSistemaService.obtenerMensajeSistemaPorId(34)
-  //     );
-  //     return;
-  //   }
-  //   this.loaderService.activar();
-  //   this.gestionarOrdenServicioService
-  //     .consultarCURP(this.datosFinado.curp.value)
-  //     .pipe(finalize(() => this.loaderService.desactivar()))
-  //     .subscribe(
-  //       (respuesta: HttpRespuesta<any>) => {
-  //         if (respuesta.datos) {
-  //           if (respuesta.mensaje.includes('Externo')) {
-  //             if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
-  //               this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
-  //               return
-  //             }
-  //             const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
-  //             const fecha = new Date(anio + '/' + mes + '/' + dia);
-  //             this.idPersona = null;
-  //             this.datosFinado.nombre.setValue(respuesta.datos.nombre);
-  //             this.datosFinado.primerApellido.setValue(
-  //               respuesta.datos.apellido1
-  //             );
-  //             this.datosFinado.segundoApellido.setValue(
-  //               respuesta.datos.apellido2
-  //             );
-  //             this.datosFinado.fechaNacimiento.setValue(fecha);
-  //             if (respuesta.datos.sexo.includes('HOMBRE')) {
-  //               this.datosFinado.sexo.setValue(2);
-  //             }
-  //             if (respuesta.datos.sexo.includes('MUJER')) {
-  //               this.datosFinado.sexo.setValue(1);
-  //             }
-  //             if (
-  //               respuesta.datos.nacionalidad.includes('MEXICO') ||
-  //               respuesta.datos.nacionalidad.includes('MEX')
-  //             ) {
-  //               this.datosFinado.nacionalidad.setValue(1);
-  //             } else {
-  //               this.datosFinado.nacionalidad.setValue(2);
-  //             }
-  //           } else {
-  //             let datos = respuesta.datos[0];
-  //             let [anio, mes, dia] = respuesta.datos[0].fechaNac.split('-');
-  //             this.idPersona = datos.idPersona;
-  //             dia = dia.substr(0, 2);
-  //             const fecha = new Date(anio + '/' + mes + '/' + dia);
-  //             this.datosFinado.nombre.setValue(respuesta.datos[0].nombre);
-  //             this.datosFinado.primerApellido.setValue(
-  //               respuesta.datos[0].primerApellido
-  //             );
-  //             this.datosFinado.segundoApellido.setValue(
-  //               respuesta.datos[0].segundoApellido
-  //             );
-  //             this.datosFinado.fechaNacimiento.setValue(fecha);
-  //             this.datosFinado.sexo.setValue(+respuesta.datos[0].sexo);
-  //             if (+respuesta.datos[0].idPais == 119 ||
-  //                 respuesta.datos[0].idPais == "" ||
-  //                 respuesta.datos[0].idPais === null) {
-  //               this.datosFinado.nacionalidad.setValue(1);
-  //             } else {
-  //               this.datosFinado.nacionalidad.setValue(2);
-  //             }
-  //           }
-  //
-  //           this.cambiarTipoSexo();
-  //           this.cambiarNacionalidad();
-  //           return;
-  //         }
-  //         this.limpiarConsultaDatosPersonales();
-  //         this.alertaService.mostrar(
-  //           TipoAlerta.Precaucion,
-  //           this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-  //             parseInt(respuesta.mensaje)
-  //           )
-  //         );
-  //       },
-  //       (error: HttpErrorResponse) => {
-  //         console.log(error);
-  //       }
-  //     );
-  // }
-
-  // consultaCP(): void {
-  //   this.loaderService.activar();
-  //   if (!this.direccion.cp.value) {
-  //     return;
-  //   }
-  //   this.gestionarOrdenServicioService
-  //     .consutaCP(this.direccion.cp.value)
-  //     .pipe(finalize(() => this.loaderService.desactivar()))
-  //     .subscribe(
-  //       (respuesta: HttpRespuesta<any>) => {
-  //         if (respuesta) {
-  //           this.direccion.colonia.setValue(respuesta.datos[0].nombre);
-  //           this.direccion.municipio.setValue(
-  //             respuesta.datos[0].municipio.nombre
-  //           );
-  //           this.direccion.estado.setValue(
-  //             respuesta.datos[0].municipio.entidadFederativa.nombre
-  //           );
-  //           return;
-  //         }
-  //         this.direccion.colonia.patchValue(null);
-  //         this.direccion.municipio.patchValue(null);
-  //         this.direccion.estado.patchValue(null);
-  //       },
-  //       (error: HttpErrorResponse) => {
-  //         console.log(error);
-  //       }
-  //     );
-  // }
-
-  // async inicializarCalcularEdad() {
-  //   this.datosFinado.fechaNacimiento.valueChanges.subscribe(() => {
-  //     if (this.datosFinado.fechaNacimiento.value != null)
-  //       this.datosFinado.edad.setValue(
-  //         moment().diff(moment(this.datosFinado.fechaNacimiento.value), 'years')
-  //       );
-  //   });
-  // }
 
   changeUnidad(): void {
     this.datosFinado.procedenciaFinado.setValue(null);
@@ -873,9 +698,9 @@ export class ModificarDatosFinadoSFComponent
     this.finado.segundoApellido = datosEtapaFinado.datosFinado.segundoApellido;
     this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
     this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
-    this.finado.fechaNac = moment(datosEtapaFinado.datosFinado.tipoOrden).format('yyyy-MM-DD');
-    this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
-    this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
+    this.finado.fechaNac = moment(datosEtapaFinado.datosFinado.fechaNacimiento).format('yyyy-MM-DD');
+    this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
+    this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
     this.finado.fechaDeceso = moment(datosEtapaFinado.datosFinado.fechaDefuncion).format('yyyy-MM-DD');
     this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
     this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
@@ -964,4 +789,10 @@ export class ModificarDatosFinadoSFComponent
   validarBotonAceptar(): boolean {
     return this.form.invalid || this.folioInvalido
   }
+
+  inicializarCalcularEdad() {
+    if (this.datosFinado.fechaNacimiento.value != null)
+      this.datosFinado.edad.setValue(moment().diff(moment(this.datosFinado.fechaNacimiento.value), 'years'));
+  }
+
 }
