@@ -213,7 +213,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
     return formatter.format(valor);
   }
 
-  diferenciaUTC(fecha: string, divisor: string = "/"): number {
+  diferenciaUTC(fechaCompleta: string, divisor: string = "/"): number {
+    const [fecha] = fechaCompleta.split('T');
     const [anio, mes, dia]: string[] = fecha.split(divisor);
     const objetoFecha: Date = new Date(+anio, +mes - 1, +dia);
     return objetoFecha.setMinutes(objetoFecha.getMinutes() + objetoFecha.getTimezoneOffset());
