@@ -22,6 +22,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _imprimirPago: string = 'generar-pdf-tabla-pagos';
   private readonly _funcionalidadAGF: number = 96;
   private readonly _validaAGF: string = 'valida-uso-agf';
+  private readonly _validaVale: string = 'consultar-vale-paritaria';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "crear_pagos", "",
@@ -113,7 +114,11 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   consultarIdODSAGF(idODS: number): Observable<HttpRespuesta<any>>{
     const body = { idODS }
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._validaAGF}`, body)
+  }
 
+  consultarIdODSVale(idOds: number): Observable<HttpRespuesta<any>>{
+    const body = { idOds }
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._validaVale}`, body)
   }
 
   descargarListado(body: any): Observable<Blob> {

@@ -130,22 +130,31 @@ export class PagoOrdenServicioComponent implements OnInit {
     return this.realizarPagoService.consultarIdODSAGF(idOds);
   }
 
+  validarVale(idOds: number): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.consultarIdODSVale(idOds);
+  }
+
   filtrarCatalogosODS(): void {
     const ID: number = this.pagoSeleccionado.idRegistro;
     this.cargadorService.activar();
-    forkJoin([this.validarAGF(ID)]).pipe(
+    forkJoin([this.validarAGF(ID), this.validarVale(ID)]).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: [HttpRespuesta<any>]) => this.procesarRespuestaCatalogos(respuesta)
+      next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]) => this.procesarRespuestaCatalogos(respuesta)
     })
   }
 
-  procesarRespuestaCatalogos(respuesta: [HttpRespuesta<any>]): void {
+  procesarRespuestaCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void {
     let CATALOGOS: TipoDropdown[] = [...TIPO_PAGO_CATALOGOS_ODS]
-    const POSICION_VALIDACION_AGF: number = 0
+    const POSICION_VALIDACION_AGF: number = 0;
+    const POSICION_VALIDACION_VALE: number = 1;
     this.agfSeleccionado = respuesta[POSICION_VALIDACION_AGF].datos;
     if (this.agfSeleccionado.agf === 0) {
       CATALOGOS = CATALOGOS.filter((pago: TipoDropdown) => ![2].includes(pago.value as number));
+    }
+    const valeSeleccionado = respuesta[POSICION_VALIDACION_VALE].datos
+    if (valeSeleccionado.valeP === 1) {
+      CATALOGOS = CATALOGOS.filter((pago: TipoDropdown) => ![1].includes(pago.value as number));
     }
     this.tipoPago = CATALOGOS;
   }
