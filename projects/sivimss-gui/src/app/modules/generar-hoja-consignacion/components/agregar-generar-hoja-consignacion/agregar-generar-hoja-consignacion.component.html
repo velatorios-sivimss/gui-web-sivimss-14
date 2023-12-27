@@ -48,11 +48,15 @@
     <div class="row mt-6" *appValidaRol="['GENERAR_HOJA_CONSIGNACION','CONSULTA']">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="limpiar();">Limpiar</button>
-        <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar();" [disabled]="filtroForm.invalid">Buscar</button>
       </div>
     </div>
   </form>
 </div>
+
+<th colspan="12" class="p-2 text-center font-bold text-xl col-md-12" *ngIf="busquedaRealizada">
+  No se encontró información relacionada a tu búsqueda
+</th>
 
 <div *ngIf="!vistaBusqueda">
   <div class="col text-center">
@@ -60,7 +64,7 @@
   </div>
 
   <div class="col text-center">
-    <span class="texto-base">C. Versalles #15, Juárez, Cuauhtémoc, 06600 Ciudad de México, CDMX</span>
+    <span class="texto-base">Avenida Álvaro Obregón No.121, interior 903-904, Colonia Roma Norte, Alcaldía Cuauhtémoc, C.P 06700, Ciudad de México</span>
   </div>
 
   <div class="row">
@@ -91,21 +95,28 @@
 
     <div class="col-md-6">
       <div class="background-group">
-        <div class="col-md-4">
+        <div class="col-md-5">
+          <div class="table-panel-column">
+            <span>Folio fiscal de la factura</span>
+            <label>{{folioFiscal === '' ? 'Por asignar' : folioFiscal}}</label>
+          </div>
+        </div>
+
+        <div class="col-md-3">
           <div class="table-panel-column">
             <span>Fecha</span>
             <label>{{fechaActual}}</label>
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-2">
           <div class="table-panel-column">
             <span>Hora</span>
             <label>{{horaActual}}</label>
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-2">
           <div class="table-panel-column">
             <span>Versión</span>
             <label>1.0.0</label>

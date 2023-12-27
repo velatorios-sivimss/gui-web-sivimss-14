@@ -103,7 +103,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
         return promotor.value == this.objetoDetallePersona.idPromotor
       });
 
-      this.detalleEntidadFederativa = this.detalleEntidadFederativa.filter(entidad => {
+      this.detalleEntidadFederativa = this.detalleEntidadFederativa?.filter(entidad => {
         return entidad.value == this.objetoDetallePersona.entidadFederativa;
       })
     }

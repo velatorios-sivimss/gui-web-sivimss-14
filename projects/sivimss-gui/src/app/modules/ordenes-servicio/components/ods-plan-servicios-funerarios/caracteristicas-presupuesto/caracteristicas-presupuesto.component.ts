@@ -162,6 +162,7 @@ export class CaracteristicasPresupuestoSFComponent
   }
 
   ngOnInit(): void {
+    localStorage.setItem("ataudDonado", 'N');
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.idVelatorio = +usuario.idVelatorio;
     this.buscarPaquetes();
@@ -435,6 +436,7 @@ export class CaracteristicasPresupuestoSFComponent
       if (respuesta == null) {
         return;
       }
+      +respuesta.idAsignacion == 3 ? localStorage.setItem("ataudDonado", 'S') : localStorage.setItem("ataudDonado", 'N')
       this.datosPaquetes.forEach((datos: any) => {
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = respuesta.idInventario;

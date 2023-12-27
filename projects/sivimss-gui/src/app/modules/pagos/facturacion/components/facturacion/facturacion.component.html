@@ -3,7 +3,7 @@
   <app-titulo-principal titulo="Facturación" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm">
+  <form [formGroup]="filtroForm" (submit)="buscar()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="velatorio">Velatorios:</label>
@@ -60,7 +60,7 @@
             <p-calendar id="periodoFin" formControlName="periodoFin" styleClass="form-control" [showIcon]="true"
                         placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
                         (onSelect)="validarMismaFechaInicioFin()"
-                        [minDate]="filtroForm.get('elaboracionInicio')?.value" [maxDate]="fechaActual">
+                        [minDate]="filtroForm.get('periodoInicio')?.value" [maxDate]="fechaActual">
             </p-calendar>
           </div>
         </div>
@@ -69,7 +69,7 @@
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
         <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">
-          Limpiar Filtros
+          Limpiar
         </button>
         <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar
         </button>
@@ -101,16 +101,16 @@
     </ng-template>
     <ng-template pTemplate="body" let-registro>
       <tr>
-        <td pResizableColumn>{{registro.nomVelatorio}}</td>
-        <td pResizableColumn>{{registro.folio}}</td>
-        <td pResizableColumn>{{registro.folioFactura}}</td>
-        <td pResizableColumn>{{registro.fechaFactura | date:'dd-MM-YYYY'}}</td>
-        <td pResizableColumn>{{registro.folioFiscal}}</td>
-        <td pResizableColumn>{{registro.rfc}}</td>
-        <td pResizableColumn>{{registro.razonSocial}}</td>
+        <td pResizableColumn>{{ registro.nomVelatorio }}</td>
+        <td pResizableColumn>{{ registro.folio }}</td>
+        <td pResizableColumn>{{ registro.folioFactura }}</td>
+        <td pResizableColumn>{{ registro.fechaFactura | date:'dd-MM-YYYY' }}</td>
+        <td pResizableColumn>{{ registro.folioFiscal }}</td>
+        <td pResizableColumn>{{ registro.rfc }}</td>
+        <td pResizableColumn>{{ registro.razonSocial }}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 60px'}">
-            <div>{{registro.estatusFactura}}</div>
+            <div>{{ registro.estatusFactura }}</div>
             <div class="contenedor-celda-iconos">
               <a (click)="abrirPanel($event,registro)">
                 <img ngSrc="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales"
@@ -130,7 +130,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{registros.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{ registros.length }} de {{ totalElementos }}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -142,12 +142,13 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Ver factura" class="text-center" onCloseOnNavigation
                                 (click)="descargarFactura()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" [routerLink]="'./enviar-factura'"
-                                *ngIf="false">
+      <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" (click)="enviarFactura()">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" (click)="cancelarFactura()"
-                                *ngIf="registroSeleccionado.estatusFactura !== 'Cancelada'">
-      </app-overlay-panel-opcion>
+      <ng-container *ngIf="[5,7,8].includes(rol)">
+        <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" (click)="cancelarFactura()"
+                                  *ngIf="registroSeleccionado.estatusFactura !== 'Cancelada'">
+        </app-overlay-panel-opcion>
+      </ng-container>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
@@ -158,7 +159,7 @@
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>
+      <span class="text-justify">{{ MENSAJE_ARCHIVO_DESCARGA_EXITOSA }}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">

@@ -843,7 +843,7 @@ export class ModificarDatosContratanteComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
@@ -854,6 +854,7 @@ export class ModificarDatosContratanteComponent
             );
             return;
           }
+          this.colonias = [];
           this.direccion.colonia.patchValue(null);
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
@@ -1086,7 +1087,7 @@ export class ModificarDatosContratanteComponent
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
         tipoOrden: finado.idTipoOrden,
-        noContrato: finado.idContratoPrevision,
+        noContrato: finado.folioContrato,
         velatorioPrevision: finado.idVelatorioContratoPrevision,
         esObito: finado.esobito,
         esParaExtremidad: finado.extremidad,

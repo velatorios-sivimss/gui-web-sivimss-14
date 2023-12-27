@@ -111,4 +111,15 @@ export class BusquedaConveniosPFServic extends BaseService<
       parametros
     );
   }
+
+  estado(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base + 'consultar/estados');
+  }
+
+  agregarPersona(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `convenio-pf/alta-persona-empresa`,
+      parametros
+    );
+  }
 }

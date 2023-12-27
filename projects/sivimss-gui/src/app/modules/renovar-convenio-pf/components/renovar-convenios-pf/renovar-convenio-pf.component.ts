@@ -36,10 +36,11 @@ export class RenovarConvenioPfComponent implements OnInit {
   busquedaTipoConvenioForm!: FormGroup;
   resultadoBusquedaForm!: FormGroup;
   documentacionForm!: FormGroup;
-  // habilitarRenovacion: boolean = true;
   confirmarModificarBeneficiarios: boolean = false;
   mostrarModalConfirmacion: boolean = false;
   mensajeBusqueda: string = "";
+  folioParaRenovar!: string;
+  tipoPlan!: string;
 
   tipoConvenio: TipoDropdown[] = [
     { label: 'Plan anterior', value: '0' },
@@ -63,10 +64,11 @@ export class RenovarConvenioPfComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.folioParaRenovar = this.activatedRoute.snapshot.queryParams.folio;
+    this.tipoPlan = this.activatedRoute.snapshot.queryParams.tipoPlan;
+
     this.actualizarBreadcrumb();
     this.inicializarFormBusquedaTipoConvenio();
-    this.inicializarFormPlanAnterior();
-    this.inicializarDocumentacionForm();
   }
 
   actualizarBreadcrumb(): void {
@@ -81,6 +83,7 @@ export class RenovarConvenioPfComponent implements OnInit {
       folio: [{ value: null, disabled: false }, []],
       rfc: [{ value: null, disabled: false }, []],
     });
+    this.inicializarFormPlanAnterior();
   }
 
   inicializarFormPlanAnterior(): void {
@@ -90,6 +93,7 @@ export class RenovarConvenioPfComponent implements OnInit {
       datosBancarios: [{ value: null, disabled: false }, [Validators.maxLength(30)]],
       costoRenovacion: [{ value: null, disabled: true }, []],
     });
+    this.inicializarDocumentacionForm();
   }
 
   inicializarDocumentacionForm(): void {
@@ -101,6 +105,15 @@ export class RenovarConvenioPfComponent implements OnInit {
       cartaPoder: [{ value: null, disabled: false }, []],
       ineTestigo: [{ value: null, disabled: false }, []],
     });
+    if (this.tipoPlan === '1') {
+      this.btcf.tipoConvenio.patchValue(false);
+      this.btcf.folio.patchValue(this.folioParaRenovar);
+      this.buscar();
+    } else if (this.tipoPlan === '2') {
+      this.btcf.tipoConvenio.patchValue(true);
+      this.btcf.numConvenio.patchValue(this.folioParaRenovar);
+      this.buscar();
+    }
   }
 
   siguiente(): void {

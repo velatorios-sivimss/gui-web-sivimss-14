@@ -12,6 +12,12 @@ export interface DatosContratante {
   servicios: ServiciosContratados[],
   totalPagado: number,
   totalServicios: number,
-  idVelatorio: number
+  idVelatorio: number,
+  finado: Finado
 }
 
+interface Finado {
+  fecFinado: string
+  idFinado: string
+  nomFinado: string
+}

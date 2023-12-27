@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
@@ -29,7 +29,7 @@ import { FacturaProveedorComponent } from '../factura-proveedor/factura-proveedo
   styleUrls: ['./generar-hoja-consignacion.component.scss'],
   providers: [DialogService, DescargaArchivosService, DynamicDialogRef]
 })
-export class GenerarHojaConsignacionComponent implements OnInit {
+export class GenerarHojaConsignacionComponent implements OnInit, OnDestroy {
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
 
@@ -100,7 +100,15 @@ export class GenerarHojaConsignacionComponent implements OnInit {
       this.catalogoVelatorios = [];
       this.filtroForm.get('velatorio')?.patchValue("");
     }
-    this.catalogoVelatorios = [{ value: -1, label: 'Todos' }];
+
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+
+    if (+usuario?.idOficina === 3) {
+      this.filtroForm.get('velatorio')?.patchValue(+usuario?.idVelatorio);
+    } else {
+      this.catalogoVelatorios = [{ value: -1, label: 'Todos' }];
+    }
+
     let idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
     if (idDelegacion === -1) {
@@ -172,7 +180,7 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.generarHojaConsignacionService.buscarPorFiltros(this.datosPromotoresFiltros(), this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.datos) {
+          if (respuesta.datos || respuesta.mensaje === '45') {
             this.hojasConsignacion = respuesta.datos?.content ?? [];
             this.totalElementos = respuesta.datos?.totalElements ?? 0;
             this.busquedaRealizada = true;
@@ -229,20 +237,12 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.busquedaRealizada = false;
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroForm.get('nivel')?.patchValue(+usuario?.idOficina);
-
-    if (+ usuario?.idOficina >= 2) {
-      this.filtroForm.get('delegacion')?.patchValue(+usuario?.idDelegacion);
-    }
-
-    if (+usuario?.idOficina === 3) {
-      this.filtroForm.get('velatorio')?.patchValue(+usuario?.idVelatorio);
-    } else {
-      this.catalogoVelatorios = [];
-    }
+    this.inicializarFiltroForm();
     this.cargarVelatorios(true);
+    this.cargarCatalogos();
     this.hojasConsignacion = [];
     this.totalElementos = 0;
+    setTimeout(() => this.filtroForm.get('velatorio')?.patchValue(+usuario?.idVelatorio), 300)
   }
 
   validarAlMenosUnCampoConValor(group: FormGroup) {
@@ -264,9 +264,11 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.descargaArchivosService.descargarArchivo(this.generarHojaConsignacionService.generarReporteConsulta(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next: () => {
-        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        this.mostrarModalConfirmacion = true;
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
@@ -290,6 +292,12 @@ export class GenerarHojaConsignacionComponent implements OnInit {
         !this.ff.fecFin.value || this.ff.fecFin.getRawValue() === '' ? null : moment(this.ff.fecFin.value).format('DD/MM/YYYY'),
 
       tipoReporte,
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.detalleRef) {
+      this.detalleRef.destroy();
     }
   }
 

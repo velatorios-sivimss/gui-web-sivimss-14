@@ -33,6 +33,7 @@ export interface SolicitudGenerarFact {
   fecPago: string,
   concPago: string,
   cveRegimenFiscal: string,
+  finado: Finado
 }
 
 interface ServiciosContratados {
@@ -42,4 +43,10 @@ interface ServiciosContratados {
   claveSat: string,
   importe: string,
   total: string
+}
+
+interface Finado {
+  fecFinado: string
+  idFinado: string
+  nomFinado: string
 }

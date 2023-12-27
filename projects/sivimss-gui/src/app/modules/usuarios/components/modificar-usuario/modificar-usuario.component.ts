@@ -56,13 +56,12 @@ export class ModificarUsuarioComponent implements OnInit {
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private cargadorService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
   }
 
   ngOnInit(): void {
-    this.id = this.config.data;
-    this.obtenerUsuario(this.id);
+    this.obtenerUsuario();
   }
 
   cargarCatalogos(delegacion: string): void {
@@ -96,21 +95,10 @@ export class ModificarUsuarioComponent implements OnInit {
     this.cargarRoles(true);
   }
 
-  obtenerUsuario(id: number): void {
-    this.cargadorService.activar();
-    this.usuarioService.buscarPorId(id)
-      .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          const usuario = respuesta.datos[0];
-          this.inicializarModificarUsuarioForm(usuario);
-          this.cargarCatalogos(usuario.idDelegacion);
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
+  obtenerUsuario(): void {
+    const usuario = this.config.data;
+    this.inicializarModificarUsuarioForm(usuario);
+    this.cargarCatalogos(usuario.idDelegacion);
   }
 
   cargarRoles(cargaInicial: boolean = false): void {
@@ -121,34 +109,32 @@ export class ModificarUsuarioComponent implements OnInit {
       this.modificarUsuarioForm.get('velatorio')?.patchValue(null);
       this.modificarUsuarioForm.get('delegacion')?.patchValue(null);
     }
-    this.cargadorService.activar();
-    this.usuarioService.obtenerCatalogoRoles(idNivel).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        const roles = respuesta.datos;
-        this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+    this.usuarioService.obtenerCatalogoRoles(idNivel).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarCatalogoRoles(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  procesarCatalogoRoles(respuesta: HttpRespuesta<any>): void {
+    this.catalogoRoles = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'id');
   }
 
   buscarVelatorios(): void {
     const idDelegacion = this.modificarUsuarioForm.get('delegacion')?.value;
     if (!idDelegacion) return;
     this.usuarioService.obtenerVelatorios(idDelegacion).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        const velatorios = respuesta.datos || [];
-        this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.log(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarCatalogoVelatorios(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  procesarCatalogoVelatorios(respuesta: HttpRespuesta<any>): void {
+    this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, 'desc', 'id');
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   crearUsuarioModificado(): UsuarioModificado {
@@ -190,15 +176,15 @@ export class ModificarUsuarioComponent implements OnInit {
     this.usuarioService.actualizar(this.usuarioModificado)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (): void => {
-          this.ref.close(respuesta);
-        },
-        error: (error: HttpErrorResponse): void => {
-          const ERROR: string = 'Error al guardar la información. Intenta nuevamente.';
-          console.error("ERROR: ", error);
-          this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-        }
+        next: (): void => this.ref.close(respuesta),
+        error: (error: HttpErrorResponse): void => this.procesarErrorModificarUsuario(error)
       });
+  }
+
+  procesarErrorModificarUsuario(error: HttpErrorResponse): void {
+    const ERROR: string = 'Error al guardar la información. Intenta nuevamente.';
+    console.error("ERROR: ", error);
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
   }
 
   cancelar(): void {

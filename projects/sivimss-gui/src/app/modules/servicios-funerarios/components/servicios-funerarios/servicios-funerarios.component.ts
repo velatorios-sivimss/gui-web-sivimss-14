@@ -273,27 +273,27 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
   consultarVelatorios(): void {
-    this.loaderService.activar();
-    this.serviciosFunerariosService
-      .obtenerCatalogoVelatoriosPorDelegacion(this.ff.delegacion.value)
-      .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          this.velatorio = mapearArregloTipoDropdown(
-            respuesta.datos,
-            'nomVelatorio',
-            'idVelatorio'
-          );
-        },
-        error: (error: HttpErrorResponse) => {
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-              +error.error.mensaje
-            )
-          );
-        },
-      });
+    // this.loaderService.activar();
+    // this.serviciosFunerariosService
+    //   .obtenerCatalogoVelatoriosPorDelegacion(this.ff.delegacion.value)
+    //   .pipe(finalize(() => this.loaderService.desactivar()))
+    //   .subscribe({
+    //     next: (respuesta: HttpRespuesta<any>) => {
+    //       this.velatorio = mapearArregloTipoDropdown(
+    //         respuesta.datos,
+    //         'nomVelatorio',
+    //         'idVelatorio'
+    //       );
+    //     },
+    //     error: (error: HttpErrorResponse) => {
+    //       this.alertaService.mostrar(
+    //         TipoAlerta.Error,
+    //         this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+    //           +error.error.mensaje
+    //         )
+    //       );
+    //     },
+    //   });
   }
 
   exportarArchivo(extension: string): void {
@@ -416,24 +416,27 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
   cancelarPago(): void {
-    this.loaderService.activar();
-    this.serviciosFunerariosService
-      .cancelarPlanSfpa(this.servicioSeleccionado.ID_PLAN_SFPA)
-      .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          this.mostrarModalCancelarPlan = false;
-          this.paginar(undefined, false);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-              +error.error.mensaje
-            )
-          );
-        },
-      });
+    this.router.navigate(['servicios-funerarios/cancelar-pago'], {
+      queryParams: { idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA },
+    });
+    // this.loaderService.activar();
+    // this.serviciosFunerariosService
+    //   .cancelarPlanSfpa(this.servicioSeleccionado.ID_PLAN_SFPA)
+    //   .pipe(finalize(() => this.loaderService.desactivar()))
+    //   .subscribe({
+    //     next: (respuesta: HttpRespuesta<any>) => {
+    //       this.mostrarModalCancelarPlan = false;
+    //       this.paginar(undefined, false);
+    //     },
+    //     error: (error: HttpErrorResponse) => {
+    //       this.alertaService.mostrar(
+    //         TipoAlerta.Error,
+    //         this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+    //           +error.error.mensaje
+    //         )
+    //       );
+    //     },
+    //   });
   }
 
   modificarPago(): void {

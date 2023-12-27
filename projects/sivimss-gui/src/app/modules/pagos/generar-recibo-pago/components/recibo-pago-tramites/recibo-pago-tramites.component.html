@@ -1,4 +1,4 @@
-<app-titulo-principal titulo="Formato de Pago"></app-titulo-principal>
+<app-titulo-principal titulo="Recibo de Pago"></app-titulo-principal>
 <div class="row mb-4">
   <div class="col-md-12 border seccion-folio flex justify-content-between">
     <div>
@@ -28,12 +28,12 @@
         <section class="row grid mt-7">
           <div class="col">
               <span>DELEGACIÓN:*
-                <span class="font-bold titulo-body">{{recibo.delegacion}}</span>
+                <span class="font-bold titulo-body">{{ recibo.delegacion }}</span>
               </span>
           </div>
           <div class="col">
               <span>VELATORIO:*
-                <span class="font-bold titulo-body"># {{recibo.idVelatorio}}</span>
+                <span class="font-bold titulo-body"># {{ recibo.idVelatorio }}  {{ recibo.velatorio }}</span>
               </span>
           </div>
         </section>
@@ -42,8 +42,8 @@
             <div class="col-md-4 grid-item ml-3">
               <label class="control-label" for="fechaTramite">FECHA<span class="req">*</span>:</label>
               <p-calendar id="fechaTramite" [formControlName]="'fechaTramite'" styleClass="form-control"
-                          [showIcon]="true" [disabled]="true"
-                          placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" (onSelect)="obtenerValoresFecha()">
+                          [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy"
+                          (onSelect)="obtenerValoresFecha()">
               </p-calendar>
               <span class="campo-obligatorio"
                     *ngIf="f?.fechaTramite?.errors?.required && (f?.fechaTramite?.dirty || f?.fechaTramite?.touched)">Este campo es obligatorio *.</span>
@@ -51,16 +51,16 @@
           </div>
           <div class="mt-2">
           <span class="col-md-12 mt-5 etiqueta-base titulo-body">RECIBIMOS DEL SR.(A):*
-            <span class="etiqueta-formato-val">{{recibo.recibimos | uppercase}}</span>
+            <span class="etiqueta-formato-val">{{ recibo.recibimos | uppercase }}</span>
           </span>
             <span class="col-md-12 etiqueta-base mt-3">LA CANTIDAD DE:*
-            <span class="etiqueta-formato-val">{{recibo.cantidad | currency}}  ({{recibo.cantidadLetra}})</span>
+            <span class="etiqueta-formato-val">{{ recibo.cantidad | currency }}  ({{ recibo.cantidadLetra }})</span>
           </span>
           </div>
           <div>
           <span class="col-md-12 etiqueta-base mt-7 mb-3">PARA QUE A SU NOMBRE Y REPRESENTACIÓN PAGUE LOS TRAMITES PARA
             OTORGAR EL CONTRATO DE PRESTACIÓN DE SERVICIOS
-            <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span>
+            <span class="etiqueta-formato-val"> No. {{ recibo.claveFolio }} </span>
              EN DEPENDENCIAS OFICIALES, DE ACUERDO AL SIGUIENTE DESGLOSE:
           </span>
             <div class="grid-container">
@@ -74,8 +74,9 @@
                       *ngIf="f?.tramite?.errors?.required && (f?.tramite?.dirty || f?.tramite?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="grid-item">
-                <label class="control-label" for="descripcionTramite">DESCRIPCIÓN:</label>
-                <input id="descripcionTramite" class="form-control" formControlName="descripcionTramite">
+                <label class="control-label" for="descripcionTramite">IMPORTE:</label>
+                <p-inputNumber id="descripcionTramite" class="form-control" formControlName="descripcionTramite"
+                               mode="currency" currency="USD" locale="en-US"></p-inputNumber>
               </div>
               <div class="grid-item"></div>
               <div class="grid-item">
@@ -88,13 +89,14 @@
                       *ngIf="f?.derecho?.errors?.required && (f?.derecho?.dirty || f?.derecho?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="grid-item">
-                <label class="control-label" for="descripcionDerecho">DESCRIPCIÓN:</label>
-                <input id="descripcionDerecho" class="form-control" formControlName="descripcionDerecho">
+                <label class="control-label" for="descripcionDerecho">IMPORTE:</label>
+                <p-inputNumber id="descripcionDerecho" class="form-control" formControlName="descripcionDerecho"
+                               mode="currency" currency="USD" locale="en-US"></p-inputNumber>
               </div>
               <div class="grid-item"></div>
               <div class="grid-item mt-5">
                 <span class="etiqueta-formato">TOTAL:*
-                  <span class="etiqueta-totales">{{totalServicios | currency}}</span>
+                  <span class="etiqueta-totales">{{ totalServicios | currency }}</span>
                 </span>
               </div>
               <div class="grid-item"></div>
@@ -107,9 +109,10 @@
             </span>
             <div class="grid-container mb-4">
               <div class="grid-item">
-              <span class="etiqueta-formato">TOTAL
-                <span class="etiqueta-totales">{{total | currency}}</span>
-              </span>
+                <label class="etiqueta-formato" for="total">TOTAL:</label>
+                <p-inputNumber id="total" class="form-control" formControlName="total"
+                               placeholder="Ingrese Total" [maxlength]="14" [minFractionDigits]="2"
+                               [min]="0" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
               </div>
               <div class="grid-item"></div>
               <div class="grid-item"></div>

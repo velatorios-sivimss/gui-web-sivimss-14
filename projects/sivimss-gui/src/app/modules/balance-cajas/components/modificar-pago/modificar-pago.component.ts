@@ -78,10 +78,6 @@ export class ModificarPagoComponent implements OnInit {
     });
   }
 
-  limpiar(): void {
-    this.modificarPagoForm.reset();
-  }
-
   get ref() {
     return this.modificarPagoForm.controls;
   }

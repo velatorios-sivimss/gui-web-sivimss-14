@@ -116,7 +116,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     this.buscarParentesco();
     this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
     this.velatorio = this.rutaActiva.snapshot.queryParams.velatorio;
-    if (!this.rutaActiva.snapshot.queryParams.idConvenio)
+    if (this.rutaActiva.snapshot.queryParams.idConvenio)
       this.buscarConvenioEmpresa(
         this.rutaActiva.snapshot.queryParams.idConvenio
       );

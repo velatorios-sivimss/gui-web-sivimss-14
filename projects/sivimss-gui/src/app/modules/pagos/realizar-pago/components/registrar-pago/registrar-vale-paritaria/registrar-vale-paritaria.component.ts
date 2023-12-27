@@ -96,7 +96,7 @@ export class RegistrarValeParitariaComponent implements OnInit {
       idRegistro: this.registroPago.idRegistro,
       importePago: this.valeParitariaForm.get('importe')?.value,
       importeRegistro: this.registroPago.importePago,
-      numAutorizacion: this.valeParitariaForm.get('noAutorizacion')?.value
+      numAutorizacion: this.valeParitariaForm.get('numAutorizacion')?.value
     }
   }
 
