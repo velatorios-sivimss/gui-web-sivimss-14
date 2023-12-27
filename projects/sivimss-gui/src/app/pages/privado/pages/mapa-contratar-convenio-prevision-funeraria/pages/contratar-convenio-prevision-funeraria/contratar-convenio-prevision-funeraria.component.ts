@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import {FormGroup, Validators, FormBuilder, FormControl} from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ModalRegistrarBeneficiarioComponent } from './components/modal-registrar-beneficiario/modal-registrar-beneficiario.component';
-import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DialogService} from 'primeng/dynamicdialog';
 import { ModalEditarBeneficiarioComponent } from './components/modal-editar-beneficiario/modal-editar-beneficiario.component';
 import {
   DIEZ_ELEMENTOS_POR_PAGINA,
@@ -24,6 +24,7 @@ import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import { CATALOGO_ENFERMEDAD_PREEXISTENTE } from 'projects/sivimss-gui/src/app/modules/convenios-prevision-funeraria/constants/catalogos-funcion';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { Beneficiarios } from '../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
+import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 @Component({
   selector: 'app-contratar-convenio-prevision-funeraria',
   templateUrl: './contratar-convenio-prevision-funeraria.component.html',
@@ -92,6 +93,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   idDomicilio: number | null = null;
   idVelatorio: number | null = null;
   idContratante: number | null = null;
+  claseRadioPaquetes: string = "radioPaquetes";
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -100,7 +102,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     private rutaActiva: ActivatedRoute,
     private consultaConveniosService: BusquedaConveniosPFServic,
     private alertaService: AlertaService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {}
 
   ngOnInit(): void {
@@ -320,6 +323,16 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
           [Validators.nullValidator],
         ],
       }),
+
+      formPaquete: this.formBuilder.group({
+        paquete: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator]
+        ]
+      }),
       archivos: this.formBuilder.group({
         archivoIne: [
           {
@@ -343,6 +356,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
           [Validators.required],
         ],
       }),
+
 
       gestionadoPorPromotor: [
         {
@@ -525,7 +539,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             return;
           }
 
-          if (respuesta.mensaje === 'Exito') {
+          if (respuesta.mensaje === 'Exito' && respuesta.datos != null) {
             this.promotores = respuesta.datos;
           } else this.mostrarMensaje(Number(respuesta.mensaje));
         },
@@ -885,6 +899,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
           TipoAlerta.Error,
           'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
         );
+        break;
     }
   }
 
@@ -899,8 +914,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   buscarCodigoPostal(): void {
-    if (this.domicilio.codigoPostal.value.length < 5) return;
-
     this.loaderService.activar();
     this.consultaConveniosService
       .buscarCodigoPostal(this.domicilio.codigoPostal.value)
@@ -918,8 +931,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             return;
           }
 
-          if (respuesta.datos === 'Exito') {
-            if (this.paquetes.length == 0) {
+          if (respuesta.mensaje === 'Exito') {
+            if (respuesta.datos.length == 0) {
               this.limpiaInputsCp();
               this.alertaService.mostrar(
                 TipoAlerta.Info,
@@ -1143,5 +1156,22 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
 
   buscarConvenioEmpresa(idConvenio: string): void {
     console.log('buscarconvenio');
+  }
+
+  validarCorreoElectronico(posicion: number): void {
+    switch (posicion) {
+      case 1:
+        if(this.domicilio.correoElectronico?.errors?.pattern){
+          this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
+        }
+      break;
+      case 2:
+        if(this.domicilio.correoElectronico?.errors?.pattern){
+          this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
+        }
+      break;
+      default:
+      break;
+    }
   }
 }

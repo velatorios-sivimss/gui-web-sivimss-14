@@ -83,7 +83,6 @@ export class ConsultaEstatusOrdenServicioComponent implements OnInit {
   }
 
   paginar(event?: LazyLoadEvent): void{
-    debugger
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1))
     } else {

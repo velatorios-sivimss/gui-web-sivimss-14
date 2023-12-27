@@ -9,7 +9,7 @@
         </div>
         <div class="col-md-4">
             <label class="control-label" for="nombre">Nombre<span class="req">*</span>:</label>
-            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre" />
+            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre"  maxlength="50" lettersOnly />
             <span class="campo-obligatorio"
                 *ngIf="f.nombre?.errors?.required && (f.nombre?.dirty || f.nombre?.touched)">
                 Este campo es obligatorio *.</span>
@@ -17,7 +17,7 @@
         <div class="col-md-4">
             <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
             <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
-                placeholder="Ingresa primer Apellido" />
+                placeholder="Ingresa primer Apellido" maxlength="50" lettersOnly />
             <span class="campo-obligatorio" *ngIf="f.primerApellido?.errors?.required &&
           (f.primerApellido?.dirty || f.primerApellido?.touched)">
                 Este campo es obligatorio *.</span>
@@ -27,7 +27,7 @@
         <div class="col-md-4">
             <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
             <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
-                placeholder="Ingresa segundo apellido" />
+                placeholder="Ingresa segundo apellido" maxlength="50" lettersOnly />
             <span class="campo-obligatorio" *ngIf="
           f.segundoApellido?.errors?.required &&
           (f.segundoApellido?.dirty || f.segundoApellido?.touched)
@@ -35,7 +35,7 @@
         </div>
         <div class="col-md-4">
             <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
-            <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"
+            <p-calendar  id="fecha" styleClass="form-control" appendTo="body" formControlName="fecha" [showIcon]="true"
                 dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual" (onSelect)="calcularEdad()"
                 (change)="calcularEdad()"></p-calendar>
             <span class="campo-obligatorio" *ngIf="

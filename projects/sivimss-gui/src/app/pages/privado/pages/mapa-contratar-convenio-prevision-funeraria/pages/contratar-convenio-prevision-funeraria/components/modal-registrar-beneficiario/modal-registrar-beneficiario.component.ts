@@ -17,6 +17,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { finalize } from 'rxjs';
 import * as moment from 'moment';
+import {MensajesSistemaService} from "../../../../../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-modal-registrar-beneficiario',
@@ -43,7 +44,8 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
     private readonly ref: DynamicDialogRef,
     private alertaService: AlertaService,
     private consultaConveniosService: BusquedaConveniosPFServic,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {}
 
   ngOnInit(): void {
@@ -333,10 +335,7 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
 
   validarCorreoElectronico(): void {
     if (this.f.correoElectronico?.errors?.pattern) {
-      this.alertaService.mostrar(
-        TipoAlerta.Precaucion,
-        'Tu correo electrónico no es válido. '
-      );
+      this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
     }
   }
 

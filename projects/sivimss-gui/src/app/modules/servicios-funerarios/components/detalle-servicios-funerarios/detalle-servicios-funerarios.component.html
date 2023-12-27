@@ -63,7 +63,7 @@
             </span>
             <ng-template #sinRestante>
               <span class="font-bold">
-                {{(precio) | currency:"USD":"symbol" }}
+                {{0 | currency:"USD":"symbol" }}
               </span>
             </ng-template>
           </span>
@@ -116,7 +116,7 @@
 
             <td>
 
-              <div *ngIf="pagosRealizados.importeAcumulado >=  0 && pagosRealizados.idEstatus == 8">
+              <div *ngIf="pagosRealizados.validaPago > 0">
                 <a class="ml-5 cursor-pointer"
                    (click)="abrirPanelNuevoPago(overlayPanelHeader,$event,pagosRealizados)">
                   <img   src="assets/images/imagen-icono-barras-horizontales.svg"
