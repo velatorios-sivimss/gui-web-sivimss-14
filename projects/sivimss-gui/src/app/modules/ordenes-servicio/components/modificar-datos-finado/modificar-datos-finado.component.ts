@@ -220,6 +220,7 @@ export class ModificarDatosFinadoComponent
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    this.idContratante = datodPrevios.idContratantePf;
   }
 
   ngAfterContentChecked(): void {
@@ -234,6 +235,7 @@ export class ModificarDatosFinadoComponent
       this.colonias = mapearArregloTipoDropdown(coloniasLista, 'nombre', 'nombre')
     }
 
+    this.idVelatorioContratoPrevision = +datosEtapaFinado.datosFinado.idVelatorioContratoPrevision;
     this.idContratoPrevision = datosEtapaFinado.datosFinado?.idContratoPrevision ?? null;
     this.idPersona = datosEtapaFinado.datosFinado.idPersona == 0 ? null : datosEtapaFinado.datosFinado.idPersona;
     this.idFinado = datosEtapaFinado.datosFinado.idFinado == 0 ? null : datosEtapaFinado.datosFinado.idFinado;
@@ -298,7 +300,7 @@ export class ModificarDatosFinadoComponent
         velatorioPrevision: [
           {
             value: datosEtapaFinado.datosFinado.velatorioPrevision,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
@@ -503,7 +505,6 @@ export class ModificarDatosFinadoComponent
       this.datosFinado.velatorioPrevision.disable();
     } else {
       this.datosFinado.noContrato.enable();
-      this.datosFinado.velatorioPrevision.enable();
     }
     if (Number(this.form.value.datosFinado.tipoOrden) == 3) {
 

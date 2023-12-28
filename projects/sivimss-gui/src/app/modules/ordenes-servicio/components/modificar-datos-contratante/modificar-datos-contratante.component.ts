@@ -1008,6 +1008,7 @@ export class ModificarDatosContratanteComponent
     this.altaODS.idOperador = null;
 
     let datos = datosEtapaContratante;
+    this.altaODS.idContratantePf = this.datosConsulta.idContratantePf
     this.altaODS.idParentesco = datos.idParentesco;
     this.contratante.matricula = datos.contratante.matricula;
     this.contratante.idPersona = this.idPersona;
@@ -1080,6 +1081,7 @@ export class ModificarDatosContratanteComponent
     let idDomicilio = finado.cp?.idDomicilio ?? null;
     let datosEtapaFinado = {
       datosFinado: {
+        idVelatorioContratoPrevision: finado.idVelatorioContratoPrevision ?? null,
         idContratoPrevision: finado.idContratoPrevision ?? null,
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,

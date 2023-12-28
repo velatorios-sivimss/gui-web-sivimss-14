@@ -170,6 +170,7 @@ export class InformacionServicioComponent implements OnInit {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
         this.lugarVelacion.hora.enable();
+        this.cortejo.gestionadoPorPromotor.enable();
       }
 
       if (+datos.idTipoServicio == 2) {
@@ -184,6 +185,7 @@ export class InformacionServicioComponent implements OnInit {
         this.lugarVelacion.estado.disable();
         this.instalacionServicio.fecha.enable();
         this.instalacionServicio.hora.enable();
+        this.cortejo.gestionadoPorPromotor.enable();
       }
 
       if (+datos.idTipoServicio == 3) {
