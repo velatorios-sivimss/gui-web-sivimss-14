@@ -33,20 +33,20 @@
 
   <div class="row mb-5" [formGroup]="pagoForm">
     <div class="col-md-6"
-         *ngIf="registroPago.estatusPago === 'Pendiente' && registroPago.generarPagare !== 0 || registroPago.estatusPago !== 'Pendiente'">
+         *ngIf="registroPago.estatusPago === 'Pendiente' && +registroPago.generarPagare !== 1 || registroPago.estatusPago !== 'Pendiente'">
       <label class="control-label">Métodos de pago seleccionables:</label>
       <p-dropdown class="form-control" placeholder="Selecciona un método de pago" [options]="tiposPago"
                   formControlName="tipoPago"></p-dropdown>
     </div>
     <div class="col-md-6"
-         *ngIf="registroPago.estatusPago === 'Pendiente' && registroPago.generarPagare !== 0 || registroPago.estatusPago !== 'Pendiente'">
+         *ngIf="registroPago.estatusPago === 'Pendiente' && +registroPago.generarPagare !== 1 || registroPago.estatusPago !== 'Pendiente'">
       <div class="flex mb-4 justify-content-end">
         <button class="ml-6 mt-6 btn btn-primary btn-md" [disabled]="pagoForm.pristine" (click)="seleccionarPago()">
           Registrar
         </button>
       </div>
     </div>
-    <div class="col-md-12" *ngIf="registroPago.estatusPago === 'Pendiente' && registroPago.generarPagare === 0">
+    <div class="col-md-12" *ngIf="registroPago.estatusPago === 'Pendiente' && +registroPago.generarPagare === 1">
       <div class="flex mb-4 justify-content-end">
         <button class="ml-6 mt-6 btn btn-default btn-md"
                 [routerLink]="['./../../../generar-formato-pagare/formato-pagare', registroPago.idRegistro]">

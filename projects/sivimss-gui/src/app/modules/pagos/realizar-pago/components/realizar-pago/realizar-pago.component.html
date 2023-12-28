@@ -109,14 +109,14 @@
     </ng-template>
     <ng-template pTemplate="body" let-pago>
       <tr>
-        <td>{{pago.fecha | date:'dd/MM/YYYY'}}</td>
-        <td>{{pago.folio}}</td>
-        <td>{{pago.nomContratante}}</td>
-        <td>{{pago.tipoPago}}</td>
-        <td>{{pago.total | currency}}</td>
-        <td>{{pago.estatus}}</td>
-        <td>{{pago.estatusPago}}</td>
-        <td>{{pago.metodoPago | titlecase}}</td>
+        <td>{{ pago.fecha | date:'dd/MM/YYYY' }}</td>
+        <td>{{ pago.folio }}</td>
+        <td>{{ pago.nomContratante }}</td>
+        <td>{{ pago.tipoPago }}</td>
+        <td>{{ pago.total | currency }}</td>
+        <td>{{ pago.estatus }}</td>
+        <td>{{ pago.estatusPago }}</td>
+        <td>{{ pago.metodoPago | titlecase }}</td>
         <td>
           <div class="contenedor-celda-iconos">
             <a (click)="abrirPanel($event,pago)">
@@ -135,7 +135,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{pagos.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{ pagos.length }} de {{ totalElementos }}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -162,9 +162,11 @@
                                 [routerLink]="['./registrar-pago', pagoSeleccionado.idPagoBitacora]">
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) &&
-        habilitaModificarPago.includes(pagoSeleccionado.estatusPago) && rol === 13" (click)="modificarPago()">
+        habilitaModificarPago.includes(pagoSeleccionado.estatusPago) && rol === 13 &&
+        pagoSeleccionado.indModPago === 1" (click)="modificarPago()">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Detalle de Pago" *ngIf="['Facturado', 'Pagado'].includes(pagoSeleccionado.estatusPago)"
+      <app-overlay-panel-opcion titulo="Detalle de Pago"
+                                *ngIf="['Facturado', 'Pagado'].includes(pagoSeleccionado.estatusPago)"
                                 [routerLink]="['./detalle-de-pago', pagoSeleccionado.idPagoBitacora]">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
@@ -198,7 +200,7 @@
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>
+      <span class="text-justify">{{ MENSAJE_ARCHIVO_DESCARGA_EXITOSA }}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
