@@ -683,9 +683,7 @@ export class InformacionServicioComponent implements OnInit {
 
             return;
           }
-          if(this.altaODS.finado.idTipoOrden == 1){
-            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio);
-          }
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio);
           this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
           const ExitoMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
