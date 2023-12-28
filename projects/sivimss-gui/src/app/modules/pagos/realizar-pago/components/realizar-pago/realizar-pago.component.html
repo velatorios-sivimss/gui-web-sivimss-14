@@ -162,9 +162,9 @@
                                 [routerLink]="['./registrar-pago', pagoSeleccionado.idPagoBitacora]">
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) &&
-        habilitaModificarPago.includes(pagoSeleccionado.estatusPago)" (click)="modificarPago()">
+        habilitaModificarPago.includes(pagoSeleccionado.estatusPago) && rol === 13" (click)="modificarPago()">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Detalle de Pago" *ngIf="['Facturado'].includes(pagoSeleccionado.estatusPago)"
+      <app-overlay-panel-opcion titulo="Detalle de Pago" *ngIf="['Facturado', 'Pagado'].includes(pagoSeleccionado.estatusPago)"
                                 [routerLink]="['./detalle-de-pago', pagoSeleccionado.idPagoBitacora]">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
