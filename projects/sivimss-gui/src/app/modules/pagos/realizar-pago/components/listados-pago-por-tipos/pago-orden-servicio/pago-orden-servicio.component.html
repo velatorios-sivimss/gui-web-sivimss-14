@@ -18,7 +18,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-pago>
     <tr>
-      <td>{{pago.fechaPago | date:'dd/MM/YYYY'}}</td>
+      <td>{{pago.fechaPago}}</td>
       <td>{{pago.folio}}</td>
       <td>{{pago.tipoPago}}</td>
       <td class="font-bold">{{pago.total | currency}}</td>
@@ -59,8 +59,7 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Registrar pago"
-                                [routerLink]="['./../registrar-pago', pagoSeleccionado.idPagoBitacora]"
-                                *ngIf="pagoSeleccionado.estatusPago === 'Pendiente' && !pagoSeleccionado.generarPagare || pagoSeleccionado.estatusPago !== 'Pendiente'">
+                                [routerLink]="['./../registrar-pago', pagoSeleccionado.idPagoBitacora]">
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion
         *ngIf="pagoSeleccionado.estatusPago === 'Pendiente' && !!pagoSeleccionado.generarPagare"

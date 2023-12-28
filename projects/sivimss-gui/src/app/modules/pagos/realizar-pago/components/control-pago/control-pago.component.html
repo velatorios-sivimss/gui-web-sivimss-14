@@ -11,21 +11,21 @@
         <div class="col">
           <span class="flex flex-column etiqueta-base">Fecha de pago</span>
           <span class="flex flex-column etiqueta-base font-bold"
-                *ngIf="registroPago.totalPorCubrir <= 0">{{registroPago.fechaUltimaPago}}</span>
+                *ngIf="registroPago.totalPorCubrir <= 0">{{ registroPago.fechaUltimaPago }}</span>
           <span class="flex flex-column etiqueta-base font-bold"
-                *ngIf="registroPago.totalPorCubrir > 0">{{fecha | date:'dd/MM/YYYY'}}</span>
+                *ngIf="registroPago.totalPorCubrir > 0">{{ fecha | date:'dd/MM/YYYY' }}</span>
         </div>
         <div class="col">
-          <span class="flex flex-column etiqueta-base">{{tipoFolio}}</span>
-          <span class="flex flex-column etiqueta-base font-bold">{{registroPago.folio}}</span>
+          <span class="flex flex-column etiqueta-base">{{ tipoFolio }}</span>
+          <span class="flex flex-column etiqueta-base font-bold">{{ registroPago.folio }}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Tipo de pago</span>
-          <span class="flex flex-column etiqueta-base font-bold">{{tipoPago}}</span>
+          <span class="flex flex-column etiqueta-base font-bold">{{ tipoPago }}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Estatus</span>
-          <span class="flex flex-column etiqueta-base font-bold">{{registroPago.estatusPago}}</span>
+          <span class="flex flex-column etiqueta-base font-bold">{{ registroPago.estatusPago }}</span>
         </div>
       </div>
     </div>
@@ -33,22 +33,23 @@
 
   <div class="row mb-5" [formGroup]="pagoForm">
     <div class="col-md-6"
-         *ngIf="registroPago.estatusPago === 'Pendiente' && !registroPago.generarPagare || registroPago.estatusPago !== 'Pendiente'">
+         *ngIf="registroPago.estatusPago === 'Pendiente' && registroPago.generarPagare !== 0 || registroPago.estatusPago !== 'Pendiente'">
       <label class="control-label">Métodos de pago seleccionables:</label>
       <p-dropdown class="form-control" placeholder="Selecciona un método de pago" [options]="tiposPago"
                   formControlName="tipoPago"></p-dropdown>
     </div>
     <div class="col-md-6"
-         *ngIf="registroPago.estatusPago === 'Pendiente' && !registroPago.generarPagare || registroPago.estatusPago !== 'Pendiente'">
+         *ngIf="registroPago.estatusPago === 'Pendiente' && registroPago.generarPagare !== 0 || registroPago.estatusPago !== 'Pendiente'">
       <div class="flex mb-4 justify-content-end">
         <button class="ml-6 mt-6 btn btn-primary btn-md" [disabled]="pagoForm.pristine" (click)="seleccionarPago()">
           Registrar
         </button>
       </div>
     </div>
-    <div class="col-md-12" *ngIf="registroPago.estatusPago === 'Pendiente' && !!registroPago.generarPagare">
+    <div class="col-md-12" *ngIf="registroPago.estatusPago === 'Pendiente' && registroPago.generarPagare === 0">
       <div class="flex mb-4 justify-content-end">
-        <button class="ml-6 mt-6 btn btn-default btn-md">
+        <button class="ml-6 mt-6 btn btn-default btn-md"
+                [routerLink]="['./../../../generar-formato-pagare/formato-pagare', registroPago.idRegistro]">
           Generar Pagare
         </button>
       </div>
@@ -59,11 +60,11 @@
     <div class="col-md-12">
       <div class="row grid">
         <div class="col">
-          <span class="flex flex-column texto-base font-bold p28">{{registroPago.totalAPagar | currency}}</span>
+          <span class="flex flex-column texto-base font-bold p28">{{ registroPago.totalAPagar | currency }}</span>
           <span class="flex flex-column etiqueta-base">Total a pagar</span>
         </div>
         <div class="col">
-          <span class="flex flex-column texto-base font-bold p28">{{registroPago.totalPagado | currency}}</span>
+          <span class="flex flex-column texto-base font-bold p28">{{ registroPago.totalPagado | currency }}</span>
           <span class="flex flex-column etiqueta-base">Total Pagado</span>
         </div>
         <div class="col font-17">
@@ -82,13 +83,13 @@
       <ng-template pTemplate="header">
         <div class="sivimss-acoordion-header">
           <div class="accordion-header-left font-bold font-14">
-            {{pago.metodoPago}}
+            {{ pago.metodoPago }}
           </div>
           <div class="accordion-header-right">
             <div class="container-monto">
               <div class="estatus">
                 <span>Importe</span>
-                <b>{{pago.importe | currency}}</b>
+                <b>{{ pago.importe | currency }}</b>
               </div>
               <div class="ml-2"
                    *ngIf="['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)"></div>
@@ -105,65 +106,65 @@
              *ngIf="['Efectivo', 'Traslado oficial'].includes(pago.metodoPago)">
           <div>
             <span class="flex flex-column texto-base">Fecha de pago:</span>
-            <span class="flex flex-column etiqueta-base">{{pago.fechaPago}}</span>
+            <span class="flex flex-column etiqueta-base">{{ pago.fechaPago }}</span>
           </div>
           <div>
             <span class="flex flex-column texto-base">Total a pagar:</span>
-            <span class="flex flex-column etiqueta-base">{{registroPago.totalAPagar | currency}}</span>
+            <span class="flex flex-column etiqueta-base">{{ registroPago.totalAPagar | currency }}</span>
           </div>
           <div>
             <span class="flex flex-column texto-base mr-4">Tipo de Pago</span>
-            <span class="flex flex-column etiqueta-base mr-4">{{pago.metodoPago}}</span>
+            <span class="flex flex-column etiqueta-base mr-4">{{ pago.metodoPago }}</span>
           </div>
         </div>
         <div class="row grid" *ngIf="!['Efectivo', 'Traslado oficial','Vale paritaria'].includes(pago.metodoPago)">
           <div class="col">
             <span class="flex flex-column texto-base">Fecha de pago:</span>
-            <span class="flex flex-column etiqueta-base">{{pago.fechaPago }}</span>
+            <span class="flex flex-column etiqueta-base">{{ pago.fechaPago }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column texto-base"
                   *ngIf="!['Transferencia', 'Deposito'].includes(pago.metodoPago)">Número de Autorización</span>
             <span class="flex flex-column texto-base"
                   *ngIf="['Transferencia', 'Deposito'].includes(pago.metodoPago)">Folio de Autorización</span>
-            <span class="flex flex-column etiqueta-base">{{pago.numAutorizacion}}</span>
+            <span class="flex flex-column etiqueta-base">{{ pago.numAutorizacion }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column texto-base"
                   *ngIf="!['Transferencia', 'Deposito'].includes(pago.metodoPago)">Nombre del banco</span>
             <span class="flex flex-column texto-base"
                   *ngIf="['Transferencia', 'Deposito'].includes(pago.metodoPago)">Banco</span>
-            <span class="flex flex-column etiqueta-base">{{pago.nomBanco}}</span>
+            <span class="flex flex-column etiqueta-base">{{ pago.nomBanco }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column texto-base">Total a pagar</span>
-            <span class="flex flex-column etiqueta-base">{{registroPago.totalAPagar | currency}}</span>
+            <span class="flex flex-column etiqueta-base">{{ registroPago.totalAPagar | currency }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column texto-base">Tipo de Pago</span>
-            <span class="flex flex-column etiqueta-base">{{pago.metodoPago}}</span>
+            <span class="flex flex-column etiqueta-base">{{ pago.metodoPago }}</span>
           </div>
         </div>
         <div class="row grid" *ngIf="['Vale paritaria'].includes(pago.metodoPago)">
           <div class="col">
             <span class="flex flex-column texto-base">Fecha:</span>
-            <span class="flex flex-column etiqueta-base">{{pago.fechaPago }}</span>
+            <span class="flex flex-column etiqueta-base">{{ pago.fechaPago }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column texto-base">Total a pagar:</span>
-            <span class="flex flex-column etiqueta-base">{{registroPago.totalAPagar | currency}}</span>
+            <span class="flex flex-column etiqueta-base">{{ registroPago.totalAPagar | currency }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column texto-base">Folio vale paritaria:</span>
-            <span class="flex flex-column etiqueta-base">{{pago.numAutorizacion}}</span>
+            <span class="flex flex-column etiqueta-base">{{ pago.numAutorizacion }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column texto-base">Fecha folio vale paritaria:</span>
-            <span class="flex flex-column etiqueta-base">{{pago.fechaValeParAGF | date:'dd/MM/YYYY'}}</span>
+            <span class="flex flex-column etiqueta-base">{{ pago.fechaValeParAGF | date:'dd/MM/YYYY' }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column texto-base ml-6">Tipo de Pago:</span>
-            <span class="flex flex-column etiqueta-base ml-6">{{pago.metodoPago}}</span>
+            <span class="flex flex-column etiqueta-base ml-6">{{ pago.metodoPago }}</span>
           </div>
         </div>
       </ng-template>
