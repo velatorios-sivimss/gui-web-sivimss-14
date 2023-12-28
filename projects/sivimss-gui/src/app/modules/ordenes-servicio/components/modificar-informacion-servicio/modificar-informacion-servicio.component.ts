@@ -177,6 +177,7 @@ export class ModificarInformacionServicioComponent
     this.buscarCapillas();
     this.buscarSalas();
     this.buscarPromotor();
+    this.validarExistenciaPromotor();
   }
 
   llenarFormulario(datos: any): void {
@@ -194,8 +195,6 @@ export class ModificarInformacionServicioComponent
     } else {
       fechaVelacion = datos.fechaVelacion;
     }
-
-
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
         capilla: [
@@ -245,7 +244,7 @@ export class ModificarInformacionServicioComponent
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          {value: null, disabled: false}
+          {value:  !!datos.idPanteon, disabled: !!datos.idPanteon}
         ],
       }),
       recoger: this.formBuilder.group({
@@ -607,16 +606,16 @@ export class ModificarInformacionServicioComponent
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if (!this.lugarVelacion.cp.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consutaCP(this.lugarVelacion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
             this.lugarVelacion.municipio.setValue(
@@ -627,6 +626,9 @@ export class ModificarInformacionServicioComponent
             );
             return;
           }
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(185));
+          this.colonias = [];
           this.lugarVelacion.colonia.patchValue(null);
           this.lugarVelacion.municipio.patchValue(null);
           this.lugarVelacion.estado.patchValue(null);
@@ -662,7 +664,9 @@ export class ModificarInformacionServicioComponent
 
             return;
           }
-          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+          if(this.altaODS.finado.idTipoOrden == 1){
+            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+          }
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
@@ -1044,5 +1048,9 @@ export class ModificarInformacionServicioComponent
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(2);
     this.llenarDatos();
+  }
+
+  validarExistenciaPromotor(): void {
+    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable();
   }
 }

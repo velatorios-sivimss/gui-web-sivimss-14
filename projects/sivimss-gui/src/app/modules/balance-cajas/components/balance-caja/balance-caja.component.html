@@ -26,7 +26,7 @@
     </div>
     <div class="grid mb-3">
       <div class="col-4">
-        <label class="control-label md:pb-3 x2l:pb-0" for="tipoConvenio">Tipo de convenios:</label>
+        <label class="control-label md:pb-3 x2l:pb-0" for="tipoConvenio">Tipo de ingreso:</label>
         <p-dropdown id="tipoConvenio" class="form-control" [(ngModel)]="convenioSeleccionado" [options]="tipoConvenio"
                     placeholder="Selecciona tipo de convenio" [filter]="true" [ngModelOptions]="{ standalone: true }">
         </p-dropdown>
@@ -113,7 +113,7 @@
         <td pResizableColumn>{{balance.estatusCaja}}</td>
         <td pResizableColumn>{{balance.fecHoraCierre}}</td>
         <td *appValidaRol="['BALANCE_CAJA','MODIFICAR']">
-          <div class="contenedor-celda-iconos">
+          <div class="contenedor-celda-iconos" *ngIf="balance.estatusCaja !== 'Cerrado'">
             <a (click)="abrirPanel($event,balance)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>

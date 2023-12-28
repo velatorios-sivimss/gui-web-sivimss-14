@@ -844,7 +844,7 @@ export class ModificarDatosContratanteSFComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
@@ -855,6 +855,9 @@ export class ModificarDatosContratanteSFComponent
             );
             return;
           }
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(185));
+          this.colonias = [];
           this.direccion.colonia.patchValue(null);
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
@@ -1084,10 +1087,10 @@ export class ModificarDatosContratanteSFComponent
         folioConvenioPa: finado.folioConvenioPa,
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
-        idContratoPrevision: finado.idContratoPrevision,
+        idContratoPrevision: finado.idConvenioPrevision,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.idContratoPrevision,
-        velatorioPrevision: finado.idVelatorioContratoPrevision,
+        velatorioPrevision: finado.nombreVelatorio,
         esObito: finado.esobito,
         esParaExtremidad: finado.extremidad,
         matricula: matricula,
@@ -1102,7 +1105,7 @@ export class ModificarDatosContratanteSFComponent
         edad: null,
         sexo: Number(finado.sexo),
         otroTipoSexo: finado.otroSexo,
-        nacionalidad: finado.nacionalidad,
+        nacionalidad: finado.idPais == null ? 1 : 2,
         lugarNacimiento:
           finado.idEstado == null ? null : Number(finado.idEstado),
         paisNacimiento: finado.idPais == null ? null : Number(finado.idPais),

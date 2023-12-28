@@ -121,6 +121,10 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
         let mesFinal = +moment(event.end).format("MM");
         if (mesFinal - mesInicio == 2) {
           this.fechaCalendario = moment(event.start).add(1, 'month');
+        } else if (mesFinal === 1 && mesInicio === 11) {
+          this.fechaCalendario = moment(event.start).add(1, 'month');
+        } else if (mesFinal === 1 && mesInicio === 12) {
+          this.fechaCalendario = moment(event.end);
         } else {
           this.fechaCalendario = moment(event.start);
         }
@@ -213,6 +217,8 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
 
   filtrosArchivos(tipoReporte: string): GenerarReporteCalendar {
     return {
+      idDelegacion: this.filtroFormData.delegacion,
+      idVelatorio: this.filtroFormData.velatorio,
       fecIniRepo: moment(this.fechaCalendario).startOf('month').format('YYYY-MM-DD'),
       fecFinRepo: moment(this.fechaCalendario).endOf('month').format('YYYY-MM-DD'),
       tipoReporte,

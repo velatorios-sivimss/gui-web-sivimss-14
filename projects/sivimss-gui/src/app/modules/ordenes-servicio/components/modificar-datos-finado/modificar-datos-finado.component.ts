@@ -4,10 +4,10 @@ import {
   OnInit,
   Output,
   AfterContentChecked,
-  ChangeDetectorRef,
+  ChangeDetectorRef, OnDestroy,
 } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {DialogService} from 'primeng/dynamicdialog';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {AltaODSInterface} from '../../models/AltaODS.interface';
 import {ContratanteInterface} from '../../models/Contratante.interface';
 import {CodigoPostalIterface} from '../../models/CodigoPostal.interface';
@@ -54,7 +54,7 @@ import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
   styleUrls: ['./modificar-datos-finado.component.scss'],
 })
 export class ModificarDatosFinadoComponent
-  implements OnInit, AfterContentChecked {
+  implements OnInit, AfterContentChecked, OnDestroy {
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   readonly POSICION_PAIS = 0;
@@ -114,6 +114,7 @@ export class ModificarDatosFinadoComponent
   idPersona: number | null = null;
   idFinado: number | null = null;
   colonias: TipoDropdown[] = [];
+  public detalleRef!: DynamicDialogRef;
 
   constructor(
     private route: ActivatedRoute,
@@ -179,10 +180,10 @@ export class ModificarDatosFinadoComponent
 
 
   consultarNSS(): void {
-    this.loaderService.activar();
     if (!this.datosFinado.nss.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarNSS(this.datosFinado.nss.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -219,6 +220,7 @@ export class ModificarDatosFinadoComponent
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    this.idContratante = datodPrevios.idContratantePf;
   }
 
   ngAfterContentChecked(): void {
@@ -233,6 +235,8 @@ export class ModificarDatosFinadoComponent
       this.colonias = mapearArregloTipoDropdown(coloniasLista, 'nombre', 'nombre')
     }
 
+    this.idVelatorioContratoPrevision = +datosEtapaFinado.datosFinado.idVelatorioContratoPrevision;
+    this.idContratoPrevision = datosEtapaFinado.datosFinado?.idContratoPrevision ?? null;
     this.idPersona = datosEtapaFinado.datosFinado.idPersona == 0 ? null : datosEtapaFinado.datosFinado.idPersona;
     this.idFinado = datosEtapaFinado.datosFinado.idFinado == 0 ? null : datosEtapaFinado.datosFinado.idFinado;
     this.idDomicilio = datosEtapaFinado.direccion.idDomicilio;
@@ -296,7 +300,7 @@ export class ModificarDatosFinadoComponent
         velatorioPrevision: [
           {
             value: datosEtapaFinado.datosFinado.velatorioPrevision,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
@@ -458,6 +462,7 @@ export class ModificarDatosFinadoComponent
         ],
       }),
     });
+    this.cambiarNacionalidad();
     setTimeout(() => {
       if (
         datosEtapaFinado.datosFinado.matricula == null ||
@@ -466,7 +471,7 @@ export class ModificarDatosFinadoComponent
         this.datosFinado.matricula.disable();
         this.datosFinado.matriculaCheck.setValue(false);
       } else {
-        this.datosFinado.matricula.disable();
+        this.datosFinado.matricula.enable();
         this.datosFinado.matriculaCheck.setValue(true);
       }
 
@@ -500,7 +505,6 @@ export class ModificarDatosFinadoComponent
       this.datosFinado.velatorioPrevision.disable();
     } else {
       this.datosFinado.noContrato.enable();
-      this.datosFinado.velatorioPrevision.enable();
     }
     if (Number(this.form.value.datosFinado.tipoOrden) == 3) {
 
@@ -643,7 +647,7 @@ export class ModificarDatosFinadoComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
@@ -654,6 +658,7 @@ export class ModificarDatosFinadoComponent
             );
             return;
           }
+          this.colonias = [];
           this.direccion.colonia.patchValue(null);
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
@@ -720,12 +725,12 @@ export class ModificarDatosFinadoComponent
   }
 
   consultarFolioPf(event: any): void {
-    const ref = this.dialogService.open(ModalConvenioPfComponent, {
+    this.detalleRef = this.dialogService.open(ModalConvenioPfComponent, {
       header: 'Número de contrato',
       style: {maxWidth: '876px', width: '100%'},
       data: {folio: this.datosFinado.noContrato.value},
     });
-    ref.onClose.subscribe((persona: any) => {
+    this.detalleRef.onClose.subscribe((persona: any) => {
       let [anio, mes, dia]: any = persona.finado.fechaNac?.split('-');
       this.validacionPersonaConvenio = true;
       dia = dia.substr(0, 2);
@@ -824,7 +829,7 @@ export class ModificarDatosFinadoComponent
       this.datosFinado.esParaExtremidad.disable();
       this.datosFinado.esObito.disable();
     }
-    this.limpiarODS();
+    if (!modificacion)this.limpiarODS();
   }
 
   limpiarODS(): void {
@@ -1198,10 +1203,10 @@ export class ModificarDatosFinadoComponent
       this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
       this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
       this.finado.fechaNac = moment(
-        datosEtapaFinado.datosFinado.tipoOrden
+        datosEtapaFinado.datosFinado.fechaNacimiento
       ).format('yyyy-MM-DD');
-      this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
-      this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
+      this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
+      this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
       this.finado.fechaDeceso = moment(
         datosEtapaFinado.datosFinado.fechaDefuncion
       ).format('yyyy-MM-DD');
@@ -1301,6 +1306,12 @@ export class ModificarDatosFinadoComponent
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(0);
     this.datosAlta();
+  }
+
+  ngOnDestroy(): void {
+    if (this.detalleRef) {
+      this.detalleRef.destroy();
+    }
   }
 
 }

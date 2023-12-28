@@ -427,7 +427,7 @@ export class DatosFinadoSFComponent implements OnInit {
     this.finado.segundoApellido = datosEtapaFinado.datosFinado.segundoApellido;
     this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
     this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
-    this.finado.fechaNac = moment(datosEtapaFinado.datosFinado.tipoOrden).format('yyyy-MM-DD');
+    this.finado.fechaNac = moment(datosEtapaFinado.datosFinado.fechaNacimiento).format('yyyy-MM-DD');
     this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
     this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
     this.finado.fechaDeceso = moment(datosEtapaFinado.datosFinado.fechaDefuncion).format('yyyy-MM-DD');
@@ -522,7 +522,7 @@ export class DatosFinadoSFComponent implements OnInit {
           this.datosFinado.sexo.setValue(+respuesta.datos.contratante.sexo);
           this.datosFinado.otroTipoSexo.setValue(respuesta.datos.contratante.otroSexo);
           this.datosFinado.fechaNacimiento.setValue(fecha);
-          this.datosFinado.nacionalidad.setValue(+respuesta.datos.contratante.nacionalidad);
+          this.datosFinado.nacionalidad.setValue(+respuesta.datos.contratante.idEstado ? 1 : 2);
           this.datosFinado.lugarNacimiento.setValue(+respuesta.datos.contratante.idEstado);
           this.datosFinado.paisNacimiento.setValue(respuesta.datos.contratante.idPais ? +respuesta.datos.contratante.idPais : null);
           this.datosFinado.velatorioPrevision.setValue(respuesta.datos.nombreVelatorio);

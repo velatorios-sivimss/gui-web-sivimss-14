@@ -22,6 +22,7 @@ export interface HojaConsignacionDetalle {
   totalCosto?: string;
   totalArt?: number;
   folio?: string;
+  folioFiscal?: string;
   velatorio?: string;
   delegacion?: string;
   fecElaboracion?: string;
@@ -74,6 +75,7 @@ export interface GenerarHojaConsignacionBusqueda {
   fecElaboracion?: string | null;
   folio?: string | null;
   proveedor?: string | null;
+  folioFiscal?: string | null;
 }
 
 export interface BuscarCatalogo {

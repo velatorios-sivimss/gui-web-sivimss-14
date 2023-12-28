@@ -843,7 +843,7 @@ export class ModificarDatosContratanteComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
@@ -854,6 +854,7 @@ export class ModificarDatosContratanteComponent
             );
             return;
           }
+          this.colonias = [];
           this.direccion.colonia.patchValue(null);
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
@@ -1007,6 +1008,7 @@ export class ModificarDatosContratanteComponent
     this.altaODS.idOperador = null;
 
     let datos = datosEtapaContratante;
+    this.altaODS.idContratantePf = this.datosConsulta.idContratantePf
     this.altaODS.idParentesco = datos.idParentesco;
     this.contratante.matricula = datos.contratante.matricula;
     this.contratante.idPersona = this.idPersona;
@@ -1077,14 +1079,15 @@ export class ModificarDatosContratanteComponent
     let municipio = finado.cp?.desMunicipio ?? null;
     let estado = finado.cp?.desEstado ?? null;
     let idDomicilio = finado.cp?.idDomicilio ?? null;
-
     let datosEtapaFinado = {
       datosFinado: {
+        idVelatorioContratoPrevision: finado.idVelatorioContratoPrevision ?? null,
+        idContratoPrevision: finado.idContratoPrevision ?? null,
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
         tipoOrden: finado.idTipoOrden,
-        noContrato: finado.idContratoPrevision,
-        velatorioPrevision: finado.idVelatorioContratoPrevision,
+        noContrato: finado.folioContrato,
+        velatorioPrevision: finado.nombreVelatorio,
         esObito: finado.esobito,
         esParaExtremidad: finado.extremidad,
         matricula: matricula,

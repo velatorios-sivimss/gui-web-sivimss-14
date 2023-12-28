@@ -170,6 +170,7 @@ export class InformacionServicioComponent implements OnInit {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
         this.lugarVelacion.hora.enable();
+        this.cortejo.gestionadoPorPromotor.enable();
       }
 
       if (+datos.idTipoServicio == 2) {
@@ -184,6 +185,7 @@ export class InformacionServicioComponent implements OnInit {
         this.lugarVelacion.estado.disable();
         this.instalacionServicio.fecha.enable();
         this.instalacionServicio.hora.enable();
+        this.cortejo.gestionadoPorPromotor.enable();
       }
 
       if (+datos.idTipoServicio == 3) {
@@ -811,16 +813,16 @@ export class InformacionServicioComponent implements OnInit {
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if (!this.lugarVelacion.cp.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consutaCP(this.lugarVelacion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta) {
+          if (respuesta && +respuesta.mensaje != 185) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
             this.lugarVelacion.municipio.setValue(
@@ -831,6 +833,9 @@ export class InformacionServicioComponent implements OnInit {
             );
             return;
           }
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(185));
+          this.colonias = [];
           this.lugarVelacion.colonia.patchValue(null);
           this.lugarVelacion.municipio.patchValue(null);
           this.lugarVelacion.estado.patchValue(null);

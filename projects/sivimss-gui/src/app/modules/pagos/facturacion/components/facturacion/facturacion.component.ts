@@ -76,6 +76,7 @@ export class FacturacionComponent implements OnInit {
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
   mostrarModalDescargaExitosa: boolean = false;
+  rol!: number;
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -90,6 +91,8 @@ export class FacturacionComponent implements OnInit {
     private descargaArchivosService: DescargaArchivosService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.rol = +usuario.idRol;
   }
 
   ngOnInit(): void {
@@ -199,9 +202,9 @@ export class FacturacionComponent implements OnInit {
     let folio: string | null = null;
     if (this.tipoPago === 1) folio = this.filtroForm.get('ods')?.value;
     if (this.tipoPago === 2) folio = this.filtroForm.get('folioConvenio')?.value;
-    let fechaFin = this.filtroForm.get('fecha')?.value;
+    let fechaFin = this.filtroForm.get('periodoFin')?.value;
     if (fechaFin) fechaFin = moment(fechaFin).format('YYYY-MM-DD');
-    let fechaInicio = this.filtroForm.get('fecha')?.value;
+    let fechaInicio = this.filtroForm.get('periodoInicio')?.value;
     if (fechaInicio) fechaInicio = moment(fechaInicio).format('YYYY-MM-DD');
     return {
       fechaFin,
@@ -246,6 +249,12 @@ export class FacturacionComponent implements OnInit {
       {relativeTo: this.route, queryParams: {datos_cancelar}});
   }
 
+  enviarFactura(): void {
+    const datos_enviar: string = window.btoa(JSON.stringify(this.crearParamsCancelar()));
+    void this.router.navigate(['./enviar-factura'],
+      {relativeTo: this.route, queryParams: {datos_enviar}});
+  }
+
   crearParamsCancelar(): ParamsCancelar {
     return {
       folioFactura: this.registroSeleccionado.folioFactura,
@@ -266,7 +275,7 @@ export class FacturacionComponent implements OnInit {
       },
       error: (error): void => {
         console.log(error)
-        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
         this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     });

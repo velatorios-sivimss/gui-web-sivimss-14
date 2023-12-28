@@ -218,14 +218,11 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.datosPaquetes = datos.datosPaquetes;
     this.datosPresupuesto = datos.datosPresupuesto;
     this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
-    this.selecionaTipoOtorgamiento = datos.selecionaTipoOtorgamiento;
-    this.selecionaTipoOtorgamiento =
-      datos.selecionaTipoOtorgamiento == null
-        ? null
-        : Number(datos.selecionaTipoOtorgamiento);
+    this.selecionaTipoOtorgamiento =datos.selecionaTipoOtorgamiento == null? null: Number(datos.selecionaTipoOtorgamiento);
     this.total = datos.total;
     this.f.observaciones.setValue(datos.observaciones);
     this.f.notasServicio.setValue(datos.notasServicio);
+    this.costoServiciosPorPaquete = Number(this.datosPaquetes[0].importe ?? 0);
   }
 
   buscarPaquetes(): void {
@@ -701,6 +698,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       });
       /*Ingresar nuevo costo de tabla paquete si el kilometraje excede los previstos por promotor*/
       if (respuesta.costoExtraKilometros > 0) {
+        this.total = Number(totalImporte);
         this.datosPaquetes.forEach((datoPaquete: any) => {
           datoPaquete.importe = totalImporte;
           datoPaquete.totalPaquete = totalPaquete
@@ -1142,8 +1140,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
 
     //paquete
     this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
-    this.caracteristicasPaquete.otorgamiento =
-      this.selecionaTipoOtorgamiento ?? null;
+    this.caracteristicasPaquete.otorgamiento = this.mostrarTIpoOtorgamiento ? 1 : 0;
 
     this.caracteristicasPaquete.detallePaquete = null;
     this.caracteristicasPresupuesto.caracteristicasPaquete = null;

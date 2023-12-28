@@ -45,18 +45,24 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=detalle-comisiones`);
   }
 
-  obtenerDetalleODS(idPromotor: number): Observable<HttpRespuesta<any>> {
+  obtenerDetalleODS(idPromotor: number, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const body = { idPromotor };
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/ordenes-comisiones`, body);
+    const params: HttpParams = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/ordenes-comisiones`, body, {params});
   }
 
-  obtenerDetalleConveniosPF(idPromotor: number): Observable<HttpRespuesta<any>> {
+  obtenerDetalleConveniosPF(idPromotor: number, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const body = { idPromotor };
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/convenios-comisiones`, body);
+    const params: HttpParams = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/convenios-comisiones`, body, {params});
   }
 
   obtenerDetalleComisiones(body: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detcomi-comisiones`,body);
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/detcomi-comisiones`,body);
   }
 
   obtenerPromotores(body: any): Observable<HttpRespuesta<any>> {
