@@ -1,10 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {OverlayPanel} from "primeng/overlaypanel";
-import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../../utils/constantes";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../../utils/constantes";
 import {TIPO_PAGO_CATALOGOS_CONVENIO} from "../../../constants/catalogos";
 import {LazyLoadEvent} from "primeng/api";
-import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
-import {RegistrarTipoPagoComponent} from "../../registrar-pago/registrar-tipo-pago/registrar-tipo-pago.component";
+import {DialogService} from "primeng/dynamicdialog";
 import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {finalize} from "rxjs/operators";
@@ -15,22 +14,6 @@ import {LoaderService} from "../../../../../../shared/loader/services/loader.ser
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 import {PagoEspecifico} from "../../../modelos/pagoEspecifico.interface";
 import {validarUsuarioLogueado} from "../../../../../../utils/funciones";
-import {UsuarioEnSesion} from "../../../../../../models/usuario-en-sesion.interface";
-
-interface DatosRegistro {
-  idPagoBitacora: number,
-  idFlujoPago: number,
-  idRegistro: number,
-  importePago: number
-}
-
-interface RegistroModal {
-  tipoPago: string,
-  idPago: string,
-  total: number,
-  datosRegistro: DatosRegistro
-}
-
 
 @Component({
   selector: 'app-pago-convenio',
@@ -44,15 +27,13 @@ export class PagoConvenioComponent implements OnInit {
   overlayPanel!: OverlayPanel;
 
   numPaginaActual: number = 0;
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
-  pagoConvenioModal: boolean = false;
+  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   tipoPago: TipoDropdown[] = TIPO_PAGO_CATALOGOS_CONVENIO;
-  pagoForm!: FormGroup;
 
+  pagoForm!: FormGroup;
   pagos: PagoEspecifico[] = [];
   pagoSeleccionado!: PagoEspecifico;
-  rol!: number;
 
   constructor(private formBuilder: FormBuilder,
               public dialogService: DialogService,
@@ -60,8 +41,6 @@ export class PagoConvenioComponent implements OnInit {
               private cargadorService: LoaderService,
               private mensajesSistemaService: MensajesSistemaService
   ) {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.rol = +usuario.idRol;
   }
 
   ngOnInit(): void {
@@ -86,15 +65,19 @@ export class PagoConvenioComponent implements OnInit {
     this.cargadorService.activar();
     this.realizarPagoService.consultarPagosConvenio(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.pagos = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      },
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusqueda(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  private manejarRespuestaBusqueda(respuesta: HttpRespuesta<any>): void {
+    this.pagos = respuesta.datos.content;
+    this.totalElementos = respuesta.datos.totalElements;
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   abrirPanel(event: MouseEvent, pago: any): void {
@@ -102,33 +85,4 @@ export class PagoConvenioComponent implements OnInit {
     this.pagoSeleccionado = pago;
   }
 
-  abrirModalPago(): void {
-    this.registrarPago();
-    const idPago = this.pagoForm.get('tipoPago')?.value;
-    const tipoPago: string = this.tipoPago.find(tp => tp.value === idPago)?.label ?? '';
-    const data: RegistroModal = {
-      tipoPago, idPago,
-      total: this.pagoSeleccionado.diferenciasTotales,
-      datosRegistro: {
-        idPagoBitacora: this.pagoSeleccionado.idPagoBitacora,
-        idFlujoPago: this.pagoSeleccionado.idFlujoPago,
-        idRegistro: this.pagoSeleccionado.idRegistro,
-        importePago: this.pagoSeleccionado.total
-      }
-    }
-    const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
-      header: "Registrar tipo de pago",
-      width: MAX_WIDTH,
-      data
-    }
-    this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
-  }
-
-  registrarPago(): void {
-    this.pagoConvenioModal = !this.pagoConvenioModal;
-  }
-
-  get pcf() {
-    return this.pagoForm?.controls;
-  }
 }

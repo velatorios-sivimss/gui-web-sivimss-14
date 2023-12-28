@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../../../utils/constantes";
-import { ActivatedRoute, Router } from "@angular/router";
-import { RegistroAGF } from "../../../modelos/registroAGF.interface";
-import { RegistroPago } from "../../../modelos/registroPago.interface";
-import { RealizarPagoService } from "../../../services/realizar-pago.service";
-import { AlertaService, TipoAlerta } from "../../../../../../shared/alerta/services/alerta.service";
-import { MensajesSistemaService } from "../../../../../../services/mensajes-sistema.service";
-import { HttpErrorResponse } from "@angular/common/http";
+import {Component} from '@angular/core';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../../utils/constantes";
+import {ActivatedRoute, Router} from "@angular/router";
+import {RegistroAGF} from "../../../modelos/registroAGF.interface";
+import {RegistroPago} from "../../../modelos/registroPago.interface";
+import {RealizarPagoService} from "../../../services/realizar-pago.service";
+import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/services/alerta.service";
+import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {HttpRespuesta} from "../../../../../../models/http-respuesta.interface";
 
 interface Beneficiario {
   nombreBeneficiario: string;
   curp: string;
 }
-
 
 @Component({
   selector: 'app-seleccion-beneficiarios-agf',
@@ -37,21 +37,15 @@ export class SeleccionBeneficiariosAgfComponent {
   ) {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.beneficiarios = respuesta.datos;
-    if (!respuesta.datos) {
-      this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
-      void this.route.navigate(['../../../pago-orden-servicio'], { relativeTo: this.activatedRoute })
-    } else {
-      this.obtenerParametrosAGF();
-    }
+    this.obtenerParametrosAGF();
   }
 
   obtenerParametrosAGF(): void {
-    this.activatedRoute.queryParams.pipe(
-    ).subscribe(params => {
-      const { datos_agf, datos_pago } = params;
-      this.datos_agf = JSON.parse(window.atob(datos_agf));
-      this.datos_pago = JSON.parse(window.atob(datos_pago));
-    }
+    this.activatedRoute.queryParams.subscribe(params => {
+        const {datos_agf, datos_pago} = params;
+        this.datos_agf = JSON.parse(window.atob(datos_agf));
+        this.datos_pago = JSON.parse(window.atob(datos_pago));
+      }
     );
   }
 
@@ -59,31 +53,33 @@ export class SeleccionBeneficiariosAgfComponent {
     this.datos_agf.cveCURPBeneficiario = curp;
     this.datos_agf.nombreBeneficiario = nombre;
     this.realizarPagoService.guardar(this.datos_pago).subscribe({
-      next: (respuesta): void => {
-        const { idPagoDetalle } = respuesta.datos[0];
-        this.crearAGF(idPagoDetalle);
-      },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-        console.log(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.manejoRespuestaBeneficiarios(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
+  }
+
+  private manejoRespuestaBeneficiarios(respuesta: HttpRespuesta<any>): void {
+    const {idPagoDetalle} = respuesta.datos[0];
+    this.crearAGF(idPagoDetalle);
   }
 
   crearAGF(idPagoDetalle: number): void {
     this.datos_agf.idPagoDetalle = idPagoDetalle;
     this.realizarPagoService.guardarAGF(this.datos_agf).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
-        void this.route.navigate(['../../../pago-orden-servicio'], { relativeTo: this.activatedRoute })
-      },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-        console.log(error);
-      }
+      next: (): void => this.manejoRespuestaExitosaPago(),
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
+  }
+
+  private manejoRespuestaExitosaPago(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
+    void this.route.navigate(['../../../pago-orden-servicio'], {relativeTo: this.activatedRoute})
+  }
+
+  private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
+    const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+    console.log(error);
   }
 
 }

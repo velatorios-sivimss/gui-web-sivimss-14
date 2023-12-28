@@ -1,4 +1,8 @@
-<app-titulo-principal titulo="Pago de Renovación de Convenios de Previsión Funeraria"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="'../'"></app-btn-regresar>
+  <app-titulo-principal titulo="Pago de Renovación de Convenios de Previsión Funeraria"
+                        class="col"></app-titulo-principal>
+</div>
 <p-table styleClass="mt-5 mb-6" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
          [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
          (onLazyLoad)="seleccionarPaginacion($event)">
@@ -55,35 +59,10 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar pago" (click)="registrarPago()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar método de pago"
-                                [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
+      <app-overlay-panel-opcion titulo="Registrar pago"
+                                [routerLink]="['./../registrar-pago', pagoSeleccionado.idPagoBitacora]">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
 
-<p-dialog header="Pagar renovacion convenio" [(visible)]="pagoConvenioModal" [style]="{width: '50vw'}" [modal]="true">
-  <div class="row mb-3" [formGroup]="pagoForm">
-    <div class="col-md-12">
-      <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span></label>
-      <p-dropdown appendTo="body" id="tipoPago" class="form-control" formControlName="tipoPago"
-                  [options]="tipoPago" placeholder="Seleccionar tipo">
-      </p-dropdown>
-    </div>
-  </div>
-  <div class="row mb-4">
-    <div class="col-md-12 control-label">
-      <span>*Campos obligatorios</span>
-    </div>
-  </div>
-  <div class="row mt-6">
-    <div class="col-md-12 flex justify-content-end">
-      <button type="submit" class="btn btn-default btn-md" (click)="pagoConvenioModal = !pagoConvenioModal">Cancelar
-      </button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="abrirModalPago()"
-              [disabled]="pagoForm.invalid">Aceptar
-      </button>
-    </div>
-  </div>
-</p-dialog>

@@ -7,15 +7,20 @@ import {TIPO_PAGO_CATALOGOS_CONVENIO, TIPO_PAGO_CATALOGOS_ODS} from "../../const
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {MAX_WIDTH} from "../../../../../utils/constantes";
-import {OverlayPanel} from "primeng/overlaypanel";
-import {ParametrosEliminar, ParametrosModificar, RegistroModal} from "../../modelos/datosRegistro.interface";
-import {RegistrarAgfComponent} from "../registrar-pago/registrar-agf/registrar-agf.component";
 import {RegistrarTipoPagoComponent} from "../registrar-pago/registrar-tipo-pago/registrar-tipo-pago.component";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {ModificarTipoPagoComponent} from "../modificar-tipo-pago/modificar-tipo-pago.component";
+import {EliminarTipoPagoComponent} from "../eliminar-tipo-pago/eliminar-tipo-pago.component";
 import {
   RegistrarValeParitariaComponent
 } from "../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
-import {ModificarTipoPagoComponent} from "../modificar-tipo-pago/modificar-tipo-pago.component";
-import {EliminarTipoPagoComponent} from "../eliminar-tipo-pago/eliminar-tipo-pago.component";
+import {ParametrosEliminar, ParametrosModificar, RegistroModal} from "../../modelos/datosRegistro.interface";
+import {RegistrarAgfComponent} from "../registrar-pago/registrar-agf/registrar-agf.component";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {forkJoin, Observable} from "rxjs";
+import {finalize} from "rxjs/operators";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {RealizarPagoService} from "../../services/realizar-pago.service";
 
 interface DialogoAGF {
   idFinado: number,
@@ -24,13 +29,21 @@ interface DialogoAGF {
   idRegistro: number,
   importePago: number,
 }
+
+interface RespuestaAGF {
+  idODS: number,
+  agf: number,
+  nss: null | number,
+  idFinado: null | number
+}
+
 @Component({
-  selector: 'app-modificar-metodo-pago',
-  templateUrl: './modificar-metodo-pago.component.html',
-  styleUrls: ['./modificar-metodo-pago.component.scss'],
+  selector: 'app-control-pago',
+  templateUrl: './control-pago.component.html',
+  styleUrls: ['./control-pago.component.scss'],
   providers: [DialogService]
 })
-export class ModificarMetodoPagoComponent implements OnInit {
+export class ControlPagoComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -42,14 +55,18 @@ export class ModificarMetodoPagoComponent implements OnInit {
   fecha: Date = new Date();
   tipoPago: string = '';
   tipoFolio: string = '';
+  titulo: string = '';
   tiposPago: TipoDropdown[] = [];
   pagoForm!: FormGroup;
+  agfSeleccionado!: RespuestaAGF;
 
   constructor(
     private formBuilder: FormBuilder,
     private readonly activatedRoute: ActivatedRoute,
     private location: Location,
+    private realizarPagoService: RealizarPagoService,
     public dialogService: DialogService,
+    private cargadorService: LoaderService,
   ) {
   }
 
@@ -67,8 +84,9 @@ export class ModificarMetodoPagoComponent implements OnInit {
   cargarCatalogos(): void {
     this.registroPago = this.activatedRoute.snapshot.data["respuesta"].datos;
     this.tipoPago = this.obtenerTipoPago();
+    this.titulo = this.obtenerTipoPago();
     this.tipoFolio = this.obtenerFolioTipoPago();
-    this.tiposPago = this.obtenerMetodosPago();
+    this.obtenerMetodosPago();
     this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
     this.actualizarValidaciones();
   }
@@ -93,22 +111,47 @@ export class ModificarMetodoPagoComponent implements OnInit {
     return 'Pago de Renovación de convenios de previsión funeraria';
   }
 
-  obtenerMetodosPago(): TipoDropdown[] {
+  obtenerMetodosPago(): void {
     if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
-      return this.verificarValeParitaria();
+      this.filtrarCatalogosODS();
     }
     if (this.registroPago.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
-      return TIPO_PAGO_CATALOGOS_CONVENIO;
+      this.tiposPago = TIPO_PAGO_CATALOGOS_CONVENIO;
     }
-    return TIPO_PAGO_CATALOGOS_CONVENIO;
+    this.tiposPago = TIPO_PAGO_CATALOGOS_CONVENIO;
   }
 
-  verificarValeParitaria(): TipoDropdown[] {
-    const tipoPago: TipoDropdown[] = [...TIPO_PAGO_CATALOGOS_ODS];
-    if (this.registroPago.valeP > 0 || this.registroPago.nss) {
-      tipoPago.shift()
+  validarAGF(idOds: number): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.consultarIdODSAGF(idOds);
+  }
+
+  validarVale(idOds: number): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.consultarIdODSVale(idOds);
+  }
+
+  filtrarCatalogosODS(): void {
+    const ID: number = this.registroPago.idRegistro;
+    this.cargadorService.activar();
+    forkJoin([this.validarAGF(ID), this.validarVale(ID)]).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]) => this.procesarRespuestaCatalogos(respuesta)
+    })
+  }
+
+  procesarRespuestaCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void {
+    let CATALOGOS: TipoDropdown[] = [...TIPO_PAGO_CATALOGOS_ODS]
+    const POSICION_VALIDACION_AGF: number = 0;
+    const POSICION_VALIDACION_VALE: number = 1;
+    this.agfSeleccionado = respuesta[POSICION_VALIDACION_AGF].datos;
+    if (this.agfSeleccionado.agf === 0) {
+      CATALOGOS = CATALOGOS.filter((pago: TipoDropdown) => ![2].includes(pago.value as number));
     }
-    return tipoPago;
+    const valeSeleccionado = respuesta[POSICION_VALIDACION_VALE].datos
+    if (valeSeleccionado.valeP === 1) {
+      CATALOGOS = CATALOGOS.filter((pago: TipoDropdown) => ![1].includes(pago.value as number));
+    }
+    this.tiposPago = CATALOGOS;
   }
 
   seleccionarPago(): void {
@@ -218,6 +261,5 @@ export class ModificarMetodoPagoComponent implements OnInit {
       importePago: this.registroPago.totalPorCubrir,
     }
   }
-
 
 }

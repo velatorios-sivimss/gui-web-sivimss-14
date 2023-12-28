@@ -14,8 +14,7 @@
       <div class="col-md-6">
         <label class="control-label" for="velatorioRealizarPago">Velatorio:</label>
         <p-dropdown appendTo="body" id="velatorioRealizarPago" class="form-control" formControlName="velatorio"
-                    [options]="catalogoVelatorios" placeholder="Seleccione el velatorio" [filter]="true"
-                    filterBy="label">
+                    [options]="catalogoVelatorios" placeholder="Seleccione el velatorio">
         </p-dropdown>
       </div>
     </div>
@@ -23,16 +22,14 @@
       <div class="col-md-6">
         <label class="control-label" for="folioOrden">Folio de la orden de servicio inmediato (ODS):</label>
         <p-dropdown appendTo="body" id="folioOrden" class="form-control" formControlName="folioOrden"
-                    [options]="foliosODS" placeholder="Seleccione el folio" (onChange)="limpiarFolios(1)"
-                    [filter]="true" filterBy="label">
+                    [options]="foliosODS" placeholder="Seleccione el folio" (onChange)="limpiarFolios(1)">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="folioConvenio">Folio del nuevo convenio de previsión funeraria
           (PNCPF):</label>
         <p-dropdown appendTo="body" id="folioConvenio" class="form-control" formControlName="folioConvenio"
-                    [options]="foliosPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(2)"
-                    [filter]="true" filterBy="label">
+                    [options]="foliosPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(2)">
         </p-dropdown>
       </div>
     </div>
@@ -41,8 +38,7 @@
         <label class="control-label" for="folioRenovacion">Folio de la renovación de convenios de previsión funeraria
           (PRCPF):</label>
         <p-dropdown appendTo="body" id="folioRenovacion" class="form-control" formControlName="folioRenovacion"
-                    [options]="foliosRevPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(3)"
-                    [filter]="true" filterBy="label">
+                    [options]="foliosRevPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(3)">
         </p-dropdown>
       </div>
       <div class="col-md-6">
@@ -91,7 +87,7 @@
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Registros</h2>
     <button type="button" class="btn btn-primary btn-lg"
-            (click)="abrirModalPago()" onCloseOnNavigation>Ir a Pago
+            (click)="this.realizarPagoModal = true" onCloseOnNavigation>Pago
     </button>
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
@@ -113,40 +109,19 @@
     </ng-template>
     <ng-template pTemplate="body" let-pago>
       <tr>
-        <td>{{pago.fecha | date:'dd/MM/YYYY'}}</td>
-        <td>{{pago.folio}}</td>
-        <td>{{pago.nomContratante}}</td>
-        <td>{{pago.tipoPago}}</td>
-        <td>{{pago.total | currency}}</td>
-        <td>{{pago.estatus}}</td>
-        <td>{{pago.estatusPago}}</td>
-        <td>{{pago.metodoPago | titlecase}}</td>
+        <td>{{ pago.fecha | date:'dd/MM/YYYY' }}</td>
+        <td>{{ pago.folio }}</td>
+        <td>{{ pago.nomContratante }}</td>
+        <td>{{ pago.tipoPago }}</td>
+        <td>{{ pago.total | currency }}</td>
+        <td>{{ pago.estatus }}</td>
+        <td>{{ pago.estatusPago }}</td>
+        <td>{{ pago.metodoPago | titlecase }}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetallePago(pago)" [routerLink]="['./detalle-de-pago', pago.idPagoBitacora]">
-              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+            <a (click)="abrirPanel($event,pago)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
-            <ng-container *ngIf="rol === 13; then admin; else notAdmin"></ng-container>
-            <ng-template #admin>
-              <a (click)="abrirPanel($event,pago)"
-                 *ngIf="habilitaIrPago.includes(pago.estatus) || habilitaIrPagoEstatus.includes(pago.estatusPago) ||
-                 habilitaModificar.includes(pago.estatus) || habilitaModificarPago.includes(pago.estatusPago); else emptyDivAdmin">
-                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-              </a>
-              <ng-template #emptyDivAdmin>
-                <a></a>
-              </ng-template>
-            </ng-template>
-            <ng-template #notAdmin>
-              <a (click)="abrirPanel($event,pago)"
-                 *ngIf="habilitaIrPago.includes(pago.estatus) || habilitaIrPagoEstatus.includes(pago.estatusPago);
-                  else emptyDiv">
-                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-              </a>
-              <ng-template #emptyDiv>
-                <a></a>
-              </ng-template>
-            </ng-template>
           </div>
         </td>
       </tr>
@@ -160,7 +135,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{pagos.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{ pagos.length }} de {{ totalElementos }}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -182,19 +157,23 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Ir a Pago" *ngIf="habilitaIrPago.includes(pagoSeleccionado.estatus) ||
-        habilitaIrPagoEstatus.includes(pagoSeleccionado.estatusPago)" (click)="redireccionPago()">
+      <app-overlay-panel-opcion titulo="Ir a Pago" *ngIf="habilitaIrPago.includes(pagoSeleccionado.estatus) &&
+        habilitaIrPagoEstatus.includes(pagoSeleccionado.estatusPago)"
+                                [routerLink]="['./registrar-pago', pagoSeleccionado.idPagoBitacora]">
       </app-overlay-panel-opcion>
-      <ng-container *ngIf="rol === 13">
-        <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) ||
-        habilitaModificarPago.includes(pagoSeleccionado.estatusPago)" (click)="modificarPago()">
-        </app-overlay-panel-opcion>
-      </ng-container>
+      <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) &&
+        habilitaModificarPago.includes(pagoSeleccionado.estatusPago) && rol === 13 &&
+        pagoSeleccionado.indModPago === 1" (click)="modificarPago()">
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Detalle de Pago"
+                                *ngIf="['Facturado', 'Pagado'].includes(pagoSeleccionado.estatusPago)"
+                                [routerLink]="['./detalle-de-pago', pagoSeleccionado.idPagoBitacora]">
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
 
-<p-dialog header="Registrar tipo de pago" [(visible)]="realizarPagoModal" [modal]="true">
+<p-dialog header="Registrar tipo de pago" [(visible)]="realizarPagoModal">
   <div class="w-740">
     <div class="row flex justify-content-center mb-4 ">
       <button type="button" class="btn btn-primary btn-lg btn-md w-500" [routerLink]="'./pago-orden-servicio'">
@@ -221,7 +200,7 @@
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>
+      <span class="text-justify">{{ MENSAJE_ARCHIVO_DESCARGA_EXITOSA }}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">

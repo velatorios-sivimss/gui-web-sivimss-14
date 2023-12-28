@@ -1,7 +1,9 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {RealizarPagoComponent} from "./components/realizar-pago/realizar-pago.component";
-import {PagoOrdenServicioComponent} from "./components/listados-pago-por-tipos/pago-orden-servicio/pago-orden-servicio.component";
+import {
+  PagoOrdenServicioComponent
+} from "./components/listados-pago-por-tipos/pago-orden-servicio/pago-orden-servicio.component";
 import {PagoConvenioComponent} from "./components/listados-pago-por-tipos/pago-convenio/pago-convenio.component";
 import {
   PagoRenovacionConvenioComponent
@@ -14,7 +16,7 @@ import {RealizarPagoResolver} from "./services/realizar-pago.resolver";
 import {DetallePagoResolver} from "./services/detalle-pago.resolver";
 import {ModificarMetodoPagoComponent} from "./components/modificar-metodo-pago/modificar-metodo-pago.component";
 import {BeneficiariosResolver} from "./services/beneficiarios.resolver";
-import {ModificarPagoComponent} from "./components/modificar-pago/modificar-pago.component";
+import {ControlPagoComponent} from "./components/control-pago/control-pago.component";
 
 const routes: Routes = [
   {
@@ -57,15 +59,15 @@ const routes: Routes = [
     }
   },
   {
-    path: 'modificar-metodo-de-pago/:idPagoBitacora',
-    component: ModificarMetodoPagoComponent,
+    path: 'registrar-pago/:idPagoBitacora',
+    component: ControlPagoComponent,
     resolve: {
       respuesta: DetallePagoResolver
     }
   },
   {
-    path: 'modificar-pago/:idPagoBitacora',
-    component: ModificarPagoComponent,
+    path: 'modificar-metodo-de-pago/:idPagoBitacora',
+    component: ModificarMetodoPagoComponent,
     resolve: {
       respuesta: DetallePagoResolver
     }

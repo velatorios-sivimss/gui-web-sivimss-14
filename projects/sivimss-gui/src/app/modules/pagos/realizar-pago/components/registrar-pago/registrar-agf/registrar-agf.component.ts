@@ -11,10 +11,7 @@ import {DetalleAyudaGastosFuneral} from '../../../modelos/ayudaGastosFuneral.int
 import * as moment from "moment/moment";
 import {RegistroAGF} from "../../../modelos/registroAGF.interface";
 import {RegistroPago} from "../../../modelos/registroPago.interface";
-import {forkJoin, Observable} from "rxjs";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
-import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
-import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-registrar-agf',
@@ -37,24 +34,14 @@ export class RegistrarAgfComponent implements OnInit {
   readonly VALIDACION_DE_AGF: number = 2;
   pasoRegistrarAGF: number = 1;
 
-  readonly POSICION_CATALOGO_RAMOS: number = 0;
-  readonly POSICION_CATALOGO_IDENTIFICACIONES: number = 1;
-  readonly POSICION_DETALLE_AGF: number = 2;
-
   constructor(
     private formBuilder: FormBuilder,
     private realizarPagoService: RealizarPagoService,
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private router: Router,
-    private route: ActivatedRoute,
     private mensajesSistemaService: MensajesSistemaService,
-    private cargadorService: LoaderService,
-  ) {
-    this.obtenerDatosAGF();
-  }
-
-  obtenerDatosAGF(): void {
+    private route: ActivatedRoute) {
     this.idFinado = this.config.data.idFinado;
     this.idPagoBitacora = this.config.data.idPagoBitacora;
     this.idFlujoPago = this.config.data.idFlujoPago;
@@ -63,9 +50,9 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.cargadorService.activar();
-    this.cargarCatalogos();
+    this.obtenerRamos();
     this.obtenerDetalleAGF();
+    this.obtenerIdentificaciones();
     this.inicializarAgfForm();
   }
 
@@ -78,28 +65,6 @@ export class RegistrarAgfComponent implements OnInit {
     const fecDefuncion: string = this.obtenerFechaDefuncion(this.detalleAGF.fecDeceso);
     void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss, fecDefuncion],
       {relativeTo: this.route, queryParams: {datos_agf, datos_pago}})
-  }
-
-  cargarCatalogos(): void {
-    forkJoin([this.obtenerRamos(), this.obtenerIdentificaciones(), this.obtenerDetalleAGF()]).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]): void => this.procesarCatalogos(respuesta),
-      error: (error: HttpErrorResponse) => this.mostrarMensajeError(error)
-    })
-  }
-
-  private mostrarMensajeError(error: HttpErrorResponse): void {
-    console.error(error);
-    this.mensajesSistemaService.mostrarMensajeError(error);
-  }
-
-  procesarCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]): void {
-    const ramos = respuesta[this.POSICION_CATALOGO_RAMOS].datos || [];
-    this.ramos = mapearArregloTipoDropdown(ramos, "desRamo", "idRamo");
-    const identifiaciones = respuesta[this.POSICION_CATALOGO_IDENTIFICACIONES].datos || [];
-    this.identificaciones = mapearArregloTipoDropdown(identifiaciones, "desTipoId", "idTipoId");
-    this.detalleAGF = respuesta[this.POSICION_DETALLE_AGF].datos[0];
   }
 
   obtenerFechaDefuncion(fecDeceso: string): string {
@@ -121,12 +86,23 @@ export class RegistrarAgfComponent implements OnInit {
     })
   }
 
-  obtenerRamos(): Observable<HttpRespuesta<any>> {
-    return this.realizarPagoService.obtenerRamos();
+  obtenerRamos(): void {
+    this.ramos = [];
+    this.realizarPagoService.obtenerRamos().subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.ramos = mapearArregloTipoDropdown(respuesta.datos, "desRamo", "idRamo");
+      },
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
+    })
   }
 
-  obtenerDetalleAGF(): Observable<HttpRespuesta<any>> {
-    return this.realizarPagoService.obtenerDetalleAGF(this.idFinado);
+  obtenerDetalleAGF(): void {
+    this.realizarPagoService.obtenerDetalleAGF(this.idFinado).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.detalleAGF = respuesta.datos[0];
+      },
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
+    })
   }
 
   crearRegistroAGF(): RegistroAGF {
@@ -150,7 +126,7 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   crearRegistroPago(): RegistroPago {
-    let fechaValeAGF = moment(new Date()).format('YYYY-MM-DD');
+    let fechaValeAGF: string = moment(new Date()).format('YYYY-MM-DD');
     return {
       descBanco: null,
       fechaPago: null,
@@ -165,12 +141,23 @@ export class RegistrarAgfComponent implements OnInit {
     }
   }
 
-  obtenerIdentificaciones(): Observable<HttpRespuesta<any>> {
-    return this.realizarPagoService.obtenerIdentificaciones();
+  obtenerIdentificaciones(): void {
+    this.identificaciones = [];
+    this.realizarPagoService.obtenerIdentificaciones().subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.identificaciones = mapearArregloTipoDropdown(respuesta.datos, "desTipoId", "idTipoId");
+      },
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
+    })
   }
 
   cancelar(): void {
     this.ref.close();
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   get fagf() {
