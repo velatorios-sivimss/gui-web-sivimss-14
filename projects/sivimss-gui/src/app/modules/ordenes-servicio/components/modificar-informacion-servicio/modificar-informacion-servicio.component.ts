@@ -664,9 +664,7 @@ export class ModificarInformacionServicioComponent
 
             return;
           }
-          if(this.altaODS.finado.idTipoOrden == 1){
-            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
-          }
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
@@ -1051,6 +1049,7 @@ export class ModificarInformacionServicioComponent
   }
 
   validarExistenciaPromotor(): void {
-    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable();
+    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable()
+    if(this.tipoOrden > 1)this.cortejo.gestionadoPorPromotor.disable()
   }
 }
