@@ -12,6 +12,9 @@ import * as moment from "moment/moment";
 import {RegistroAGF} from "../../../modelos/registroAGF.interface";
 import {RegistroPago} from "../../../modelos/registroPago.interface";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
+import {finalize} from "rxjs/operators";
+import {forkJoin, Observable} from "rxjs";
+import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
 
 @Component({
   selector: 'app-registrar-agf',
@@ -30,6 +33,10 @@ export class RegistrarAgfComponent implements OnInit {
   idRegistro!: number;
   importeTotal!: number;
 
+  readonly POSICION_CATALOGO_RAMOS: number = 0;
+  readonly POSICION_CATALOGO_IDENTIFICACIONES: number = 1;
+  readonly POSICION_DETALLE_AGF: number = 2;
+
   readonly CAPTURA_DE_AGF: number = 1;
   readonly VALIDACION_DE_AGF: number = 2;
   pasoRegistrarAGF: number = 1;
@@ -41,7 +48,12 @@ export class RegistrarAgfComponent implements OnInit {
     public ref: DynamicDialogRef,
     private router: Router,
     private mensajesSistemaService: MensajesSistemaService,
+    private cargadorService: LoaderService,
     private route: ActivatedRoute) {
+    this.obtenerDatosAGF();
+  }
+
+  obtenerDatosAGF(): void {
     this.idFinado = this.config.data.idFinado;
     this.idPagoBitacora = this.config.data.idPagoBitacora;
     this.idFlujoPago = this.config.data.idFlujoPago;
@@ -50,10 +62,44 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.obtenerRamos();
+    this.cargadorService.activar();
+    this.cargarCatalogos();
     this.obtenerDetalleAGF();
-    this.obtenerIdentificaciones();
     this.inicializarAgfForm();
+  }
+
+  cargarCatalogos(): void {
+    forkJoin([this.obtenerRamos(), this.obtenerIdentificaciones(), this.obtenerDetalleAGF()]).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]): void => this.procesarCatalogos(respuesta),
+      error: (error: HttpErrorResponse) => this.mostrarMensajeError(error)
+    })
+  }
+
+  obtenerRamos(): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.obtenerRamos();
+  }
+
+  obtenerDetalleAGF(): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.obtenerDetalleAGF(this.idFinado);
+  }
+
+  obtenerIdentificaciones(): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.obtenerIdentificaciones();
+  }
+
+  private mostrarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
+  }
+
+  procesarCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]): void {
+    const ramos = respuesta[this.POSICION_CATALOGO_RAMOS].datos || [];
+    this.ramos = mapearArregloTipoDropdown(ramos, "desRamo", "idRamo");
+    const identifiaciones = respuesta[this.POSICION_CATALOGO_IDENTIFICACIONES].datos || [];
+    this.identificaciones = mapearArregloTipoDropdown(identifiaciones, "desTipoId", "idTipoId");
+    this.detalleAGF = respuesta[this.POSICION_DETALLE_AGF].datos[0];
   }
 
   aceptar(): void {
@@ -63,11 +109,12 @@ export class RegistrarAgfComponent implements OnInit {
     const registroPago: RegistroPago = this.crearRegistroPago();
     const datos_pago: string = window.btoa(JSON.stringify(registroPago))
     const fecDefuncion: string = this.obtenerFechaDefuncion(this.detalleAGF.fecDeceso);
-    void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss, fecDefuncion],
+    void this.router.navigate(['../../agf-seleccion-beneficiarios', this.detalleAGF.cveNss, fecDefuncion],
       {relativeTo: this.route, queryParams: {datos_agf, datos_pago}})
   }
 
   obtenerFechaDefuncion(fecDeceso: string): string {
+    if (!fecDeceso) return '';
     const partes: string[] = fecDeceso.split('/');
     if (partes.length !== 3) return '';
     const [dia, mes, anio] = partes;
@@ -83,25 +130,6 @@ export class RegistrarAgfComponent implements OnInit {
       actaDefuncion: [{value: false, disabled: false}],
       cuentaGastos: [{value: false, disabled: false}],
       documentoNSS: [{value: false, disabled: false}],
-    })
-  }
-
-  obtenerRamos(): void {
-    this.ramos = [];
-    this.realizarPagoService.obtenerRamos().subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.ramos = mapearArregloTipoDropdown(respuesta.datos, "desRamo", "idRamo");
-      },
-      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
-    })
-  }
-
-  obtenerDetalleAGF(): void {
-    this.realizarPagoService.obtenerDetalleAGF(this.idFinado).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.detalleAGF = respuesta.datos[0];
-      },
-      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     })
   }
 
@@ -141,23 +169,8 @@ export class RegistrarAgfComponent implements OnInit {
     }
   }
 
-  obtenerIdentificaciones(): void {
-    this.identificaciones = [];
-    this.realizarPagoService.obtenerIdentificaciones().subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.identificaciones = mapearArregloTipoDropdown(respuesta.datos, "desTipoId", "idTipoId");
-      },
-      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
-    })
-  }
-
   cancelar(): void {
     this.ref.close();
-  }
-
-  private manejarMensajeError(error: HttpErrorResponse): void {
-    console.error(error);
-    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   get fagf() {

@@ -9,6 +9,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {MetodoPago} from "../../modelos/detallePago.interface";
 
 interface SolicitudModificacionPago {
   idPagoDetalle: number,
@@ -80,24 +81,32 @@ export class ModificarTipoPagoComponent implements OnInit {
   }
 
   llenarCatalogos(): void {
-    this.tipoPagoForm.get('tipoPagoAnterior')?.patchValue(this.config.data.metodoPago);
-    this.idPagoDetalle = this.config.data.idPagoDetalle;
-    this.total = this.config.data.importe;
-    if (this.config.data.tipoPago === 'Pago de Orden de Servicio') {
-      this.tipoPagos = this.catalogoODS();
-      return;
-    }
-    this.tipoPagos = TIPO_PAGO_CATALOGOS_CONVENIO;
+    const pago: MetodoPago =  this.config.data.pago as MetodoPago
+    this.tipoPagoForm.get('tipoPagoAnterior')?.patchValue(pago.metodoPago);
+    this.tipoPagos = this.seleccionarCatalogosTipoPago();
+    this.tipoPagoForm.get('tipoPago')?.patchValue(pago.idMetodoPago);
+    this.seleccionarId();
+    this.tipoPagoForm.get('fecha')?.patchValue(pago.fechaPago);
+    this.tipoPagoForm.get('noAutorizacion')?.patchValue(pago.numAutorizacion);
+    this.tipoPagoForm.get('nombreBanco')?.patchValue(pago.nomBanco);
+    this.tipoPagoForm.get('importe')?.patchValue(pago.importe);
+    this.idPagoDetalle = pago.idPagoDetalle;
+    this.total = pago.importe;
+    this.tipoPagoForm.get('totalPagar')?.patchValue(this.config.data.total);
+    this.tipoPagoForm.get('totalPagado')?.patchValue(this.config.data.totalPagado);
   }
 
-  catalogoODS(): TipoDropdown[] {
-    return TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value as number));
+  seleccionarCatalogosTipoPago(): TipoDropdown[] {
+    if (this.config.data.tipoPago === 'Pago de Orden de Servicio') {
+      return TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value as number));
+    }
+    return TIPO_PAGO_CATALOGOS_CONVENIO;
   }
 
   seleccionarId(): void {
     this.idPago = +this.tipoPagoForm.get('tipoPago')?.value;
     this.tipoPago = this.tipoPagos.find(tP => tP.value === this.idPago).label;
-    this.validarCamposRequeridos(this.idPago as number);
+    this.validarCamposRequeridos(this.idPago);
   }
 
   validarCamposRequeridos(id: number): void {

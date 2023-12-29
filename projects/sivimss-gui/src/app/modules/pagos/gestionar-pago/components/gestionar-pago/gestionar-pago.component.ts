@@ -212,7 +212,8 @@ export class GestionarPagoComponent implements OnInit {
 
   paginar(): void {
     this.cargadorService.activar();
-    this.gestionarPagoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+    const filtros = this.generarSolicitudFiltrosBasicos();
+    this.gestionarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.pagos = respuesta.datos.content;
@@ -223,6 +224,13 @@ export class GestionarPagoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error);
       },
     });
+  }
+
+  generarSolicitudFiltrosBasicos() {
+    const velatorio = this.filtroGestionarPagoForm.get('velatorio')?.value
+    return {
+      idVelatorio: velatorio === 0 ? null : velatorio,
+    }
   }
 
   abrirPanel(event: MouseEvent, pago: PagoGestion): void {

@@ -144,7 +144,7 @@ export class RealizarPagoComponent implements OnInit {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     const velatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
-    const DEFAULT: FiltroBasico = {nivel, velatorio}
+    const DEFAULT = {nivel, velatorio}
     this.filtroFormDir.resetForm(DEFAULT);
     this.tipoFolio = null;
   }
@@ -201,9 +201,11 @@ export class RealizarPagoComponent implements OnInit {
   crearSolicituDescarga(tipoReporte: string = 'pdf'): SolicitudDescargaArchivo {
     const folio: string | null = this.obtenerValorFolio();
     let idFlujoPagos: number | null = this.tipoFolio || null;
+    let fechaInicio: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoInicio')?.value);
+    let fechaFin: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoFin')?.value);
     return {
-      fechaFin: this.filtroPagoForm.get('periodoInicio')?.value,
-      fechaInicio: this.filtroPagoForm.get('periodoFin')?.value,
+      fechaFin,
+      fechaInicio,
       folio,
       idFlujoPagos,
       idVelatorio: this.filtroPagoForm.get('velatorio')?.value,
@@ -223,8 +225,9 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   paginar(): void {
+    const filtros: FiltroBasico = this.crearSolicitudFiltrosBasicos();
     this.cargadorService.activar();
-    this.realizarPagoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+    this.realizarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusqueda(respuesta),
       error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
@@ -244,13 +247,27 @@ export class RealizarPagoComponent implements OnInit {
   crearSolicitudFiltros(): FiltrosPago {
     const folio: string | null = this.obtenerValorFolio();
     const velatorio = this.filtroPagoForm.get('velatorio')?.value
+    let fechaInicio: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoInicio')?.value);
+    let fechaFin: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoFin')?.value);
     return {
       folio,
-      fechaFin: this.filtroPagoForm.get('periodoFin')?.value,
-      fechaInicio: this.filtroPagoForm.get('periodoInicio')?.value,
+      fechaFin,
+      fechaInicio,
       idVelatorio: velatorio === 0 ? null : velatorio,
       nomContratante: this.filtroPagoForm.get('nombreContratante')?.value,
       idFlujoPagos: this.tipoFolio
+    }
+  }
+
+  recuperarFormatoFecha(fecha: string): string | null {
+    if (!fecha) return null
+    return moment(fecha).format('YYYY-MM-DD');
+  }
+
+  crearSolicitudFiltrosBasicos(): FiltroBasico {
+    const velatorio = this.filtroPagoForm.get('velatorio')?.value
+    return {
+      idVelatorio: velatorio === 0 ? null : velatorio,
     }
   }
 

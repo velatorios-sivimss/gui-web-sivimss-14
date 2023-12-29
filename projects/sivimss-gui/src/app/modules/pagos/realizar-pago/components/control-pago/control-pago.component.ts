@@ -14,7 +14,7 @@ import {EliminarTipoPagoComponent} from "../eliminar-tipo-pago/eliminar-tipo-pag
 import {
   RegistrarValeParitariaComponent
 } from "../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
-import {ParametrosEliminar, ParametrosModificar, RegistroModal} from "../../modelos/datosRegistro.interface";
+import {ParametrosEliminar, RegistroModal} from "../../modelos/datosRegistro.interface";
 import {RegistrarAgfComponent} from "../registrar-pago/registrar-agf/registrar-agf.component";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {forkJoin, Observable} from "rxjs";
@@ -35,6 +35,13 @@ interface RespuestaAGF {
   agf: number,
   nss: null | number,
   idFinado: null | number
+}
+
+interface ParametrosModificar {
+  pago: MetodoPago,
+  tipoPago: string,
+  total: number,
+  totalPagado: number
 }
 
 @Component({
@@ -147,8 +154,8 @@ export class ControlPagoComponent implements OnInit {
     if (this.agfSeleccionado.agf === 0) {
       CATALOGOS = CATALOGOS.filter((pago: TipoDropdown) => ![2].includes(pago.value as number));
     }
-    const valeSeleccionado = respuesta[POSICION_VALIDACION_VALE].datos
-    if (valeSeleccionado.valeP === 1) {
+    const valeSeleccionado = respuesta[POSICION_VALIDACION_VALE].datos;
+    if (valeSeleccionado.valeP === 0) {
       CATALOGOS = CATALOGOS.filter((pago: TipoDropdown) => ![1].includes(pago.value as number));
     }
     this.tiposPago = CATALOGOS;
@@ -222,9 +229,10 @@ export class ControlPagoComponent implements OnInit {
 
   generarDatosDialogoModificar(): ParametrosModificar {
     return {
-      metodoPago: this.pagoSeleccionado.metodoPago, importe: this.pagoSeleccionado.importe,
-      tipoPago: this.registroPago.tipoPago, idPagoDetalle: this.pagoSeleccionado.idPagoDetalle,
-      total: this.registroPago.totalAPagar
+      pago: this.pagoSeleccionado,
+      tipoPago: this.registroPago.tipoPago,
+      total: this.registroPago.totalAPagar,
+      totalPagado: this.registroPago.totalPagado
     };
   }
 
