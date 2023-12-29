@@ -74,18 +74,6 @@
           <span class="campo-obligatorio"
                 *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
         </div>
-        <div class="col-md-3 flex justify-content-center  mt-2">
-          <div class="flex flex-column">
-            <span class=" etiqueta-base mt-2">Total pagado</span>
-            <span class="text-bold mt-2 total-pago text-center">{{total | currency}}</span>
-          </div>
-        </div>
-        <div class="col-md-3 flex justify-content-center  mt-2">
-          <div class="flex flex-column">
-            <span class=" etiqueta-base mt-2">Total a pagar</span>
-            <span class="text-bold mt-2 total-pago text-center">{{total | currency}}</span>
-          </div>
-        </div>
       </div>
       <div class="row mb-4">
         <div class="col-md-12 control-label">

@@ -147,8 +147,8 @@ export class ControlPagoComponent implements OnInit {
     if (this.agfSeleccionado.agf === 0) {
       CATALOGOS = CATALOGOS.filter((pago: TipoDropdown) => ![2].includes(pago.value as number));
     }
-    const valeSeleccionado = respuesta[POSICION_VALIDACION_VALE].datos
-    if (valeSeleccionado.valeP === 1) {
+    const valeSeleccionado = respuesta[POSICION_VALIDACION_VALE].datos;
+    if (valeSeleccionado.valeP === 0) {
       CATALOGOS = CATALOGOS.filter((pago: TipoDropdown) => ![1].includes(pago.value as number));
     }
     this.tiposPago = CATALOGOS;
