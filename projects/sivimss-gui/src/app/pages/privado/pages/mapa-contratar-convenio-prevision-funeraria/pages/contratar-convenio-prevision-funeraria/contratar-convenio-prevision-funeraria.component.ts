@@ -13,7 +13,7 @@ import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { finalize } from 'rxjs';
+import { finalize, timeout } from 'rxjs';
 import {
   AlertaService,
   TipoAlerta,
@@ -109,11 +109,23 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   ngOnInit(): void {
     this.formPersona = this.crearFormPersona();
     this.formEmpresa = this.crearFormularioEmpresa();
-    this.buscarDatosGenerales();
-    this.buscarPromotores();
-    this.buscarPaises();
-    this.buscarPaquete();
-    this.buscarParentesco();
+    setTimeout(() => {
+      this.buscarDatosGenerales();
+    }, 100);
+
+    setTimeout(() => {
+      this.buscarPromotores();
+    }, 200);
+    setTimeout(() => {
+      this.buscarPaises();
+    }, 300);
+    setTimeout(() => {
+      this.buscarPaquete();
+    }, 600);
+    setTimeout(() => {
+      this.buscarParentesco();
+    }, 900);
+
     this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
     this.velatorio = this.rutaActiva.snapshot.queryParams.velatorio;
     if (this.rutaActiva.snapshot.queryParams.idConvenio)
@@ -383,21 +395,21 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.required, Validators.maxLength(5)],
+          [Validators.required, Validators.maxLength(45)],
         ],
         razonSocial: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.required, Validators.maxLength(5)],
+          [Validators.required, Validators.maxLength(45)],
         ],
         rfc: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.required, Validators.maxLength(5)],
+          [Validators.required, Validators.maxLength(13)],
         ],
         pais: [
           {
@@ -439,14 +451,14 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.required, Validators.maxLength(5)],
+          [Validators.required, Validators.maxLength(45)],
         ],
         numeroExterior: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.required, Validators.maxLength(5)],
+          [Validators.required, Validators.maxLength(45)],
         ],
         numeroInterior: [
           {
@@ -460,7 +472,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.required, Validators.maxLength(5)],
+          [Validators.required, Validators.maxLength(10)],
         ],
         correoElectronico: [
           {
@@ -470,7 +482,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
           [
             Validators.required,
             Validators.pattern(PATRON_CORREO),
-            Validators.maxLength(5),
+            Validators.maxLength(45),
           ],
         ],
       }),
@@ -743,13 +755,13 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   guardarEmpresa(): void {
-    if (!this.formPersona.valid) {
+    if (!this.formEmpresa.valid) {
       return;
     }
 
     let parametros = {
       idVelatorio: this.rutaActiva.snapshot.queryParams.idVelatorio,
-      idPromotor: this.datosGrupo.promotor.value,
+      idPromotor: this.datosGrupo.promotor?.value,
       calle: this.datosGrupo.calle.value,
       noExterior: this.datosGrupo.numeroExterior.value,
       noInterior: this.datosGrupo.numeroInterior.value,
@@ -762,9 +774,44 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
       rfcEmpresa: this.datosGrupo.rfc.value,
       idPais: this.datosGrupo.pais.value,
       telefono: this.datosGrupo.telefono.value,
-      correo: this.datosGrupo.correoElectronicoGrupo.value,
+      correo: this.datosGrupo.correoElectronico.value,
     };
-    console.log(parametros);
+
+    this.consultaConveniosService
+      .agregarContratoEmpresa(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            console.log(respuesta.mensaje);
+            this.mostrarMensaje(Number(respuesta.mensaje));
+            return;
+          }
+
+          if (respuesta.mensaje === 'Exito') {
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              'Grupo agregado correctamente'
+            );
+
+            let datos = respuesta.datos;
+            this.mostrarBontonGaurdarPersona = false;
+            this.idConvenioPf = datos.idConvenioPF;
+            this.idDomicilio = datos.idDomicilio;
+            this.folioConvenio = datos.folio;
+            this.idContratante = datos.idContratante;
+            this.mostrarBotonAgregarBeneficiario = true;
+            this.deshabilitarTipo = true;
+          } else {
+            console.log(respuesta);
+            this.mostrarMensaje(Number(respuesta.mensaje));
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.mostrarMensaje(0);
+        },
+      });
   }
 
   guardarPersona(): void {

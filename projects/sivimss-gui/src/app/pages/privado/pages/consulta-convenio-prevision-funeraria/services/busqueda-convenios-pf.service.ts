@@ -122,4 +122,11 @@ export class BusquedaConveniosPFServic extends BaseService<
       parametros
     );
   }
+
+  agregarContratoEmpresa(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `convenio-pf/alta-plan-pf/empresa`,
+      parametros
+    );
+  }
 }
