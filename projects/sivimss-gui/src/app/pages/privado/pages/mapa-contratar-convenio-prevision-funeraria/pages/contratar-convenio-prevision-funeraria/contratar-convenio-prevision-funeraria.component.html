@@ -487,8 +487,8 @@
           </div>
           <div class="row mb-3">
             <div class="col-md-6">
-              <label class="control-label" for="correoElectronicoGrupo">Correo electrónico:</label>
-              <input id="correoElectronicoGrupo" type="text" class="form-control" formControlName="correoElectronico"
+              <label class="control-label" for="correoElectronico">Correo electrónico:</label>
+              <input id="correoElectronico" type="text" class="form-control" formControlName="correoElectronico"
                 placeholder="Ingresa correo electrónico">
             </div>
           </div>
@@ -566,7 +566,7 @@
       <div class="row">
         <div class="col-md-12 flex justify-content-end align-items-center">
           <button class="btn btn-gold btn-md" type="button">Cancelar</button>
-          <button class="btn btn-primary btn-md ml-4" type="submit" [disabled]="!this.formPersona.valid"
+          <button class="btn btn-primary btn-md ml-4" type="submit" [disabled]="!this.formEmpresa.valid"
             *ngIf="mostrarBontonGaurdarPersona">Guardar</button>
           <button class="btn btn-gold btn-md" type="button" *ngIf="!mostrarBontonGaurdarPersona">Terminar
             contratacion</button>
