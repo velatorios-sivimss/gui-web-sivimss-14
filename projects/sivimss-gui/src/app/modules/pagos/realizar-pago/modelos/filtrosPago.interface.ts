@@ -8,6 +8,5 @@ export interface FiltrosPago {
 }
 
 export interface FiltroBasico {
-  nivel: number,
-  velatorio: number | null
+  idVelatorio: number | null
 }
