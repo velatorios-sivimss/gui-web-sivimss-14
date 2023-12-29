@@ -5,26 +5,27 @@
 </div>
 <p-table styleClass="mt-5 mb-6" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
          [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-         (onLazyLoad)="seleccionarPaginacion($event)">
+         (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
+         appActivarUltimaCeldaSticky>
   <ng-template pTemplate="header">
     <tr>
       <th id="columna_pagos_convenio_fecha_pago">Fecha de pago</th>
-      <th id="columna_pagos_convenio_folio">Folio NCPF</th>
-      <th id="columna_pagos_convenio_tipo_pago">Tipo de pago</th>
-      <th id="columna_pagos_convenio_total_pagar">Total a pagar</th>
-      <th id="columna_pagos_convenio_total_pagado">Total pagado</th>
-      <th id="columna_pagos_convenio_diferencias_totales">Diferencias Totales</th>
-      <th id="columna_pagos_convenio_botones"></th>
+      <th pResizableColumn id="columna_pagos_convenio_folio">Folio NCPF</th>
+      <th pResizableColumn id="columna_pagos_convenio_tipo_pago">Tipo de pago</th>
+      <th pResizableColumn id="columna_pagos_convenio_total_pagar">Total a pagar</th>
+      <th pResizableColumn id="columna_pagos_convenio_total_pagado">Total pagado</th>
+      <th pResizableColumn id="columna_pagos_convenio_diferencias_totales">Diferencias Totales</th>
+      <th pResizableColumn id="columna_pagos_convenio_botones"></th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-pago>
     <tr>
-      <td>{{pago.fechaPago | date:'dd/MM/YYYY'}}</td>
-      <td>{{pago.folio}}</td>
-      <td>{{pago.tipoPago}}</td>
-      <td class="font-bold">{{pago.total | currency}}</td>
-      <td class="font-bold">{{pago.totalPagado | currency}}</td>
-      <td class="font-bold">{{pago.diferenciasTotales | currency}}</td>
+      <td pResizableColumn>{{pago.fechaPago | date:'dd/MM/YYYY'}}</td>
+      <td pResizableColumn>{{pago.folio}}</td>
+      <td pResizableColumn>{{pago.tipoPago}}</td>
+      <td pResizableColumn class="font-bold">{{pago.total | currency}}</td>
+      <td pResizableColumn class="font-bold">{{pago.totalPagado | currency}}</td>
+      <td pResizableColumn class="font-bold">{{pago.diferenciasTotales | currency}}</td>
       <td>
         <div class="contenedor-celda-iconos">
           <a (click)="abrirPanel($event,pago)">
