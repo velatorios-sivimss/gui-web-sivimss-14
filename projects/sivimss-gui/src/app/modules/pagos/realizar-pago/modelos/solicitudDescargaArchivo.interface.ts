@@ -1,7 +1,7 @@
 export interface SolicitudDescargaArchivo {
   folio: string | null,
-  fechaFin: string,
-  fechaInicio: string,
+  fechaFin: string | null,
+  fechaInicio: string | null,
   idVelatorio: number,
   nomContratante: string,
   idFlujoPagos: number | null,

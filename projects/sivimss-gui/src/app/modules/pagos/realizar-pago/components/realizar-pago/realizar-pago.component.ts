@@ -201,9 +201,11 @@ export class RealizarPagoComponent implements OnInit {
   crearSolicituDescarga(tipoReporte: string = 'pdf'): SolicitudDescargaArchivo {
     const folio: string | null = this.obtenerValorFolio();
     let idFlujoPagos: number | null = this.tipoFolio || null;
+    let fechaInicio: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoInicio')?.value);
+    let fechaFin: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoFin')?.value);
     return {
-      fechaFin: this.filtroPagoForm.get('periodoInicio')?.value,
-      fechaInicio: this.filtroPagoForm.get('periodoFin')?.value,
+      fechaFin,
+      fechaInicio,
       folio,
       idFlujoPagos,
       idVelatorio: this.filtroPagoForm.get('velatorio')?.value,
@@ -245,14 +247,21 @@ export class RealizarPagoComponent implements OnInit {
   crearSolicitudFiltros(): FiltrosPago {
     const folio: string | null = this.obtenerValorFolio();
     const velatorio = this.filtroPagoForm.get('velatorio')?.value
+    let fechaInicio: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoInicio')?.value);
+    let fechaFin: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoFin')?.value);
     return {
       folio,
-      fechaFin: this.filtroPagoForm.get('periodoFin')?.value,
-      fechaInicio: this.filtroPagoForm.get('periodoInicio')?.value,
+      fechaFin,
+      fechaInicio,
       idVelatorio: velatorio === 0 ? null : velatorio,
       nomContratante: this.filtroPagoForm.get('nombreContratante')?.value,
       idFlujoPagos: this.tipoFolio
     }
+  }
+
+  recuperarFormatoFecha(fecha: string): string | null {
+    if (!fecha) return null
+    return moment(fecha).format('YYYY-MM-DD');
   }
 
   crearSolicitudFiltrosBasicos(): FiltroBasico {
