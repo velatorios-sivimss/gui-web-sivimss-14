@@ -153,7 +153,7 @@ export class InformacionServicioComponent implements OnInit {
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
     if (this.altaODS.finado.extremidad) this.desabilitarTodo();
-    if (Number(this.altaODS.finado.idTipoOrden) < 2 && !this.altaODS.finado.extremidad){
+    if (Number(this.altaODS.finado.idTipoOrden) == 1 && !this.altaODS.finado.extremidad){
       this.cortejo.gestionadoPorPromotor.enable()
     }
   }
@@ -185,7 +185,6 @@ export class InformacionServicioComponent implements OnInit {
         this.lugarVelacion.estado.disable();
         this.instalacionServicio.fecha.enable();
         this.instalacionServicio.hora.enable();
-        this.cortejo.gestionadoPorPromotor.enable();
       }
 
       if (+datos.idTipoServicio == 3) {
