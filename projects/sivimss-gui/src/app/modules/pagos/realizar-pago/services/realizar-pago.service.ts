@@ -58,25 +58,22 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   consultarPagosODS(body: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
-      .append("tamanio", tamanio)
-      .append("servicio", this._odsPagos);
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, body, {params});
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._odsPagos}`, body, {params});
   }
 
   consultarPagosConvenio(body: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
-      .append("tamanio", tamanio)
-      .append("servicio", this._prevFunPagos);
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, body, {params});
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._prevFunPagos}`, body, {params});
   }
 
   consultarPagosRenovacionConvenio(body: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
-      .append("tamanio", tamanio)
-      .append("servicio", this._renPrevFunPagos);
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, body, {params});
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._renPrevFunPagos}`, body, {params});
   }
 
   consultarFoliosODS(): Observable<HttpRespuesta<any>> {
@@ -111,13 +108,13 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._modificarPago}`, body)
   }
 
-  consultarIdODSAGF(idODS: number): Observable<HttpRespuesta<any>>{
-    const body = { idODS }
+  consultarIdODSAGF(idODS: number): Observable<HttpRespuesta<any>> {
+    const body = {idODS}
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._validaAGF}`, body)
   }
 
-  consultarIdODSVale(idOds: number): Observable<HttpRespuesta<any>>{
-    const body = { idOds }
+  consultarIdODSVale(idOds: number): Observable<HttpRespuesta<any>> {
+    const body = {idOds}
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._validaVale}`, body)
   }
 
@@ -143,7 +140,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   consultarBeneficiarios(nss: number, fechaDefuncion: string) {
-    const body = { cveNSS: nss, fechaDefuncion }
+    const body = {cveNSS: nss, fechaDefuncion}
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidadAGF}/beneficiarios-regis-agf`, body);
   }
 
