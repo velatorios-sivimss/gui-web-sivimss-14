@@ -36,7 +36,7 @@ export class SeleccionBeneficiariosAgfComponent {
     private mensajesSistemaService: MensajesSistemaService,
   ) {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
-    this.beneficiarios = respuesta.datos;
+    this.beneficiarios = respuesta.datos || [];
     this.obtenerParametrosAGF();
   }
 
