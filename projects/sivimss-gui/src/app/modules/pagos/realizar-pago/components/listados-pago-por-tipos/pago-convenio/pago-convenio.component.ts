@@ -13,7 +13,12 @@ import {RealizarPagoService} from "../../../services/realizar-pago.service";
 import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 import {PagoEspecifico} from "../../../modelos/pagoEspecifico.interface";
-import {validarUsuarioLogueado} from "../../../../../../utils/funciones";
+import {
+  obtenerNivelUsuarioLogueado,
+  obtenerVelatorioUsuarioLogueado,
+  validarUsuarioLogueado
+} from "../../../../../../utils/funciones";
+import {UsuarioEnSesion} from "../../../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-pago-convenio',
@@ -63,7 +68,9 @@ export class PagoConvenioComponent implements OnInit {
 
   paginar(): void {
     this.cargadorService.activar();
-    this.realizarPagoService.consultarPagosConvenio(this.numPaginaActual, this.cantElementosPorPagina)
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const idVelatorio: number | null = obtenerNivelUsuarioLogueado(usuario) === 1 ? null : obtenerVelatorioUsuarioLogueado(usuario);
+    this.realizarPagoService.consultarPagosConvenio({ idVelatorio },this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusqueda(respuesta),
       error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)

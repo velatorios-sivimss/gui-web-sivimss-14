@@ -11,9 +11,14 @@ import {HttpRespuesta} from "../../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 import {PagoEspecifico} from "../../../modelos/pagoEspecifico.interface";
-import {validarUsuarioLogueado} from "../../../../../../utils/funciones";
+import {
+  obtenerNivelUsuarioLogueado,
+  obtenerVelatorioUsuarioLogueado,
+  validarUsuarioLogueado
+} from "../../../../../../utils/funciones";
 import {TIPO_PAGO_CATALOGOS_ODS} from "../../../constants/catalogos";
 import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
+import {UsuarioEnSesion} from "../../../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-pago-orden-servicio',
@@ -65,7 +70,9 @@ export class PagoOrdenServicioComponent implements OnInit {
 
   private paginar(): void {
     this.cargadorService.activar();
-    this.realizarPagoService.consultarPagosODS(this.numPaginaActual, this.cantElementosPorPagina)
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const idVelatorio: number | null = obtenerNivelUsuarioLogueado(usuario) === 1 ? null : obtenerVelatorioUsuarioLogueado(usuario);
+    this.realizarPagoService.consultarPagosODS({idVelatorio}, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusqueda(respuesta),
       error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)

@@ -44,7 +44,6 @@ interface ParametrosModificar {
   totalPagado: number
 }
 
-
 @Component({
   selector: 'app-modificar-metodo-pago',
   templateUrl: './modificar-metodo-pago.component.html',

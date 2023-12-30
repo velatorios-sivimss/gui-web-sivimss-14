@@ -55,28 +55,28 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
-  consultarPagosODS(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  consultarPagosODS(body: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio)
       .append("servicio", this._odsPagos);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, body, {params});
   }
 
-  consultarPagosConvenio(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  consultarPagosConvenio(body: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio)
       .append("servicio", this._prevFunPagos);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, body, {params});
   }
 
-  consultarPagosRenovacionConvenio(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  consultarPagosRenovacionConvenio(body: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio)
       .append("servicio", this._renPrevFunPagos);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, body, {params});
   }
 
   consultarFoliosODS(): Observable<HttpRespuesta<any>> {
