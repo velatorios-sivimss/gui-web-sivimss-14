@@ -1223,8 +1223,7 @@ export class ModificarDatosFinadoComponent
         datosEtapaFinado.datosFinado.procedenciaFinado;
       this.finado.idTipoPension = datosEtapaFinado.datosFinado.tipoPension;
       this.finado.idContratoPrevision = this.idContratoPrevision;
-      this.finado.idVelatorioContratoPrevision =
-        this.idVelatorioContratoPrevision;
+      this.finado.idVelatorioContratoPrevision = this.idVelatorioContratoPrevision ? this.idVelatorioContratoPrevision : null;
       this.cpFinado.desCalle = datosEtapaFinado.direccion.calle;
       this.cpFinado.numExterior = datosEtapaFinado.direccion.noExterior;
       this.cpFinado.numInterior = datosEtapaFinado.direccion.noInterior;
