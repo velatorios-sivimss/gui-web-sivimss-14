@@ -414,22 +414,17 @@ export class OrdenesServicioComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
           {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
-        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-          finalize(() => this.loaderService.desactivar())
-        ).subscribe({
-          next: (repuesta): void => {
-            this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-            this.mostrarModalConfirmacion = true;
-          },
-          error: (error): void => {
-            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-          }
-        })
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download', 'documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
       },
       error: (error: HttpErrorResponse): void => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
