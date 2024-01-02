@@ -121,26 +121,29 @@ export class GestionarPagoComponent implements OnInit {
 
   limpiar(): void {
     this.paginacionConFiltrado = false;
-    if (this.filtroGestionarPagoForm) {
-      this.tipoFolio = null;
-      const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroFormDir.resetForm({velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)});
-    }
+    this.limpiarFormulario();
     this.numPaginaActual = 0;
     this.paginar();
   }
 
+  limpiarFormulario(): void {
+    if (!this.filtroGestionarPagoForm) return;
+    this.tipoFolio = null;
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroFormDir.resetForm({velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)});
+  }
+
   obtenerVelatorios(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null
+    const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null;
     this.gestionarPagoService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.cargarCatalogoVelatorios(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  cargarCatalogoVelatorios(respuesta: HttpRespuesta<any>): void {
+    this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
   }
 
   limpiarFolios(folio: 1 | 2 | 3): void {
@@ -176,15 +179,19 @@ export class GestionarPagoComponent implements OnInit {
     const filtros = this.generarSolicitudFiltros();
     this.gestionarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.pagos = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      },
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusqueda(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error),
     });
+  }
+
+  private manejarRespuestaBusqueda(respuesta: HttpRespuesta<any>): void {
+    this.pagos = respuesta.datos.content;
+    this.totalElementos = respuesta.datos.totalElements;
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   generarSolicitudFiltros() {
@@ -215,18 +222,12 @@ export class GestionarPagoComponent implements OnInit {
     const filtros = this.generarSolicitudFiltrosBasicos();
     this.gestionarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.pagos = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      },
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusqueda(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error),
     });
   }
 
-  generarSolicitudFiltrosBasicos() {
+  generarSolicitudFiltrosBasicos(): { idVelatorio: null | number } {
     const velatorio = this.filtroGestionarPagoForm.get('velatorio')?.value
     return {
       idVelatorio: velatorio === 0 ? null : velatorio,
@@ -251,35 +252,38 @@ export class GestionarPagoComponent implements OnInit {
   guardarPDF(): void {
     this.cargadorService.activar();
     const solicitud = this.crearSolicituDescarga();
-    const opciones = {nombreArchivo: `Gestionar Pago ${obtenerFechaYHoraActual()}`}
+    const opciones: { nombreArchivo: string } = {nombreArchivo: `Gestionar Pago ${obtenerFechaYHoraActual()}`}
     this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado(solicitud), opciones).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: boolean): void => {
-        if (respuesta) this.mostrarModalDescargaExitosa = true;
-      },
-      error: (error): void => {
-        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-      },
+      next: (respuesta: boolean): void => this.manejarMensajeDescargaExitosa(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeErrorDescarga(error),
     });
   }
 
   guardarExcel(): void {
     this.cargadorService.activar();
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: `Gestionar Pago ${obtenerFechaYHoraActual()}`, ext: "xlsx"}
+    const configuracionArchivo: OpcionesArchivos = {
+      nombreArchivo: `Gestionar Pago ${obtenerFechaYHoraActual()}`,
+      ext: "xlsx"
+    }
     const solicitud = this.crearSolicituDescarga('xls');
     this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado(solicitud), configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: boolean): void => {
-        if (respuesta) this.mostrarModalDescargaExitosa = true;
-      },
-      error: (error): void => {
-        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-      },
+      next: (respuesta: boolean): void => this.manejarMensajeDescargaExitosa(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeErrorDescarga(error),
     });
+  }
+
+  private manejarMensajeErrorDescarga(error: HttpErrorResponse): void {
+    const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+    this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento. Intenta nuevamente.');
+  }
+
+  private manejarMensajeDescargaExitosa(respuesta: boolean): void {
+    if (!respuesta) return;
+    this.mostrarModalDescargaExitosa = !this.mostrarModalDescargaExitosa;
   }
 
   crearSolicituDescarga(tipoReporte: string = 'pdf') {
