@@ -17,6 +17,7 @@ export interface RegistroModal {
   tipoPago: string,
   idPago: string,
   total: number,
+  totalPendiente: number,
   datosRegistro: DatosRegistro
 }
 

@@ -28,6 +28,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
   tipoPago!: string;
   idPago!: number;
   total: number = 0;
+  totalFaltante: number = 0;
   pagosDeshabilitados: number[] = [5, 8];
   fechasDeshabilitadas: number[] = [3, 4, 5];
   bancoLabelDiferente: number[] = [6, 7]
@@ -49,6 +50,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
     this.tipoPago = this.config.data.tipoPago;
     this.idPago = this.config.data.idPago;
     this.total = this.config.data.total;
+    this.totalFaltante = this.config.data.totalPendiente;
     this.registroPago = this.config.data.datosRegistro;
     this.inicializarTipoPagoForm();
     this.validarCamposRequeridos(this.idPago);
@@ -56,7 +58,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
 
   inicializarTipoPagoForm(): void {
     this.tipoPagoForm = this.formBuilder.group({
-      total: [{value: this.total, disabled: true}],
+      total: [{value: this.totalFaltante, disabled: true}],
       fecha: [{value: null, disabled: false}, [Validators.required]],
       noAutorizacion: [{value: null, disabled: false}, [Validators.required]],
       nombreBanco: [{value: null, disabled: false}, [Validators.required]],

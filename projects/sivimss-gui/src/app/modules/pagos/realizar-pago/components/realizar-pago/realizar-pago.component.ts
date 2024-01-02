@@ -190,7 +190,7 @@ export class RealizarPagoComponent implements OnInit {
 
   private manejarMensajeErrorDescarga(error: HttpErrorResponse): void {
     const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-    this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+    this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento. Intenta nuevamente.');
   }
 
   private manejarMensajeDescargaExitosa(respuesta: boolean): void {
@@ -288,11 +288,13 @@ export class RealizarPagoComponent implements OnInit {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null;
     this.realizarPagoService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
-      },
+      next: (respuesta: HttpRespuesta<any>): void => this.cargarCatalogoVelatorios(respuesta),
       error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  cargarCatalogoVelatorios(respuesta: HttpRespuesta<any>): void {
+    this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
   }
 
   limpiarFolios(folio: 1 | 2 | 3): void {
