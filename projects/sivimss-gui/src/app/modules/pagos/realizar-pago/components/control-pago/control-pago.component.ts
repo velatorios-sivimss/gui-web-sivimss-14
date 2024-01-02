@@ -146,7 +146,7 @@ export class ControlPagoComponent implements OnInit {
     })
   }
 
-   procesarRespuestaCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void {
+  procesarRespuestaCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void {
     let CATALOGOS: TipoDropdown[] = [...TIPO_PAGO_CATALOGOS_ODS]
     const POSICION_VALIDACION_AGF: number = 0;
     const POSICION_VALIDACION_VALE: number = 1;
@@ -202,7 +202,8 @@ export class ControlPagoComponent implements OnInit {
     const tipoPago: string = this.tiposPago.find((tp: TipoDropdown) => tp.value === idPago)?.label ?? '';
     return {
       tipoPago, idPago,
-      total: this.registroPago.totalPorCubrir,
+      total: this.registroPago.totalAPagar,
+      totalPendiente: this.registroPago.totalPorCubrir,
       datosRegistro: {
         idPagoBitacora: this.registroPago.idPagoBitacora,
         idFlujoPago: this.registroPago.idFlujoPago,

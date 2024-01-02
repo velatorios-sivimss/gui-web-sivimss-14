@@ -200,7 +200,8 @@ export class ModificarMetodoPagoComponent implements OnInit {
     const tipoPago: string = this.tiposPago.find((tp: TipoDropdown) => tp.value === idPago)?.label ?? '';
     return {
       tipoPago, idPago,
-      total: this.registroPago.totalPorCubrir,
+      total: this.registroPago.totalAPagar,
+      totalPendiente: this.registroPago.totalPorCubrir,
       datosRegistro: {
         idPagoBitacora: this.registroPago.idPagoBitacora,
         idFlujoPago: this.registroPago.idFlujoPago,
