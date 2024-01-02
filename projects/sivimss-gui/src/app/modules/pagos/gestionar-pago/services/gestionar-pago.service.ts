@@ -22,18 +22,18 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
       'genpago-consulta', 'genpago-detalle', '');
   }
 
-  consultarFoliosODS(velatorio: number | null): Observable<HttpRespuesta<any>> {
-    const body: { velatorio: number | null } = { velatorio }
+  consultarFoliosODS(idVelatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { idVelatorio: number | null } = { idVelatorio }
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._odsFolios}`, body);
   }
 
-  consultarFoliosPrevFun(velatorio: number | null): Observable<HttpRespuesta<any>> {
-    const body: { velatorio: number | null } = { velatorio }
+  consultarFoliosPrevFun(idVelatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { idVelatorio: number | null } = { idVelatorio }
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._prevFunFolios}`, body);
   }
 
-  consultarFoliosRenPrevFun(velatorio: number | null): Observable<HttpRespuesta<any>> {
-    const body: { velatorio: number | null } = { velatorio }
+  consultarFoliosRenPrevFun(idVelatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { idVelatorio: number | null } = { idVelatorio }
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._renPrevFunFolios}`, body);
   }
 

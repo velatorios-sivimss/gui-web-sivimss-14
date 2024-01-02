@@ -290,7 +290,7 @@ export class GestionarPagoComponent implements OnInit {
 
   cargarCatalogosCambioVelatorio(): void {
     const velatorio = this.filtroGestionarPagoForm.get('velatorio')?.value;
-    // this.cargadorService.activar()
+    this.cargadorService.activar()
     forkJoin([this.obtenerFoliosODS(velatorio), this.obtenerFoliosPF(velatorio), this.obtenerFoliosRPF(velatorio)]).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
