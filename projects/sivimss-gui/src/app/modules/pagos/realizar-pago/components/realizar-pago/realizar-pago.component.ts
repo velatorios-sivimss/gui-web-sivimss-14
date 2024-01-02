@@ -26,6 +26,7 @@ import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interfac
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 import {DialogService} from "primeng/dynamicdialog";
 import {SolicitudDescargaArchivo} from "../../modelos/solicitudDescargaArchivo.interface";
+import {forkJoin, Observable} from "rxjs";
 
 @Component({
   selector: 'app-realizar-pago',
@@ -41,10 +42,10 @@ export class RealizarPagoComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
-  readonly POSICION_CATALOGO_NIVELES: number = 0;
-  readonly POSICION_FOLIO_ODS: number = 1;
-  readonly POSICION_FOLIO_PREV_FUN: number = 2;
-  readonly POSICION_FOLIO_REN_PREV_FUN: number = 3;
+  readonly POSICION_FOLIO_ODS: number = 0;
+  readonly POSICION_FOLIO_PREV_FUN: number = 1;
+  readonly POSICION_FOLIO_REN_PREV_FUN: number = 2;
+  readonly POSICION_CATALOGO_NIVELES: number = 3;
 
   numPaginaActual: number = 0;
   totalElementos: number = 0;
@@ -135,6 +136,7 @@ export class RealizarPagoComponent implements OnInit {
   limpiar(): void {
     this.paginacionConFiltrado = false;
     this.limpiarFormulario();
+    this.cargarCatalogosCambioVelatorio();
     this.numPaginaActual = 0;
     this.paginar();
   }
@@ -159,6 +161,43 @@ export class RealizarPagoComponent implements OnInit {
       return;
     }
     this.paginar();
+  }
+
+  cargarCatalogosCambioVelatorio(): void {
+    const velatorio = this.filtroPagoForm.get('velatorio')?.value;
+    this.cargadorService.activar()
+    forkJoin([this.obtenerFoliosODS(velatorio), this.obtenerFoliosPF(velatorio), this.obtenerFoliosRPF(velatorio)]).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+        next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]) => this.procesarCargaCatalogos(respuesta),
+        error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
+      }
+    )
+  }
+
+  procesarCargaCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]): void {
+    const folioODS = respuesta[this.POSICION_FOLIO_ODS].datos;
+    this.foliosODS = mapearArregloTipoDropdown(folioODS, "folio", "folio");
+    const foliosPrevFun = respuesta[this.POSICION_FOLIO_PREV_FUN].datos;
+    this.foliosPrevFun = mapearArregloTipoDropdown(foliosPrevFun, "folio", "folio");
+    const foliosRevPrevFun = respuesta[this.POSICION_FOLIO_REN_PREV_FUN].datos;
+    this.foliosRevPrevFun = mapearArregloTipoDropdown(foliosRevPrevFun, "folio", "folio");
+    this.filtroPagoForm.get('folioOrden')?.patchValue(null);
+    this.filtroPagoForm.get('folioConvenio')?.patchValue(null);
+    this.filtroPagoForm.get('folioRenovacion')?.patchValue(null);
+    this.tipoFolio = null;
+  }
+
+  obtenerFoliosODS(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.consultarFoliosODS(velatorio);
+  }
+
+  obtenerFoliosPF(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.consultarFoliosPrevFun(velatorio);
+  }
+
+  obtenerFoliosRPF(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.consultarFoliosRenPrevFun(velatorio);
   }
 
   guardarPDF(): void {
