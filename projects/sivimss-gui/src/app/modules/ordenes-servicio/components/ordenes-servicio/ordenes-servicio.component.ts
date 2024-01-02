@@ -1,7 +1,7 @@
-import {Component, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LazyLoadEvent} from "primeng/api";
-import {DialogService} from "primeng/dynamicdialog";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {
   ModalGenerarTarjetaIdentificacionComponent
@@ -38,7 +38,7 @@ import {DescargaArchivosService} from "../../../../services/descarga-archivos.se
   styleUrls: ['./ordenes-servicio.component.scss'],
   providers: [DescargaArchivosService]
 })
-export class OrdenesServicioComponent implements OnInit {
+export class OrdenesServicioComponent implements OnInit, OnDestroy{
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -79,6 +79,8 @@ export class OrdenesServicioComponent implements OnInit {
   ordenServicioSeleccionada!: any;
 
   rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+
+  tarjetaIdentificacionref!: DynamicDialogRef;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -247,14 +249,14 @@ export class OrdenesServicioComponent implements OnInit {
   }
 
   abrirModalGenerarTarjetaIdent() {
-    const ref = this.dialogService.open(ModalGenerarTarjetaIdentificacionComponent, {
+    this.tarjetaIdentificacionref = this.dialogService.open(ModalGenerarTarjetaIdentificacionComponent, {
       header: 'Generar tarjeta de identificación',
       style: {maxWidth: '876px', width: '100%'},
       data: {
         ods: this.ordenServicioSeleccionada
       }
     });
-    ref.onClose.subscribe((val: boolean) => {
+    this.tarjetaIdentificacionref.onClose.subscribe((val: boolean) => {
       if (val) {
         this.paginar();
       }
@@ -595,6 +597,11 @@ export class OrdenesServicioComponent implements OnInit {
 
   get formulario() {
     return this.filtroForm.controls;
+  }
+  ngOnDestroy() {
+    if(this.tarjetaIdentificacionref){
+      this.tarjetaIdentificacionref.destroy();
+    }
   }
 
 }
