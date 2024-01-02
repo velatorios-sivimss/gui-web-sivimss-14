@@ -24,6 +24,7 @@ import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
+import {forkJoin, Observable} from "rxjs";
 
 @Component({
   selector: 'app-gestionar-pago',
@@ -122,6 +123,7 @@ export class GestionarPagoComponent implements OnInit {
   limpiar(): void {
     this.paginacionConFiltrado = false;
     this.limpiarFormulario();
+    this.cargarCatalogosCambioVelatorio();
     this.numPaginaActual = 0;
     this.paginar();
   }
@@ -284,6 +286,43 @@ export class GestionarPagoComponent implements OnInit {
   private manejarMensajeDescargaExitosa(respuesta: boolean): void {
     if (!respuesta) return;
     this.mostrarModalDescargaExitosa = !this.mostrarModalDescargaExitosa;
+  }
+
+  cargarCatalogosCambioVelatorio(): void {
+    const velatorio = this.filtroGestionarPagoForm.get('velatorio')?.value;
+    // this.cargadorService.activar()
+    forkJoin([this.obtenerFoliosODS(velatorio), this.obtenerFoliosPF(velatorio), this.obtenerFoliosRPF(velatorio)]).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+        next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]) => this.procesarCargaCatalogos(respuesta),
+        error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
+      }
+    )
+  }
+
+  procesarCargaCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]): void {
+    const folioODS = respuesta[this.POSICION_FOLIO_ODS].datos;
+    this.foliosODS = mapearArregloTipoDropdown(folioODS, "folio", "folio");
+    const foliosPrevFun = respuesta[this.POSICION_FOLIO_PREV_FUN].datos;
+    this.foliosPNCPF = mapearArregloTipoDropdown(foliosPrevFun, "folio", "folio");
+    const foliosRevPrevFun = respuesta[this.POSICION_FOLIO_REN_PREV_FUN].datos;
+    this.foliosPRCPF = mapearArregloTipoDropdown(foliosRevPrevFun, "folio", "folio");
+    this.filtroGestionarPagoForm.get('folioPNCPF')?.patchValue(null);
+    this.filtroGestionarPagoForm.get('folioPRCPF')?.patchValue(null);
+    this.filtroGestionarPagoForm.get('folioODS')?.patchValue(null);
+    this.tipoFolio = null;
+  }
+
+  obtenerFoliosODS(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    return this.gestionarPagoService.consultarFoliosODS(velatorio);
+  }
+
+  obtenerFoliosPF(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    return this.gestionarPagoService.consultarFoliosPrevFun(velatorio);
+  }
+
+  obtenerFoliosRPF(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    return this.gestionarPagoService.consultarFoliosRenPrevFun(velatorio);
   }
 
   crearSolicituDescarga(tipoReporte: string = 'pdf') {
