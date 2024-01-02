@@ -76,22 +76,19 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._renPrevFunPagos}`, body, {params});
   }
 
-  consultarFoliosODS(): Observable<HttpRespuesta<any>> {
-    const params: HttpParams = new HttpParams()
-      .append("servicio", this._odsFolios);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  consultarFoliosODS(idVelatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { idVelatorio: number | null } = {idVelatorio}
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._odsFolios}`, body);
   }
 
-  consultarFoliosPrevFun(): Observable<HttpRespuesta<any>> {
-    const params: HttpParams = new HttpParams()
-      .append("servicio", this._prevFunFolios);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  consultarFoliosPrevFun(idVelatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { idVelatorio: number | null } = {idVelatorio}
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._prevFunFolios}`, body);
   }
 
-  consultarFoliosRenPrevFun(): Observable<HttpRespuesta<any>> {
-    const params: HttpParams = new HttpParams()
-      .append("servicio", this._renPrevFunFolios);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  consultarFoliosRenPrevFun(idVelatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { idVelatorio: number | null } = {idVelatorio}
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._renPrevFunFolios}`, body);
   }
 
   consultarDetallePago(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
