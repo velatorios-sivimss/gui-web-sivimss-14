@@ -17,27 +17,28 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _imprimirPago: string = 'genpago-docto';
   private readonly _filtros: string = 'genpago-buscar';
 
-  body = {velatorio: null}
-
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, '', '', 66,
       'genpago-consulta', 'genpago-detalle', '');
   }
 
-  consultarFoliosODS(): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._odsFolios}`, this.body);
+  consultarFoliosODS(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { velatorio: number | null } = { velatorio }
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._odsFolios}`, body);
   }
 
-  consultarFoliosPrevFun(): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._prevFunFolios}`, this.body);
+  consultarFoliosPrevFun(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { velatorio: number | null } = { velatorio }
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._prevFunFolios}`, body);
   }
 
-  consultarFoliosRenPrevFun(): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._renPrevFunFolios}`, this.body);
+  consultarFoliosRenPrevFun(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { velatorio: number | null } = { velatorio }
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._renPrevFunFolios}`, body);
   }
 
   obtenerDetallePago(idPago: number, idFlujo: number): Observable<HttpRespuesta<any>> {
-    const body = {idPago, idFlujo};
+    const body: { idPago: number; idFlujo: number } = {idPago, idFlujo};
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._detalle}`, body);
   }
 
