@@ -162,8 +162,8 @@ export class RegistrarAgfComponent implements OnInit {
       idTipoId: this.agfForm.get('identificacionOficial')?.value,
       idVelatorio: this.detalleAGF.idVelatorio,
       numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value,
-      cveCURPBeneficiario: "",
-      nombreBeneficiario: "",
+      cveCURPBeneficiario: this.detalleAGF.cveCurp,
+      nombreBeneficiario: this.detalleAGF.nombre,
       idPagoDetalle: null
     }
   }
@@ -185,8 +185,6 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   aceptar(): void {
-    this.datos_agf.cveCURPBeneficiario = '';
-    this.datos_agf.nombreBeneficiario = '';
     this.cargadorService.activar();
     this.realizarPagoService.guardar(this.datos_pago).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.manejoRespuestaBeneficiarios(respuesta),
