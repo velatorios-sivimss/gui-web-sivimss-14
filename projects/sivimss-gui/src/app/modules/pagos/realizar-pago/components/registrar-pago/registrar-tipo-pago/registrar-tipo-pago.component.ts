@@ -75,7 +75,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
       this.tipoPagoForm.get('nombreBanco')?.clearValidators();
     }
     if (id === 8) {
-      this.tipoPagoForm.get('importe')?.addValidators([Validators.max(this.total), Validators.min(this.total)]);
+      this.tipoPagoForm.get('importe')?.addValidators([Validators.max(this.totalFaltante), Validators.min(this.totalFaltante)]);
     }
   }
 
