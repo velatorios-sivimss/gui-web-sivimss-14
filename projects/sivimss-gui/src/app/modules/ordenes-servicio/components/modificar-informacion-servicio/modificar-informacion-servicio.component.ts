@@ -647,6 +647,10 @@ export class ModificarInformacionServicioComponent
 
   guardarODS(consumoTablas: number): void {
     this.loaderService.activar();
+    if(this.tipoOrden == 2){
+      this.altaODS.finado.extremidad ? this.altaODS.finado.extremidad = this.altaODS.finado.extremidad : this.altaODS.finado.extremidad = false
+      this.altaODS.finado.esobito ? this.altaODS.finado.esobito = this.altaODS.finado.esobito : this.altaODS.finado.esobito = false
+    }
     this.gestionarOrdenServicioService.actualizarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
