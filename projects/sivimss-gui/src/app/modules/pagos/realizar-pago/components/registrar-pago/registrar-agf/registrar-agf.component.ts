@@ -15,6 +15,7 @@ import {MensajesSistemaService} from "../../../../../../services/mensajes-sistem
 import {finalize} from "rxjs/operators";
 import {forkJoin, Observable} from "rxjs";
 import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
+import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/services/alerta.service";
 
 @Component({
   selector: 'app-registrar-agf',
@@ -41,6 +42,9 @@ export class RegistrarAgfComponent implements OnInit {
   readonly VALIDACION_DE_AGF: number = 2;
   pasoRegistrarAGF: number = 1;
 
+  datos_agf!: RegistroAGF;
+  datos_pago!: RegistroPago;
+
   constructor(
     private formBuilder: FormBuilder,
     private realizarPagoService: RealizarPagoService,
@@ -49,6 +53,7 @@ export class RegistrarAgfComponent implements OnInit {
     private router: Router,
     private mensajesSistemaService: MensajesSistemaService,
     private cargadorService: LoaderService,
+    private alertaService: AlertaService,
     private route: ActivatedRoute) {
     this.obtenerDatosAGF();
   }
@@ -91,7 +96,8 @@ export class RegistrarAgfComponent implements OnInit {
 
   private mostrarMensajeError(error: HttpErrorResponse): void {
     console.error(error);
-    this.mensajesSistemaService.mostrarMensajeError(error);
+    const ERROR: string = 'Error al consultar la información.';
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
   }
 
   procesarCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]): void {
@@ -102,15 +108,24 @@ export class RegistrarAgfComponent implements OnInit {
     this.detalleAGF = respuesta[this.POSICION_DETALLE_AGF].datos[0];
   }
 
-  aceptar(): void {
+  seleccionarBeneficiario(): void {
     this.ref.close();
-    const registroAGF: RegistroAGF = this.crearRegistroAGF();
-    const datos_agf: string = window.btoa(JSON.stringify(registroAGF));
-    const registroPago: RegistroPago = this.crearRegistroPago();
-    const datos_pago: string = window.btoa(JSON.stringify(registroPago))
+    const datos_agf: string = window.btoa(JSON.stringify(this.datos_agf));
+    const datos_pago: string = window.btoa(JSON.stringify(this.datos_pago));
     const fecDefuncion: string = this.obtenerFechaDefuncion(this.detalleAGF.fecDeceso);
     void this.router.navigate(['../../agf-seleccion-beneficiarios', this.detalleAGF.cveNss, fecDefuncion],
       {relativeTo: this.route, queryParams: {datos_agf, datos_pago}})
+  }
+
+  verificarTipoRamo(): void {
+    this.datos_agf = this.crearRegistroAGF();
+    this.datos_pago = this.crearRegistroPago();
+    const ramo = this.agfForm.get('ramo')?.value;
+    if ([3].includes(ramo)) {
+      this.seleccionarBeneficiario();
+      return;
+    }
+    this.aceptar();
   }
 
   obtenerFechaDefuncion(fecDeceso: string): string {
@@ -167,6 +182,46 @@ export class RegistrarAgfComponent implements OnInit {
       importeRegistro: this.importeTotal,
       numAutorizacion: ""
     }
+  }
+
+  aceptar(): void {
+    this.datos_agf.cveCURPBeneficiario = '';
+    this.datos_agf.nombreBeneficiario = '';
+    this.cargadorService.activar();
+    this.realizarPagoService.guardar(this.datos_pago).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => this.manejoRespuestaBeneficiarios(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
+    });
+  }
+
+  private manejoRespuestaBeneficiarios(respuesta: HttpRespuesta<any>): void {
+    const {idPagoDetalle} = respuesta.datos[0];
+    this.crearAGF(idPagoDetalle);
+  }
+
+  crearAGF(idPagoDetalle: number): void {
+    this.datos_agf.idPagoDetalle = idPagoDetalle;
+    this.realizarPagoService.guardarAGF(this.datos_agf).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (): void => this.manejoRespuestaExitosaPago(),
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
+    });
+  }
+
+  private manejoRespuestaExitosaPago(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
+    this.actualizarPagina();
+  }
+
+  private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
+    const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+    console.log(error);
+  }
+
+  actualizarPagina(): void {
+    window.location.reload();
   }
 
   cancelar(): void {
