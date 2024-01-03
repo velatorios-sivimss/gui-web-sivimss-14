@@ -25,6 +25,7 @@ export class RegistrarValeParitariaComponent implements OnInit {
 
   registroPago!: DatosRegistroPago;
   total: number = 0;
+  totalFaltante: number = 0;
 
   constructor(private formBuilder: FormBuilder,
               public config: DynamicDialogConfig,
@@ -37,13 +38,14 @@ export class RegistrarValeParitariaComponent implements OnInit {
 
   ngOnInit(): void {
     this.total = this.config.data.total;
+    this.totalFaltante = this.config.data.totalPendiente;
     this.registroPago = this.config.data.datosRegistro;
     this.inicializarValeForm();
   }
 
   inicializarValeForm(): void {
     this.valeParitariaForm = this.formBuilder.group({
-      total: [{value: this.total, disabled: true}],
+      total: [{value: this.totalFaltante, disabled: true}],
       numAutorizacion: [{value: null, disabled: false}, [Validators.required]],
       fechaValeAGF: [{value: null, disabled: false}, [Validators.required]],
       importe: [{value: null, disabled: false}, [Validators.required]],

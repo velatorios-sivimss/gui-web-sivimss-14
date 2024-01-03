@@ -8,6 +8,8 @@ import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/service
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpRespuesta} from "../../../../../../models/http-respuesta.interface";
+import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
 
 interface Beneficiario {
   nombreBeneficiario: string;
@@ -34,6 +36,7 @@ export class SeleccionBeneficiariosAgfComponent {
     private realizarPagoService: RealizarPagoService,
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
+    private cargadorService: LoaderService
   ) {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.beneficiarios = respuesta.datos || [];
@@ -52,6 +55,7 @@ export class SeleccionBeneficiariosAgfComponent {
   seleccionarBeneficiario(nombre: string, curp: string): void {
     this.datos_agf.cveCURPBeneficiario = curp;
     this.datos_agf.nombreBeneficiario = nombre;
+    this.cargadorService.activar();
     this.realizarPagoService.guardar(this.datos_pago).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.manejoRespuestaBeneficiarios(respuesta),
       error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
@@ -65,7 +69,9 @@ export class SeleccionBeneficiariosAgfComponent {
 
   crearAGF(idPagoDetalle: number): void {
     this.datos_agf.idPagoDetalle = idPagoDetalle;
-    this.realizarPagoService.guardarAGF(this.datos_agf).subscribe({
+    this.realizarPagoService.guardarAGF(this.datos_agf).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
       next: (): void => this.manejoRespuestaExitosaPago(),
       error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
