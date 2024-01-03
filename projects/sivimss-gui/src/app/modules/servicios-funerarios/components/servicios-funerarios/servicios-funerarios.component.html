@@ -76,7 +76,7 @@
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Planes SFPA</h2>
     <button *appValidaRol="['AGREGAR_PLAN_SFPA','ALTA']" type="button" class="btn btn-primary btn-lg"
-            routerLink="registrar-nuevo-plan-sfpa">Registrar nuevo plan SFPA
+            routerLink="registrar-nuevo-plan-sfpa">Agregar nuevo plan SFPA
     </button>
   </div>
 
@@ -156,7 +156,7 @@
         <app-overlay-panel-opcion *ngIf="validarEstatusPlan()"
                                   (click)="modificarPago()" titulo="Modificar Plan"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="validarEstatusPlan()"
-                                  (click)="mostrarModalCancelarPlan = true"
+                                  (click)="cancelarPago()"
                                   titulo="Cancelar Plan"></app-overlay-panel-opcion>
       </app-overlay-panel-opciones>
     </ng-template>

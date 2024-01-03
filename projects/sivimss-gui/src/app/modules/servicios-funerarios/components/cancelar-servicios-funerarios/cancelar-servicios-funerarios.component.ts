@@ -3,6 +3,12 @@ import { SERVICIO_BREADCRUMB_CANCELAR, SERVICIO_BREADCRUMB_CLEAR } from "../../c
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { ServiciosFunerariosService } from '../../services/servicios-funerarios.service';
+import { finalize } from 'rxjs';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-cancelar-servicios-funerarios',
@@ -21,12 +27,41 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private route: ActivatedRoute,
     private router: Router,
+    private cargadorService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private serviciosFunerariosService: ServiciosFunerariosService,
   ) { }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
     this.idPlanSfpa = Number(this.route.snapshot.queryParams.idPlanSfpa);
+    this.consultarFormulario();
+  }
+
+  consultarFormulario(): void {
+    this.cargadorService.activar();
+    this.serviciosFunerariosService.consultarPlanSFPA(this.idPlanSfpa).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        console.log(respuesta.datos);
+        
+        // this.folioConvenio = respuesta.datos.numFolioPlanSFPA;
+        // this.nombreVelatorio = respuesta.datos.desIdVelatorio;
+        // this.fecIngresa = respuesta.datos.fecIngreso;
+
+        // this.obtenerPromotores();
+        // this.inicializarFormPromotor();
+        // this.inicializarFormDatosTitular(respuesta.datos);
+        // this.inicializarFormDatosTitularSubstituto(respuesta.datos ? respuesta.datos : null);
+        // this.inicializarFormDatosBeneficiario1(respuesta.datos ? respuesta.datos : null);
+        // this.inicializarFormDatosBeneficiario2(respuesta.datos ? respuesta.datos : null);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+      }
+    });
   }
 
   actualizarBreadcrumb(): void {
