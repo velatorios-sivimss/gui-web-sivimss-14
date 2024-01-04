@@ -73,7 +73,7 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
     );
   }
 
-  validarAfiliado(curp: string, rfc: string, nss: string): Observable<HttpRespuesta<any>> {
+  validarTitular(curp: string, rfc: string, nss: string): Observable<HttpRespuesta<any>> {
     let objetoValidar:{curp?: string,rfc?: string, nss?: string} = {curp:curp,rfc:rfc,nss:nss};
     if(curp==="")delete objetoValidar.curp
     if(rfc==="")delete objetoValidar.rfc
