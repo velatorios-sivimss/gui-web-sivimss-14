@@ -41,7 +41,7 @@
     <div class="col-md-6"
          *ngIf="registroPago.estatusPago === 'Pendiente' && +registroPago.generarPagare !== 1 || registroPago.estatusPago !== 'Pendiente'">
       <div class="flex mb-4 justify-content-end">
-        <button class="ml-6 mt-6 btn btn-primary btn-md" [disabled]="pagoForm.pristine" (click)="seleccionarPago()">
+        <button class="ml-6 mt-6 btn btn-primary btn-md" [disabled]="pagoForm.pristine" (click)="seleccionarPago()" onCloseOnNavigation>
           Registrar
         </button>
       </div>
