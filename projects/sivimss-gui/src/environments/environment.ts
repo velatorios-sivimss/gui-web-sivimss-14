@@ -10,7 +10,8 @@ export const environment = {
     servicios_externos: 'mssivimss-ser-externos/v1/catalogos/externos/',
     servicios_externos_reportes: 'mssivimss-ser-externos/v1/reportes/',
     //notificaciones: 'mssivimss-notificaciones/v1/notificaciones/avisos',
-
+    loginContratante: 'http://localhost:8085/mssivimss-oauth/v1',
+    conveniosPSFPA: 'http://localhost:8002/mssivimss-ods-prefune-on/v1/',
     mssivimss:
       'http://localhost:8081/mssivimss-ctrol-permisos/v1/sivimss/service/',
     login: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1',
