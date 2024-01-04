@@ -21,6 +21,7 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
+import {validarUsuarioLogueado} from "../../../../../utils/funciones";
 
 interface DialogoAGF {
   idFinado: number,
@@ -91,6 +92,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
     this.registroPago = this.activatedRoute.snapshot.data["respuesta"].datos;
     this.tipoPago = this.obtenerTipoPago();
     this.tipoFolio = this.obtenerFolioTipoPago();
+    if (validarUsuarioLogueado()) return;
     this.obtenerMetodosPago();
     this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
     this.actualizarValidaciones();
