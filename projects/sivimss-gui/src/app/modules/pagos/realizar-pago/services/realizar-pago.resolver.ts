@@ -4,6 +4,8 @@ import {forkJoin, Observable} from 'rxjs';
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {RealizarPagoService} from "./realizar-pago.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {obtenerVelatorioUsuarioLogueado} from "../../../../utils/funciones";
 
 @Injectable()
 export class RealizarPagoResolver implements Resolve<any> {
@@ -12,11 +14,12 @@ export class RealizarPagoResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
     const niveles$: Observable<TipoDropdown[]> = this.realizarPagoService.obtenerCatalogoNiveles();
-    const foliosODS$: Observable<HttpRespuesta<any>> = this.realizarPagoService.consultarFoliosODS();
-    const foliosPrevFun$: Observable<HttpRespuesta<any>> = this.realizarPagoService.consultarFoliosPrevFun();
-    const foliosRevPrevFun$: Observable<HttpRespuesta<any>> = this.realizarPagoService.consultarFoliosRenPrevFun();
-    return forkJoin([niveles$, foliosODS$, foliosPrevFun$, foliosRevPrevFun$]);
+    const foliosODS$: Observable<HttpRespuesta<any>> = this.realizarPagoService.consultarFoliosODS(velatorio);
+    const foliosPrevFun$: Observable<HttpRespuesta<any>> = this.realizarPagoService.consultarFoliosPrevFun(velatorio);
+    const foliosRevPrevFun$: Observable<HttpRespuesta<any>> = this.realizarPagoService.consultarFoliosRenPrevFun(velatorio);
+    return forkJoin([foliosODS$, foliosPrevFun$, foliosRevPrevFun$, niveles$]);
   }
 }

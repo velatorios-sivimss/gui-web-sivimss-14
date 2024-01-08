@@ -14,28 +14,19 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {
   mapearArregloTipoDropdown, obtenerFechaYHoraActual,
-  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado,
-  validarUsuarioLogueado
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado, validarUsuarioLogueado
 } from "../../../../../utils/funciones";
 import {Pago} from "../../modelos/pago.interface";
 import {FiltroBasico, FiltrosPago} from "../../modelos/filtrosPago.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
-import {ActivatedRoute, ActivatedRouteSnapshot, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import * as moment from "moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 import {DialogService} from "primeng/dynamicdialog";
-
-interface SolicitudDescargaArchivo {
-  folio: string | null,
-  fechaFin: string,
-  fechaInicio: string,
-  idVelatorio: number,
-  nomContratante: string,
-  idFlujoPagos: number | null,
-  tipoReporte: string
-}
+import {SolicitudDescargaArchivo} from "../../modelos/solicitudDescargaArchivo.interface";
+import {forkJoin, Observable} from "rxjs";
 
 @Component({
   selector: 'app-realizar-pago',
@@ -51,39 +42,39 @@ export class RealizarPagoComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
-  readonly POSICION_CATALOGO_NIVELES: number = 0;
-  readonly POSICION_FOLIO_ODS: number = 1;
-  readonly POSICION_FOLIO_PREV_FUN: number = 2;
-  readonly POSICION_FOLIO_REN_PREV_FUN: number = 3;
+  readonly POSICION_FOLIO_ODS: number = 0;
+  readonly POSICION_FOLIO_PREV_FUN: number = 1;
+  readonly POSICION_FOLIO_REN_PREV_FUN: number = 2;
+  readonly POSICION_CATALOGO_NIVELES: number = 3;
 
   numPaginaActual: number = 0;
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
-  paginacionConFiltrado: boolean = false;
+
+  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
 
   filtroPagoForm!: FormGroup;
-  catalogoNiveles: TipoDropdown[] = [];
-  pagos: Pago[] = [];
-  catalogoVelatorios: TipoDropdown[] = [];
+  pagoSeleccionado!: Pago;
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
-  pagoSeleccionado!: Pago;
 
-  habilitaIrPago: string[] = ['Generada', 'Vigente'];
+  habilitaIrPago: string[] = ['Generada', 'Vigente', 'Generado', 'Cancelada'];
   habilitaIrPagoEstatus: string[] = ['Pendiente', 'Generado']
-  habilitaModificar: string[] = ['Pagada'];
+  habilitaModificar: string[] = ['Pagada', 'Vigente', 'Generado', 'Cancelada'];
   habilitaModificarPago: string[] = ['Pagado'];
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
+  catalogoNiveles: TipoDropdown[] = [];
+  catalogoVelatorios: TipoDropdown[] = [];
   foliosODS: TipoDropdown[] = [];
   foliosPrevFun: TipoDropdown[] = [];
   foliosRevPrevFun: TipoDropdown[] = [];
+  pagos: Pago[] = [];
 
   tipoFolio: null | 1 | 2 | 3 = null;
+  paginacionConFiltrado: boolean = false;
   mostrarModalDescargaExitosa: boolean = false;
-  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
-
   realizarPagoModal: boolean = false;
-  central!: boolean;
+  central: boolean = false;
   rol!: number;
 
   constructor(private breadcrumbService: BreadcrumbService,
@@ -145,6 +136,7 @@ export class RealizarPagoComponent implements OnInit {
   limpiar(): void {
     this.paginacionConFiltrado = false;
     this.limpiarFormulario();
+    this.cargarCatalogosCambioVelatorio();
     this.numPaginaActual = 0;
     this.paginar();
   }
@@ -152,14 +144,11 @@ export class RealizarPagoComponent implements OnInit {
   limpiarFormulario(): void {
     if (!this.filtroPagoForm) return;
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    const idVelatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
-    const DEFAULT: FiltroBasico = {idVelatorio}
+    const nivel: number = obtenerNivelUsuarioLogueado(usuario);
+    const velatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
+    const DEFAULT = {nivel, velatorio}
     this.filtroFormDir.resetForm(DEFAULT);
     this.tipoFolio = null;
-  }
-
-  abrirModalPago(): void {
-    this.realizarPagoModal = !this.realizarPagoModal;
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -169,18 +158,46 @@ export class RealizarPagoComponent implements OnInit {
     }
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
-    } else {
-      this.paginar();
+      return;
     }
+    this.paginar();
   }
 
-  abrirModalDetallePago(pago: any): void {
-    console.log(pago);
+  cargarCatalogosCambioVelatorio(): void {
+    const velatorio = this.filtroPagoForm.get('velatorio')?.value;
+    this.cargadorService.activar()
+    forkJoin([this.obtenerFoliosODS(velatorio), this.obtenerFoliosPF(velatorio), this.obtenerFoliosRPF(velatorio)]).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+        next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]) => this.procesarCargaCatalogos(respuesta),
+        error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
+      }
+    )
   }
 
-  abrirPanel(event: MouseEvent, pago: Pago): void {
-    this.overlayPanel.toggle(event);
-    this.pagoSeleccionado = pago;
+  procesarCargaCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]): void {
+    const folioODS = respuesta[this.POSICION_FOLIO_ODS].datos;
+    this.foliosODS = mapearArregloTipoDropdown(folioODS, "folio", "folio");
+    const foliosPrevFun = respuesta[this.POSICION_FOLIO_PREV_FUN].datos;
+    this.foliosPrevFun = mapearArregloTipoDropdown(foliosPrevFun, "folio", "folio");
+    const foliosRevPrevFun = respuesta[this.POSICION_FOLIO_REN_PREV_FUN].datos;
+    this.foliosRevPrevFun = mapearArregloTipoDropdown(foliosRevPrevFun, "folio", "folio");
+    this.filtroPagoForm.get('folioOrden')?.patchValue(null);
+    this.filtroPagoForm.get('folioConvenio')?.patchValue(null);
+    this.filtroPagoForm.get('folioRenovacion')?.patchValue(null);
+    this.tipoFolio = null;
+  }
+
+  obtenerFoliosODS(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.consultarFoliosODS(velatorio);
+  }
+
+  obtenerFoliosPF(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.consultarFoliosPrevFun(velatorio);
+  }
+
+  obtenerFoliosRPF(velatorio: number | null): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.consultarFoliosRenPrevFun(velatorio);
   }
 
   guardarPDF(): void {
@@ -201,7 +218,7 @@ export class RealizarPagoComponent implements OnInit {
     const configuracionArchivo: OpcionesArchivos = {
       nombreArchivo: `Realizar Pago ${obtenerFechaYHoraActual()}`,
       ext: "xlsx"
-    };
+    }
     this.descargaArchivosService.descargarArchivo(this.realizarPagoService.descargarListado(solicitud), configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
@@ -217,34 +234,23 @@ export class RealizarPagoComponent implements OnInit {
 
   private manejarMensajeDescargaExitosa(respuesta: boolean): void {
     if (!respuesta) return;
-    this.mostrarModalDescargaExitosa = true;
+    this.mostrarModalDescargaExitosa = !this.mostrarModalDescargaExitosa;
   }
 
   crearSolicituDescarga(tipoReporte: string = 'pdf'): SolicitudDescargaArchivo {
     const folio: string | null = this.obtenerValorFolio();
     let idFlujoPagos: number | null = this.tipoFolio || null;
+    let fechaInicio: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoInicio')?.value);
+    let fechaFin: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoFin')?.value);
     return {
-      fechaFin: this.filtroPagoForm.get('periodoInicio')?.value,
-      fechaInicio: this.filtroPagoForm.get('periodoFin')?.value,
+      fechaFin,
+      fechaInicio,
       folio,
       idFlujoPagos,
       idVelatorio: this.filtroPagoForm.get('velatorio')?.value,
       nomContratante: this.filtroPagoForm.get('nombreContratante')?.value,
       tipoReporte
     }
-  }
-
-  obtenerValorFolio(): string | null {
-    if (this.tipoFolio === 1) {
-      return this.filtroPagoForm.get('folioOrden')?.value;
-    }
-    if (this.tipoFolio === 2) {
-      return this.filtroPagoForm.get('folioConvenio')?.value;
-    }
-    if (this.tipoFolio === 3) {
-      return this.filtroPagoForm.get('folioRenovacion')?.value;
-    }
-    return null;
   }
 
   paginarConFiltros(): void {
@@ -258,7 +264,7 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   paginar(): void {
-    const filtros: FiltroBasico = this.crearSolicitudFiltrosBasica();
+    const filtros: FiltroBasico = this.crearSolicitudFiltrosBasicos();
     this.cargadorService.activar();
     this.realizarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
@@ -280,33 +286,53 @@ export class RealizarPagoComponent implements OnInit {
   crearSolicitudFiltros(): FiltrosPago {
     const folio: string | null = this.obtenerValorFolio();
     const velatorio = this.filtroPagoForm.get('velatorio')?.value
+    let fechaInicio: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoInicio')?.value);
+    let fechaFin: string | null = this.recuperarFormatoFecha(this.filtroPagoForm.get('periodoFin')?.value);
     return {
       folio,
-      fechaFin: this.filtroPagoForm.get('periodoFin')?.value,
-      fechaInicio: this.filtroPagoForm.get('periodoInicio')?.value,
+      fechaFin,
+      fechaInicio,
       idVelatorio: velatorio === 0 ? null : velatorio,
       nomContratante: this.filtroPagoForm.get('nombreContratante')?.value,
       idFlujoPagos: this.tipoFolio
     }
   }
 
-  crearSolicitudFiltrosBasica(): FiltroBasico {
+  recuperarFormatoFecha(fecha: string): string | null {
+    if (!fecha) return null
+    return moment(fecha).format('YYYY-MM-DD');
+  }
+
+  crearSolicitudFiltrosBasicos(): FiltroBasico {
     const velatorio = this.filtroPagoForm.get('velatorio')?.value
     return {
-      idVelatorio: velatorio === 0 ? null : velatorio
+      idVelatorio: velatorio === 0 ? null : velatorio,
     }
+  }
+
+  obtenerValorFolio(): string | null {
+    if (this.tipoFolio === 1) {
+      return this.filtroPagoForm.get('folioOrden')?.value;
+    }
+    if (this.tipoFolio === 2) {
+      return this.filtroPagoForm.get('folioConvenio')?.value;
+    }
+    if (this.tipoFolio === 3) {
+      return this.filtroPagoForm.get('folioRenovacion')?.value;
+    }
+    return null;
   }
 
   obtenerVelatorios(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null;
     this.realizarPagoService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaVelatorios(respuesta),
+      next: (respuesta: HttpRespuesta<any>): void => this.cargarCatalogoVelatorios(respuesta),
       error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
   }
 
-  procesarRespuestaVelatorios(respuesta: HttpRespuesta<any>): void {
+  cargarCatalogoVelatorios(respuesta: HttpRespuesta<any>): void {
     this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
   }
 
@@ -326,18 +352,6 @@ export class RealizarPagoComponent implements OnInit {
     this.filtroPagoForm.get('folioConvenio')?.patchValue(null);
   }
 
-  redireccionPago(): void {
-    if (this.pagoSeleccionado.tipoPago === 'Pago de Orden de Servicio') {
-      void this.router.navigate(["./pago-orden-servicio"], {relativeTo: this.activatedRoute});
-      return;
-    }
-    if (this.pagoSeleccionado.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
-      void this.router.navigate(["./pago-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
-      return;
-    }
-    void this.router.navigate(["./pago-renovacion-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
-  }
-
   validarMismaFechaInicioFin(): void {
     const fechaInicial = this.filtroPagoForm.get('periodoInicio')?.value;
     const fechaFinal = this.filtroPagoForm.get('periodoFin')?.value;
@@ -349,7 +363,13 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   modificarPago(): void {
-    void this.router.navigate(["./modificar-pago", this.pagoSeleccionado.idPagoBitacora],
+    void this.router.navigate(["./modificar-metodo-de-pago", this.pagoSeleccionado.idPagoBitacora],
       {relativeTo: this.activatedRoute});
   }
+
+  abrirPanel(event: MouseEvent, pago: Pago): void {
+    this.overlayPanel.toggle(event);
+    this.pagoSeleccionado = pago;
+  }
+
 }

@@ -170,6 +170,7 @@ export class InformacionServicioComponent implements OnInit {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
         this.lugarVelacion.hora.enable();
+        this.cortejo.gestionadoPorPromotor.enable();
       }
 
       if (+datos.idTipoServicio == 2) {
@@ -681,9 +682,7 @@ export class InformacionServicioComponent implements OnInit {
 
             return;
           }
-          if(this.altaODS.finado.idTipoOrden == 1){
-            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio);
-          }
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio);
           this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
           const ExitoMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(

@@ -647,6 +647,10 @@ export class ModificarInformacionServicioComponent
 
   guardarODS(consumoTablas: number): void {
     this.loaderService.activar();
+    if(this.tipoOrden == 2){
+      this.altaODS.finado.extremidad ? this.altaODS.finado.extremidad = this.altaODS.finado.extremidad : this.altaODS.finado.extremidad = false
+      this.altaODS.finado.esobito ? this.altaODS.finado.esobito = this.altaODS.finado.esobito : this.altaODS.finado.esobito = false
+    }
     this.gestionarOrdenServicioService.actualizarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
@@ -664,9 +668,7 @@ export class ModificarInformacionServicioComponent
 
             return;
           }
-          if(this.altaODS.finado.idTipoOrden == 1){
-            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
-          }
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
@@ -724,9 +726,7 @@ export class ModificarInformacionServicioComponent
 
             return;
           }
-          if(this.altaODS.finado.idTipoOrden == 1){
-            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
-          }
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
@@ -1053,6 +1053,7 @@ export class ModificarInformacionServicioComponent
   }
 
   validarExistenciaPromotor(): void {
-    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable();
+    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable()
+    if(this.tipoOrden > 1)this.cortejo.gestionadoPorPromotor.disable()
   }
 }

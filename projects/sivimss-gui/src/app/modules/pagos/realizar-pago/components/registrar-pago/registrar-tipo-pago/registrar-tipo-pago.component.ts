@@ -7,14 +7,9 @@ import {HttpErrorResponse} from "@angular/common/http";
 import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
-import {ActivatedRoute, Router} from "@angular/router";
-
-interface DatosRegistro {
-  idPagoBitacora: number,
-  idFlujoPago: number,
-  idRegistro: number,
-  importePago: number
-}
+import {DatosRegistroPago} from "../../../modelos/datosRegistro.interface";
+import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-registrar-tipo-pago',
@@ -29,10 +24,11 @@ export class RegistrarTipoPagoComponent implements OnInit {
 
   tipoPagoForm!: FormGroup;
 
-  registroPago!: DatosRegistro;
+  registroPago!: DatosRegistroPago;
   tipoPago!: string;
   idPago!: number;
   total: number = 0;
+  totalFaltante: number = 0;
   pagosDeshabilitados: number[] = [5, 8];
   fechasDeshabilitadas: number[] = [3, 4, 5];
   bancoLabelDiferente: number[] = [6, 7]
@@ -46,8 +42,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
     private realizarPagoService: RealizarPagoService,
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
-    private router: Router,
-    private readonly activatedRoute: ActivatedRoute,
+    private cargadorService: LoaderService
   ) {
   }
 
@@ -55,6 +50,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
     this.tipoPago = this.config.data.tipoPago;
     this.idPago = this.config.data.idPago;
     this.total = this.config.data.total;
+    this.totalFaltante = this.config.data.totalPendiente;
     this.registroPago = this.config.data.datosRegistro;
     this.inicializarTipoPagoForm();
     this.validarCamposRequeridos(this.idPago);
@@ -62,7 +58,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
 
   inicializarTipoPagoForm(): void {
     this.tipoPagoForm = this.formBuilder.group({
-      tipoPago: [{value: this.tipoPago, disabled: true}],
+      total: [{value: this.totalFaltante, disabled: true}],
       fecha: [{value: null, disabled: false}, [Validators.required]],
       noAutorizacion: [{value: null, disabled: false}, [Validators.required]],
       nombreBanco: [{value: null, disabled: false}, [Validators.required]],
@@ -79,7 +75,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
       this.tipoPagoForm.get('nombreBanco')?.clearValidators();
     }
     if (id === 8) {
-      this.tipoPagoForm.get('importe')?.addValidators([Validators.max(this.total), Validators.min(this.total)]);
+      this.tipoPagoForm.get('importe')?.addValidators([Validators.max(this.totalFaltante), Validators.min(this.totalFaltante)]);
     }
   }
 
@@ -90,18 +86,29 @@ export class RegistrarTipoPagoComponent implements OnInit {
 
   guardar(): void {
     const solicitudPago: SolicitudCrearPago = this.generarSolicitudPago();
-    this.realizarPagoService.guardar(solicitudPago).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
-        this.ref.close();
-        void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
-      },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-        console.log(error);
-      }
+    this.cargadorService.activar();
+    this.realizarPagoService.guardar(solicitudPago).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (): void => this.manejoRespuestaExitosaPago(),
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
+  }
+
+  private manejoRespuestaExitosaPago(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
+    this.ref.close();
+    this.actualizarPagina();
+  }
+
+  private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
+    const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+    console.log(error);
+  }
+
+  actualizarPagina(): void {
+    window.location.reload();
   }
 
   cancelar(): void {
@@ -120,11 +127,10 @@ export class RegistrarTipoPagoComponent implements OnInit {
       idPagoBitacora: this.registroPago.idPagoBitacora,
       idRegistro: this.registroPago.idRegistro,
       importePago: this.tipoPagoForm.get('importe')?.value,
-      importeRegistro: this.registroPago.importePago,
+      importeRegistro: this.total,
       numAutorizacion: this.tipoPagoForm.get('noAutorizacion')?.value
     }
   }
-
 
   get pf() {
     return this.tipoPagoForm?.controls

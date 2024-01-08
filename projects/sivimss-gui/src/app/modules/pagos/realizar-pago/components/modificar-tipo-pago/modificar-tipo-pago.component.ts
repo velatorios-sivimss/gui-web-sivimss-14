@@ -6,8 +6,10 @@ import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {MetodoPago} from "../../modelos/detallePago.interface";
+import {finalize} from "rxjs/operators";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {MetodoPago} from "../../modelos/detallePago.interface";
 
 interface SolicitudModificacionPago {
   idPagoDetalle: number,
@@ -47,6 +49,7 @@ export class ModificarTipoPagoComponent implements OnInit {
     private realizarPagoService: RealizarPagoService,
     private mensajesSistemaService: MensajesSistemaService,
     private alertaService: AlertaService,
+    private cargadorService: LoaderService
   ) {
   }
 
@@ -66,6 +69,8 @@ export class ModificarTipoPagoComponent implements OnInit {
 
   inicializarTipoPagoForm(): void {
     this.tipoPagoForm = this.formBuilder.group({
+      totalPagar: [{value: '', disabled: true}],
+      totalPagado: [{value: '', disabled: true}],
       tipoPagoAnterior: [{value: '', disabled: true}],
       tipoPago: [{value: '', disabled: false}, [Validators.required]],
       fecha: [{value: null, disabled: false}, [Validators.required]],
@@ -87,11 +92,13 @@ export class ModificarTipoPagoComponent implements OnInit {
     this.tipoPagoForm.get('importe')?.patchValue(pago.importe);
     this.idPagoDetalle = pago.idPagoDetalle;
     this.total = pago.importe;
+    this.tipoPagoForm.get('totalPagar')?.patchValue(this.config.data.total);
+    this.tipoPagoForm.get('totalPagado')?.patchValue(this.config.data.totalPagado);
   }
 
   seleccionarCatalogosTipoPago(): TipoDropdown[] {
     if (this.config.data.tipoPago === 'Pago de Orden de Servicio') {
-      return TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value));
+      return TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value as number));
     }
     return TIPO_PAGO_CATALOGOS_CONVENIO;
   }
@@ -112,44 +119,47 @@ export class ModificarTipoPagoComponent implements OnInit {
     this.tipoPagoForm.get('fecha')?.addValidators([Validators.required]);
     this.tipoPagoForm.get('noAutorizacion')?.addValidators([Validators.required]);
     this.tipoPagoForm.get('nombreBanco')?.addValidators([Validators.required]);
-    if (this.fechasDeshabilitadas.includes(+id)) {
+    if (this.fechasDeshabilitadas.includes(id)) {
       this.tipoPagoForm.get('fecha')?.clearValidators();
       this.tipoPagoForm.get('fecha')?.updateValueAndValidity();
     }
-    if (this.pagosDeshabilitados.includes(+id)) {
+    if (this.pagosDeshabilitados.includes(id)) {
       this.tipoPagoForm.get('noAutorizacion')?.clearValidators();
       this.tipoPagoForm.get('noAutorizacion')?.updateValueAndValidity();
       this.tipoPagoForm.get('nombreBanco')?.clearValidators();
       this.tipoPagoForm.get('nombreBanco')?.updateValueAndValidity();
     }
-    if (+id === 8) {
+    if (id === 8) {
       this.tipoPagoForm.get('importe')?.addValidators([Validators.max(this.total), Validators.min(this.total)]);
     }
   }
 
-  get pf() {
-    return this.tipoPagoForm?.controls
-  }
-
   guardar(): void {
     const solicitud: SolicitudModificacionPago = this.generarSolicitud();
-    this.realizarPagoService.modificarMetodoPago(solicitud).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago modificado correctamente');
-        this.ref.close();
-        this.actualizarPagina();
-      },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-        console.log(error);
-      }
+    this.cargadorService.activar();
+    this.realizarPagoService.modificarMetodoPago(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (): void => this.manejoRespuestaExitosaPago(),
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
+  }
+
+  private manejoRespuestaExitosaPago(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Pago modificado correctamente');
+    this.ref.close();
+    this.actualizarPagina();
+  }
+
+  private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
+    const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+    console.log(error);
   }
 
   generarSolicitud(): SolicitudModificacionPago {
     return {
-      cambioMetPago: this.tipoPago === this.config.data.metodoPago,
+      cambioMetPago: this.tipoPago !== this.config.data.metodoPago,
       descBanco: this.tipoPagoForm.get('nombreBanco')?.value,
       idMetodoPago: this.tipoPagoForm.get('tipoPago')?.value,
       idPagoDetalle: this.idPagoDetalle,
@@ -160,5 +170,9 @@ export class ModificarTipoPagoComponent implements OnInit {
 
   actualizarPagina(): void {
     window.location.reload();
+  }
+
+  get pf() {
+    return this.tipoPagoForm?.controls
   }
 }

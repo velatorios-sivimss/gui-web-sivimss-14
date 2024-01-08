@@ -4,7 +4,7 @@ export interface FinadoInterface {
   idPersona: number | null;
   idTipoOrden: number | null;
   extremidad: any;
-  esobito: string | null;
+  esobito: any;
   matricula: string | null;
   rfc: string | null;
   curp: string | null;

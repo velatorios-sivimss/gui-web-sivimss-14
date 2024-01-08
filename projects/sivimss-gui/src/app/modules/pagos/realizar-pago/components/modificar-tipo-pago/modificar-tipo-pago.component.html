@@ -2,6 +2,20 @@
   <ng-container *ngSwitchCase="CAPTURA_DE_PAGO">
     <form [formGroup]="tipoPagoForm" (ngSubmit)="aceptar()">
       <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="totalPagar">Total a Pagar</label>
+          <p-inputNumber id="totalPagar" class="form-control" formControlName="totalPagar"
+                         [maxlength]="10" [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [locale]="'en-US'" [mode]="'currency'" currency="USD"></p-inputNumber>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="totalPagado">Total Pagado</label>
+          <p-inputNumber id="totalPagado" class="form-control" formControlName="totalPagado"
+                         [maxlength]="10" [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [locale]="'en-US'" [mode]="'currency'" currency="USD"></p-inputNumber>
+        </div>
+      </div>
+      <div class="row mb-3">
         <div class="col-md-12">
           <label class="control-label" for="tipoPagoAnterior">Tipo de pago anterior:</label>
           <input id="tipoPagoAnterior" class="form-control" formControlName="tipoPagoAnterior"
@@ -59,18 +73,6 @@
           </p-inputNumber>
           <span class="campo-obligatorio"
                 *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-3 flex justify-content-center  mt-2">
-          <div class="flex flex-column">
-            <span class=" etiqueta-base mt-2">Total pagado</span>
-            <span class="text-bold mt-2 total-pago text-center">{{total | currency}}</span>
-          </div>
-        </div>
-        <div class="col-md-3 flex justify-content-center  mt-2">
-          <div class="flex flex-column">
-            <span class=" etiqueta-base mt-2">Total a pagar</span>
-            <span class="text-bold mt-2 total-pago text-center">{{total | currency}}</span>
-          </div>
         </div>
       </div>
       <div class="row mb-4">
