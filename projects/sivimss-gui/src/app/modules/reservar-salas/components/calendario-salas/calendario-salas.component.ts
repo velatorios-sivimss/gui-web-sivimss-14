@@ -57,6 +57,8 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
   salasDetalle: CalendarioSalas[] = [];
   currentEvents: EventApi[] = [];
 
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+
   constructor(
     private alertaService: AlertaService,
     public dialogService: DialogService,
@@ -68,13 +70,12 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.velatorio = +this.rolLocalStorage.idVelatorio ?? 0;
+    this.delegacion = +this.rolLocalStorage.idDelegacion ?? 0;
     const respuesta = this.route.snapshot.data['respuesta'];
-    // this.velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS]!.datos.map((velatorio: VelatorioInterface) => (
-    //   {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
-
     this.delegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION]!.map((delegacion: any) => (
       { label: delegacion.label, value: delegacion.value })) || [];
-
+    this.cambiarDelegacion();
     this.inicializarCalendario();
     this.inicializarCalendarioEmbalsamamiento();
   }
@@ -223,8 +224,6 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
   cambiarPestania(pestania?: any): void {
     setTimeout(() => {
       this.posicionPestania = pestania?.index;
-      this.velatorio = 0;
-      this.delegacion = 0;
       this.tituloSalas = [];
       this.calendarioCremacion?.getApi().removeAllEvents();
       this.calendarioCremacion?.getApi().gotoDate(new Date());
