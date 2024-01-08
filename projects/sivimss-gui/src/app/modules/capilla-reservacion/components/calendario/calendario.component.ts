@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core'
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import {
   CalendarOptions,
@@ -26,16 +26,16 @@ import { FormBuilder, FormGroup } from '@angular/forms'
 import * as moment from 'moment'
 
 import { Moment } from 'moment'
-import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
-import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
-import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
-import {PrevisualizacionArchivoComponent} from "./previsualizacion-archivo/previsualizacion-archivo.component";
+import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface";
+import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
+import { VelatorioInterface } from "../../../reservar-salas/models/velatorio.interface";
+import { PrevisualizacionArchivoComponent } from "./previsualizacion-archivo/previsualizacion-archivo.component";
 
 @Component({
   selector: 'app-calendario',
   templateUrl: './calendario.component.html',
   styleUrls: ['./calendario.component.scss'],
-  providers: [DialogService,DescargaArchivosService],
+  providers: [DialogService, DescargaArchivosService],
 })
 export class CalendarioComponent implements OnInit, OnDestroy {
   @ViewChild('calendarioCapillas') calendarioCapillas!: FullCalendarComponent
@@ -83,7 +83,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     let respuesta = this.route.snapshot.data['respuesta'];
 
     this.delegaciones = respuesta[1]!.map((delegacion: any) => (
-      {label: delegacion.label, value: delegacion.value} )) || [];
+      { label: delegacion.label, value: delegacion.value })) || [];
   }
 
   inicializarCalendarioForm(): void {
@@ -110,16 +110,21 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       dayMaxEventRows: 3,
       titleFormat: { year: 'numeric', month: 'long' },
       datesSet: (event) => {
-        this.calendarioCapillas.getApi().removeAllEvents();
         this.tituloCapillas = [];
         let mesInicio = +moment(event.start).format('MM');
         let mesFinal = +moment(event.end).format('MM');
         if (mesFinal - mesInicio == 2) {
           this.fechaCalendario = moment(event.start).add(1, 'month');
+        } else if (mesFinal === 1 && mesInicio === 11) {
+          this.fechaCalendario = moment(event.start).add(1, 'month');
+        } else if (mesFinal === 1 && mesInicio === 12) {
+          this.fechaCalendario = moment(event.end);
+        } else if (mesFinal === 2 && mesInicio === 12) {
+          this.fechaCalendario = moment(event.start).add(1, 'month');
         } else {
           this.fechaCalendario = moment(event.start);
         }
-
+        this.calendarioCapillas.getApi().removeAllEvents();
         if (this.velatorio) {
           this.consultarCapillas();
         }
@@ -244,23 +249,23 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   mostrarEvento(clickInfo: EventClickArg): void {
     const idCapilla: number = +clickInfo.event._def.publicId;
     this.fechaSeleccionada = moment(clickInfo.event._instance?.range.end).format('DD-MM-yyyy');
-    this.actividadRef = this.dialogService.open(DetalleActividadDiaComponent,{
+    this.actividadRef = this.dialogService.open(DetalleActividadDiaComponent, {
       header: 'Ver actividad del día',
       width: "920px",
-      data: {fecha:this.fechaSeleccionada, idCapilla: idCapilla}
+      data: { fecha: this.fechaSeleccionada, idCapilla: idCapilla }
     })
   }
 
   generarArchivo(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "Disponibilidad de capillas"};
-    if(tipoReporte == "xls"){
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Disponibilidad de capillas" };
+    if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
-    if(!this.velatorio){return}
+    if (!this.velatorio) { return }
     this.loaderService.activar();
     const busqueda = this.filtrosArchivos(tipoReporte);
     this.descargaArchivosService.descargarArchivo(this.capillaReservacionService.generarReporte(busqueda), configuracionArchivo).pipe(
-      finalize( () => this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta) => {
         console.log(respuesta)
@@ -275,7 +280,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     const busqueda = this.filtrosArchivos("pdf");
     this.capillaReservacionService.generarReporte(busqueda).subscribe({
       next: (respuesta: any) => {
-        const file = new Blob([respuesta], {type: 'application/pdf'});
+        const file = new Blob([respuesta], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(file);
         this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
           data: url,
@@ -290,7 +295,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     const busqueda = this.filtrosArchivos("xls");
     this.capillaReservacionService.generarReporte(busqueda).subscribe({
       next: (respuesta: any) => {
-        const file = new Blob([respuesta], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'});
+        const file = new Blob([respuesta], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' });
         const url = window.URL.createObjectURL(file);
         this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
           data: url,
@@ -318,7 +323,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
-          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
+          { label: velatorio.nomVelatorio, value: velatorio.idVelatorio })) || [];
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);
@@ -327,7 +332,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.actividadRef){
+    if (this.actividadRef) {
       this.actividadRef.destroy();
     }
   }
