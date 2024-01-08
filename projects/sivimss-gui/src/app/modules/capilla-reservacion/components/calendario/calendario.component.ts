@@ -63,6 +63,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
   fechaCalendario!: Moment;
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     public dialogService: DialogService,
@@ -77,6 +78,9 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    this.velatorio = +this.rolLocalStorage.idVelatorio ?? 0;
+    this.delegacion = +this.rolLocalStorage.idDelegacion ?? 0;
+    this.cambiarDelegacion();
     this.inicializarCalendario();
     this.inicializarCalendarioForm();
 
