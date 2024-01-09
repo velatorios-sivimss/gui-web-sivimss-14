@@ -15,18 +15,17 @@ import { ControlVehiculoListado } from '../../models/control-vehiculos.interface
 })
 export class ListadoVehiculosComponent implements OnInit, OnDestroy {
   @Input() controlVehiculos: ControlVehiculoListado[] = [];
+  @Input() delegacion: number | null = null;
+  @Input() velatorio: number | null = null;
+
   @Output() actualizarListadoEvent = new EventEmitter();
 
   registrarEntradaRef!: DynamicDialogRef;
   registrarSalidaRef!: DynamicDialogRef;
 
-  velatorios: TipoDropdown[] = [];
-  delegaciones: TipoDropdown[] = [];
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   numPaginaActual: number = 0;
   totalElementos: number = 0;
-  velatorio: number = 0;
-  delegacion: number = 0;
 
   constructor(
     public dialogService: DialogService,
@@ -60,7 +59,11 @@ export class ListadoVehiculosComponent implements OnInit, OnDestroy {
     this.registrarSalidaRef = this.dialogService.open(RegistrarSalidaComponent, {
       header: 'Elección de vehículo',
       width: '920px',
-      data: { vehiculo },
+      data: {
+        delegacion: this.delegacion,
+        velatorio: this.velatorio,
+        vehiculo,
+      },
     });
     this.registrarSalidaRef.onClose.subscribe((respuesta) => {
       if (respuesta) {
