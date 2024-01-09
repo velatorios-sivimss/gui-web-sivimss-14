@@ -50,6 +50,8 @@ export class RegistrarSalidaComponent implements OnInit {
     disponible: 0,
     descripcion: ''
   };
+  delegacion: number | null = null;
+  velatorio: number | null = null;
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
   constructor(
@@ -63,6 +65,8 @@ export class RegistrarSalidaComponent implements OnInit {
 
   ngOnInit(): void {
     this.vehiculoSeleccionado = this.config.data.vehiculo;
+    this.delegacion = this.config.data.delegacion;
+    this.velatorio = this.config.data.velatorio;
     this.inicializarFormRegistrarSalida();
     this.obtenerDatosVehiculo();
     this.obtenerOperadores();
@@ -199,7 +203,7 @@ export class RegistrarSalidaComponent implements OnInit {
   }
 
   obtenerOperadores() {
-    this.controlVehiculosService.obtenerOperadores(this.vehiculoSeleccionado.idVehiculo).pipe(
+    this.controlVehiculosService.obtenerOperadores(this.delegacion, this.velatorio).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
