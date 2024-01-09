@@ -31,6 +31,7 @@ export class ModificarTipoPagoComponent implements OnInit {
   fechasDeshabilitadas: number[] = [3, 4, 5];
   idPago: number = 0;
   total: number = 0;
+  montoPermitido: number = 0;
 
   readonly CAPTURA_DE_PAGO: number = 1;
   readonly RESUMEN_DE_PAGO: number = 2;
@@ -94,6 +95,9 @@ export class ModificarTipoPagoComponent implements OnInit {
     this.total = pago.importe;
     this.tipoPagoForm.get('totalPagar')?.patchValue(this.config.data.total);
     this.tipoPagoForm.get('totalPagado')?.patchValue(this.config.data.totalPagado);
+    const diferencias: number  = this.config.data.total - this.config.data.totalPagado;
+    this.montoPermitido = diferencias + pago.importe;
+    console.log(this.montoPermitido)
   }
 
   seleccionarCatalogosTipoPago(): TipoDropdown[] {

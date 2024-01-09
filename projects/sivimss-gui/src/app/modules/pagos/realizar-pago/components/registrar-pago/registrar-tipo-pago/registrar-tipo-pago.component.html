@@ -44,15 +44,15 @@
           <label class="control-label" for="importe">Importe<span class="req">*</span>:</label>
           <p-inputNumber class="form-control" id="importe" formControlName="importe"
                          placeholder="Ingresa importe" [maxlength]="10"
-                         [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="totalFaltante"
                          [locale]="'en-US'" [mode]="'currency'" currency="USD"
                          (onInput)="
                             tipoPagoForm.patchValue({
                                 importe:
-                                $event.value >= 0 && $event.value <= 99999999999
+                                $event.value >= 0 && $event.value <= totalFaltante
                                   ? $event.value
                                   : tipoPagoForm.value?.importe
-                            })">
+                            })" >
           </p-inputNumber>
           <span class="campo-obligatorio"
                 *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
