@@ -109,7 +109,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
         } else {
           this.fechaCalendario = moment(event.start);
         }
-        this.calendarioCremacion.getApi().removeAllEvents();
+        this.calendarioCremacion?.getApi().removeAllEvents();
         if (this.velatorio) {
           this.cambiarMes()
         }
@@ -160,12 +160,12 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
     let anio = moment(this.fechaCalendario).format('YYYY').toString();
     let mes = moment(this.fechaCalendario).format('MM').toString();
     if (!this.posicionPestania) {
-      this.calendarApi = this.calendarioCremacion.getApi()
-      this.calendarApi.removeAllEvents();
+      this.calendarApi = this.calendarioCremacion?.getApi()
+      this.calendarApi?.removeAllEvents();
     }
     if (this.posicionPestania) {
-      this.calendarEmbalsamamientoApi = this.calendarioEmbalsamamiento.getApi();
-      this.calendarEmbalsamamientoApi.removeAllEvents();
+      this.calendarEmbalsamamientoApi = this.calendarioEmbalsamamiento?.getApi();
+      this.calendarEmbalsamamientoApi?.removeAllEvents();
     }
     if (!this.velatorio) return;
     this.reservarSalasService.consultaMes(+mes, +anio, this.posicionPestania, this.velatorio).pipe(
@@ -174,11 +174,11 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
         respuesta.datos.forEach((sala: any) => {
           let bandera: boolean = false;
           if (!this.posicionPestania) {
-            this.calendarioCremacion.getApi().addEvent(
+            this.calendarioCremacion?.getApi().addEvent(
               { id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala },
             );
           } else {
-            this.calendarioEmbalsamamiento.getApi().addEvent(
+            this.calendarioEmbalsamamiento?.getApi().addEvent(
               { id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala },
             );
           }

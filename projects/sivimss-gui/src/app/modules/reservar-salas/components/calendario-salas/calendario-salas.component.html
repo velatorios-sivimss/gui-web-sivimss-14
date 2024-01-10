@@ -29,7 +29,9 @@
               </div>
             </ng-container>
           </div>
-          <full-calendar #calendarioCremacion [options]="calendarOptions"></full-calendar>
+          <ng-container>
+            <full-calendar #calendarioCremacion [options]="calendarOptions"></full-calendar>
+          </ng-container>
           <ng-template pTemplate="paginatorright">
             <div class="flex justify-content-end paginator-template">
               <div class="export-table" *appValidaRol="['SALAS_RESERVACION','IMPRIMIR']">
