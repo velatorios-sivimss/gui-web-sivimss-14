@@ -78,6 +78,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
     this.cambiarDelegacion();
     this.inicializarCalendario();
     this.inicializarCalendarioEmbalsamamiento();
+    this.cambiarMes();
   }
 
   inicializarCalendario(): void {
@@ -110,9 +111,6 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
           this.fechaCalendario = moment(event.start);
         }
         this.calendarioCremacion?.getApi().removeAllEvents();
-        if (this.velatorio) {
-          this.cambiarMes()
-        }
       },
     };
   }
@@ -147,9 +145,6 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
           this.fechaCalendario = moment(event.start);
         }
         this.calendarioEmbalsamamiento?.getApi().removeAllEvents();
-        if (this.velatorio) {
-          this.cambiarMes()
-        }
       },
     };
   }
