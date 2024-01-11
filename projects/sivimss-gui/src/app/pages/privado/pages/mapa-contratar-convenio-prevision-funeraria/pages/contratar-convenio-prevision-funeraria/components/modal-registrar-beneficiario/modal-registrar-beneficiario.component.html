@@ -36,7 +36,7 @@
         <div class="col-md-4">
             <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
             <p-calendar  id="fecha" styleClass="form-control" appendTo="body" formControlName="fecha" [showIcon]="true"
-                dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual" (onSelect)="calcularEdad()"
+                dateFormat="dd/mm/yy" placeholder="Fecha" [maxDate]="fechaActual" (onSelect)="calcularEdad()"
                 (change)="calcularEdad()"></p-calendar>
             <span class="campo-obligatorio" *ngIf="
           f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)

@@ -6,7 +6,7 @@ import { DialogService} from 'primeng/dynamicdialog';
 import { ModalEditarBeneficiarioComponent } from './components/modal-editar-beneficiario/modal-editar-beneficiario.component';
 import {
   DIEZ_ELEMENTOS_POR_PAGINA,
-  PATRON_CORREO,
+  PATRON_CORREO, PATRON_RFC,
 } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { ModalDesactivarBeneficiarioComponent } from './components/modal-desactivar-beneficiario/modal-desactivar-beneficiario.component';
 import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
@@ -18,7 +18,7 @@ import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { DatosGeneralesContratante } from '../../../consulta-convenio-prevision-funeraria/models/DatosGeneralesContratante.interface';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import { CATALOGO_ENFERMEDAD_PREEXISTENTE } from 'projects/sivimss-gui/src/app/modules/convenios-prevision-funeraria/constants/catalogos-funcion';
@@ -104,6 +104,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     private alertaService: AlertaService,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -128,6 +129,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
 
     this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
     this.velatorio = this.rutaActiva.snapshot.queryParams.velatorio;
+    this.delegacion = this.rutaActiva.snapshot.queryParams.delegacion;
     if (this.rutaActiva.snapshot.queryParams.idConvenio)
       this.buscarConvenioEmpresa(
         this.rutaActiva.snapshot.queryParams.idConvenio
@@ -409,7 +411,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.required, Validators.maxLength(13)],
+          [Validators.required, Validators.maxLength(13), Validators.pattern(PATRON_RFC)],
         ],
         pais: [
           {
@@ -480,7 +482,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             disabled: false,
           },
           [
-            Validators.required,
             Validators.pattern(PATRON_CORREO),
             Validators.maxLength(45),
           ],
@@ -755,6 +756,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   guardarEmpresa(): void {
+    debugger
     if (!this.formEmpresa.valid) {
       return;
     }
@@ -815,6 +817,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   guardarPersona(): void {
+    debugger
     if (!this.formPersona.valid) {
       return;
     }
@@ -1213,12 +1216,32 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
         }
       break;
       case 2:
-        if(this.domicilio.correoElectronico?.errors?.pattern){
+        if(this.datosGrupo.correoElectronico?.errors?.pattern){
           this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
         }
       break;
       default:
       break;
+    }
+  }
+
+  agregarPersonaGrupo() {
+    this.router.navigate(['externo-privado/contratar-convenio-de-prevision-funeraria/registro-contratacion-convenio-de-prevision-funeraria/registro-de-persona-del-grupo'],
+      {queryParams:{
+          idVelatorio: this.idVelatorio,
+          velatorio: this.velatorio,
+          idConvenio: this.idConvenioPf,
+          delegacion: this.delegacion,
+          folioConvenio: this.folioConvenio
+      }
+      }
+    );
+  }
+
+
+  validarRfc(): void {
+    if(this.datosGrupo.rfc?.errors?.pattern){
+      this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
     }
   }
 }

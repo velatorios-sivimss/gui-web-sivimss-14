@@ -1,4 +1,8 @@
-<app-titulo-principal titulo="detalle de pago"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['../']"></app-btn-regresar>
+  <app-titulo-principal titulo="detalle de pago" class="col"></app-titulo-principal>
+</div>
+
 <section class="mb-3">
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
@@ -14,7 +18,7 @@
         <div class="col-md-3">
           <div class="flex flex-column">
             <div class="col-md">
-              <span>Nombre(s) del contratante</span>
+              <span>Nombre(s) titular subtituto</span>
             </div>
             <div class="col-md" *ngIf="datosGenerales?.nombre">
               <span class="font-bold"> {{datosGenerales.nombre}} </span>
@@ -54,39 +58,7 @@
       </div>
     </ng-template>
     <div class="row table-panel-row mb-2">
-      <h2 class="subtitulo pl-1 mx-6 my-4">Detalle pagos</h2>
-      <div class="row ml-5">
-        <div class="col-md-7 mt-6">
-          <span>Aún debes pagar esta cantidad para cubrir el total del plan SPFA
-            <span class="font-bold" *ngIf="costoRestante > 0; else sinRestante">
-              {{(datosGenerales.costoRestante) | currency:"USD":"symbol"}}
-            </span>
-            <ng-template #sinRestante>
-              <span class="font-bold">
-                {{0 | currency:"USD":"symbol" }}
-              </span>
-            </ng-template>
-          </span>
-        </div>
-        <div class="col-md-5">
-          <div class="flex justify-content-end">
-            <div class="col-md-4">
-              <label>Total pagado</label><br />
-              <span *ngIf="datosGenerales?.precio; else sinTotalPagado">
-                {{datosGenerales.importePagado | currency:"USD":"symbol"}}
-              </span>
-            </div>
-            <ng-template #sinTotalPagado>
-              <span>{{0 | currency:"USD":"symbol"}}</span>
-            </ng-template>
-
-            <div class="col-md-4" *ngIf="datosGenerales?.precio">
-              <label>Total a pagar</label><br />
-              <span>{{precio | currency:"USD":"symbol"}}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <h2 class="subtitulo pl-1 mx-6 my-4">Pagos</h2>
       <p-table styleClass="mt-5 mb-8 mx-6" [value]="pagosRealizados" [rows]="cantElementosPorPagina" [lazy]="true"
                [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
         <ng-template pTemplate="header">
@@ -98,13 +70,16 @@
             <th scope="col">Pagos</th>
             <th scope="col">Fecha de pago</th>
             <th scope="col">Monto</th>
+            <th scope="col">Método de pago</th>
             <th scope="col">Estatus</th>
+            <th scope="col">No. Recibo de pago</th>
+            <th scope="col">Realizar pago</th>
             <th scope="col"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-pagosRealizados>
           <tr>
-            <td scope="col">
+            <td>
               <p-tableRadioButton *ngIf="pagosRealizados.importePagado > 0 || pagosRealizados.idEstatus == 5"
                                   [value]="pagosRealizados.idPagoSFPA" (click)="mostrarDetallePagos(pagosRealizados)"></p-tableRadioButton>
             </td>
@@ -112,8 +87,10 @@
             <td>{{pagosRealizados.noPagos}}</td>
             <td>{{pagosRealizados.fechaParcialidad}}</td>
             <td>{{pagosRealizados.importeMensual | currency:"USD":"symbol"}}</td>
+            <td>{{pagosRealizados.metodoPago}}</td>
             <td>{{pagosRealizados.estatusPago}}</td>
-
+            <td>{{pagosRealizados.reciboPago}}</td>
+            <td>{{pagosRealizados.realizarPago}}</td>
             <td>
 
               <div *ngIf="pagosRealizados.validaPago > 0">
@@ -128,7 +105,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <th colspan="7" class="p-2 text-center font-bold text-xl" id="consulta_pago_sin_resultados">
+            <th colspan="12" class="p-2 text-center font-bold text-xl" id="consulta_pago_sin_resultados">
               No se encontró información relacionada a tu búsqueda
             </th>
           </tr>
@@ -198,14 +175,6 @@
       </div>
     </div>
   </app-table-panel>
-</section>
-
-<section>
-  <div class="row mb-6">
-    <div class="flex mt-4 justify-content-end">
-      <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../">Regresar</button>
-    </div>
-  </div>
 </section>
 
 <p-overlayPanel #overlayPanelBody>

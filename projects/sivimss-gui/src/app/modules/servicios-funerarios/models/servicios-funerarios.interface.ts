@@ -74,25 +74,25 @@ export interface AgregarPlanSFPA {
 }
 
 export interface Persona {
-  persona: string | null,
-  rfc: string | null,
-  curp: string | null,
-  matricula: string | null,
-  nss: string | null,
-  nomPersona: string | null,
-  primerApellido: string | null,
-  segundoApellido: string | null,
-  sexo: number | null,
-  otroSexo: string | null,
-  fecNacimiento: any,
-  idPais: number | null,
-  idEstado: number | null,
-  telefono: string | null,
-  telefonoFijo: string | null,
-  correo: string | null,
+  persona?: string | null,
+  rfc?: string | null,
+  curp?: string | null,
+  matricula?: string | null,
+  nss?: string | null,
+  nomPersona?: string | null,
+  primerApellido?: string | null,
+  segundoApellido?: string | null,
+  sexo?: number | null,
+  otroSexo?: string | null,
+  fecNacimiento?: any,
+  idPais?: number | null,
+  idEstado?: number | null,
+  telefono?: string | null,
+  telefonoFijo?: string | null,
+  correo?: string | null,
   tipoPersona?: string | null,
-  ine: string | null,
-  cp: CodigoPostal | null
+  ine?: string | null,
+  cp?: CodigoPostal | null
 }
 
 export interface CodigoPostal {

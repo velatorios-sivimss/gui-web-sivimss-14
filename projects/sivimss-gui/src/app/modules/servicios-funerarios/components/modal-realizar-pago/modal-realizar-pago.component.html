@@ -46,13 +46,13 @@
       </p-dropdown>
 
     </div>
-    
+
   </div>
 
   <div class="row mb-3">
     <div class="col-md-6" *ngIf="validacion.nombreBanco">
-      <label class="control-label" for="nombreBanco">Nombre del banco:</label>
-      <input id="nombreBanco" class="form-control" placeholder="Ingresa el nombre del banco" maxlength="20"
+      <label class="control-label" for="nombreBanco">Banco:</label>
+      <input id="nombreBanco" class="form-control" placeholder="Ingresa el banco" maxlength="20"
         formControlName="nombreBanco">
     </div>
     <div class="col-md-6" *ngIf="validacion.numeroAutorizacion">
@@ -62,7 +62,7 @@
     </div>
     <div class="col-md-6" *ngIf="validacion.importe">
       <label class="control-label" for="importe">Importe:</label>
-      <p-inputNumber id="importe" class="form-control" formControlName="importe" mode="decimal" [minFractionDigits]="2" 
+      <p-inputNumber id="importe" class="form-control" formControlName="importe" mode="decimal" [minFractionDigits]="2"
         [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD" [max]="this.config.data.item.importeAcumulado" [min]="1"
         locale="en-US"></p-inputNumber>
     </div>
@@ -88,17 +88,17 @@
     </div>
     <div class="col-md-6" *ngIf="validacion.importeValeParitaria">
       <label class="control-label" for="importeValeParitaria">Importe autorizado:</label>
-      <p-inputNumber id="importeValeParitaria" class="form-control" formControlName="importeValeParitaria" mode="decimal" [minFractionDigits]="2" 
+      <p-inputNumber id="importeValeParitaria" class="form-control" formControlName="importeValeParitaria" mode="decimal" [minFractionDigits]="2"
         [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD" [max]="this.config.data.item.importeAcumulado" [min]="0"
         locale="en-US"></p-inputNumber>
     </div>
   </div>
- 
+
 </form>
 <div class="row mt-2">
   <div class="col-md-12 flex justify-content-end">
     <button type="button" class="btn btn-gold btn-md ml-3" (click)="cerrarModal()">Cancelar</button>
-    <button type="button" class="btn btn-primary btn-md ml-3" (click)="confirmacionGuardar = true">Registrar
+    <button type="button" class="btn btn-primary btn-md ml-3" (click)="guardarPago()">Registrar
       pago</button>
   </div>
 </div>

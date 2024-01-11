@@ -22,6 +22,9 @@ export interface PagosRealizados {
   importeMensual: null | string;
   importePagado: null | string;
   idEstatus: null | string;
+  metodoPago: null | string;
+  reciboPago: null | string;
+  realizarPago: null | string;
 }
 
 export interface PagosBitacora {
