@@ -47,7 +47,6 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
   posicionPestania: number = 0;
   velatorio!: number;
   delegacion!: number;
-
   base64: any;
 
   fechaSeleccionada: string = "";
@@ -78,7 +77,6 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
     this.cambiarDelegacion();
     this.inicializarCalendario();
     this.inicializarCalendarioEmbalsamamiento();
-    this.cambiarMes();
   }
 
   inicializarCalendario(): void {
@@ -111,6 +109,9 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
           this.fechaCalendario = moment(event.start);
         }
         this.calendarioCremacion?.getApi().removeAllEvents();
+        if (this.velatorio) {
+          this.cambiarMes()
+        }
       },
     };
   }
@@ -145,6 +146,9 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
           this.fechaCalendario = moment(event.start);
         }
         this.calendarioEmbalsamamiento?.getApi().removeAllEvents();
+        if (this.velatorio) {
+          this.cambiarMes()
+        }
       },
     };
   }
@@ -166,6 +170,9 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
     this.reservarSalasService.consultaMes(+mes, +anio, this.posicionPestania, this.velatorio).pipe(
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+        this.calendarioCremacion?.getApi().removeAllEvents();
+        this.calendarioEmbalsamamiento?.getApi().removeAllEvents();
+
         respuesta.datos.forEach((sala: any) => {
           let bandera: boolean = false;
           if (!this.posicionPestania) {
