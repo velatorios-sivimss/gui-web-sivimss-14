@@ -22,6 +22,7 @@ import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 interface DialogoAGF {
   idFinado: number,
@@ -74,6 +75,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
     public dialogService: DialogService,
     private cargadorService: LoaderService,
     private realizarPagoService: RealizarPagoService,
+    private alertaService: AlertaService
   ) {
   }
 
@@ -168,8 +170,9 @@ export class ModificarMetodoPagoComponent implements OnInit {
       return;
     }
     if (tipoPago === 2) {
-      this.abrirModalAGF();
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Servicio no disponible');
       return;
+      this.abrirModalAGF();
     }
     this.registrarPago();
   }
