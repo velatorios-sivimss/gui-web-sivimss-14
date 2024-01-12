@@ -8,9 +8,7 @@ import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.
 import {RealizarPagoService} from '../../../services/realizar-pago.service';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {DetalleAyudaGastosFuneral} from '../../../modelos/ayudaGastosFuneral.interface';
-import * as moment from "moment/moment";
 import {RegistroAGF} from "../../../modelos/registroAGF.interface";
-import {RegistroPago} from "../../../modelos/registroPago.interface";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 import {finalize} from "rxjs/operators";
 import {forkJoin, Observable} from "rxjs";
@@ -40,10 +38,10 @@ export class RegistrarAgfComponent implements OnInit {
 
   readonly CAPTURA_DE_AGF: number = 1;
   readonly VALIDACION_DE_AGF: number = 2;
+  readonly  ERROR_AGF: number = 3;
   pasoRegistrarAGF: number = 1;
 
   datos_agf!: RegistroAGF;
-  datos_pago!: RegistroPago;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -111,21 +109,19 @@ export class RegistrarAgfComponent implements OnInit {
   seleccionarBeneficiario(): void {
     this.ref.close();
     const datos_agf: string = window.btoa(JSON.stringify(this.datos_agf));
-    const datos_pago: string = window.btoa(JSON.stringify(this.datos_pago));
     const fecDefuncion: string = this.obtenerFechaDefuncion(this.detalleAGF.fecDeceso);
     void this.router.navigate(['../../agf-seleccion-beneficiarios', this.detalleAGF.cveNss, fecDefuncion],
-      {relativeTo: this.route, queryParams: {datos_agf, datos_pago}})
+      {relativeTo: this.route, queryParams: {datos_agf}})
   }
 
   verificarTipoRamo(): void {
     this.datos_agf = this.crearRegistroAGF();
-    this.datos_pago = this.crearRegistroPago();
     const ramo = this.agfForm.get('ramo')?.value;
     if ([3].includes(ramo)) {
       this.seleccionarBeneficiario();
       return;
     }
-    this.aceptar();
+    this.crearAGF();
   }
 
   obtenerFechaDefuncion(fecDeceso: string): string {
@@ -155,50 +151,20 @@ export class RegistrarAgfComponent implements OnInit {
       casillaCurp: this.agfForm.get('curp')?.value,
       casillaNssi: this.agfForm.get('documentoNSS')?.value,
       cveCURP: this.detalleAGF.cveCurp,
-      cveNSS: this.detalleAGF.cveNss,
+      cveNSS: this.detalleAGF.cveNss.toString(),
       fecDefuncion: this.detalleAGF.fecDeceso,
       idFinado: this.idFinado,
       idRamo: this.agfForm.get('ramo')?.value,
       idTipoId: this.agfForm.get('identificacionOficial')?.value,
       idVelatorio: this.detalleAGF.idVelatorio,
       numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value,
-      cveCURPBeneficiario: this.detalleAGF.cveCurp,
-      nombreBeneficiario: this.detalleAGF.nombre,
-      idPagoDetalle: null
+      cveCURPBeneficiario: '',
+      nombreBeneficiario: '',
+      idPagoBitacora: this.idPagoBitacora
     }
   }
 
-  crearRegistroPago(): RegistroPago {
-    let fechaValeAGF: string = moment(new Date()).format('YYYY-MM-DD');
-    return {
-      descBanco: null,
-      fechaPago: null,
-      fechaValeAGF: fechaValeAGF,
-      idFlujoPago: this.idFlujoPago,
-      idMetodoPago: 2,
-      idPagoBitacora: this.idPagoBitacora,
-      idRegistro: this.idRegistro,
-      importePago: this.importeTotal,
-      importeRegistro: this.importeTotal,
-      numAutorizacion: ""
-    }
-  }
-
-  aceptar(): void {
-    this.cargadorService.activar();
-    this.realizarPagoService.guardar(this.datos_pago).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => this.manejoRespuestaBeneficiarios(respuesta),
-      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
-    });
-  }
-
-  private manejoRespuestaBeneficiarios(respuesta: HttpRespuesta<any>): void {
-    const {idPagoDetalle} = respuesta.datos[0];
-    this.crearAGF(idPagoDetalle);
-  }
-
-  crearAGF(idPagoDetalle: number): void {
-    this.datos_agf.idPagoDetalle = idPagoDetalle;
+  crearAGF(): void {
     this.realizarPagoService.guardarAGF(this.datos_agf).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
@@ -213,12 +179,16 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
-    const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
-    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+    this.pasoRegistrarAGF = this.ERROR_AGF;
     console.log(error);
   }
 
   actualizarPagina(): void {
+    window.location.reload();
+  }
+
+  concluirServicioAGF(): void {
+    this.ref.close();
     window.location.reload();
   }
 

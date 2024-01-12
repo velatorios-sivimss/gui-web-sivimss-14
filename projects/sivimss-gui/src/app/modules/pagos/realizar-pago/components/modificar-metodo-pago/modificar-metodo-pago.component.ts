@@ -75,7 +75,6 @@ export class ModificarMetodoPagoComponent implements OnInit {
     public dialogService: DialogService,
     private cargadorService: LoaderService,
     private realizarPagoService: RealizarPagoService,
-    private alertaService: AlertaService
   ) {
   }
 
@@ -170,9 +169,8 @@ export class ModificarMetodoPagoComponent implements OnInit {
       return;
     }
     if (tipoPago === 2) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Servicio no disponible');
-      return;
       this.abrirModalAGF();
+      return;
     }
     this.registrarPago();
   }

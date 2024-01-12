@@ -5,13 +5,13 @@ export interface RegistroAGF {
   casillaNssi: boolean,
   cveCURP: string,
   cveCURPBeneficiario: string,
-  cveNSS: number,
+  cveNSS: string,
   fecDefuncion: string,
   idFinado: number,
-  idPagoDetalle: number | null,
   idRamo: number,
   idTipoId: number,
   idVelatorio: number,
   nombreBeneficiario: string,
-  numIdentificacion: number
+  numIdentificacion: number,
+  idPagoBitacora: number
 }

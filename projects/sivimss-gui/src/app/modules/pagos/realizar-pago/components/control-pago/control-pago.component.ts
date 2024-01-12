@@ -76,7 +76,6 @@ export class ControlPagoComponent implements OnInit {
     private realizarPagoService: RealizarPagoService,
     public dialogService: DialogService,
     private cargadorService: LoaderService,
-    private alertaService: AlertaService
   ) {
   }
 
@@ -172,9 +171,8 @@ export class ControlPagoComponent implements OnInit {
       return;
     }
     if (tipoPago === 2) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Servicio no disponible');
-      return;
       this.abrirModalAGF();
+      return;
     }
     this.registrarPago();
   }
