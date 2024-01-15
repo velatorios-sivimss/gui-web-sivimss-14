@@ -26,7 +26,6 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
 
   beneficiarioForm!: FormGroup;
 
-  // TODO se tiene la interfaz pero marca posibles datos indefinidos, validar cómo quitar ese error de compilación
   datosBeneficiario!: any;
 
   velatorio: TipoDropdown[] = [];
