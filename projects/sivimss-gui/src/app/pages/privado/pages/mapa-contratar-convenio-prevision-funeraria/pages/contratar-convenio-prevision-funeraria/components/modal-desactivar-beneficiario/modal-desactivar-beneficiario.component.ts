@@ -46,7 +46,7 @@ export class ModalDesactivarBeneficiarioComponent implements OnInit {
   }
 
   crearForm(): void {
-    this.esMenorEdad = this.beneficiarios.edad >= 18 ? true : false;
+    this.esMenorEdad = this.beneficiarios.edad >= 18;
     this.form = this.formBuilder.group({
       nombre: [
         {

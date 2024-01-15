@@ -46,7 +46,7 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
   }
 
   crearForm(): void {
-    this.esMenorEdad = this.beneficiarios.edad >= 18 ? true : false;
+    this.esMenorEdad = this.beneficiarios.edad >= 18;
     this.form = this.formBuilder.group({
       nombre: [
         {
@@ -324,8 +324,10 @@ export class ModalEditarBeneficiarioComponent implements OnInit {
       default:
         this.alertaService.mostrar(
           TipoAlerta.Error,
-          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. ' +
+          'Si el problema persiste, contacta al responsable de la administración del sistema.'
         );
+        break;
     }
   }
 }

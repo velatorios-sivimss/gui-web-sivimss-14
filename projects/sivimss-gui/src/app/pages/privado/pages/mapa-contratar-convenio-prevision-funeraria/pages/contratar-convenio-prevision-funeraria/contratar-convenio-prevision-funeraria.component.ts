@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {FormGroup, Validators, FormBuilder, FormControl} from '@angular/forms';
+import {FormGroup, Validators, FormBuilder} from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ModalRegistrarBeneficiarioComponent } from './components/modal-registrar-beneficiario/modal-registrar-beneficiario.component';
 import { DialogService} from 'primeng/dynamicdialog';
@@ -13,7 +13,7 @@ import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { finalize, timeout } from 'rxjs';
+import { finalize } from 'rxjs';
 import {
   AlertaService,
   TipoAlerta,
@@ -94,6 +94,10 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   idVelatorio: number | null = null;
   idContratante: number | null = null;
   claseRadioPaquetes: string = "radioPaquetes";
+  mostrarMensajeGuardado: boolean = false;
+  mensajeConfirmacionGuardado: string = "";
+  banderaCheckPersona: boolean = true;
+  banderaCheckGrupo: boolean = true;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -125,6 +129,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     }, 600);
     setTimeout(() => {
       this.buscarParentesco();
+    this.mensajeConfirmacionGuardado = this.mensajesSistemaService.obtenerMensajeSistemaPorId(160)
     }, 900);
 
     this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
@@ -756,10 +761,10 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   guardarEmpresa(): void {
-    debugger
     if (!this.formEmpresa.valid) {
       return;
     }
+    this.banderaCheckPersona = false;
 
     let parametros = {
       idVelatorio: this.rutaActiva.snapshot.queryParams.idVelatorio,
@@ -817,7 +822,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   guardarPersona(): void {
-    debugger
     if (!this.formPersona.valid) {
       return;
     }
@@ -826,8 +830,11 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
       return;
     }
 
+    this.banderaCheckGrupo = false;
+
     this.loaderService.activar();
     let parametros = {
+      idDomicilio: this.datosGeneralesContrante.idDomicilio,
       idVelatorio: this.rutaActiva.snapshot.queryParams.idVelatorio,
       idTipoContratacion: 1,
       idPromotor: this.f.promotor.value,
@@ -866,10 +873,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
           }
 
           if (respuesta.mensaje === 'Exito') {
-            this.alertaService.mostrar(
-              TipoAlerta.Exito,
-              'Beneficiario actualizado correctamente'
-            );
 
             let datos = respuesta.datos;
 
@@ -1156,6 +1159,10 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     });
     ref.onClose.subscribe((respuesta: any) => {
       if (respuesta == 'exito') {
+        this.alertaService.mostrar(
+          TipoAlerta.Exito,
+          'Beneficiario actualizado correctamente'
+        );
         this.detalleConvenio();
       }
     });
@@ -1202,10 +1209,49 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     this.overlayPanelGrupo.toggle(event);
   }
 
-  abrirModalDetalleBeneficiarios(event: any) {}
 
-  buscarConvenioEmpresa(idConvenio: string): void {
-    console.log('buscarconvenio');
+  buscarConvenioEmpresa(idConvenio: number): void {
+    this.banderaCheckPersona = false;
+    this.mostrarBontonGaurdarPersona = false;
+    this.personasGrupo = [];
+    this.tipoContratacion = "grupo"
+    this.clickContratacion('grupo')
+    this.consultaConveniosService
+      .consultarConvenioEmpresa(idConvenio)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            this.mostrarMensaje(Number(respuesta.mensaje));
+            return;
+          }
+
+          // TODO validar mensaje a ingresar
+          if (respuesta.mensaje === 'Exito') {
+            const datosEmpresa = respuesta.datos.datosEmpresaResponse;
+            this.personasGrupo = respuesta.datos.personasEmpresa || [];
+            this.totalElementos = this.personasGrupo.length;
+            this.coloniasEmpresa = [{label:datosEmpresa.colonia,value:datosEmpresa.colonia}]
+            this.datosGrupo.nombre.setValue(datosEmpresa.nombre);
+            this.datosGrupo.razonSocial.setValue(datosEmpresa.razonSocial);
+            this.datosGrupo.rfc.setValue(datosEmpresa.rfc);
+            this.datosGrupo.pais.setValue(datosEmpresa.idPais);
+            this.datosGrupo.codigoPostal.setValue(datosEmpresa.cp);
+            this.datosGrupo.asentamientoColonia.setValue(datosEmpresa.colonia);
+            this.datosGrupo.municipio.setValue(datosEmpresa.municipio);
+            this.datosGrupo.estado.setValue(datosEmpresa.estado);
+            this.datosGrupo.calle.setValue(datosEmpresa.calle);
+            this.datosGrupo.numeroInterior.setValue(datosEmpresa.numInterior);
+            this.datosGrupo.numeroExterior.setValue(datosEmpresa.numExterior);
+            this.datosGrupo.telefono.setValue(datosEmpresa.telefono);
+            this.datosGrupo.correoElectronico.setValue(datosEmpresa.correo);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.mostrarMensaje(0);
+        },
+      });
   }
 
   validarCorreoElectronico(posicion: number): void {
@@ -1230,12 +1276,32 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
       {queryParams:{
           idVelatorio: this.idVelatorio,
           velatorio: this.velatorio,
-          idConvenio: this.idConvenioPf,
+          idConvenio: this.validarIdConvenio(),
           delegacion: this.delegacion,
-          folioConvenio: this.folioConvenio
+          folioConvenio: this.validarFolioConvenioEmpresa()
       }
       }
     );
+  }
+
+  guardarConvenio(): void {
+    console.log("Guardar convenio")
+  }
+
+  validarFolioConvenioEmpresa(): string{
+    if(this.rutaActiva.snapshot.queryParams.folioConvenio){
+      return this.rutaActiva.snapshot.queryParams.folioConvenio
+    } else {
+      return this.folioConvenio
+    }
+  }
+
+  validarIdConvenio(): any {
+    if(this.rutaActiva.snapshot.queryParams.idConvenio){
+      return this.rutaActiva.snapshot.queryParams.idConvenio
+    } else {
+      return this.idConvenioPf
+    }
   }
 
 

@@ -364,7 +364,7 @@
                     <button class="btn btn-gold btn-md" type="button">Cancelar</button>
                     <button class="btn btn-primary btn-md ml-4" type="submit" [disabled]="!this.formPersona.valid"
                         *ngIf="mostrarBontonGaurdarPersona">Guardar</button>
-                    <button class="btn ml-4 btn-gold btn-md" type="button" *ngIf="!mostrarBontonGaurdarPersona">Terminar
+                    <button class="btn ml-4 btn-gold btn-md" (click)="regresarPantalla()" type="button" *ngIf="!mostrarBontonGaurdarPersona">Terminar
                         contratación</button>
                 </div>
             </div>

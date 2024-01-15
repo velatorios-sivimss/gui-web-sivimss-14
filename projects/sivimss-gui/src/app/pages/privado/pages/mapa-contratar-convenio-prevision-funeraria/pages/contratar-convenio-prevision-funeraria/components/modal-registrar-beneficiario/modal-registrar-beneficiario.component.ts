@@ -245,7 +245,7 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
   }
 
   validarEdad() {
-    this.esMenorEdad = this.f.edad.value >= 18 ? true : false;
+    this.esMenorEdad = this.f.edad.value >= 18;
   }
 
   cerrarModal(): void {
@@ -255,7 +255,6 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
   handleClick(controlName: string) {
     let elements = document.getElementById(`upload-file`);
     console.log(elements);
-    controlName = controlName;
     elements?.click();
   }
 
@@ -361,8 +360,6 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
 
               let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
               let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
-              console.log([diaD, mesD, anioD]);
-              [diaD, mesD, anioD] = [anioD, mesD, diaD];
               this.f.idPersona.setValue(valores.idPersona);
               this.f.nombre.setValue(valores.nomPersona);
               this.f.nombre.setValue(valores.nomPersona);
