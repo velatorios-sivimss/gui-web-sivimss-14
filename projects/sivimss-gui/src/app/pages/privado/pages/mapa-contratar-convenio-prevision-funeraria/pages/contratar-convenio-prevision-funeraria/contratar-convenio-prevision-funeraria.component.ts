@@ -1226,7 +1226,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             return;
           }
 
-          // TODO validar mensaje a ingresar
           if (respuesta.mensaje === 'Exito') {
             const datosEmpresa = respuesta.datos.datosEmpresaResponse;
             this.personasGrupo = respuesta.datos.personasEmpresa || [];
