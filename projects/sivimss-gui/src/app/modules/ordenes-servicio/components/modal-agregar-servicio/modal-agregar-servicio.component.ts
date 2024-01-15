@@ -90,6 +90,8 @@ export class ModalAgregarServicioComponent
   heightMap = "0px"
   servicioTraslado: boolean = false;
   confirmarAgregarTraslado: boolean = false;
+  kilometrosRecorridosServicio: number = 0;
+  banderaExisteKilometraje: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -278,7 +280,13 @@ export class ModalAgregarServicioComponent
       finalize(()=> this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        this.costoPorKilometraje = respuesta.datos[0].costoPorKilometraje;
+        if(respuesta.datos.length == 0){
+          this.banderaExisteKilometraje = false;
+          this.alertaService.mostrar(TipoAlerta.Precaucion, 'El proveedor seleccionado no cuenta con la configuración de kilometraje.')
+        }else{
+          this.costoPorKilometraje = respuesta.datos[0].costoPorKilometraje;
+          this.banderaExisteKilometraje = true;
+        }
       },
       error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
@@ -367,6 +375,12 @@ export class ModalAgregarServicioComponent
     }
     let salida = null;
     if (this.proviene == 'traslados' || this.proviene == 'proveedor') {
+      const distancia = this.form.get('kilometraje')?.value;
+      let kilometrosExtra = 0;
+      if(distancia > this.kilometrosPermitidos){
+        kilometrosExtra = Number(distancia) - this.kilometrosPermitidos
+        this.costoExtraKilometros = kilometrosExtra * this.costoPorKilometraje;
+      }
       salida = {
         fila: this.fila,
         proveedor: this.proveedor,
@@ -376,26 +390,30 @@ export class ModalAgregarServicioComponent
         costoExtraKilometros: this.costoExtraKilometros,
       };
     } else if (this.proviene == 'servicios') {
-      salida = {
-        cantidad: '1',
-        concepto: this.concepto,
-        coordOrigen: this.coordOrigen,
-        coordDestino: this.coordDestino,
-        proveedor: this.proveedor,
-        fila: -1,
-        grupo: this.grupo,
-        idCategoria: null,
-        idInventario: null,
-        idArticulo: null,
-        idTipoServicio: this.idTipoServicio,
-        idServicio: this.idServicio,
-        idProveedor: this.idProveedor,
-        totalPaquete: this.costoExtraKilometros > 0 ? this.costoExtraKilometros :  this.costo,
-        importe:  this.costoExtraKilometros > 0 ? this.costoExtraKilometros :  this.costo,
-        esDonado: false,
-        proviene: 'presupuesto',
-        costoExtraKilometros: this.costoExtraKilometros
-      };
+        salida = {
+          cantidad: '1',
+          concepto: this.concepto,
+          coordOrigen: this.coordOrigen,
+          coordDestino: this.coordDestino,
+          proveedor: this.proveedor,
+          fila: -1,
+          grupo: this.grupo,
+          idCategoria: null,
+          idInventario: null,
+          idArticulo: null,
+          idTipoServicio: this.idTipoServicio,
+          idServicio: this.idServicio,
+          idProveedor: this.idProveedor,
+          totalPaquete: this.form.get('kilometraje')?.value * this.costoPorKilometraje,
+          importe:  this.form.get('kilometraje')?.value * this.costoPorKilometraje,
+          esDonado: false,
+          proviene: 'presupuesto',
+          costoExtraKilometros: this.costoExtraKilometros
+        };
+    }
+    if(this.proviene == 'servicios' && !this.banderaExisteKilometraje){
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'El proveedor seleccionado no cuenta con la configuración de kilometraje.')
+      return;
     }
     this.ref.close(salida);
   }
@@ -518,8 +536,6 @@ export class ModalAgregarServicioComponent
 
     this.form.get('kilometraje')?.setValue(distanciaKm);
 
-    this.costoPorKilometraje;
-    this.kilometrosPermitidos;
     if(this.ocultarServicios){
       this.costoExtraKilometros = Number(distanciaKm) * this.costoPorKilometraje
       return
