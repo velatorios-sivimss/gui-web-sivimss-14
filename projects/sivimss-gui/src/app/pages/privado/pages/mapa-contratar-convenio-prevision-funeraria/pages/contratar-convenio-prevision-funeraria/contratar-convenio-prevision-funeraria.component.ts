@@ -667,6 +667,10 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
     return (this.formEmpresa.controls['datosGrupo'] as FormGroup).controls;
   }
 
+  get datosPromotor() {
+    return (this.formEmpresa.controls['promotor'] as FormGroup).controls;
+  }
+
   get archivos() {
     return (this.formPersona.controls['archivos'] as FormGroup).controls;
   }
@@ -768,7 +772,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
 
     let parametros = {
       idVelatorio: this.rutaActiva.snapshot.queryParams.idVelatorio,
-      idPromotor: this.datosGrupo.promotor?.value,
+      idPromotor: this.formEmpresa.controls.promotor?.value ?? null,
       calle: this.datosGrupo.calle.value,
       noExterior: this.datosGrupo.numeroExterior.value,
       noInterior: this.datosGrupo.numeroInterior.value,
@@ -1137,7 +1141,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
       this.seleccionarPromotor = !this.formPersona.value.gestionadoPorPromotor;
       this.formPersona.controls['promotor'].setValue(null);
     } else {
-      console.log('entro por emrpesa');
+      if(this.formEmpresa.disabled)return;
       this.seleccionarPromotorEmpresa =
         !this.formEmpresa.value.gestionadoPorPromotor;
       this.formEmpresa.controls['promotor'].setValue(null);
@@ -1244,6 +1248,9 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
             this.datosGrupo.numeroExterior.setValue(datosEmpresa.numExterior);
             this.datosGrupo.telefono.setValue(datosEmpresa.telefono);
             this.datosGrupo.correoElectronico.setValue(datosEmpresa.correo);
+            this.formEmpresa.controls.gestionadoPorPromotor.setValue(datosEmpresa.idPromotor ? 1 : 0);
+            this.formEmpresa.controls.promotor.setValue(datosEmpresa.idPromotor);
+            this.formEmpresa.disable()
           }
         },
         error: (error: HttpErrorResponse) => {
