@@ -5,7 +5,6 @@
         <button class="btn btn-primary btn-sm ml-5" routerLink="../autenticacion/inicio-sesion">Iniciar sesión</button>
     </div>
     <!-- Tomar los ejemplos de datos-contratante para generar formulario :) -->
-    <!-- Ordenes de servicio tiene todo -->
     <form [formGroup]="form">
         <div class="border-panel mb-5">
             <ng-container formGroupName="datosGenerales">
@@ -85,13 +84,10 @@
                             placeholder="Ingresa otro" maxlength="10">
                     </div>
                     <div class="col-md-3">
-                        <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
+                        <label class="control-label" for="nacionalidad">Nacionalidad:</label>
                         <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad" (onChange)="cambioNacionalidad()"
                             placeholder="Selecciona nacionalidad" [options]="nacionalidad" [filter]="true"
                             filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosGenerales.nacionalidad?.errors?.required && (datosGenerales.nacionalidad?.dirty || datosGenerales.nacionalidad?.touched)">Este
-                            campo es obligatorio *.</span>
                     </div>
                     <div class="col-md-3" *ngIf="datosGenerales.nacionalidad.value === 2">
                         <label class="control-label" for="paisNacimiento">Pais de nacimiento:</label>
@@ -100,14 +96,10 @@
                             filterBy="label"></p-dropdown>
                     </div>
                     <div class="col-md-3" *ngIf="datosGenerales.nacionalidad.value === 1">
-                        <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span
-                                class="req">*</span>:</label>
+                        <label class="control-label" for="lugarNacimiento">Lugar de nacimiento:</label>
                         <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
                             placeholder="Selecciona lugar de nacimiento" [options]="catalogoEstados" [filter]="true"
                             filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosGenerales.lugarNacimiento?.errors?.required && (datosGenerales.lugarNacimiento?.dirty || datosGenerales.lugarNacimiento?.touched)">Este
-                            campo es obligatorio *.</span>
                     </div>
                 </div>
                 <div class="row mb-3">

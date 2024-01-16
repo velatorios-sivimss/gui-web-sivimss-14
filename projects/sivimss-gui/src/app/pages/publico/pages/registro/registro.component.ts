@@ -127,7 +127,7 @@ export class RegistroComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.required],
+          [Validators.nullValidator],
         ],
         paisNacimiento: [
           {
@@ -141,7 +141,7 @@ export class RegistroComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [],
+          [Validators.nullValidator],
         ],
         telefono: [
           {
@@ -255,12 +255,7 @@ export class RegistroComponent implements OnInit {
     this.datosGenerales.paisNacimiento.patchValue(null);
     this.datosGenerales.lugarNacimiento.patchValue(null);
     if (this.datosGenerales.nacionalidad.value === 1) {
-      this.datosGenerales.lugarNacimiento.setValidators(Validators.required);
-      this.datosGenerales.lugarNacimiento.updateValueAndValidity();
       this.datosGenerales.paisNacimiento.setValue(119);
-    } else {
-      this.datosGenerales.lugarNacimiento.clearValidators();
-      this.datosGenerales.lugarNacimiento.updateValueAndValidity();
     }
   }
 
@@ -269,7 +264,7 @@ export class RegistroComponent implements OnInit {
       this.colonias = [];
       this.domicilio.estado.setValue(null);
       this.domicilio.municipio.setValue(null);
-      this.domicilio.colonia.markAsTouched();
+      this.domicilio.colonia.setValue(null);
       return
     }
     this.loaderService.activar();
@@ -297,7 +292,9 @@ export class RegistroComponent implements OnInit {
 
   validarCurp() {
     if (this.datosGenerales.curp.invalid) {
-      if (this.datosGenerales.curp.value !== '') {
+      if (this.datosGenerales.curp.value !== '' &&
+        this.datosGenerales.curp.value !== '' &&
+        this.datosGenerales.curp.value !== null) {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no es válido.');
       }
     } else {
@@ -329,7 +326,9 @@ export class RegistroComponent implements OnInit {
       this.datosGenerales.rfc.setValidators(Validators.maxLength(13));
       this.datosGenerales.rfc.updateValueAndValidity();
       const regex: RegExp = new RegExp(/^([A-Z,Ñ&]{3,4}(\d{2})(0[1-9]|1[0-2])(0[1-9]|1\d|2\d|3[0-1])[A-Z|\d]{3})$/);
-      if (!regex.test(this.datosGenerales.rfc.value)) {
+      if (!regex.test(this.datosGenerales.rfc.value) &&
+        this.datosGenerales.rfc.value !== '' &&
+        this.datosGenerales.rfc.value !== null) {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
         this.datosGenerales.rfc.setErrors({ 'incorrect': true });
       } else {
@@ -352,7 +351,9 @@ export class RegistroComponent implements OnInit {
   }
 
   validarEmail() {
-    if (this.datosGenerales.correo.invalid) {
+    if (this.datosGenerales.correo.invalid &&
+      this.datosGenerales.correo.value !== '' &&
+      this.datosGenerales.correo.value !== null) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'Tu correo electrónico no es válido.');
     }
   }

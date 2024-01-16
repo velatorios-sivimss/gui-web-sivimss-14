@@ -436,8 +436,8 @@ export class AutenticacionService {
 
   cambiarPwd: boolean = false;
   tituloCambiarPwd: string = '';
-  usuario: string = '';
-  contrasenia: string = '';
+  usuario: string | null = null;
+  contrasenia: string | null = null;
 
   constructor(
     private readonly httpClient: HttpClient,
