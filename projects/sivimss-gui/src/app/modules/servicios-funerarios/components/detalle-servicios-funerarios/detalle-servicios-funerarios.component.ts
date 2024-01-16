@@ -246,6 +246,9 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
         this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
+        setTimeout(()=> {
+          if(this.item.idPagoSFPA)this.buscarPagosBitacora(Number(this.item.idPagoSFPA));
+        },500)
         const msg: string =
           this.mensajesSistemaService.obtenerMensajeSistemaPorId(193);
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
