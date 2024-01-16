@@ -20,8 +20,7 @@ import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DatosGeneralesContratante } from '../../../../../consulta-convenio-prevision-funeraria/models/DatosGeneralesContratante.interface';
+import { ActivatedRoute,Router } from '@angular/router';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {
   CATALOGO_ENFERMEDAD_PREEXISTENTE,
@@ -29,6 +28,7 @@ import {
 } from 'projects/sivimss-gui/src/app/modules/convenios-prevision-funeraria/constants/catalogos-funcion';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { Beneficiarios } from '../../../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
+import {MensajesSistemaService} from "../../../../../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-registro-persona-grupo',
@@ -101,7 +101,9 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     private rutaActiva: ActivatedRoute,
     private consultaConveniosService: BusquedaConveniosPFServic,
     private alertaService: AlertaService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -127,9 +129,11 @@ export class RegistroPersonaGrupoComponent implements OnInit {
       idVelatorio: this.rutaActiva.snapshot.queryParams.idVelatorio,
       velatorio: this.rutaActiva.snapshot.queryParams.velatorio,
       idConvenio: this.rutaActiva.snapshot.queryParams.idConvenio,
+      delegacion: this.rutaActiva.snapshot.queryParams.delegacion,
+      folioConvenio: this.rutaActiva.snapshot.queryParams.folioConvenio
     };
     this.delegacion = this.rutaActiva.snapshot.queryParams.delegacion;
-    this.folioConvenio = this.rutaActiva.snapshot.queryParams.delegacion;
+    this.folioConvenio = this.rutaActiva.snapshot.queryParams.folioConvenio;
   }
 
   crearFormPersona(): FormGroup {
@@ -139,8 +143,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
           {
             value: null,
             disabled: false,
-          },
-          [Validators.nullValidator, Validators.maxLength(5)],
+          }
         ],
         rfc: [
           {
@@ -148,7 +151,6 @@ export class RegistroPersonaGrupoComponent implements OnInit {
             disabled: false,
           },
           [
-            Validators.required,
             Validators.pattern(PATRON_RFC),
             Validators.maxLength(13),
           ],
@@ -320,6 +322,15 @@ export class RegistroPersonaGrupoComponent implements OnInit {
           },
           [Validators.nullValidator],
         ],
+      }),
+      formPaquete: this.formBuilder.group({
+        paquete: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator]
+        ]
       }),
       archivos: this.formBuilder.group({
         archivoIne: [
@@ -562,11 +573,17 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     }
   }
 
+  validarCorreo(): void {
+    if(this.domicilio.correoElectronico?.errors?.pattern){
+      this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
+    }
+  }
+
   consultarCURP() {
     if (!this.datosPersonales.curp.value) return;
 
     if (this.datosPersonales.curp?.errors?.pattern) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no valido.');
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no válido.');
       return;
     }
     if (this.datosPersonales.curp.value.includes('XEXX010101HNEXXXA4')) return;
@@ -574,7 +591,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     if (this.datosPersonales.curp.value.includes('XEXX010101MNEXXXA8')) return;
 
     if (this.datosPersonales.curp.value?.errors?.pattern) {
-      this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
+      this.alertaService.mostrar(TipoAlerta.Error, 'CURP no válido.');
       return;
     }
     if (!this.datosPersonales.curp.value) return;
@@ -608,7 +625,6 @@ export class RegistroPersonaGrupoComponent implements OnInit {
             if (curp != '') {
               let valores = respuesta.datos[0];
 
-              let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
               this.datosPersonales.idPersona.setValue(valores.idPersona);
               this.datosPersonales.nombre.setValue(valores.nomPersona);
               this.datosPersonales.primerApellido.setValue(
@@ -627,7 +643,9 @@ export class RegistroPersonaGrupoComponent implements OnInit {
                 valores.primerApellido +
                 ' ' +
                 valores.segundoApellido;
+              this.datosPersonales.lugarNacimiento.setValue(valores.idEstado)
             }
+
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -647,10 +665,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     }
 
     this.loaderService.activar();
-    let idPersona =
-      this.datosPersonales.idPersona.value == null
-        ? 0
-        : this.datosPersonales.idPersona.value;
+    let idPersona = this.datosPersonales.idPersona.value ?? 0;
     let parametros = {
       idPaquete: this.idPaquete,
       idEnfermedad: this.domicilio.enfermedadPrexistente.value,
@@ -683,6 +698,8 @@ export class RegistroPersonaGrupoComponent implements OnInit {
       telefono: this.domicilio.telefono.value,
       correo: this.domicilio.correoElectronico.value,
       idConvenioPF: this.idConvenioPF,
+      idSexo: this.datosPersonales.sexo.value,
+      otroSexo:this.datosPersonales.otroSexo.value,
     };
 
     this.consultaConveniosService
@@ -697,17 +714,13 @@ export class RegistroPersonaGrupoComponent implements OnInit {
           }
 
           if (respuesta.mensaje === 'Exito') {
-            this.alertaService.mostrar(
-              TipoAlerta.Exito,
-              'Beneficiario actualizado correctamente'
-            );
             this.readonlyInputs = true;
             let datos = respuesta.datos;
 
             this.mostrarBontonGaurdarPersona = false;
             this.idConvenioPf = datos.idConvenioPF;
             this.idDomicilio = datos.idDomicilio;
-            this.folioConvenio = datos.folio;
+            // this.folioConvenio = datos.folio;
             this.idContratante = datos.idContratante;
             this.mostrarBotonAgregarBeneficiario = true;
             this.deshabilitarTipo = true;
@@ -911,6 +924,10 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     });
     ref.onClose.subscribe((respuesta: any) => {
       if (respuesta == 'exito') {
+        this.alertaService.mostrar(
+          TipoAlerta.Exito,
+          'Beneficiario actualizado correctamente'
+        );
         this.detalleConvenio();
       }
     });
@@ -951,5 +968,18 @@ export class RegistroPersonaGrupoComponent implements OnInit {
   abrirPanel(event: MouseEvent, itemBeneficiarios: Beneficiarios): void {
     this.overlayPanel.toggle(event);
     this.itemBeneficiarios = itemBeneficiarios;
+  }
+
+  regresarPantalla(): void {
+    this.router.navigate(['externo-privado/contratar-convenio-de-prevision-funeraria/registro-contratacion-convenio-de-prevision-funeraria'],
+      {queryParams:{
+          idVelatorio: this.idVelatorio,
+          velatorio: this.velatorio,
+          idConvenio: this.idConvenioPf,
+          delegacion: this.delegacion,
+          folioConvenio: this.folioConvenio
+        }
+      }
+    );
   }
 }

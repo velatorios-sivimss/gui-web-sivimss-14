@@ -18,6 +18,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ModalEditarBeneficiarioComponent } from './components/modal-editar-beneficiario/modal-editar-beneficiario.component';
 import { ModalDesactivarBeneficiarioComponent } from './components/modal-desactivar-beneficiario/modal-desactivar-beneficiario.component';
 import { DialogModule } from 'primeng/dialog';
+import {UtileriaModule} from "../../../../../../shared/utileria/utileria.module";
 
 @NgModule({
   declarations: [
@@ -26,22 +27,23 @@ import { DialogModule } from 'primeng/dialog';
     ModalEditarBeneficiarioComponent,
     ModalDesactivarBeneficiarioComponent,
   ],
-  imports: [
-    CommonModule,
-    ContratarConvenioPrevisionFunerariaRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CalendarModule,
-    DropdownModule,
-    TituloPrincipalModule,
-    BtnRegresarModule,
-    TableModule,
-    CheckboxModule,
-    RadioButtonModule,
-    OverlayPanelOpcionesModule,
-    OverlayPanelModule,
-    DialogModule
-  ],
+    imports: [
+        CommonModule,
+        ContratarConvenioPrevisionFunerariaRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        CalendarModule,
+        DropdownModule,
+        TituloPrincipalModule,
+        BtnRegresarModule,
+        TableModule,
+        CheckboxModule,
+        RadioButtonModule,
+        OverlayPanelOpcionesModule,
+        OverlayPanelModule,
+        DialogModule,
+        UtileriaModule
+    ],
   providers: [DialogService],
 })
 export class ContratarConvenioPrevisionFunerariaModule {}

@@ -17,6 +17,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { finalize } from 'rxjs';
 import * as moment from 'moment';
+import {MensajesSistemaService} from "../../../../../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-modal-registrar-beneficiario',
@@ -43,7 +44,8 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
     private readonly ref: DynamicDialogRef,
     private alertaService: AlertaService,
     private consultaConveniosService: BusquedaConveniosPFServic,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {}
 
   ngOnInit(): void {
@@ -243,7 +245,7 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
   }
 
   validarEdad() {
-    this.esMenorEdad = this.f.edad.value >= 18 ? true : false;
+    this.esMenorEdad = this.f.edad.value >= 18;
   }
 
   cerrarModal(): void {
@@ -253,7 +255,6 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
   handleClick(controlName: string) {
     let elements = document.getElementById(`upload-file`);
     console.log(elements);
-    controlName = controlName;
     elements?.click();
   }
 
@@ -333,10 +334,7 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
 
   validarCorreoElectronico(): void {
     if (this.f.correoElectronico?.errors?.pattern) {
-      this.alertaService.mostrar(
-        TipoAlerta.Precaucion,
-        'Tu correo electrónico no es válido. '
-      );
+      this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
     }
   }
 
@@ -362,8 +360,6 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
 
               let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
               let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
-              console.log([diaD, mesD, anioD]);
-              [diaD, mesD, anioD] = [anioD, mesD, diaD];
               this.f.idPersona.setValue(valores.idPersona);
               this.f.nombre.setValue(valores.nomPersona);
               this.f.nombre.setValue(valores.nomPersona);

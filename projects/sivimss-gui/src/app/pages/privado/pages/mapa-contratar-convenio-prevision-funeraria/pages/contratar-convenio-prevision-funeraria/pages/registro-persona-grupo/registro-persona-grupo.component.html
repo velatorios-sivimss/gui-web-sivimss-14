@@ -17,13 +17,13 @@
                         <div class="col-md-3">
                             <label class="control-label" for="rfc">R.F.C.:</label>
                             <input id="rfc" type="text" class="form-control" formControlName="rfc" (blur)="validarRFC()"
-                                placeholder="Ingresa R.F.C." [readonly]="readonlyInputs">
+                                placeholder="Ingresa R.F.C." maxlength="13" [readonly]="readonlyInputs">
                         </div>
                         <div class="col-md-3">
                             <label class="control-label" for="curp">CURP <span class="req">*</span>:</label>
                             <input id="curp" type="text" class="form-control" formControlName="curp"
                                 placeholder="Ingresa CURP" (blur)="consultarCURP()" (keyup)="convertirAMayusculas(0)"
-                                [readonly]="readonlyInputs">
+                                [readonly]="readonlyInputs" maxlength="18">
                             <span class="campo-obligatorio"
                                 *ngIf="datosPersonales.curp?.errors?.required && (datosPersonales.curp?.dirty || datosPersonales.curp?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -31,7 +31,7 @@
                         <div class="col-md-3">
                             <label class="control-label" for="nombre">Nombre <span class="req">*</span>:</label>
                             <input id="nombre" type="text" class="form-control" formControlName="nombre"
-                                placeholder="Ingresa nombre">
+                                placeholder="Ingresa nombre" maxlength="30">
                             <span class="campo-obligatorio"
                                 *ngIf="datosPersonales.nombre?.errors?.required && (datosPersonales.nombre?.dirty || datosPersonales.nombre?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -42,7 +42,7 @@
                             <label class="control-label" for="primerApellido">Primer apellido <span
                                     class="req">*</span>:</label>
                             <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
-                                placeholder="Ingresa primer apellido">
+                                placeholder="Ingresa primer apellido" maxlength="30">
                             <span class="campo-obligatorio"
                                 *ngIf="datosPersonales.primerApellido?.errors?.required && (datosPersonales.primerApellido?.dirty || datosPersonales.primerApellido?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -51,7 +51,7 @@
                             <label class="control-label" for="segundoApellido">Segundo apellido <span
                                     class="req">*</span>:</label>
                             <input id="segundoApellido" type="text" class="form-control"
-                                formControlName="segundoApellido" placeholder="Ingresa segundo apellido">
+                                formControlName="segundoApellido" placeholder="Ingresa segundo apellido" maxlength="30">
                             <span class="campo-obligatorio"
                                 *ngIf="datosPersonales.segundoApellido?.errors?.required && (datosPersonales.segundoApellido?.dirty || datosPersonales.segundoApellido?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -86,9 +86,6 @@
                             <span class="campo-obligatorio"
                                 *ngIf="datosPersonales.lugarNacimiento?.errors?.required && (datosPersonales.lugarNacimiento?.dirty || datosPersonales.lugarNacimiento?.touched)">Este
                                 campo es obligatorio *.</span>
-
-
-
                         </div>
                         <div class="col-md-3">
                             <label class="control-label" for="fechaNacimiento">Fecha de nacimiento<span
@@ -104,7 +101,7 @@
                         <div class="col-md-3">
                             <label class="control-label" for="codigoPostal">C.P. <span class="req">*</span>:</label>
                             <input id="codigoPostal" type="text" class="form-control" formControlName="codigoPostal"
-                                (change)="buscarCodigoPostal()" placeholder="Ingresa código postal"
+                                (change)="buscarCodigoPostal()" placeholder="Ingresa código postal" numbersOnly maxlength="5"
                                 [readonly]="readonlyInputs">
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.codigoPostal?.errors?.required && (domicilio.codigoPostal?.dirty || domicilio.codigoPostal?.touched)">Este
@@ -150,7 +147,7 @@
                         </div>
                         <div class="col-md-3">
                             <label class="control-label" for="calle">Calle <span class="req">*</span>:</label>
-                            <input id="calle" type="text" class="form-control" formControlName="calle"
+                            <input id="calle" type="text" class="form-control" formControlName="calle" maxlength="30"
                                 [readonly]="readonlyInputs" placeholder="Ingresa calle">
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.calle?.errors?.required && (domicilio.calle?.dirty || domicilio.calle?.touched)">Este
@@ -160,7 +157,7 @@
                             <label class="control-label" for="numeroExterior">Número exterior <span
                                     class="req">*</span>:</label>
                             <input id="numeroExterior" type="text" class="form-control" formControlName="numeroExterior"
-                                [readonly]="readonlyInputs" placeholder="Ingresa número exterior">
+                                [readonly]="readonlyInputs" placeholder="Ingresa número exterior" maxlength="5">
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.numeroExterior?.errors?.required && (domicilio.numeroExterior?.dirty || domicilio.numeroExterior?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -168,14 +165,14 @@
                         <div class="col-md-3">
                             <label class="control-label" for="numeroInterior">Número interior:</label>
                             <input id="numeroInterior" type="text" class="form-control" formControlName="numeroInterior"
-                                [readonly]="readonlyInputs" placeholder="Ingresa número interior">
+                                [readonly]="readonlyInputs" placeholder="Ingresa número interior" maxlength="4">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label class="control-label" for="correoElectronico">Correo electrónico <span
                                     class="req">*</span>:</label>
-                            <input id="correoElectronico" type="text" class="form-control"
+                            <input id="correoElectronico" type="text" class="form-control" maxlength="45" (blur)="validarCorreo()"
                                 formControlName="correoElectronico" placeholder="Ingresa correo electrónico"
                                 [readonly]="readonlyInputs">
                             <span class="campo-obligatorio"
@@ -184,7 +181,7 @@
                         </div>
                         <div class="col-md-3">
                             <label class="control-label" for="telefono">Teléfono <span class="req">*</span>:</label>
-                            <input id="telefono" type="text" class="form-control" formControlName="telefono"
+                            <input id="telefono" type="text" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
                                 [readonly]="readonlyInputs" placeholder="Ingresa teléfono">
                             <span class="campo-obligatorio"
                                 *ngIf="domicilio.telefono?.errors?.required && (domicilio.telefono?.dirty || domicilio.telefono?.touched)">Este
@@ -200,17 +197,19 @@
                         <div class="col-md-3" *ngIf="muestraOtraEnfermedad">
                             <label class="control-label" for="otro">Otro:</label>
                             <input id="otro" type="text" class="form-control" formControlName="otro"
-                                [readonly]="readonlyInputs" placeholder="Ingresa otro">
+                                [readonly]="readonlyInputs" placeholder="Ingresa otro" maxlength="45">
                         </div>
                     </div>
                 </ng-container>
             </div>
 
             <div class="border-panel mb-5">
+              <div class="flex justify-content-between align-items-center">
                 <h2 class="subtitulo-base">Beneficiarios</h2>
                 <button class="btn btn-default btn-md ml-5" (click)="abrirModalRegistroNuevoBeneficiario($event)"
                     *ngIf="(beneficiarios.length < 3) && mostrarBotonAgregarBeneficiario" type="button">Nuevo
                     beneficiario</button>
+              </div>
                 <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true"
                     [columnResizeMode]="'expand'">
                     <ng-template pTemplate="header">
@@ -257,12 +256,12 @@
 
             <div class="border-panel mb-5">
                 <h2 class="subtitulo-base">Paquetes</h2>
-                <ng-container>
+                <ng-container formGroupName="formPaquete">
                     <div class="paquetes">
                         <div class="paquete" *ngFor="let item of paquetes;">
                             <div class="paquete-titulo">
-                                <input type="radio" name="paquetes" [value]="item.idPaquete"
-                                    (click)="seleccionaPaquete(item.idPaquete)" [readonly]="readonlyInputs" />
+                              <p-radioButton [inputId]="'item.idPaquete'" name="paquete" [value]="item.idPaquete"  formControlName="paquete"
+                                             (click)="seleccionaPaquete(item.idPaquete)"></p-radioButton>
                                 <span>{{item.nomPaquete}}</span>
                             </div>
                             <div>
@@ -365,8 +364,8 @@
                     <button class="btn btn-gold btn-md" type="button">Cancelar</button>
                     <button class="btn btn-primary btn-md ml-4" type="submit" [disabled]="!this.formPersona.valid"
                         *ngIf="mostrarBontonGaurdarPersona">Guardar</button>
-                    <button class="btn btn-gold btn-md" type="button" *ngIf="!mostrarBontonGaurdarPersona">Terminar
-                        contratacion</button>
+                    <button class="btn ml-4 btn-gold btn-md" (click)="regresarPantalla()" type="button" *ngIf="!mostrarBontonGaurdarPersona">Terminar
+                        contratación</button>
                 </div>
             </div>
         </form>
