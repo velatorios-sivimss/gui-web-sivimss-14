@@ -12,6 +12,11 @@ export const TIPO_FACTURACION: any[] = [
   },
   {
     value: 3,
+    label: 'Facturación electrónica de Pago Renovación de un convenio de PF.',
+    disabled: false
+  },
+  {
+    value: 5,
     label: 'Facturación electrónica de Pago de un permiso PUTR.',
     disabled: true
   },
