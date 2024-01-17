@@ -1,13 +1,13 @@
-import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
-import {Observable, of} from "rxjs";
-import {TipoDropdown} from "../../../models/tipo-dropdown";
-import {mapearArregloTipoDropdown} from "../../../utils/funciones";
-import {AutenticacionService} from "../../../services/autenticacion.service";
-import {environment} from "../../../../environments/environment";
-import {BaseService} from "../../../utils/base-service";
-import {HttpRespuesta} from "../../../models/http-respuesta.interface";
-import {AgregarPlanSFPA} from "../models/servicios-funerarios.interface";
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable, of } from "rxjs";
+import { TipoDropdown } from "../../../models/tipo-dropdown";
+import { mapearArregloTipoDropdown } from "../../../utils/funciones";
+import { AutenticacionService } from "../../../services/autenticacion.service";
+import { environment } from "../../../../environments/environment";
+import { BaseService } from "../../../utils/base-service";
+import { HttpRespuesta } from "../../../models/http-respuesta.interface";
+import { AgregarPlanSFPA } from "../models/servicios-funerarios.interface";
 
 @Injectable()
 export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, any> {
@@ -16,17 +16,17 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
   }
 
   insertarPlanSFPA(planSFPA: AgregarPlanSFPA): Observable<HttpRespuesta<any>> {
-  return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/inserta-plan-sfpa`,planSFPA);
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/inserta-plan-sfpa`, planSFPA);
   }
 
-  consultarPlanSFPA(idPlanSfpa: number): Observable<HttpRespuesta<any>>{
+  consultarPlanSFPA(idPlanSfpa: number): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/consulta-detalle-plan-sfpa`,
-      {idPlanSfpa:idPlanSfpa});
+      { idPlanSfpa: idPlanSfpa });
   }
 
-  consultarNumeroPagos(idPlanSfpa: number): Observable<HttpRespuesta<any>>{
+  consultarNumeroPagos(idPlanSfpa: number): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/consulta-numero-pago-plan-sfpa`,
-      {idPlanSfpa:idPlanSfpa});
+      { idPlanSfpa: idPlanSfpa });
   }
 
   obtenerCatalogoPais(): Observable<TipoDropdown[]> {
@@ -49,12 +49,12 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
 
   consultarCURP(curp: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-contratante-curp`,
-      {curp:curp});
+      { curp: curp });
   }
 
   consultarRFC(rfc: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-contratante-rfc`,
-      {rfc:rfc});
+      { rfc: rfc });
   }
 
   consultarMatriculaSiap(matricula: string): Observable<HttpRespuesta<any>> {
@@ -74,12 +74,18 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
   }
 
   validarTitular(curp: string, rfc: string, nss: string): Observable<HttpRespuesta<any>> {
-    let objetoValidar:{curp?: string,rfc?: string, nss?: string} = {curp:curp,rfc:rfc,nss:nss};
-    if(curp==="")delete objetoValidar.curp
-    if(rfc==="")delete objetoValidar.rfc
-    if(nss==="")delete objetoValidar.nss
+    let objetoValidar: { curp?: string, rfc?: string, nss?: string } = { curp: curp, rfc: rfc, nss: nss };
+    if (curp === "") delete objetoValidar.curp
+    if (rfc === "") delete objetoValidar.rfc
+    if (nss === "") delete objetoValidar.nss
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/consulta-valida-afiliado`,
       objetoValidar);
+  }
+
+  cancelarPlanSfpa(idPlanSfpa: number): Observable<HttpRespuesta<any>> {
+    const estatusCancelar: number = 6;
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/cancela-plan-sfpa`,
+      { idPlanSfpa: idPlanSfpa, idEstatusPlanSfpa: estatusCancelar });
   }
 
 }

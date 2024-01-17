@@ -176,69 +176,67 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   inicializarFormDatosBeneficiario1(): void {
     this.datosBeneficiario1Form = this.formBuilder.group({
-      datosIguales: [{ value: null, disabled: false }, [Validators.required]],
       curp: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_RFC)]],
+      rfc: [{ value: null, disabled: false }, [Validators.pattern(PATRON_RFC)]],
       matricula: [{ value: null, disabled: false }],
-      nss: [{ value: null, disabled: false }, [Validators.required]],
-      nombre: [{ value: null, disabled: false }, [Validators.required]],
-      primerApellido: [{ value: null, disabled: false }, [Validators.required]],
-      segundoApellido: [{ value: null, disabled: false }, [Validators.required]],
-      sexo: [{ value: null, disabled: false }, [Validators.required]],
+      nss: [{ value: null, disabled: false }, []],
+      nombre: [{ value: null, disabled: false }, []],
+      primerApellido: [{ value: null, disabled: false }, []],
+      segundoApellido: [{ value: null, disabled: false }, []],
+      sexo: [{ value: null, disabled: false }, []],
       otroSexo: [{ value: null, disabled: false }],
-      fechaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
+      fechaNacimiento: [{ value: null, disabled: false }, []],
       nacionalidad: [{ value: null, disabled: false }],
-      lugarNacimiento: [{ value: null, disabled: false }, [Validators.required]],
+      lugarNacimiento: [{ value: null, disabled: false }, []],
       paisNacimiento: [{ value: null, disabled: false }],
-      telefono: [{ value: null, disabled: false }, [Validators.required]],
+      telefono: [{ value: null, disabled: false }, []],
       telefonoFijo: [{ value: null, disabled: false }, []],
-      correoElectronico: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: null, disabled: false }, [Validators.required]],
-      calle: [{ value: null, disabled: false }, [Validators.required]],
+      correoElectronico: [{ value: null, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
+      cp: [{ value: null, disabled: false }, []],
+      calle: [{ value: null, disabled: false }, []],
       numeroInterior: [{ value: null, disabled: false }],
-      numeroExterior: [{ value: null, disabled: false }, [Validators.required]],
-      colonia: [{ value: null, disabled: false }, [Validators.required]],
-      municipio: [{ value: null, disabled: true }, [Validators.required]],
-      estado: [{ value: null, disabled: true }, [Validators.required]],
+      numeroExterior: [{ value: null, disabled: false }, []],
+      colonia: [{ value: null, disabled: false }, []],
+      municipio: [{ value: null, disabled: true }, []],
+      estado: [{ value: null, disabled: true }, []],
     });
   }
 
   inicializarFormDatosBeneficiario2(): void {
     this.datosBeneficiario2Form = this.formBuilder.group({
-      datosIguales: [{ value: null, disabled: false }, [Validators.required]],
       curp: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_RFC)]],
+      rfc: [{ value: null, disabled: false }, [Validators.pattern(PATRON_RFC)]],
       matricula: [{ value: null, disabled: false }],
-      nss: [{ value: null, disabled: false }, [Validators.required]],
-      nombre: [{ value: null, disabled: false }, [Validators.required]],
-      primerApellido: [{ value: null, disabled: false }, [Validators.required]],
-      segundoApellido: [{ value: null, disabled: false }, [Validators.required]],
-      sexo: [{ value: null, disabled: false }, [Validators.required]],
+      nss: [{ value: null, disabled: false }, []],
+      nombre: [{ value: null, disabled: false }, []],
+      primerApellido: [{ value: null, disabled: false }, []],
+      segundoApellido: [{ value: null, disabled: false }, []],
+      sexo: [{ value: null, disabled: false }, []],
       otroSexo: [{ value: null, disabled: false }],
-      fechaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
+      fechaNacimiento: [{ value: null, disabled: false }, []],
       nacionalidad: [{ value: null, disabled: false }],
-      lugarNacimiento: [{ value: null, disabled: false }, [Validators.required]],
+      lugarNacimiento: [{ value: null, disabled: false }, []],
       paisNacimiento: [{ value: null, disabled: false }],
-      telefono: [{ value: null, disabled: false }, [Validators.required]],
+      telefono: [{ value: null, disabled: false }, []],
       telefonoFijo: [{ value: null, disabled: false }, []],
-      correoElectronico: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: null, disabled: false }, [Validators.required]],
-      calle: [{ value: null, disabled: false }, [Validators.required]],
+      correoElectronico: [{ value: null, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
+      cp: [{ value: null, disabled: false }, []],
+      calle: [{ value: null, disabled: false }, []],
       numeroInterior: [{ value: null, disabled: false }],
-      numeroExterior: [{ value: null, disabled: false }, [Validators.required]],
-      colonia: [{ value: null, disabled: false }, [Validators.required]],
-      municipio: [{ value: null, disabled: true }, [Validators.required]],
-      estado: [{ value: null, disabled: true }, [Validators.required]],
+      numeroExterior: [{ value: null, disabled: false }, []],
+      colonia: [{ value: null, disabled: false }, []],
+      municipio: [{ value: null, disabled: true }, []],
+      estado: [{ value: null, disabled: true }, []],
     });
   }
 
   convertirMayusculas(posicion: number): void {
-    let formularios = [this.fdt.curp, this.fdt.rfc, this.fdts.curp, this.fdts.rfc];
+    let formularios = [this.fdt.curp, this.fdt.rfc, this.fdts.curp, this.fdts.rfc, this.fdb1.curp, this.fdb1.rfc, this.fdb2.curp, this.fdb2.rfc];
     formularios[posicion].setValue(formularios[posicion].value.toUpperCase());
   }
 
   convertirMinusculas(posicion: number): void {
-    let formularios = [this.fdt.correoElectronico, this.fdts.correoElectronico];
+    let formularios = [this.fdt.correoElectronico, this.fdts.correoElectronico, this.fdb1.correoElectronico, this.fdb2.correoElectronico];
     formularios[posicion].setValue(formularios[posicion].value.toLowerCase());
   }
 
@@ -256,7 +254,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   consultarCurp(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts];
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].curp.value) return;
     if (formularioEnUso[posicion].curp?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
@@ -298,6 +296,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
             formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
           this.consultarCodigoPostal(posicion);
           this.cambiarNacionalidad(posicion);
+          this.cambiarNacionalidad2(posicion);
           return;
         }
 
@@ -339,7 +338,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   consultarLugarNacimiento(entidad: string, posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts];
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     const entidadEditada = this.accentsTidy(entidad);
     if (entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')) {
       formularioEnUso[posicion].lugarNacimiento.setValue(11);
@@ -428,7 +427,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   consultarCorreo(posicion: number): void {
-    let formularios = [this.fdt.correoElectronico, this.fdts.correoElectronico];
+    let formularios = [this.fdt.correoElectronico, this.fdts.correoElectronico, this.fdb1.correoElectronico, this.fdb2.correoElectronico];
     if (!formularios[posicion].value) return;
     if (formularios[posicion]?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
@@ -454,7 +453,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   consultarNSS(posicion: number): void {
-    let formularios = [this.fdt, this.fdts];
+    let formularios = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularios[posicion].nss.value) return;
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarNSS(formularios[posicion].nss.value).pipe(
@@ -474,53 +473,64 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   sinEspacioDoble(posicion: number): void {
-    let formularios = [this.fdt.nombre, this.fdt.primerApellido, this.fdt.segundoApellido,
-    this.fdts.nombre, this.fdts.primerApellido, this.fdts.segundoApellido]
+    let formularios = [
+      this.fdt.nombre, this.fdt.primerApellido, this.fdt.segundoApellido,
+      this.fdts.nombre, this.fdts.primerApellido, this.fdts.segundoApellido,
+      this.fdb1.nombre, this.fdb1.primerApellido, this.fdb1.segundoApellido,
+      this.fdb2.nombre, this.fdb2.primerApellido, this.fdb2.segundoApellido,
+    ]
     if (formularios[posicion].value.charAt(0).includes(' ')) {
       formularios[posicion].setValue(formularios[posicion].value.trimStart());
     }
   }
 
   cambiarSexo(posicion: number): void {
-    let formularios = [this.fdt.sexo, this.fdts.sexo];
-    let formulariosOtroSexo = [this.fdt.otroSexo, this.fdts.otroSexo];
-
-    if (formularios[posicion].value == 3) {
-      formulariosOtroSexo[posicion].setValidators(Validators.required);
-    } else {
-      formulariosOtroSexo[posicion].patchValue(null);
-      formulariosOtroSexo[posicion].clearValidators();
-    }
-    formulariosOtroSexo[posicion].updateValueAndValidity();
+    let formulariosOtroSexo = [this.fdt.otroSexo, this.fdts.otroSexo, this.fdb1.otroSexo, this.fdb2.otroSexo];
+    formulariosOtroSexo[posicion].patchValue(null);
   }
 
   cambiarNacionalidad(posicion: number): void {
-    let formularios = [this.fdt.paisNacimiento, this.fdt.lugarNacimiento,
-    this.fdts.paisNacimiento, this.fdts.lugarNacimiento];
+    let formularios = [this.fdt.paisNacimiento, this.fdt.lugarNacimiento, this.fdts.paisNacimiento, this.fdts.lugarNacimiento];
     if (posicion === 0) {
-
       if (this.fdt.nacionalidad.value == 1) {
-        formularios[0].reset()
+        formularios[0].reset();
         formularios[1].setValidators(Validators.required);
       } else {
-        formularios[1].reset()
+        formularios[1].reset();
         formularios[1].patchValue(null);
         formularios[1].clearValidators();
         formularios[1].updateValueAndValidity();
       }
     } else if (this.fdts.nacionalidad.value == 1) {
-      formularios[2].reset()
+      formularios[2].reset();
       formularios[3].setValidators(Validators.required);
     } else {
-      formularios[3].reset()
+      formularios[3].reset();
       formularios[3].patchValue(null);
       formularios[3].clearValidators();
       formularios[3].updateValueAndValidity();
     }
   }
 
+  cambiarNacionalidad2(posicion: number): void {
+    let formularios = [this.fdb1.paisNacimiento, this.fdb1.lugarNacimiento, this.fdb2.paisNacimiento, this.fdb2.lugarNacimiento];
+    if (posicion === 0) {
+      if (this.fdb1.nacionalidad.value == 1) {
+        formularios[0].reset();
+      } else {
+        formularios[1].reset();
+        formularios[1].patchValue(null);
+      }
+    } else if (this.fdb2.nacionalidad.value == 1) {
+      formularios[2].reset();
+    } else {
+      formularios[3].reset();
+      formularios[3].patchValue(null);
+    }
+  }
+
   consultarCodigoPostal(posicion: number): void {
-    let formularios = [this.fdt, this.fdts];
+    let formularios = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularios[posicion].cp.value) {
       return;
     }
