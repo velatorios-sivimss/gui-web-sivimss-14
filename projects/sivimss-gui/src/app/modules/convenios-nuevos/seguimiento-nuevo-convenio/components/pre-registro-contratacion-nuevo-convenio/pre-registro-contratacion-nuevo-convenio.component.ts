@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -10,6 +10,39 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+
+interface BeneficiarioResponse {
+  curp: string,
+  rfc: string,
+  matricula: string,
+  nss: string,
+  nombre: string,
+  primerApellido: string,
+  segundoApellido: string,
+  idSexo: string,
+  fecNacimiento: string,
+  idPais: string,
+  lugarNac: string,
+  telFijo: string,
+  telCelular: string,
+  correo: string,
+  calle: string,
+  numExt: string,
+  numInt: string,
+  cp: string,
+  colonia: string,
+  municipio: string,
+  idEstado: string,
+  estado: string
+}
+
+interface Beneficiario {
+  curp: string,
+  rfc: string,
+  correo: string,
+  nombreCompleto: string
+}
+
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
@@ -32,7 +65,6 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   totalElementos: number = 0;
   infoPersona: boolean = false;
 
-  beneficiarios: any[] = [];
   convenioPersona!: ConvenioPersona;
   paquetes: TipoDropdown[] = [];
 
@@ -41,6 +73,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   preRegistroSiguiente: boolean = false;
   folio: string = '';
+  nombresBeneficiario: string[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -50,21 +83,20 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) {
-  }
-
-  ngOnInit(): void {
     this.cargarCatalogos();
     this.inicializarFormulario();
   }
 
+  ngOnInit(): void {
+    this.cargarBeneficiarios();
+  }
+
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"]
-    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos[0];
+    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
     this.folio = this.convenioPersona.folioConvenio.toString();
-    this.beneficiarios = respuesta[this.POSICION_BENEFICIARIO].datos;
     const paquetes = respuesta[this.POSICION_PAQUETES].datos;
     this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
-    console.log(this.paquetes);
   }
 
   inicializarFormulario(): void {
@@ -90,8 +122,35 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         telefono: [{value: this.convenioPersona.telFijo, disabled: false}],
         enfermedadPreExistente: [{value: null, disabled: false}],
       }),
-      tipoPaquete: [{value: this.convenioPersona.idPaquete, disabled: false}]
+      tipoPaquete: [{value: this.convenioPersona.idPaquete, disabled: false}],
+      beneficiarios: this.formBuilder.array([])
     });
+  }
+
+  cargarBeneficiarios(): void {
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"]
+    const beneficiarios: BeneficiarioResponse[] = []
+    if (respuesta[this.POSICION_CONVENIO].datos.beneficiario1) {
+      beneficiarios.push(respuesta[this.POSICION_CONVENIO].datos.beneficiario1);
+    }
+    if (respuesta[this.POSICION_CONVENIO].datos.beneficiario2) {
+      beneficiarios.push(respuesta[this.POSICION_CONVENIO].datos.beneficiario2);
+    }
+    for (let beneficiario of beneficiarios) {
+      this.agregarBeneficiario(beneficiario)
+    }
+  }
+
+  agregarBeneficiario(beneficiario: BeneficiarioResponse): void {
+    const nombreBeneficiario: string = `${beneficiario.nombre} ${beneficiario.primerApellido} ${beneficiario.segundoApellido}`;
+    this.nombresBeneficiario.push(nombreBeneficiario);
+    const beneficiarioForm: FormGroup = this.formBuilder.group({
+      nombre: [{value: nombreBeneficiario, disabled: false}],
+      curp: [{value: beneficiario.curp, disabled: false}],
+      rfc: [{value: beneficiario.rfc, disabled: false}],
+      correo: [{value: beneficiario.correo, disabled: false}],
+    });
+    this.beneficiarios.push(beneficiarioForm)
   }
 
   abrir(event: MouseEvent) {
@@ -140,5 +199,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     this.preRegistroSiguiente = false;
   }
 
+  get beneficiarios() {
+    return this.contratacionNuevoConvenioForm.controls["beneficiarios"] as FormArray;
+  }
+
+  getFormGroup(control: AbstractControl) { return control as FormGroup; }
 
 }

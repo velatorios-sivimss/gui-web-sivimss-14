@@ -1,5 +1,5 @@
 <div class="grid">
-  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="./../.."></app-btn-regresar>
   <app-titulo-principal titulo="Pre-registro para la contratación de Convenio de Previsión Funeraria"
                         class="col"></app-titulo-principal>
 </div>
@@ -36,14 +36,25 @@
 
   <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
     <p-accordionTab header="Beneficiarios">
-      <app-datos-beneficiario *ngIf="beneficiarios.length > 0 else SinBeneficiarios"></app-datos-beneficiario>
+      <ng-container formArrayName="beneficiarios">
+        <ng-container *ngIf="beneficiarios.length > 0 else SinBeneficiarios">
+          <ng-container *ngFor="let beneficiarioForm of beneficiarios.controls; let i = index">
+            <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+              <p-accordionTab [header]="nombresBeneficiario[i]" [formGroup]="getFormGroup(beneficiarioForm)">
+                <app-datos-beneficiario ></app-datos-beneficiario>
+              </p-accordionTab>
+            </p-accordion>
+          </ng-container>
+        </ng-container>
+      </ng-container>
     </p-accordionTab>
   </p-accordion>
 
   <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
     <p-accordionTab header="Documentación requerida">
-      <app-documentacion-beneficiario
-        *ngIf="beneficiarios.length > 0 else SinBeneficiarios"></app-documentacion-beneficiario>
+      <ng-container *ngIf="beneficiarios.length > 0 else SinBeneficiarios">
+        <app-documentacion-beneficiario></app-documentacion-beneficiario>
+      </ng-container>
     </p-accordionTab>
   </p-accordion>
 </form>

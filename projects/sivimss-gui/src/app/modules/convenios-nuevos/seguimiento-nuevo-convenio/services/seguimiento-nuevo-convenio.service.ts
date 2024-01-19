@@ -16,7 +16,7 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
       77, "", "", "");
   }
 
-  base: string = 'http://localhost:8077/mssivimss-pre-reg-conven/v1/sivimss';
+  base: string = 'http://localhost:8001/mssivimss-pre-reg-conven/v1/sivimss';
   _filtros: string = 'preregistros';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {

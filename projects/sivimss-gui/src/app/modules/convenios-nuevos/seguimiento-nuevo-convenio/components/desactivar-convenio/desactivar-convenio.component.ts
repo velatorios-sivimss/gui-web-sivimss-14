@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {LazyLoadEvent} from 'primeng/api';
 import {DialogService} from 'primeng/dynamicdialog';
@@ -60,8 +60,7 @@ export class DesactivarConvenioComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"]
-    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos[0];
-    this.beneficiarios = respuesta[this.POSICION_BENEFICIARIO].datos;
+    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
   }
 
   regresar() {
@@ -70,7 +69,7 @@ export class DesactivarConvenioComponent implements OnInit {
 
   aceptar() {
     //agregar Mensaje
-  }
 
+  }
 
 }
