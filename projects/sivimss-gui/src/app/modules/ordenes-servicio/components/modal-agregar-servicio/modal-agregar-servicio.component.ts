@@ -404,14 +404,14 @@ export class ModalAgregarServicioComponent
           idTipoServicio: this.idTipoServicio,
           idServicio: this.idServicio,
           idProveedor: this.idProveedor,
-          totalPaquete: this.form.get('kilometraje')?.value * this.costoPorKilometraje,
-          importe:  this.form.get('kilometraje')?.value * this.costoPorKilometraje,
+          totalPaquete: this.form.get('kilometraje')?.value ? this.form.get('kilometraje')?.value * this.costoPorKilometraje : this.costo,
+          importe:  this.form.get('kilometraje')?.value ? this.form.get('kilometraje')?.value * this.costoPorKilometraje : this.costo,
           esDonado: false,
           proviene: 'presupuesto',
           costoExtraKilometros: this.costoExtraKilometros
         };
     }
-    if(this.proviene == 'servicios' && !this.banderaExisteKilometraje){
+    if(this.proviene == 'servicios' && !this.banderaExisteKilometraje && (this.idTipoServicio == 4 || this.idTipoServicio == 5)){
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'El proveedor seleccionado no cuenta con la configuración de kilometraje.')
       return;
     }
