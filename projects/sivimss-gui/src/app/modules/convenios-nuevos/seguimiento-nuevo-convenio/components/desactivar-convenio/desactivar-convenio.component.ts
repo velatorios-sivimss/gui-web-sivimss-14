@@ -18,6 +18,32 @@ export enum TipoAlerta {
   Error = 'error'
 }
 
+interface BeneficiarioResponse {
+  curp: string,
+  rfc: string,
+  matricula: string,
+  nss: string,
+  nombre: string,
+  primerApellido: string,
+  segundoApellido: string,
+  idSexo: string,
+  fecNacimiento: string,
+  idPais: string,
+  lugarNac: string,
+  telFijo: string,
+  telCelular: string,
+  correo: string,
+  calle: string,
+  numExt: string,
+  numInt: string,
+  cp: string,
+  colonia: string,
+  municipio: string,
+  idEstado: string,
+  estado: string
+}
+
+
 @Component({
   selector: 'app-desactivar-convenio',
   templateUrl: './desactivar-convenio.component.html',
@@ -41,8 +67,9 @@ export class DesactivarConvenioComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   infoPersona: boolean = false;
-  beneficiarios: any[] = [];
+  beneficiarios: BeneficiarioResponse[] = [];
   convenioPersona!: ConvenioPersona;
+  tipoConvenio: string = 'PF Persona';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -61,6 +88,7 @@ export class DesactivarConvenioComponent implements OnInit {
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"]
     this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
+    this.beneficiarios = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((b: any) => b !== null);
   }
 
   regresar() {

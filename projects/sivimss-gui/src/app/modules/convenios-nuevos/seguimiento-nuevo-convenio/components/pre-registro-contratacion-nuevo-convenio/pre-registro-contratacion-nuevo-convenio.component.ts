@@ -36,14 +36,6 @@ interface BeneficiarioResponse {
   estado: string
 }
 
-interface Beneficiario {
-  curp: string,
-  rfc: string,
-  correo: string,
-  nombreCompleto: string
-}
-
-
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
   templateUrl: './pre-registro-contratacion-nuevo-convenio.component.html',
@@ -128,8 +120,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   cargarBeneficiarios(): void {
-    const respuesta = this.activatedRoute.snapshot.data["respuesta"]
-    const beneficiarios: BeneficiarioResponse[] = respuesta[this.POSICION_CONVENIO].datos.beneficiarios ?? []
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    const beneficiarios: BeneficiarioResponse[] = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((b: any) => b !== null);
     for (let beneficiario of beneficiarios) {
       this.agregarBeneficiario(beneficiario)
     }
@@ -153,14 +145,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     this.overlayPanel.toggle(event);
   }
 
-  // ,articuloSeleccionado:SeguimientoNuevoConvenio
   contratacionNuevoConvenioForm!: FormGroup;
 
   abrirPanel(event: MouseEvent): void {
-    console.log('se habre el panel');
-
-    // this.infoPersona = false;
-    // this.documentoSeleccionado = articuloSeleccionado;
     this.overlayPanel.toggle(event);
   }
 

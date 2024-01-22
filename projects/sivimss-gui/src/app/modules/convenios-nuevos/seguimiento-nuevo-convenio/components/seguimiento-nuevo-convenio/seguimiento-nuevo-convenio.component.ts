@@ -221,15 +221,5 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
-
-  consultaServicioEspecifico(): string {
-    return ''
-  }
-
-  abrirPreRegistroNuevoConvenio(): void {
-    void this.router.navigate(['pre-registro-nuevo-convenio'], {relativeTo: this.activatedRoute});
-  }
-
-
   protected readonly event = event;
 }
