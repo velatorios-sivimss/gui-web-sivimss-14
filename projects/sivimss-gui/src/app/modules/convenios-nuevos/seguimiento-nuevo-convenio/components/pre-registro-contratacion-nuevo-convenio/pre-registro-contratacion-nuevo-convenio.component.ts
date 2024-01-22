@@ -129,13 +129,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   cargarBeneficiarios(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"]
-    const beneficiarios: BeneficiarioResponse[] = []
-    if (respuesta[this.POSICION_CONVENIO].datos.beneficiario1) {
-      beneficiarios.push(respuesta[this.POSICION_CONVENIO].datos.beneficiario1);
-    }
-    if (respuesta[this.POSICION_CONVENIO].datos.beneficiario2) {
-      beneficiarios.push(respuesta[this.POSICION_CONVENIO].datos.beneficiario2);
-    }
+    const beneficiarios: BeneficiarioResponse[] = respuesta[this.POSICION_CONVENIO].datos.beneficiarios ?? []
     for (let beneficiario of beneficiarios) {
       this.agregarBeneficiario(beneficiario)
     }
@@ -149,6 +143,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       curp: [{value: beneficiario.curp, disabled: false}],
       rfc: [{value: beneficiario.rfc, disabled: false}],
       correo: [{value: beneficiario.correo, disabled: false}],
+      telefono: [{value: beneficiario.telCelular, disabled: false}],
     });
     this.beneficiarios.push(beneficiarioForm)
   }
