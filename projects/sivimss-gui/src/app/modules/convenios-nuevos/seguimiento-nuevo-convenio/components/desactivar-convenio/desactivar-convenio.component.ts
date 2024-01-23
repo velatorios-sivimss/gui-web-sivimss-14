@@ -43,6 +43,9 @@ interface BeneficiarioResponse {
   estado: string
 }
 
+interface ConvenioEmpresa {
+
+}
 
 @Component({
   selector: 'app-desactivar-convenio',
@@ -69,7 +72,8 @@ export class DesactivarConvenioComponent implements OnInit {
   infoPersona: boolean = false;
   beneficiarios: BeneficiarioResponse[] = [];
   convenioPersona!: ConvenioPersona;
-  tipoConvenio: string = 'PF Persona';
+  convenioEmpresa!: ConvenioEmpresa;
+  tipoConvenio: string = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -79,6 +83,7 @@ export class DesactivarConvenioComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) {
+    this.tipoConvenio = activatedRoute.snapshot.params.tipoConvenio ?? '';
   }
 
   ngOnInit(): void {
@@ -87,7 +92,9 @@ export class DesactivarConvenioComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"]
-    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
+    if (this.tipoConvenio === '1') {
+      this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
+    }
   }
 
   regresar() {

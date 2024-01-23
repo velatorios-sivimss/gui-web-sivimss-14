@@ -221,11 +221,12 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
-  protected readonly event = event;
-
   obtenerTipoConvenio(tipo: string): number {
     if (tipo === 'PF Persona'){
       return 3;
+    }
+    if (tipo === 'PA') {
+      return 1;
     }
     return 2;
   }
