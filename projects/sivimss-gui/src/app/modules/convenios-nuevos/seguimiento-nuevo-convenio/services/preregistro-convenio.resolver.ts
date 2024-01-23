@@ -12,8 +12,8 @@ export class PreregistroConvenioResolver implements Resolve<boolean> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const idConvenio: number = route.paramMap.get('idConvenio') as unknown as number;
-    const $convenio: Observable<HttpRespuesta<any>> = this.seguimientoConvenioService.buscarConvenioPorPersona(idConvenio);
-    // const $beneficiarios: Observable<HttpRespuesta<any>> = this.seguimientoConvenioService.buscarBeneficiarioPorPersona(idConvenio);
+    const idTipo: number = route.paramMap.get('tipoConvenio') as unknown as number;
+    const $convenio: Observable<HttpRespuesta<any>> = this.seguimientoConvenioService.buscarConvenioPorPersona(idConvenio, idTipo);
     const $paquetes: Observable<HttpRespuesta<any>> = this.seguimientoConvenioService.obtenerCatalogoPaquetes();
     return forkJoin([$convenio, of([]), $paquetes]);
   }

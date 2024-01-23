@@ -11,7 +11,7 @@ export interface SeguimientoNuevoConvenio {
   nombreAfiliado?: string;
   tipoPaquete?: string;
   estatus?: boolean;
-
+  tipo?: string;
 }
 
 export interface ConfirmacionServicio {

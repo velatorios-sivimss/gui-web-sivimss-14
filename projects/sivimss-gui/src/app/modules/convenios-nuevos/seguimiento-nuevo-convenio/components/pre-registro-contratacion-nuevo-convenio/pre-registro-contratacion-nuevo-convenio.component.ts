@@ -85,7 +85,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"]
-    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
+    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
     this.folio = this.convenioPersona.folioConvenio.toString();
     const paquetes = respuesta[this.POSICION_PAQUETES].datos;
     this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
@@ -121,7 +121,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   cargarBeneficiarios(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
-    const beneficiarios: BeneficiarioResponse[] = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((b: any) => b !== null);
+    const beneficiarios: BeneficiarioResponse[] = [];
     for (let beneficiario of beneficiarios) {
       this.agregarBeneficiario(beneficiario)
     }

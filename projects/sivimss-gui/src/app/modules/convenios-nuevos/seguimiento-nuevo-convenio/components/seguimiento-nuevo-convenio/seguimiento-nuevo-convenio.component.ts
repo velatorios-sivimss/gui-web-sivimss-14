@@ -222,4 +222,11 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   }
 
   protected readonly event = event;
+
+  obtenerTipoConvenio(tipo: string): number {
+    if (tipo === 'PF Persona'){
+      return 3;
+    }
+    return 2;
+  }
 }

@@ -22,14 +22,14 @@ const routes: Route[] = [
     },
   },
   {
-    path: 'pre-registro-nuevo-convenio/:idConvenio',
+    path: 'pre-registro-nuevo-convenio/:idConvenio/:tipoConvenio',
     component: PreRegistroContratacionNuevoConvenioComponent,
     resolve: {
       respuesta: PreregistroConvenioResolver,
     },
   },
   {
-    path: 'desactivar-convenio/:idConvenio',
+    path: 'desactivar-convenio/:idConvenio/:tipoConvenio',
     component: DesactivarConvenioComponent,
     resolve: {
       respuesta: DesactivarNuevoConvenioResolver,

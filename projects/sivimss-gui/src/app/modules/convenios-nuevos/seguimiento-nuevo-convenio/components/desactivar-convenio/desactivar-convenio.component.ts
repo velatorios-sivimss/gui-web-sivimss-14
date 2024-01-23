@@ -87,8 +87,7 @@ export class DesactivarConvenioComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"]
-    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
-    this.beneficiarios = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((b: any) => b !== null);
+    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
   }
 
   regresar() {

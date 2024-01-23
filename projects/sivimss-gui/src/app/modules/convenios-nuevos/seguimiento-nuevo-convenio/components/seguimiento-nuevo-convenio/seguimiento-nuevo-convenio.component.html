@@ -73,7 +73,7 @@
         <td>
           <div class="contenedor-inputswitch">
             <p-inputSwitch [(ngModel)]="convenio.estatus"
-                           [routerLink]="['desactivar-convenio', convenio.idConvenioPlan]"
+                           [routerLink]="['desactivar-convenio', convenio.idConvenioPlan, obtenerTipoConvenio(convenio.tipo)]"
                            (onChange)="convenio.estatus = false"></p-inputSwitch>
             <span class="activo" *ngIf="convenio.estatus">Activo</span>
             <span class="inactivo" *ngIf="!convenio.estatus">Inactivo</span>
@@ -123,7 +123,7 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Concluir formato"
-                                [routerLink]="['pre-registro-nuevo-convenio', convenioSeleccionado.idConvenioPlan]"></app-overlay-panel-opcion>
+                                [routerLink]="['pre-registro-nuevo-convenio', convenioSeleccionado.idConvenioPlan, obtenerTipoConvenio(convenioSeleccionado.tipo ?? '')]"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
