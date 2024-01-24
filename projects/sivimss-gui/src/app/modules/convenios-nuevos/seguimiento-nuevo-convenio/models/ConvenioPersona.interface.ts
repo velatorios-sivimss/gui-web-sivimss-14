@@ -11,7 +11,7 @@ export interface ConvenioPersona {
   curp: string,
   idLugarNac: number,
   numExt: string,
-  folioConvenio: number,
+  folioConvenio: string,
   primerApellido: string,
   lugarNac: string,
   municipio: string,

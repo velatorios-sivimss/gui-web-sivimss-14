@@ -28,15 +28,16 @@
           <div class="flex">
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'titularSi'" name="titular" [value]="true"
-                             formControlName="titular" ></p-radioButton>
+                             formControlName="titular"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'titularSi'">Sí</label>
             </div>
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'titularNo'" name="titular" [value]="false"
-                             formControlName="titular" ></p-radioButton>
+                             formControlName="titular"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
             </div>
-          </div>          <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
+          </div>
+          <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
         </ng-template>
       </p-accordionTab>
     </p-accordion>
@@ -76,12 +77,12 @@
           <div class="flex">
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
-                             formControlName="promotor" ></p-radioButton>
+                             formControlName="promotor"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
             </div>
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
-                             formControlName="promotor" ></p-radioButton>
+                             formControlName="promotor"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
             </div>
           </div>

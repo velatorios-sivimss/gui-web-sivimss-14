@@ -76,7 +76,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) {
-    this.tipoConvenio = activatedRoute.snapshot.params.tipoConvenio ?? '';
+    this.tipoConvenio = this.activatedRoute.snapshot.params.tipoConvenio ?? '';
     this.cargarCatalogos();
     this.inicializarTipoFormulario();
   }
@@ -89,7 +89,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"]
     if (this.tipoConvenio === '3') {
       this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
-      this.folio = this.convenioPersona.folioConvenio.toString();
+      this.folio = this.convenioPersona.folioConvenio
     }
     const paquetes = respuesta[this.POSICION_PAQUETES].datos;
     this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
@@ -98,6 +98,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarTipoFormulario(): void {
     if (this.tipoConvenio === '3') {
       this.inicializarFormulario();
+      return;
     }
     this.inicializarFormularioGenerico();
   }
