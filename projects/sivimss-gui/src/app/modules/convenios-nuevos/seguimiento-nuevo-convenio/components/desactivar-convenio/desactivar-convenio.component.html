@@ -24,7 +24,19 @@
           </div>
         </ng-template>
         <ng-template pTemplate="content">
-          <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
+          <label class="control-label">Son los mismos que el titular</label>
+          <div class="flex">
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'titularSi'" name="titular" [value]="true"
+                             formControlName="titular" ></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'titularSi'">Sí</label>
+            </div>
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'titularNo'" name="titular" [value]="false"
+                             formControlName="titular" ></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
+            </div>
+          </div>          <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
         </ng-template>
       </p-accordionTab>
     </p-accordion>
@@ -60,6 +72,20 @@
           </div>
         </ng-template>
         <ng-template pTemplate="content">
+          <label class="control-label">¿El servicio fue gestionado por un promotor? *</label>
+          <div class="flex">
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
+                             formControlName="promotor" ></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+            </div>
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
+                             formControlName="promotor" ></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+            </div>
+          </div>
+
         </ng-template>
       </p-accordionTab>
     </p-accordion>

@@ -42,6 +42,7 @@ import { ResumenDocumentacionBeneficiarioComponent } from './shared/resumen-docu
 import { ResumenEmpresaComponent } from './shared/resumen-empresa/resumen-empresa.component';
 import { DatosTitularBeneficiarioComponent } from './shared/datos-titular-beneficiario/datos-titular-beneficiario.component';
 import { ResumenTitularBeneficiarioComponent } from './shared/resumen-titular-beneficiario/resumen-titular-beneficiario.component';
+import {RadioButtonModule} from "primeng/radiobutton";
 
 //as
 @NgModule({
@@ -63,29 +64,30 @@ import { ResumenTitularBeneficiarioComponent } from './shared/resumen-titular-be
     DatosTitularBeneficiarioComponent,
     ResumenTitularBeneficiarioComponent,
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    SeguimientoNuevoConvenioRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule,
-    BtnRegresarModule,
-    UtileriaModule,
-    CeldaStickyModule,
-    DatosPersonaComponent,
-    DatosBeneficiarioComponent
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        SeguimientoNuevoConvenioRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        BtnRegresarModule,
+        UtileriaModule,
+        CeldaStickyModule,
+        DatosPersonaComponent,
+        DatosBeneficiarioComponent,
+        RadioButtonModule
+    ],
   providers: [SeguimientoNuevoConvenioService]
 })
 export class SeguimientoNuevoConvenioModule { }
