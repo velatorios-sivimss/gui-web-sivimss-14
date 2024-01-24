@@ -66,6 +66,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   preRegistroSiguiente: boolean = false;
   folio: string = '';
   nombresBeneficiario: string[] = [];
+  tipoConvenio: string = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -75,8 +76,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) {
+    this.tipoConvenio = activatedRoute.snapshot.params.tipoConvenio ?? '';
     this.cargarCatalogos();
-    this.inicializarFormulario();
+    this.inicializarTipoFormulario();
   }
 
   ngOnInit(): void {
@@ -85,10 +87,19 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"]
-    this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
-    this.folio = this.convenioPersona.folioConvenio.toString();
+    if (this.tipoConvenio === '3') {
+      this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
+      this.folio = this.convenioPersona.folioConvenio.toString();
+    }
     const paquetes = respuesta[this.POSICION_PAQUETES].datos;
     this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
+  }
+
+  inicializarTipoFormulario(): void {
+    if (this.tipoConvenio === '3') {
+      this.inicializarFormulario();
+    }
+    this.inicializarFormularioGenerico();
   }
 
   inicializarFormulario(): void {
@@ -117,6 +128,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       tipoPaquete: [{value: this.convenioPersona.idPaquete, disabled: false}],
       beneficiarios: this.formBuilder.array([])
     });
+  }
+
+  inicializarFormularioGenerico(): void {
+    this.contratacionNuevoConvenioForm = this.formBuilder.group({});
   }
 
   cargarBeneficiarios(): void {
@@ -185,6 +200,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     return this.contratacionNuevoConvenioForm.controls["beneficiarios"] as FormArray;
   }
 
-  getFormGroup(control: AbstractControl) { return control as FormGroup; }
+  getFormGroup(control: AbstractControl) {
+    return control as FormGroup;
+  }
 
 }
