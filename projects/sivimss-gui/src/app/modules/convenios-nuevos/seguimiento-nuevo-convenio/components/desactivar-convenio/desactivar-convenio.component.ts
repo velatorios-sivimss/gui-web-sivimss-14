@@ -44,7 +44,23 @@ interface BeneficiarioResponse {
 }
 
 interface ConvenioEmpresa {
-
+  nombre: string,
+  razonSocial: string,
+  rfc: string,
+  idPais: number,
+  cp: string,
+  colonia: string,
+  estado: string,
+  municipio: string,
+  calle: string,
+  numInterior: string,
+  numExterior: string
+  telefono: string,
+  correo: string,
+  idConvenio: number,
+  idEmpresa: number,
+  idPromotor: number,
+  folioConvenio: string
 }
 
 @Component({
@@ -92,8 +108,11 @@ export class DesactivarConvenioComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"]
-    if (this.tipoConvenio === '1') {
+    if (this.tipoConvenio === '3') {
       this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
+    }
+    if (this.tipoConvenio === '2') {
+      this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
     }
   }
 
