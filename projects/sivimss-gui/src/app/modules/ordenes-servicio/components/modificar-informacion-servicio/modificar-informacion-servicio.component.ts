@@ -924,6 +924,7 @@ export class ModificarInformacionServicioComponent
           link.remove();
         },
         error: (error: HttpErrorResponse) => {
+          if(error.error.datos === null)return
           const errorMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
               parseInt(error.error.mensaje)
