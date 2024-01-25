@@ -53,6 +53,7 @@ import {
 } from './shared/resumen-titular-beneficiario/resumen-titular-beneficiario.component';
 import {RadioButtonModule} from "primeng/radiobutton";
 import {DatosEmpresaComponent} from "./shared/datos-empresa/datos-empresa.component";
+import { DatosSustitutoBeneficiarioComponent } from './shared/datos-sustituto-beneficiario/datos-sustituto-beneficiario.component';
 
 //as
 @NgModule({
@@ -72,6 +73,7 @@ import {DatosEmpresaComponent} from "./shared/datos-empresa/datos-empresa.compon
     ResumenEmpresaComponent,
     DatosTitularBeneficiarioComponent,
     ResumenTitularBeneficiarioComponent,
+    DatosSustitutoBeneficiarioComponent,
   ],
   imports: [
     CalendarModule,
