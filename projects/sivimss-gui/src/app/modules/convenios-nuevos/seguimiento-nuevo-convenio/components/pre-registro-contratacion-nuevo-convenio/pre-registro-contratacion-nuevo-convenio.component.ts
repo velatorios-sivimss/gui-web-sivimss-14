@@ -124,7 +124,11 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       this.inicializarFormulario();
       return;
     }
-    this.inicializarFormularioEmpresa();
+    if (this.tipoConvenio === '2') {
+      this.inicializarFormularioEmpresa();
+      return;
+    }
+    this.inicializarFormularioPA();
   }
 
   inicializarFormulario(): void {
@@ -179,7 +183,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       titular: this.formBuilder.group({}),
       sustituto: this.formBuilder.group({}),
       beneficiario1: this.formBuilder.group({}),
-      benefiiario2: this.formBuilder.group({}),
+      beneficiario2: this.formBuilder.group({}),
     })
   }
 
