@@ -11,7 +11,7 @@
     <form [formGroup]="contratacionNuevoConvenioForm">
       <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
         <p-accordionTab header="Grupo o empresa">
-          <div>
+          <div formGroupName="empresa">
             <app-datos-empresa></app-datos-empresa>
           </div>
         </p-accordionTab>

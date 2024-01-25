@@ -36,6 +36,26 @@ interface BeneficiarioResponse {
   estado: string
 }
 
+interface ConvenioEmpresa {
+  nombre: string,
+  razonSocial: string,
+  rfc: string,
+  idPais: number,
+  cp: string,
+  colonia: string,
+  estado: string,
+  municipio: string,
+  calle: string,
+  numInterior: string,
+  numExterior: string
+  telefono: string,
+  correo: string,
+  idConvenio: number,
+  idEmpresa: number,
+  idPromotor: number,
+  folioConvenio: string
+}
+
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
   templateUrl: './pre-registro-contratacion-nuevo-convenio.component.html',
@@ -58,6 +78,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   infoPersona: boolean = false;
 
   convenioPersona!: ConvenioPersona;
+  convenioEmpresa!: ConvenioEmpresa;
   paquetes: TipoDropdown[] = [];
 
   documentos: Documentos[] = [];
@@ -91,6 +112,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
       this.folio = this.convenioPersona.folioConvenio
     }
+    if (this.tipoConvenio === '2') {
+      this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
+    }
     const paquetes = respuesta[this.POSICION_PAQUETES].datos;
     this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
   }
@@ -100,7 +124,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       this.inicializarFormulario();
       return;
     }
-    this.inicializarFormularioGenerico();
+    this.inicializarFormularioEmpresa();
   }
 
   inicializarFormulario(): void {
@@ -131,8 +155,23 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     });
   }
 
-  inicializarFormularioGenerico(): void {
-    this.contratacionNuevoConvenioForm = this.formBuilder.group({});
+  inicializarFormularioEmpresa(): void {
+    this.contratacionNuevoConvenioForm = this.formBuilder.group({
+      empresa: this.formBuilder.group({
+        nombre: [{value: this.convenioEmpresa.nombre, disabled: false}],
+        razonSocial: [{value: this.convenioEmpresa.razonSocial, disabled: false}],
+        rfc: [{value: this.convenioEmpresa.rfc, disabled: false}],
+        pais: [{value: this.convenioEmpresa.idPais, disabled: false}],
+        cp: [{value: this.convenioEmpresa.cp, disabled: false}],
+        colonia: [{value: this.convenioEmpresa.colonia, disabled: false}],
+        estado: [{value: this.convenioEmpresa.estado, disabled: false}],
+        municipio: [{value: this.convenioPersona.municipio, disabled: false}],
+        calle: [{value: this.convenioPersona.calle, disabled: false}],
+        numeroExterior: [{value: this.convenioPersona.numExt, disabled: false}],
+        numeroInterior: [{value: this.convenioPersona.numInt, disabled: false}],
+        correo: [{value: this.convenioPersona.correo, disabled: false}],
+      })
+    });
   }
 
   cargarBeneficiarios(): void {
