@@ -174,6 +174,15 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     });
   }
 
+  inicializarFormularioPA(): void {
+    this.contratacionNuevoConvenioForm = this.formBuilder.group({
+      titular: this.formBuilder.group({}),
+      sustituto: this.formBuilder.group({}),
+      beneficiario1: this.formBuilder.group({}),
+      benefiiario2: this.formBuilder.group({}),
+    })
+  }
+
   cargarBeneficiarios(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     const beneficiarios: BeneficiarioResponse[] = [];
