@@ -1,7 +1,7 @@
 export interface Domicilio {
     calle?: string;
     numInt?: string | null;
-    numExt?: string;
+    numExt?: string | null;
     cp?: number;
     colonia?: string;
     municipio?: number;

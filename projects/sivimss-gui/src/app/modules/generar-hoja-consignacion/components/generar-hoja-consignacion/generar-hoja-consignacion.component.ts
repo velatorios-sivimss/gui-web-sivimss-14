@@ -227,6 +227,10 @@ export class GenerarHojaConsignacionComponent implements OnInit, OnDestroy {
       width: "920px",
       data: { hojaSeleccionada: this.hojaSeleccionada },
     });
+
+    this.detalleRef.onClose.subscribe(() => {
+      this.buscar();
+    });
   }
 
   agregarPromotor(): void {

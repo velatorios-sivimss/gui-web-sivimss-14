@@ -304,6 +304,7 @@ export class RegistroComponent implements OnInit {
           if (respuesta.mensaje === 'USUARIO REGISTRADO') {
             this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP ya se encuentra registrado.');
             this.datosGenerales.curp.patchValue(null);
+            
           } else if (respuesta.mensaje === 'NO EXISTE CURP') {
             this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
           } else {
