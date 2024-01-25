@@ -165,11 +165,11 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         cp: [{value: this.convenioEmpresa.cp, disabled: false}],
         colonia: [{value: this.convenioEmpresa.colonia, disabled: false}],
         estado: [{value: this.convenioEmpresa.estado, disabled: false}],
-        municipio: [{value: this.convenioPersona.municipio, disabled: false}],
-        calle: [{value: this.convenioPersona.calle, disabled: false}],
-        numeroExterior: [{value: this.convenioPersona.numExt, disabled: false}],
-        numeroInterior: [{value: this.convenioPersona.numInt, disabled: false}],
-        correo: [{value: this.convenioPersona.correo, disabled: false}],
+        municipio: [{value: this.convenioEmpresa.municipio, disabled: false}],
+        calle: [{value: this.convenioEmpresa.calle, disabled: false}],
+        numeroExterior: [{value: this.convenioEmpresa.numExterior, disabled: false}],
+        numeroInterior: [{value: this.convenioEmpresa.numInterior, disabled: false}],
+        correo: [{value: this.convenioEmpresa.correo, disabled: false}],
       })
     });
   }

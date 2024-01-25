@@ -17,8 +17,7 @@ import {ControlContainer, FormBuilder, ReactiveFormsModule} from "@angular/forms
 export class DatosPersonaComponent implements OnInit {
 
 
-  constructor(private formBuilder: FormBuilder,
-  ) {
+  constructor() {
   }
 
   ngOnInit(): void {
