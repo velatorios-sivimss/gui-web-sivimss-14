@@ -133,6 +133,7 @@ export class DesactivarConvenioComponent implements OnInit {
   convenioEmpresa!: ConvenioEmpresa;
   titularPA!: PreRegistroPA;
   tipoConvenio: string = '';
+  promotor: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -159,6 +160,7 @@ export class DesactivarConvenioComponent implements OnInit {
     }
     this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
     this.beneficiarios = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
+    this.promotor = this.titularPA.gestionPromotor;
     this.obtenerBeneficiarios()
   }
 

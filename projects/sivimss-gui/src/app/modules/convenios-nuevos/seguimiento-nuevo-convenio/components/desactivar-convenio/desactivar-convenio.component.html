@@ -88,7 +88,7 @@
         </ng-template>
         <ng-template pTemplate="content">
           <ng-container *ngIf="titularPA.beneficiario2 else SinBeneficiarioEspecifico">
-            <app-resumen-titular-beneficiario [titular]="'beneficiario'"  [matricula]="beneficiario2.matricula"
+            <app-resumen-titular-beneficiario [titular]="'beneficiario'" [matricula]="beneficiario2.matricula"
                                               [rfc]="beneficiario2.rfc"
                                               [curp]="beneficiario2.curp" [nombre]="beneficiario2.nombre"
                                               [nss]="beneficiario2.nss" [primerApellido]="beneficiario2.primerApellido"
@@ -116,12 +116,14 @@
           <div class="flex">
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
-                             formControlName="promotor"></p-radioButton>
+                             [(ngModel)]="promotor" [disabled]="true">>
+              </p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
             </div>
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
-                             formControlName="promotor"></p-radioButton>
+                             [(ngModel)]="promotor" [disabled]="true">>
+              </p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
             </div>
           </div>
