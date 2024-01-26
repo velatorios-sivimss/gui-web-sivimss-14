@@ -64,6 +64,44 @@ interface ConvenioEmpresa {
   folioConvenio: string
 }
 
+interface PreRegistroPA {
+  "idPersona": number,
+  "idContratante": number,
+  "idDomicilio": number,
+  "folioConvenio": string,
+  "curp": string,
+  "rfc": string,
+  "matricula": string,
+  "nss": string,
+  "nombre": string,
+  "primerApellido": string,
+  "segundoApellido": string,
+  "idSexo": number,
+  "fecNacimiento": string,
+  "pais": string,
+  "idPais": number,
+  "lugarNac": string,
+  "idLugarNac": number,
+  "telCelular": string,
+  "telFijo": string,
+  "correo": string,
+  "calle": string,
+  "numExt": string,
+  "numInt": string,
+  "cp": string,
+  "colonia": string,
+  "municipio": string,
+  "estado": string,
+  "idPaquete": number,
+  "numPagos": string,
+  "nomPaquete": string,
+  "titularSust": string,
+  "idTitularSust": number,
+  "beneficiario1": number,
+  "beneficiario2": number,
+  "gestionPromotor": boolean
+}
+
 @Component({
   selector: 'app-desactivar-convenio',
   templateUrl: './desactivar-convenio.component.html',
@@ -90,6 +128,7 @@ export class DesactivarConvenioComponent implements OnInit {
   beneficiarios: BeneficiarioResponse[] = [];
   convenioPersona!: ConvenioPersona;
   convenioEmpresa!: ConvenioEmpresa;
+  titularPA!: PreRegistroPA;
   tipoConvenio: string = '';
 
   constructor(
@@ -115,6 +154,7 @@ export class DesactivarConvenioComponent implements OnInit {
     if (this.tipoConvenio === '2') {
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
     }
+    this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
   }
 
   regresar() {

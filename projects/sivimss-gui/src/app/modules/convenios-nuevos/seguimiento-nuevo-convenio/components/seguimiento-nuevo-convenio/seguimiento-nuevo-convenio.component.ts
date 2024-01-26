@@ -29,8 +29,8 @@ interface FiltrosBasicosNuevoConvenio {
 
 interface FiltrosNuevoConvenio {
   idVelatorio: number | null,
-  folioConvenioPf: string,
-  folioConvenioPsfpa: string,
+  convenioPF: string,
+  convenioPSFFA: string,
   rfc: string
 }
 
@@ -185,7 +185,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    const filtros = {};
+    const filtros: FiltrosNuevoConvenio = this.obtenerFiltroConvenio();
     this.cargadorService.activar();
     this.seguimientoConvenioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
@@ -196,8 +196,8 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
 
   obtenerFiltroConvenio(): FiltrosNuevoConvenio {
     return {
-      folioConvenioPf: this.filtroForm.get('folioConvenioPf')?.value,
-      folioConvenioPsfpa: this.filtroForm.get('folioConvenioPsfpa')?.value,
+      convenioPF: this.filtroForm.get('folioConvenioPf')?.value,
+      convenioPSFFA: this.filtroForm.get('folioConvenioPsfpa')?.value,
       idVelatorio: this.filtroForm.get('velatorio')?.value,
       rfc: this.filtroForm.get('rfcAfiliado')?.value
     }
