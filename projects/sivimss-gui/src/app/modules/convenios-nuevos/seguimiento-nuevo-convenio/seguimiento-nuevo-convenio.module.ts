@@ -50,10 +50,12 @@ import {
 } from './shared/resumen-titular-beneficiario/resumen-titular-beneficiario.component';
 import {RadioButtonModule} from "primeng/radiobutton";
 import {DatosEmpresaComponent} from "./shared/datos-empresa/datos-empresa.component";
-import { DatosSustitutoBeneficiarioComponent } from './shared/datos-sustituto-beneficiario/datos-sustituto-beneficiario.component';
 import {
   DatosTitularBeneficiarioComponent
 } from "./shared/datos-titular-beneficiario/datos-titular-beneficiario.component";
+import {
+  DatosSustitutoBeneficiarioComponent
+} from "./shared/datos-sustituto-beneficiario/datos-sustituto-beneficiario.component";
 
 //as
 @NgModule({
@@ -72,7 +74,6 @@ import {
     ResumenDocumentacionBeneficiarioComponent,
     ResumenEmpresaComponent,
     ResumenTitularBeneficiarioComponent,
-    DatosSustitutoBeneficiarioComponent,
   ],
   imports: [
     CalendarModule,
@@ -98,7 +99,8 @@ import {
     DatosBeneficiarioComponent,
     RadioButtonModule,
     DatosEmpresaComponent,
-    DatosTitularBeneficiarioComponent
+    DatosTitularBeneficiarioComponent,
+    DatosSustitutoBeneficiarioComponent
   ],
   providers: [SeguimientoNuevoConvenioService]
 })
