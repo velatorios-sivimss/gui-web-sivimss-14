@@ -20,7 +20,8 @@
                                             [numeroInterior]="titularPA.numInt" [codigoPostal]="titularPA.cp"
                                             [colonia]="titularPA.colonia" [municipio]="titularPA.municipio"
                                             [estado]="titularPA.estado" [paisNacimiento]="titularPA.pais"
-                                            [lugarNacimiento]="titularPA.lugarNac" [correoElectronico]="titularPA.correo"
+                                            [lugarNacimiento]="titularPA.lugarNac"
+                                            [correoElectronico]="titularPA.correo"
                                             [telefonoCelular]="titularPA.telCelular" [telefonoFijo]="titularPA.telFijo"
                                             [tipoPaquete]="titularPA.nomPaquete" [numeroPagos]="titularPA.numPagos"
           ></app-resumen-titular-beneficiario>
@@ -60,7 +61,9 @@
           </div>
         </ng-template>
         <ng-template pTemplate="content">
-          <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
+          <ng-container *ngIf="titularPA.beneficiario1 else SinBeneficiarioEspecifico">
+            <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
+          </ng-container>
         </ng-template>
       </p-accordionTab>
     </p-accordion>
@@ -72,7 +75,9 @@
           </div>
         </ng-template>
         <ng-template pTemplate="content">
-          <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
+          <ng-container *ngIf="titularPA.beneficiario2 else SinBeneficiarioEspecifico">
+            <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
+          </ng-container>
         </ng-template>
       </p-accordionTab>
     </p-accordion>
@@ -234,6 +239,14 @@
   <div class="row table-panel-row" *ngIf="beneficiarios.length === 0">
     <div class="col-md-12 mt-4">
       <p class="mensaje-cancelacion-orden font-14">El convenio no tiene beneficiarios registrados.</p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template pTemplate="content" #SinBeneficiarioEspecifico>
+  <div class="row table-panel-row" *ngIf="beneficiarios.length === 0">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">Información de beneficiario no registrada.</p>
     </div>
   </div>
 </ng-template>
