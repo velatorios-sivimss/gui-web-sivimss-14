@@ -1,7 +1,9 @@
 <div class="border-panel mb-8">
   <h3>{{titulo}}</h3>
   <div class="mt-4 flex justify-content-center align-items-center">
-    <app-etapas-actualizacion></app-etapas-actualizacion>
+    <div class="flex justify-content-center align-items-center" *ngIf="detalle_orden_servicio">
+      <app-etapas-actualizacion></app-etapas-actualizacion>
+    </div>
   </div>
   <ng-container [ngSwitch]="idEtapaSeleccionada">
     <ng-container *ngSwitchCase="DATOS_DEL_CONTRATANTE">
@@ -18,6 +20,10 @@
     <ng-container *ngSwitchCase="INFORMACION_DEL_SERVICIO">
       <app-modificar-informacion-servicio-sf
         (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-modificar-informacion-servicio-sf>
+    </ng-container>
+    <ng-container *ngSwitchCase="DETALLE_ORDEN_SERVICIO">
+      <app-detalle-actualizar-orden-servicio
+        (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-detalle-actualizar-orden-servicio>
     </ng-container>
   </ng-container>
 

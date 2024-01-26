@@ -1021,6 +1021,9 @@ export class ModificarDatosContratanteComponent
     this.contratante.sexo = datos.contratante.sexo;
     this.contratante.otroSexo = datos.contratante.primerApellido;
 
+    if(typeof datos.contratante.fechaNac == 'string'){
+
+    }
     let [dia, mes, anio] = datos.contratante.fechaNac.split('/');
     dia = dia.substr(0, 2);
     const fecha = new Date(anio + "-" + mes + "-" + dia)

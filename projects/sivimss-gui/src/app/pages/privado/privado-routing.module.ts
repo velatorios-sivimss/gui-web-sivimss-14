@@ -52,11 +52,12 @@ const routes: Routes = [
         loadChildren: () =>
           import(
             './pages/mapa-contratar-plan-servicios-funerarios-pago-anticipado/mapa-contratar-plan-servicios-funerarios-pago-anticipado.module'
-          ).then((m) => m.MapaContratarPlanServiciosFunerariosPagoAnticipadoModule),
+          ).then(
+            (m) => m.MapaContratarPlanServiciosFunerariosPagoAnticipadoModule
+          ),
       },
     ],
   },
-
 ];
 
 @NgModule({

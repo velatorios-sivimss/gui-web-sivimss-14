@@ -1,48 +1,5 @@
-<form [formGroup]="form">
+<form [formGroup]="form" (submit)="guardar()">
     <div class="row mb-3">
-
-        <div class="col-md-4">
-            <label class="control-label" for="velatorio">Velatorio:</label>
-            <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" appendTo="body"
-                placeholder="Selecciona velatorio" [options]="dummyDropdown" [filter]="true"
-                filterBy="label"></p-dropdown>
-        </div>
-
-        <div class="col-md-4">
-            <label class="control-label" for="fecha">Fecha:</label>
-            <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"
-                dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual"></p-calendar>
-        </div>
-
-        <div class="col-md-4">
-            <label class="control-label" for="nombre">Nombre:</label>
-            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
-        </div>
-
-    </div>
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <label class="control-label" for="primerApellido">Primer apellido:</label>
-            <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
-                placeholder="Ingresa primerApellido">
-        </div>
-        <div class="col-md-4">
-            <label class="control-label" for="segundoApellido">Segundo apellido:</label>
-            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
-        </div>
-        <div class="col-md-4">
-            <label class="control-label" for="edad">Edad:</label>
-            <input id="edad" type="text" class="form-control" formControlName="edad" placeholder="Ingresa edad">
-        </div>
-
-    </div>
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <label class="control-label" for="parentesco">Parentesco<span class="req">*</span>:</label>
-            <p-dropdown id="parentesco" class="form-control" formControlName="parentesco" appendTo="body"
-                placeholder="Selecciona parentesco" [options]="dummyDropdown" [filter]="true"
-                filterBy="label"></p-dropdown>
-        </div>
         <div class="col-md-4">
             <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
             <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa curp">
@@ -50,32 +7,80 @@
                 campo es obligatorio *.</span>
         </div>
         <div class="col-md-4">
+            <label class="control-label" for="nombre">Nombre:</label>
+            <input id="nombre" type="text" class="form-control" formControlName="nombre"
+                placeholder="Ingresa primer apellido">
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="primerApellido">Primer apellido:</label>
+            <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
+                placeholder="Ingresa primerApellido">
+        </div>
+
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="control-label" for="segundoApellido">Segundo apellido:</label>
+            <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
+                placeholder="Ingresa segundo apellido">
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="edad">Edad:</label>
+            <input id="edad" type="text" class="form-control" formControlName="edad" placeholder="Ingresa edad">
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="parentesco">Parentesco<span class="req">*</span>:</label>
+            <input id="parentesco" parentesco="text" class="form-control" formControlName="parentesco"
+                placeholder="Ingresa parentesco">
+        </div>
+
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4">
             <label class="control-label" for="rfc">RFC:</label>
             <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa rfc">
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="actaNacimiento"
+                *ngIf="beneficiarios.edad; else elseMenorEdad">INE:</label>
+            <ng-template #elseMenorEdad> <label class="control-label" for="actaNacimiento">Acta de
+                    nacimieno:</label></ng-template>
+            <div (click)="handleClick()">
+                <input class="hidden" type="file" id="upload-file" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
+                    ngf-max-size="5MB" (change)="addAttachment($event)">
+                <input id="actaNacimiento" class="form-control" formControlName="actaNacimiento" readonly>
+                <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="fecha">Fecha:</label>
+            <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"
+                dateFormat="dd-mm-yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual"></p-calendar>
         </div>
     </div>
 
     <div class="row mb-3">
         <div class="col-md-4">
-            <label class="control-label" for="archivoXml">Acta de nacimiento:</label>
-            <div (click)="handleClick('archivoXml', 'xml')" class="file-container">
-                <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml"
-                    ngf-max-size="2MB" (change)="addAttachment($event)">
-                <input id="archivoXml" class="form-control" formControlName="actaNacimiento" >
-                <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
-            </div>
-        </div>
-
-        <div class="col-md-4">
             <label class="control-label" for="correoElectronico">Correo electrónico:</label>
             <input id="correoElectronico" type="text" class="form-control" formControlName="correoElectronico"
-                placeholder="Ingresa correo electronico">
-        </div>
+                placeholder="Ingresa correo electronico" (blur)="validarCorreoElectronico()" maxlength="45">
+            <span class="campo-obligatorio"
+                *ngIf="f.correoElectronico?.errors?.required && (f.correoElectronico?.dirty || f.correoElectronico?.touched)">Este
+                campo es obligatorio *.</span>
 
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="velatorio">Velatorio:</label>
+            <input id="velatorio" type="text" class="form-control" formControlName="velatorio">
+        </div>
         <div class="col-md-4">
             <label class="control-label" for="telefono">Teléfono:</label>
             <input id="telefono" type="text" class="form-control" formControlName="telefono"
-                placeholder="Ingresa telefono">
+                placeholder="Ingresa teléfono" maxlength="10">
+            <span class="campo-obligatorio"
+                *ngIf="f.telefono?.errors?.required && (f.telefono?.dirty || f.telefono?.touched)">Este campo es
+                obligatorio *.</span>
+
         </div>
     </div>
 
@@ -85,8 +90,8 @@
                 *Campos obligatorios
             </span>
             <div class="flex justify-content-end align-items-center">
-                <button class="btn btn-gold btn-md">Cancelar</button>
-                <button class="btn btn-primary btn-md ml-5">Guardar</button>
+                <button class="btn btn-gold btn-md" type="button" (click)="cerrarModal()">Cancelar</button>
+                <button class="btn btn-primary btn-md ml-5" type="submit" [disabled]="!form.valid">Guardar</button>
             </div>
         </div>
     </div>

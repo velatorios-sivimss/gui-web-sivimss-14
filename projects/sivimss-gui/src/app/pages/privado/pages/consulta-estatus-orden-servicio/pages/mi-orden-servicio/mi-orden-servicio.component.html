@@ -7,23 +7,23 @@
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Folio ODS</span>
-                <span class="texto-base font-normal">000000000000</span>
+                <span class="texto-base font-normal">{{datosGenerales.folio}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Estatus ODS</span>
-                <span class="texto-base font-normal">Vigente</span>
+                <span class="texto-base font-normal">{{datosGenerales.estatus}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Nombre del contratante</span>
-                <span class="texto-base font-normal">00</span>
+                <span class="texto-base font-normal">{{datosGenerales.nombreContratante}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Nombre del finado</span>
-                <span class="texto-base font-normal">00</span>
+                <span class="texto-base font-normal">{{datosGenerales.nombrefinado}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Fecha ODS</span>
-                <span class="texto-base font-normal">00-00-0000</span>
+                <span class="texto-base font-normal">{{datosGenerales.fechaAlta}}</span>
             </div>
         </div>
     </div>
@@ -41,11 +41,11 @@
             </ng-template>
             <ng-template pTemplate="body" let-convenio>
                 <tr>
-                    <td>{{convenio.servicio}}</td>
+                    <td>{{convenio.nombreServicio}}</td>
                     <td>{{convenio.capilla}}</td>
-                    <td>{{convenio.estatusServicio}}</td>
-                    <td>{{convenio.fechaHora}}</td>
-                    <td>{{convenio.notasServicio}}</td>
+                    <td>{{convenio.estatus}}</td>
+                    <td>{{convenio.fecha}}</td>
+                    <td>{{convenio.notas}}</td>
                 </tr>
             </ng-template>
         </p-table>

@@ -221,7 +221,6 @@ export class GestionarEtapasServiceSF {
   detalleODS$: BehaviorSubject<any> = new BehaviorSubject<any>(this.detalleODS);
 
   constructor() {
-    // private authService: AutenticacionService // _http:HttpClient,
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
 

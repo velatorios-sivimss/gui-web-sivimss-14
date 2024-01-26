@@ -6,6 +6,8 @@ import { TituloPrincipalModule } from 'projects/sivimss-gui/src/app/shared/titul
 import { BtnRegresarModule } from 'projects/sivimss-gui/src/app/shared/btn-regresar/btn-regresar.module';
 import { MapaContratarConvenioPrevisionFunerariaRoutingModule } from './mapa-contratar-convenio-prevision-funeraria-routing.module';
 import { MapaContratarConvenioPrevisionFunerariaComponent } from './mapa-contratar-convenio-prevision-funeraria.component';
+import {FormsModule} from "@angular/forms";
+import {MapaContratatarConvenioPfService} from "./services/mapa-contratatar-convenio-pf.service";
 
 @NgModule({
   declarations: [MapaContratarConvenioPrevisionFunerariaComponent],
@@ -14,6 +16,10 @@ import { MapaContratarConvenioPrevisionFunerariaComponent } from './mapa-contrat
     MapaContratarConvenioPrevisionFunerariaRoutingModule,
     TituloPrincipalModule,
     BtnRegresarModule,
+    FormsModule,
   ],
+  providers: [
+    MapaContratatarConvenioPfService
+  ]
 })
 export class MapaContratarConvenioPrevisionFunerariaModule {}

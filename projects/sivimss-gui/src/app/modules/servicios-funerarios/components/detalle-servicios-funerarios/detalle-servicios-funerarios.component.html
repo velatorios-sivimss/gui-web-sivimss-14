@@ -1,29 +1,16 @@
-<app-titulo-principal titulo="detalle de pago"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['../']"></app-btn-regresar>
+  <app-titulo-principal titulo="detalle de pago" class="col"></app-titulo-principal>
+</div>
+
 <section class="mb-3">
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
-      <div class="table-panel-header-column" *ngIf="detalleServicio?.numFolio">
-        <span class="font-bold">Folio plan SFPA {{detalleServicio.numFolio}}</span>
+      <div class="table-panel-header-column" *ngIf="datosGenerales?.folio">
+        <span class="font-bold">Folio plan SFPA {{datosGenerales.folio}}</span>
       </div>
     </ng-template>
-    <ng-template appCustomTemplate="right-header" >
-      <div class="table-panel-header-column" *ngIf="pagosRealizados.length < totalPagos">
-        <div class="flex flex-column">
-          <span>Estatus pago</span>
-          <div class="contenedor-inputswitch" *ngIf="detalleServicio?.estatusPlan">
-            <span class="font-bold">{{detalleServicio.estatusPlan}}</span>
-          </div>
-        </div>
-        <div *ngIf="validarEstatusDetallePago(detalleServicio.estatusPlan)">
-          <a *ngIf="validarEstatusDetallePago(detalleServicio.estatusPlan)" class="ml-5 cursor-pointer" onCloseOnNavigation
-             (click)="overlayPanelHeader.toggle($event)">
-            <img *ngIf="validarEstatusDetallePago(detalleServicio.estatusPlan)"
-              src="assets/images/imagen-icono-barras-horizontales.svg"
-              alt="icono barras horizontales">
-          </a>
-        </div>
-      </div>
-    </ng-template>
+
   </app-table-panel>
   <app-table-panel>
     <ng-template appCustomTemplate="header">
@@ -31,10 +18,10 @@
         <div class="col-md-3">
           <div class="flex flex-column">
             <div class="col-md">
-              <span>Nombre(s) del contratante</span>
+              <span>Nombre(s) titular subtituto</span>
             </div>
-            <div class="col-md" *ngIf="detalleServicio?.contratanteSubstituto">
-              <span class="font-bold"> {{detalleServicio.contratanteSubstituto}} </span>
+            <div class="col-md" *ngIf="datosGenerales?.nombre">
+              <span class="font-bold"> {{datosGenerales.nombre}} </span>
             </div>
           </div>
         </div>
@@ -43,8 +30,8 @@
             <div class="col-md">
               <span>Estado</span>
             </div>
-            <div class="col-md" *ngIf="detalleServicio?.estado">
-              <span class="font-bold">{{detalleServicio.estado}}</span>
+            <div class="col-md" *ngIf="datosGenerales?.estado">
+              <span class="font-bold">{{datosGenerales.estado}}</span>
             </div>
           </div>
         </div>
@@ -53,8 +40,8 @@
             <div class="col-md">
               <span>Correo electrónico</span>
             </div>
-            <div class="col-md" *ngIf="detalleServicio?.correo">
-              <span class="font-bold">{{detalleServicio.correo === 'null' ? null : detalleServicio.correo }}</span>
+            <div class="col-md" *ngIf="datosGenerales?.correo">
+              <span class="font-bold">{{datosGenerales.correo === 'null' ? null : datosGenerales.correo }}</span>
             </div>
           </div>
         </div>
@@ -63,45 +50,103 @@
             <div class="col-md">
               <span>Paquete</span>
             </div>
-            <div class="col-md" *ngIf="detalleServicio?.nombrePaquete">
-              <span class="font-bold">{{detalleServicio.nombrePaquete}}</span>
+            <div class="col-md" *ngIf="datosGenerales?.paquete">
+              <span class="font-bold">{{datosGenerales.paquete}}</span>
             </div>
           </div>
         </div>
       </div>
     </ng-template>
     <div class="row table-panel-row mb-2">
-      <h2 class="subtitulo pl-1 mx-6 my-4">Detalle pagos</h2>
-      <p-table styleClass="mt-5 mb-8 mx-6" [value]="pagosRealizados"
-               [rows]="cantElementosPorPagina"
-               [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+      <h2 class="subtitulo pl-1 mx-6 my-4">Pagos</h2>
+      <p-table styleClass="mt-5 mb-8 mx-6" [value]="pagosRealizados" [rows]="cantElementosPorPagina" [lazy]="true"
+               [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
         <ng-template pTemplate="header">
           <tr>
+            <th scope="col">
+
+            </th>
             <th scope="col">Velatorio</th>
             <th scope="col">Pagos</th>
             <th scope="col">Fecha de pago</th>
             <th scope="col">Monto</th>
             <th scope="col">Método de pago</th>
-            <th scope="col">No. de Recibo de pago</th>
             <th scope="col">Estatus</th>
+            <th scope="col">No. Recibo de pago</th>
+            <th scope="col">Realizar pago</th>
             <th scope="col"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-pagosRealizados>
           <tr>
-            <td>{{pagosRealizados.velatorio}}</td>
-            <td>{{pagosRealizados.pagos}}</td>
-            <td>{{pagosRealizados.fechaPago}}</td>
-            <td>{{pagosRealizados.monto | currency:"USD":"symbol"}}</td>
-            <td>{{pagosRealizados.metodoPago}}</td>
-            <td>{{pagosRealizados.noReciboPago}}</td>
-            <td>{{pagosRealizados.estatusPago}}</td>
             <td>
-              <div class="contenedor-celda-iconos" *ngIf="!pagosRealizados.estatusPago?.includes('CANCELADO')">
-                <a (click)="abrirPanelBody($event,pagosRealizados)">
-                  <img
-                    src="assets/images/imagen-icono-barras-horizontales.svg"
-                    alt="icono barras horizontales">
+              <p-tableRadioButton *ngIf="pagosRealizados.importePagado > 0 || pagosRealizados.idEstatus == 5"
+                                  [value]="pagosRealizados.idPagoSFPA" (click)="mostrarDetallePagos(pagosRealizados)"></p-tableRadioButton>
+            </td>
+            <td>{{pagosRealizados.velatorio}}</td>
+            <td>{{pagosRealizados.noPagos}}</td>
+            <td>{{pagosRealizados.fechaParcialidad}}</td>
+            <td>{{pagosRealizados.importeMensual | currency:"USD":"symbol"}}</td>
+            <td>{{pagosRealizados.metodoPago}}</td>
+            <td>{{pagosRealizados.estatusPago}}</td>
+            <td>{{pagosRealizados.reciboPago}}</td>
+            <td>{{pagosRealizados.realizarPago}}</td>
+            <td>
+
+              <div *ngIf="pagosRealizados.validaPago > 0">
+                <a class="ml-5 cursor-pointer"
+                   (click)="abrirPanelNuevoPago(overlayPanelHeader,$event,pagosRealizados)">
+                  <img   src="assets/images/imagen-icono-barras-horizontales.svg"
+                         alt="icono barras horizontales">
+                </a>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <th colspan="12" class="p-2 text-center font-bold text-xl" id="consulta_pago_sin_resultados">
+              No se encontró información relacionada a tu búsqueda
+            </th>
+          </tr>
+        </ng-template>
+      </p-table>
+      <h2 class="subtitulo pl-1 mx-6 my-4" *ngIf="ocultarBitacora">Bitácora de métodos de pago</h2>
+      <p-table styleClass="mt-5 mb-8 mx-6" *ngIf="ocultarBitacora" [value]="PagosBitacora" [rows]="cantElementosPorPagina" [lazy]="true"
+               [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+        <ng-template pTemplate="header">
+          <tr>
+            <th scope="col">No. pago</th>
+            <th scope="col">Método de pago</th>
+            <th scope="col">Fecha pago</th>
+            <th scope="col">Fecha vale paritario</th>
+            <th scope="col">No. autorización</th>
+            <th scope="col">Folio autorización</th>
+            <th scope="col">Nombre del banco</th>
+            <th scope="col">Importe </th>
+            <th scope="col">Importe vale paritario</th>
+            <th scope="col">Estatus</th>
+            <th scope="col"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-PagosBitacora>
+          <tr>
+
+            <td>{{PagosBitacora.numeroPago}}</td>
+            <td>{{PagosBitacora.desMetodoPago}}</td>
+            <td>{{PagosBitacora.fechaPago}}</td>
+            <td>{{PagosBitacora.fechaValeParitario}}</td>
+            <td>{{PagosBitacora.numeroAutorizacion}}</td>
+            <td>{{PagosBitacora.folioAutorizacion}}</td>
+            <td>{{PagosBitacora.referenciaBancaria}}</td>
+            <td>{{PagosBitacora.importePago | currency:"USD":"symbol"}}</td>
+            <td>{{PagosBitacora.importeValeParitario | currency:"USD":"symbol"}}</td>
+            <td>{{PagosBitacora.estatus}}</td>
+
+            <td>
+              <div class="contenedor-celda-iconos" *ngIf="validarMenuBitacora(PagosBitacora)">
+                <a (click)="abrirPanelBody($event,PagosBitacora)">
+                  <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
                 </a>
               </div>
             </td>
@@ -115,39 +160,7 @@
           </tr>
         </ng-template>
       </p-table>
-      <div class="row ml-5">
-        <div class="col-md-7 mt-6">
-          <span>Aún debes pagar esta cantidad para cubrir el total del plan SPFA
-            <span class="font-bold" *ngIf="detalleServicio?.restante; else sinRestante">
-              {{detalleServicio.restante | currency:"USD":"symbol"}}
-            </span>
-            <ng-template #sinRestante>
-              <span class="font-bold">
-                {{detalleServicio.total | currency:"USD":"symbol" }}
-              </span>
-            </ng-template>
-          </span>
-        </div>
-        <div class="col-md-5">
-          <div class="flex justify-content-end">
-            <div class="col-md-4">
-              <label>Total pagado</label><br/>
-              <span *ngIf="detalleServicio?.totalPagado; else sinTotalPagado">
-                {{detalleServicio.totalPagado | currency:"USD":"symbol"}}
-              </span>
-            </div>
-            <ng-template #sinTotalPagado>
-              <span>{{0 | currency:"USD":"symbol"}}</span>
-            </ng-template>
-
-            <div class="col-md-4" *ngIf="detalleServicio?.total">
-              <label>Total a pagar</label><br/>
-              <span>{{detalleServicio.total | currency:"USD":"symbol"}}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="mt-6 flex justify-content-end" *ngIf="pagosRealizados.length > 0">
+      <div class="mt-6 flex justify-content-end" *ngIf="noPagos > 0">
         <div class="paginator-template">
           <div class="export-table">
             <span class="export-table-text">Exportar tabla</span>
@@ -164,36 +177,30 @@
   </app-table-panel>
 </section>
 
-<section>
-  <div class="row mb-6">
-    <div class="flex mt-4 justify-content-end">
-      <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../">Regresar</button>
-    </div>
-  </div>
-</section>
-
 <p-overlayPanel #overlayPanelBody>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion onCloseOnNavigation  titulo="Modificar método"
+      <app-overlay-panel-opcion onCloseOnNavigation titulo="Modificar método"
                                 (click)="abrirModalModificarPago()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion onCloseOnNavigation titulo="Eliminar método"
-                                (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion  onCloseOnNavigation titulo="Eliminar método"
+                                 (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+
+
 <p-overlayPanel #overlayPanelHeader>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Realizar pago"
+      <app-overlay-panel-opcion onCloseOnNavigation titulo="Realizar pago"
                                 (click)="abrirModalRealizarPago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
 
 
-<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
-          [style]="{maxWidth:'544px',width: '100%'}"
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
@@ -206,3 +213,5 @@
     </div>
   </ng-template>
 </p-dialog>
+
+

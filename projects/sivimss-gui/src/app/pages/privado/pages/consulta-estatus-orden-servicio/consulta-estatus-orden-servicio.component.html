@@ -5,7 +5,9 @@
 
     <p-table styleClass="mt-5 mb-8" [value]="ordenesServicios" [paginator]="ordenesServicios.length > 0"
         [rows]="cantElementosPorPagina" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-        [resizableColumns]="true" [columnResizeMode]="'expand'">
+        [resizableColumns]="true" [columnResizeMode]="'expand'"
+        (onLazyLoad)="paginar($event)"
+        >
         <ng-template pTemplate="header">
             <tr>
                 <th scope="col">Folio ODS</th>
@@ -19,7 +21,7 @@
                 <td>{{convenio.nombreContratante}}</td>
                 <td style="border-left: 1px solid #b0b0b0;">
                     <div class="contenedor-celda-iconos">
-                        <a routerLink="mi-orden-de-servicio">
+                        <a (click)="verDetalleOrden(convenio.idOrden)">
                             <i class="pi pi-eye"></i>
                         </a>
                     </div>
@@ -39,16 +41,11 @@
             </div>
         </ng-template>
     </p-table>
-    <div class="row mb-3">
-        <div class="col-md-12 flex justify-content-end">
-            <button class="btn btn-primary" (click)="mostrarModalFaltaConvenio = !mostrarModalFaltaConvenio">Mostrar
-                modal falta orden</button>
-        </div>
-    </div>
+    
 </div>
 
 
-<p-dialog [(visible)]="mostrarModalFaltaConvenio" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+<p-dialog [(visible)]="mostrarModalFaltaOrdenes" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
     [closable]="false" [draggable]="false" [resizable]="false" header="Convenios">
     <ng-template pTemplate="content">
         <div>
@@ -58,7 +55,7 @@
     </ng-template>
     <ng-template pTemplate="footer">
         <div class="flex justify-content-center">
-            <button class="btn btn-primary btn-md" (click)="mostrarModalFaltaConvenio = false;">Aceptar</button>
+            <button class="btn btn-primary btn-md" (click)="mostrarModalFaltaOrdenes = false;">Aceptar</button>
         </div>
     </ng-template>
 </p-dialog>

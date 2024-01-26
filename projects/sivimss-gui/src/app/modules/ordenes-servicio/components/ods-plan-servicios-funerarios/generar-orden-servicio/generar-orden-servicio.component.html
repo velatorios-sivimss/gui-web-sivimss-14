@@ -1,6 +1,6 @@
 <div class="border-panel mb-8">
-  <h3>GENERAR ORDEN DE SERVICIO</h3>
-  <div class="mt-4 flex justify-content-center align-items-center">
+  <h3 class="mb-4">GENERAR ORDEN DE SERVICIO</h3>
+  <div class="flex justify-content-center align-items-center" *ngIf="detalle_orden_servicio">
     <app-etapas-convenio-sfpa></app-etapas-convenio-sfpa>
   </div>
   <ng-container [ngSwitch]="idEtapaSeleccionada">
@@ -17,6 +17,8 @@
     <ng-container *ngSwitchCase="INFORMACION_DEL_SERVICIO">
       <app-informacion-servicio-sf (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-informacion-servicio-sf>
     </ng-container>
+    <ng-container *ngSwitchCase="DETALLE_ORDEN_SERVICIO">
+      <app-detalle-orden-servicio (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-detalle-orden-servicio>
+    </ng-container>
   </ng-container>
-
 </div>

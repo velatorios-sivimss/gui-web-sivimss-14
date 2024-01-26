@@ -8,7 +8,7 @@ import { TableModule } from 'primeng/table';
 import { TituloPrincipalModule } from 'projects/sivimss-gui/src/app/shared/titulo-principal/titulo-principal.module';
 import { BtnRegresarModule } from 'projects/sivimss-gui/src/app/shared/btn-regresar/btn-regresar.module';
 import { DialogModule } from 'primeng/dialog';
-
+import { TablePanelModule } from 'projects/sivimss-gui/src/app/shared/table-panel/table-panel.module';
 @NgModule({
   declarations: [ConsultaEstatusOrdenServicioComponent],
   imports: [
@@ -18,6 +18,7 @@ import { DialogModule } from 'primeng/dialog';
     TituloPrincipalModule,
     BtnRegresarModule,
     DialogModule,
+    TablePanelModule
   ],
   providers: [DialogService],
 })

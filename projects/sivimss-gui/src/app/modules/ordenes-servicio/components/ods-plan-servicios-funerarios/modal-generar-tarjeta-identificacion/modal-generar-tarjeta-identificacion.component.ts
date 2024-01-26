@@ -107,7 +107,6 @@ export class ModalGenerarTarjetaIdentificacionSFComponent implements OnInit {
         this.ref.close(true);
       },
       error: (error: HttpErrorResponse) => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, 'Error en la descarga del documento.Intenta nuevamente.');
       }
     })

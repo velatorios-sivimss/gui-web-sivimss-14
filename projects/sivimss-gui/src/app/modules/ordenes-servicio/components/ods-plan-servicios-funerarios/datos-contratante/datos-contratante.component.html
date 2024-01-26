@@ -22,7 +22,7 @@
       <div class="col-md-4">
         <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
         <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa curp"
-               maxlength="18" (blur)="consultarCURP()" (keyup)="convertirAMayusculas(0)">
+               maxlength="18" (blur)="consultarCurpContratante()" (keyup)="convertirAMayusculas(0)">
         <span class="campo-obligatorio"
               *ngIf="datosContratante.curp?.errors?.required && (datosContratante.curp?.dirty || datosContratante.curp?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -84,7 +84,7 @@
         <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
         <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
                     placeholder="Ingresa lugar de nacimiento" [options]="estado" [filter]="true"
-                    filterBy="label"></p-dropdown>
+                    filterBy="label"  #lugarSeleccionado></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="datosContratante.lugarNacimiento?.errors?.required && (datosContratante.lugarNacimiento?.dirty || datosContratante.lugarNacimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -92,7 +92,7 @@
         <label class="control-label" for="paisNacimiento">País de nacimiento:</label>
         <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
                     placeholder="Ingresa país de nacimiento" [options]="pais" [filter]="true"
-                    filterBy="label"></p-dropdown>
+                    filterBy="label" #paisSeleccionado></p-dropdown>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
@@ -113,7 +113,7 @@
         <label class="control-label" for="parentesco">Parentesco:</label>
         <p-dropdown id="parentesco" class="form-control" formControlName="parentesco"
                     placeholder="Ingresa el parentesco" [options]="parentesco" [filter]="true"
-                    filterBy="label"></p-dropdown>
+                    filterBy="label" #parentescoContratante></p-dropdown>
       </div>
 
     </div>

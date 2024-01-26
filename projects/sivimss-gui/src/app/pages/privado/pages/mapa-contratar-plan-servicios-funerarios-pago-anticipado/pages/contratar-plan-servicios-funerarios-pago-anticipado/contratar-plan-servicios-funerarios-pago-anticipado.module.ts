@@ -16,6 +16,7 @@ import { OverlayPanelOpcionesModule } from 'projects/sivimss-gui/src/app/shared/
 import { TituloPrincipalModule } from 'projects/sivimss-gui/src/app/shared/titulo-principal/titulo-principal.module';
 import { DialogService } from 'primeng/dynamicdialog';
 import { CeldaStickyModule } from 'projects/sivimss-gui/src/app/shared/celda-sticky/celda-sticky.module';
+import { ContratarPSFPAService } from '../../services/contratar-psfpa.service';
 
 @NgModule({
   declarations: [ContratarPlanServiciosFunerariosPagoAnticipadoComponent],
@@ -37,7 +38,8 @@ import { CeldaStickyModule } from 'projects/sivimss-gui/src/app/shared/celda-sti
     CeldaStickyModule
   ],
   providers:[
-    DialogService
+    DialogService,
+    ContratarPSFPAService,
   ]
 })
 export class ContratarPlanServiciosFunerariosPagoAnticipadoModule {}
