@@ -62,7 +62,19 @@
         </ng-template>
         <ng-template pTemplate="content">
           <ng-container *ngIf="titularPA.beneficiario1 else SinBeneficiarioEspecifico">
-            <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
+            <app-resumen-titular-beneficiario [titular]="'beneficiario'" [matricula]="beneficiario1.matricula"
+                                              [rfc]="beneficiario1.rfc"
+                                              [curp]="beneficiario1.curp" [nombre]="beneficiario1.nombre"
+                                              [nss]="beneficiario1.nss" [primerApellido]="beneficiario1.primerApellido"
+                                              [segundoApellido]="beneficiario1.segundoApellido"
+                                              [calle]="beneficiario1.calle" [numeroExterior]="beneficiario1.numExt"
+                                              [numeroInterior]="beneficiario1.numInt" [codigoPostal]="beneficiario1.cp"
+                                              [colonia]="beneficiario1.colonia" [municipio]="beneficiario1.municipio"
+                                              [estado]="beneficiario1.estado"
+                                              [lugarNacimiento]="beneficiario1.lugarNac"
+                                              [correoElectronico]="beneficiario1.correo"
+                                              [telefono]="beneficiario1.telCelular"
+            ></app-resumen-titular-beneficiario>
           </ng-container>
         </ng-template>
       </p-accordionTab>
@@ -76,7 +88,18 @@
         </ng-template>
         <ng-template pTemplate="content">
           <ng-container *ngIf="titularPA.beneficiario2 else SinBeneficiarioEspecifico">
-            <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
+            <app-resumen-titular-beneficiario [titular]="'beneficiario'"  [matricula]="beneficiario2.matricula"
+                                              [rfc]="beneficiario2.rfc"
+                                              [curp]="beneficiario2.curp" [nombre]="beneficiario2.nombre"
+                                              [nss]="beneficiario2.nss" [primerApellido]="beneficiario2.primerApellido"
+                                              [segundoApellido]="beneficiario2.segundoApellido"
+                                              [calle]="beneficiario2.calle" [numeroExterior]="beneficiario2.numExt"
+                                              [numeroInterior]="beneficiario2.numInt" [codigoPostal]="beneficiario2.cp"
+                                              [colonia]="beneficiario2.colonia" [municipio]="beneficiario2.municipio"
+                                              [estado]="beneficiario2.estado"
+                                              [lugarNacimiento]="beneficiario2.lugarNac"
+                                              [correoElectronico]="beneficiario2.correo"
+                                              [telefono]="beneficiario2.telCelular"></app-resumen-titular-beneficiario>
           </ng-container>
         </ng-template>
       </p-accordionTab>

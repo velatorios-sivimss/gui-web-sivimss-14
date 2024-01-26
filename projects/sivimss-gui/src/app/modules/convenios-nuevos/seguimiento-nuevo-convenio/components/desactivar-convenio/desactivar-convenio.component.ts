@@ -19,6 +19,7 @@ export enum TipoAlerta {
 }
 
 interface BeneficiarioResponse {
+  idBeneficiario: number,
   curp: string,
   rfc: string,
   matricula: string,
@@ -126,6 +127,8 @@ export class DesactivarConvenioComponent implements OnInit {
   totalElementos: number = 0;
   infoPersona: boolean = false;
   beneficiarios: BeneficiarioResponse[] = [];
+  beneficiario1!: BeneficiarioResponse;
+  beneficiario2!: BeneficiarioResponse;
   convenioPersona!: ConvenioPersona;
   convenioEmpresa!: ConvenioEmpresa;
   titularPA!: PreRegistroPA;
@@ -155,10 +158,23 @@ export class DesactivarConvenioComponent implements OnInit {
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
     }
     this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
+    this.beneficiarios = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
+    this.obtenerBeneficiarios()
   }
 
   regresar() {
     this.router.navigate(['seguimiento-nuevo-convenio'], {relativeTo: this.activatedRoute});
+  }
+
+  obtenerBeneficiarios(): void {
+    const idBeneficiario1: number = this.titularPA.beneficiario1;
+    const idBeneficiario2: number = this.titularPA.beneficiario2;
+    if (idBeneficiario1 !== 0) {
+      this.beneficiario1 = this.beneficiarios.find(beneficiario => beneficiario.idBeneficiario === idBeneficiario1)!;
+    }
+    if (idBeneficiario2 !== 0) {
+      this.beneficiario2 = this.beneficiarios.find(beneficiario => beneficiario.idBeneficiario === idBeneficiario1)!;
+    }
   }
 
   aceptar() {
