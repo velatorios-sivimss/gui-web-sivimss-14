@@ -72,11 +72,11 @@
         <td pResizableColumn> {{ convenio.tipoPaquete }}</td>
         <td>
           <div class="contenedor-inputswitch">
-            <p-inputSwitch [(ngModel)]="convenio.estatus"
+            <p-inputSwitch [(ngModel)]="!!convenio.indActivo"
                            [routerLink]="['desactivar-convenio', convenio.idConvenioPlan, obtenerTipoConvenio(convenio.tipo)]"
                            (onChange)="convenio.estatus = false"></p-inputSwitch>
-            <span class="activo" *ngIf="convenio.estatus">Activo</span>
-            <span class="inactivo" *ngIf="!convenio.estatus">Inactivo</span>
+            <span class="activo" *ngIf="convenio.indActivo">Activo</span>
+            <span class="inactivo" *ngIf="!convenio.indActivo">Inactivo</span>
           </div>
         </td>
         <td>

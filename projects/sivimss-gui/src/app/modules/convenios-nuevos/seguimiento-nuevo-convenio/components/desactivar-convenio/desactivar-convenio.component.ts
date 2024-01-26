@@ -47,6 +47,7 @@ interface ConvenioEmpresa {
   nombre: string,
   razonSocial: string,
   rfc: string,
+  pais: string,
   idPais: number,
   cp: string,
   colonia: string,
