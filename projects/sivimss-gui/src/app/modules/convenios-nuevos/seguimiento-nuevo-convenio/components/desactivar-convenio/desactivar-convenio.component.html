@@ -24,6 +24,7 @@
                                             [correoElectronico]="titularPA.correo"
                                             [telefonoCelular]="titularPA.telCelular" [telefonoFijo]="titularPA.telFijo"
                                             [tipoPaquete]="titularPA.nomPaquete" [numeroPagos]="titularPA.numPagos"
+                                            [nacionalidad]="+titularPA.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
           ></app-resumen-titular-beneficiario>
         </ng-template>
       </p-accordionTab>
@@ -74,6 +75,7 @@
                                               [lugarNacimiento]="beneficiario1.lugarNac"
                                               [correoElectronico]="beneficiario1.correo"
                                               [telefono]="beneficiario1.telCelular"
+                                              [nacionalidad]="+titularPA.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
             ></app-resumen-titular-beneficiario>
           </ng-container>
         </ng-template>
@@ -99,7 +101,9 @@
                                               [estado]="beneficiario2.estado"
                                               [lugarNacimiento]="beneficiario2.lugarNac"
                                               [correoElectronico]="beneficiario2.correo"
-                                              [telefono]="beneficiario2.telCelular"></app-resumen-titular-beneficiario>
+                                              [telefono]="beneficiario2.telCelular"
+                                              [nacionalidad]="+titularPA.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
+            ></app-resumen-titular-beneficiario>
           </ng-container>
         </ng-template>
       </p-accordionTab>
