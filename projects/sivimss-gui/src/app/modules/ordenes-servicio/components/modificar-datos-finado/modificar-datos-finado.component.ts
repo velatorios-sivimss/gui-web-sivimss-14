@@ -220,6 +220,7 @@ export class ModificarDatosFinadoComponent
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    this.idContratante = datodPrevios.idContratantePf;
   }
 
   ngAfterContentChecked(): void {
@@ -234,6 +235,8 @@ export class ModificarDatosFinadoComponent
       this.colonias = mapearArregloTipoDropdown(coloniasLista, 'nombre', 'nombre')
     }
 
+    this.idVelatorioContratoPrevision = +datosEtapaFinado.datosFinado.idVelatorioContratoPrevision;
+    this.idContratoPrevision = datosEtapaFinado.datosFinado?.idContratoPrevision ?? null;
     this.idPersona = datosEtapaFinado.datosFinado.idPersona == 0 ? null : datosEtapaFinado.datosFinado.idPersona;
     this.idFinado = datosEtapaFinado.datosFinado.idFinado == 0 ? null : datosEtapaFinado.datosFinado.idFinado;
     this.idDomicilio = datosEtapaFinado.direccion.idDomicilio;
@@ -297,7 +300,7 @@ export class ModificarDatosFinadoComponent
         velatorioPrevision: [
           {
             value: datosEtapaFinado.datosFinado.velatorioPrevision,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
@@ -502,7 +505,6 @@ export class ModificarDatosFinadoComponent
       this.datosFinado.velatorioPrevision.disable();
     } else {
       this.datosFinado.noContrato.enable();
-      this.datosFinado.velatorioPrevision.enable();
     }
     if (Number(this.form.value.datosFinado.tipoOrden) == 3) {
 
@@ -827,7 +829,7 @@ export class ModificarDatosFinadoComponent
       this.datosFinado.esParaExtremidad.disable();
       this.datosFinado.esObito.disable();
     }
-    this.limpiarODS();
+    if (!modificacion)this.limpiarODS();
   }
 
   limpiarODS(): void {
@@ -1201,10 +1203,10 @@ export class ModificarDatosFinadoComponent
       this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
       this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
       this.finado.fechaNac = moment(
-        datosEtapaFinado.datosFinado.tipoOrden
+        datosEtapaFinado.datosFinado.fechaNacimiento
       ).format('yyyy-MM-DD');
-      this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
-      this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
+      this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
+      this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
       this.finado.fechaDeceso = moment(
         datosEtapaFinado.datosFinado.fechaDefuncion
       ).format('yyyy-MM-DD');
@@ -1221,8 +1223,7 @@ export class ModificarDatosFinadoComponent
         datosEtapaFinado.datosFinado.procedenciaFinado;
       this.finado.idTipoPension = datosEtapaFinado.datosFinado.tipoPension;
       this.finado.idContratoPrevision = this.idContratoPrevision;
-      this.finado.idVelatorioContratoPrevision =
-        this.idVelatorioContratoPrevision;
+      this.finado.idVelatorioContratoPrevision = this.idVelatorioContratoPrevision ? this.idVelatorioContratoPrevision : null;
       this.cpFinado.desCalle = datosEtapaFinado.direccion.calle;
       this.cpFinado.numExterior = datosEtapaFinado.direccion.noExterior;
       this.cpFinado.numInterior = datosEtapaFinado.direccion.noInterior;

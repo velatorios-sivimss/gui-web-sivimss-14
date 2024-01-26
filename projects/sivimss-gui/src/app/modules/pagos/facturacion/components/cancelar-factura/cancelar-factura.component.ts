@@ -6,6 +6,8 @@ import {FacturacionService} from "../../services/facturacion.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
 
 interface ParamsCancelar {
   folioFactura: number,
@@ -48,6 +50,7 @@ export class CancelarFacturaComponent implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private readonly router: Router,
+    private cargadorService: LoaderService,
     private facturacionService: FacturacionService,
     private mensajesSistemaService: MensajesSistemaService,
     private alertaService: AlertaService,
@@ -106,7 +109,10 @@ export class CancelarFacturaComponent implements OnInit {
   }
 
   generarCancelacionFactura(): void {
-    this.facturacionService.cancelarFactura(this.solicitudCancelacion).subscribe({
+    this.cargadorService.activar()
+    this.facturacionService.cancelarFactura(this.solicitudCancelacion).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Factura registrada correctamente');
         void this.router.navigate(['./..'], {relativeTo: this.activatedRoute});

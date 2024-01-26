@@ -242,6 +242,10 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
 
       total = detallePresupuesto[0].importeMonto
       for (let element of detallePresupuesto) {
+        if(element.proviene.includes('presupuesto')){
+          total += Number(element.importeMonto * element.cantidad);
+        }
+
         let utilizarArticulo = false;
         if (element.servicioDetalleTraslado == 'paquete') {
           utilizarArticulo = true;
@@ -280,6 +284,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
           totalKilometros: totalKilometros,
           idArticulo: element.idArticulo,
           idTipoServicio: element.idTipoServicio ?? null,
+          idServicio: element.idServicio,
           idProveedor: element.idProveedor,
           totalPaquete: Number(element.importeMonto * element.cantidad),
           importe: element.importeMonto,

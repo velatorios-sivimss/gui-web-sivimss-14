@@ -7,17 +7,17 @@ import {TIPO_PAGO_CATALOGOS_CONVENIO, TIPO_PAGO_CATALOGOS_ODS} from "../../const
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {MAX_WIDTH} from "../../../../../utils/constantes";
-import {OverlayPanel} from "primeng/overlaypanel";
-import {ParametrosEliminar, RegistroModal} from "../../modelos/datosRegistro.interface";
-import {RegistrarAgfComponent} from "../registrar-pago/registrar-agf/registrar-agf.component";
 import {RegistrarTipoPagoComponent} from "../registrar-pago/registrar-tipo-pago/registrar-tipo-pago.component";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {ModificarTipoPagoComponent} from "../modificar-tipo-pago/modificar-tipo-pago.component";
+import {EliminarTipoPagoComponent} from "../eliminar-tipo-pago/eliminar-tipo-pago.component";
 import {
   RegistrarValeParitariaComponent
 } from "../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
-import {ModificarTipoPagoComponent} from "../modificar-tipo-pago/modificar-tipo-pago.component";
-import {EliminarTipoPagoComponent} from "../eliminar-tipo-pago/eliminar-tipo-pago.component";
-import {forkJoin, Observable} from "rxjs";
+import {ParametrosEliminar, RegistroModal} from "../../modelos/datosRegistro.interface";
+import {RegistrarAgfComponent} from "../registrar-pago/registrar-agf/registrar-agf.component";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {forkJoin, Observable} from "rxjs";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
@@ -47,12 +47,12 @@ interface ParametrosModificar {
 }
 
 @Component({
-  selector: 'app-modificar-metodo-pago',
-  templateUrl: './modificar-metodo-pago.component.html',
-  styleUrls: ['./modificar-metodo-pago.component.scss'],
+  selector: 'app-control-pago',
+  templateUrl: './control-pago.component.html',
+  styleUrls: ['./control-pago.component.scss'],
   providers: [DialogService]
 })
-export class ModificarMetodoPagoComponent implements OnInit {
+export class ControlPagoComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -64,6 +64,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
   fecha: Date = new Date();
   tipoPago: string = '';
   tipoFolio: string = '';
+  titulo: string = '';
   tiposPago: TipoDropdown[] = [];
   pagoForm!: FormGroup;
   agfSeleccionado!: RespuestaAGF;
@@ -72,9 +73,9 @@ export class ModificarMetodoPagoComponent implements OnInit {
     private formBuilder: FormBuilder,
     private readonly activatedRoute: ActivatedRoute,
     private location: Location,
+    private realizarPagoService: RealizarPagoService,
     public dialogService: DialogService,
     private cargadorService: LoaderService,
-    private realizarPagoService: RealizarPagoService,
   ) {
   }
 
@@ -92,6 +93,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
   cargarCatalogos(): void {
     this.registroPago = this.activatedRoute.snapshot.data["respuesta"].datos;
     this.tipoPago = this.obtenerTipoPago();
+    this.titulo = this.obtenerTipoPago();
     this.tipoFolio = this.obtenerFolioTipoPago();
     if (validarUsuarioLogueado()) return;
     this.obtenerMetodosPago();
@@ -271,6 +273,5 @@ export class ModificarMetodoPagoComponent implements OnInit {
       importePago: this.registroPago.totalPorCubrir,
     }
   }
-
 
 }

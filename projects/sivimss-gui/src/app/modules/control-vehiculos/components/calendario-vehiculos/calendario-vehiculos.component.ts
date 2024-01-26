@@ -125,6 +125,8 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
           this.fechaCalendario = moment(event.start).add(1, 'month');
         } else if (mesFinal === 1 && mesInicio === 12) {
           this.fechaCalendario = moment(event.end);
+        } else if (mesFinal === 2 && mesInicio === 12) {
+          this.fechaCalendario = moment(event.start).add(1, 'month');
         } else {
           this.fechaCalendario = moment(event.start);
         }

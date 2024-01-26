@@ -98,7 +98,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       idDelegacion: this.recibo.idDelegacion,
       idVelatorio: this.recibo.idVelatorio,
       idPagoDetalle: this.idBitacoraPago,
-      fecReciboPago: moment(new Date()).format('YYYY-MM-DD HH:mm'),
+      fecReciboPago: moment(new Date(this.diferenciaUTC(this.recibo.fecha, '-'))).format('YYYY-MM-DD HH:mm'),
       nomContratante: this.recibo.recibimos,
       canReciboPago: `${this.convertirMoneda(+this.recibo.cantidad)} (${this.recibo.cantidadLetra})`,
       canTramites: this.convertirMoneda(this.totalTramite),
@@ -213,7 +213,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
     return formatter.format(valor);
   }
 
-  diferenciaUTC(fecha: string, divisor: string = "/"): number {
+  diferenciaUTC(fechaCompleta: string, divisor: string = "/"): number {
+    const [fecha] = fechaCompleta.split('T');
     const [anio, mes, dia]: string[] = fecha.split(divisor);
     const objetoFecha: Date = new Date(+anio, +mes - 1, +dia);
     return objetoFecha.setMinutes(objetoFecha.getMinutes() + objetoFecha.getTimezoneOffset());

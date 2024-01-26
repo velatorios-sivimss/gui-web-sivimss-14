@@ -6,15 +6,8 @@ import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/service
 import {HttpErrorResponse} from "@angular/common/http";
 import {RealizarPagoService} from "../../../services/realizar-pago.service";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
-import {ActivatedRoute, Router} from "@angular/router";
 import * as moment from "moment";
-
-interface DatosRegistro {
-  idPagoBitacora: number,
-  idFlujoPago: number,
-  idRegistro: number,
-  importePago: number
-}
+import {DatosRegistroPago} from "../../../modelos/datosRegistro.interface";
 
 @Component({
   selector: 'app-registrar-vale-paritaria',
@@ -30,8 +23,9 @@ export class RegistrarValeParitariaComponent implements OnInit {
   valeParitariaForm!: FormGroup;
   resumenSolicitud!: any;
 
-  registroPago!: DatosRegistro;
+  registroPago!: DatosRegistroPago;
   total: number = 0;
+  totalFaltante: number = 0;
 
   constructor(private formBuilder: FormBuilder,
               public config: DynamicDialogConfig,
@@ -39,19 +33,19 @@ export class RegistrarValeParitariaComponent implements OnInit {
               private realizarPagoService: RealizarPagoService,
               private alertaService: AlertaService,
               private mensajesSistemaService: MensajesSistemaService,
-              private router: Router,
-              private readonly activatedRoute: ActivatedRoute
   ) {
   }
 
   ngOnInit(): void {
     this.total = this.config.data.total;
+    this.totalFaltante = this.config.data.totalPendiente;
     this.registroPago = this.config.data.datosRegistro;
     this.inicializarValeForm();
   }
 
   inicializarValeForm(): void {
     this.valeParitariaForm = this.formBuilder.group({
+      total: [{value: this.totalFaltante, disabled: true}],
       numAutorizacion: [{value: null, disabled: false}, [Validators.required]],
       fechaValeAGF: [{value: null, disabled: false}, [Validators.required]],
       importe: [{value: null, disabled: false}, [Validators.required]],
@@ -70,22 +64,25 @@ export class RegistrarValeParitariaComponent implements OnInit {
   guardar(): void {
     const solicitudPago: SolicitudCrearPago = this.generarSolicitudPago();
     this.realizarPagoService.guardar(solicitudPago).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
-        this.ref.close();
-        void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
-      },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-        console.log(error);
-      }
+      next: (): void => this.manejoRespuestaExitosaPago(),
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
   }
 
+  private manejoRespuestaExitosaPago(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
+    this.ref.close();
+    this.actualizarPagina();
+  }
+
+  private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
+    const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+    console.log(error);
+  }
+
   generarSolicitudPago(): SolicitudCrearPago {
-    let fechaValeAGF = this.valeParitariaForm.get('fechaValeAGF')?.value;
-    if (fechaValeAGF) fechaValeAGF = moment(fechaValeAGF).format('YYYY-MM-DD');
+    const fechaValeAGF: string | null = this.obtenerFechaValeAGF();
     return {
       descBanco: '',
       fechaPago: null,
@@ -95,9 +92,18 @@ export class RegistrarValeParitariaComponent implements OnInit {
       idPagoBitacora: this.registroPago.idPagoBitacora,
       idRegistro: this.registroPago.idRegistro,
       importePago: this.valeParitariaForm.get('importe')?.value,
-      importeRegistro: this.registroPago.importePago,
+      importeRegistro: this.total,
       numAutorizacion: this.valeParitariaForm.get('numAutorizacion')?.value
     }
+  }
+
+  obtenerFechaValeAGF(): string | null {
+    const fechaValeAGF = this.valeParitariaForm.get('fechaValeAGF')?.value;
+    return fechaValeAGF ? moment(fechaValeAGF).format('YYYY-MM-DD') : null;
+  }
+
+  actualizarPagina(): void {
+    window.location.reload();
   }
 
   get pf() {

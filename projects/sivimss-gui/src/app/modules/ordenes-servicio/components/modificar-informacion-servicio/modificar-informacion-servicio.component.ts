@@ -177,6 +177,7 @@ export class ModificarInformacionServicioComponent
     this.buscarCapillas();
     this.buscarSalas();
     this.buscarPromotor();
+    this.validarExistenciaPromotor();
   }
 
   llenarFormulario(datos: any): void {
@@ -194,8 +195,6 @@ export class ModificarInformacionServicioComponent
     } else {
       fechaVelacion = datos.fechaVelacion;
     }
-
-
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
         capilla: [
@@ -245,7 +244,7 @@ export class ModificarInformacionServicioComponent
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          {value: null, disabled: false}
+          {value:  !!datos.idPanteon, disabled: !!datos.idPanteon}
         ],
       }),
       recoger: this.formBuilder.group({
@@ -648,6 +647,10 @@ export class ModificarInformacionServicioComponent
 
   guardarODS(consumoTablas: number): void {
     this.loaderService.activar();
+    if(this.tipoOrden == 2){
+      this.altaODS.finado.extremidad ? this.altaODS.finado.extremidad = this.altaODS.finado.extremidad : this.altaODS.finado.extremidad = false
+      this.altaODS.finado.esobito ? this.altaODS.finado.esobito = this.altaODS.finado.esobito : this.altaODS.finado.esobito = false
+    }
     this.gestionarOrdenServicioService.actualizarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
@@ -921,6 +924,7 @@ export class ModificarInformacionServicioComponent
           link.remove();
         },
         error: (error: HttpErrorResponse) => {
+          if(error.error.datos === null)return
           const errorMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
               parseInt(error.error.mensaje)
@@ -1047,5 +1051,10 @@ export class ModificarInformacionServicioComponent
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(2);
     this.llenarDatos();
+  }
+
+  validarExistenciaPromotor(): void {
+    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable()
+    if(this.tipoOrden > 1)this.cortejo.gestionadoPorPromotor.disable()
   }
 }

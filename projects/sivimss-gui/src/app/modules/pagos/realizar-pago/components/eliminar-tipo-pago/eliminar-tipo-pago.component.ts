@@ -4,7 +4,6 @@ import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
-import {Router} from "@angular/router";
 import {MetodoPago} from "../../modelos/detallePago.interface";
 
 @Component({
@@ -23,7 +22,6 @@ export class EliminarTipoPagoComponent {
     private realizarPagoService: RealizarPagoService,
     private mensajesSistemaService: MensajesSistemaService,
     private alertaService: AlertaService,
-    private router: Router,
   ) {
     this.registroMetodoPago = this.config.data.pago;
     this.total = this.config.data.total;
@@ -32,23 +30,24 @@ export class EliminarTipoPagoComponent {
 
   guardar(): void {
     this.realizarPagoService.cancelarMetodoPago(this.registroMetodoPago.idPagoDetalle).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago cancelado correctamente');
-        this.ref.close();
-        this.actualizarPagina();
-      },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-        console.log(error);
-      }
+      next: (): void => this.manejoRespuestaExitosaPago(),
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
   }
 
+  private manejoRespuestaExitosaPago(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Pago eliminado correctamente');
+    this.ref.close();
+    this.actualizarPagina();
+  }
+
+  private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
+    const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+    console.log(error);
+  }
+
   actualizarPagina(): void {
-    const currentUrl: string = this.router.url;
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then((): void => {
-      void this.router.navigate([currentUrl]);
-    });
+    window.location.reload();
   }
 }

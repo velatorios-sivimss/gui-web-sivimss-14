@@ -435,7 +435,7 @@ export class DatosFinadoSFComponent implements OnInit {
     this.finado.segundoApellido = datosEtapaFinado.datosFinado.segundoApellido;
     this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
     this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
-    this.finado.fechaNac = moment(datosEtapaFinado.datosFinado.tipoOrden).format('yyyy-MM-DD');
+    this.finado.fechaNac = moment(datosEtapaFinado.datosFinado.fechaNacimiento).format('yyyy-MM-DD');
     this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
     this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
     this.finado.fechaDeceso = moment(datosEtapaFinado.datosFinado.fechaDefuncion).format('yyyy-MM-DD');
