@@ -265,7 +265,7 @@
 </div>
 
 <ng-template pTemplate="content" #SinBeneficiarios>
-  <div class="row table-panel-row" *ngIf="beneficiarios.length === 0">
+  <div class="row table-panel-row">
     <div class="col-md-12 mt-4">
       <p class="mensaje-cancelacion-orden font-14">El convenio no tiene beneficiarios registrados.</p>
     </div>
@@ -273,7 +273,7 @@
 </ng-template>
 
 <ng-template pTemplate="content" #SinBeneficiarioEspecifico>
-  <div class="row table-panel-row" *ngIf="beneficiarios.length === 0">
+  <div class="row table-panel-row">
     <div class="col-md-12 mt-4">
       <p class="mensaje-cancelacion-orden font-14">Información de beneficiario no registrada.</p>
     </div>
