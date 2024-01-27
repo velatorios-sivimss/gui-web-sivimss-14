@@ -12,6 +12,7 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 interface BeneficiarioResponse {
+  idBeneficiario: number,
   curp: string,
   rfc: string,
   matricula: string,
@@ -56,6 +57,44 @@ interface ConvenioEmpresa {
   folioConvenio: string
 }
 
+interface PreRegistroPA {
+  "idPersona": number,
+  "idContratante": number,
+  "idDomicilio": number,
+  "folioConvenio": string,
+  "curp": string,
+  "rfc": string,
+  "matricula": string,
+  "nss": string,
+  "nombre": string,
+  "primerApellido": string,
+  "segundoApellido": string,
+  "idSexo": number,
+  "fecNacimiento": string,
+  "pais": string,
+  "idPais": number,
+  "lugarNac": string,
+  "idLugarNac": number,
+  "telCelular": string,
+  "telFijo": string,
+  "correo": string,
+  "calle": string,
+  "numExt": string,
+  "numInt": string,
+  "cp": string,
+  "colonia": string,
+  "municipio": string,
+  "estado": string,
+  "idPaquete": number,
+  "numPagos": string,
+  "nomPaquete": string,
+  "titularSust": string,
+  "idTitularSust": number,
+  "beneficiario1": number,
+  "beneficiario2": number,
+  "gestionPromotor": boolean
+}
+
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
   templateUrl: './pre-registro-contratacion-nuevo-convenio.component.html',
@@ -88,6 +127,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   folio: string = '';
   nombresBeneficiario: string[] = [];
   tipoConvenio: string = '';
+  beneficiariosPA: BeneficiarioResponse[] = [];
+  beneficiario1!: BeneficiarioResponse;
+  beneficiario2!: BeneficiarioResponse;
+  titularPA!: PreRegistroPA;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -115,8 +158,24 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     if (this.tipoConvenio === '2') {
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
     }
+    if (this.tipoConvenio === '1') {
+      this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
+      this.beneficiariosPA = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
+      this.obtenerBeneficiarios()
+    }
     const paquetes = respuesta[this.POSICION_PAQUETES].datos;
     this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
+  }
+
+  obtenerBeneficiarios(): void {
+    const idBeneficiario1: number = this.titularPA.beneficiario1;
+    const idBeneficiario2: number = this.titularPA.beneficiario2;
+    if (idBeneficiario1 !== 0) {
+      this.beneficiario1 = this.beneficiariosPA.find(beneficiario => beneficiario.idBeneficiario === idBeneficiario1)!;
+    }
+    if (idBeneficiario2 !== 0) {
+      this.beneficiario2 = this.beneficiariosPA.find(beneficiario => beneficiario.idBeneficiario === idBeneficiario1)!;
+    }
   }
 
   inicializarTipoFormulario(): void {
@@ -181,30 +240,30 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormularioPA(): void {
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
-        curp: [{value: null, disabled: false}],
-        rfc: [{value: null, disabled: false}],
-        matricula: [{value: null, disabled: false}],
-        nns: [{value: null, disabled: false}],
-        nombre: [{value: null, disabled: false}],
-        primerApellido: [{value: null, disabled: false}],
-        segundoApellido: [{value: null, disabled: false}],
-        sexo: [{value: null, disabled: false}],
+        curp: [{value: this.titularPA.curp, disabled: false}],
+        rfc: [{value: this.titularPA.rfc, disabled: false}],
+        matricula: [{value: this.titularPA.matricula, disabled: false}],
+        nns: [{value: this.titularPA.nss, disabled: false}],
+        nombre: [{value: this.titularPA.nombre, disabled: false}],
+        primerApellido: [{value: this.titularPA.primerApellido, disabled: false}],
+        segundoApellido: [{value: this.titularPA.segundoApellido, disabled: false}],
+        sexo: [{value: this.titularPA.idSexo, disabled: false}],
         fechaNacimiento: [{value: null, disabled: false}],
         nacionalidad: [{value: null, disabled: false}],
-        paisNacimiento: [{value: null, disabled: false}],
+        paisNacimiento: [{value: this.titularPA.idPais, disabled: false}],
         lugarNacimiento: [{value: null, disabled: false}],
-        telefonoCelular: [{value: null, disabled: false}],
-        telefonoFijo: [{value: null, disabled: false}],
-        correoElectronico: [{value: null, disabled: false}],
-        calle: [{value: null, disabled: false}],
-        numeroExterior: [{value: null, disabled: false}],
-        numeroInterior: [{value: null, disabled: false}],
-        cp: [{value: null, disabled: false}],
-        colonia: [{value: null, disabled: false}],
+        telefonoCelular: [{value: this.titularPA.telCelular, disabled: false}],
+        telefonoFijo: [{value: this.titularPA.telFijo, disabled: false}],
+        correoElectronico: [{value: this.titularPA.correo, disabled: false}],
+        calle: [{value: this.titularPA.calle, disabled: false}],
+        numeroExterior: [{value: this.titularPA.numExt, disabled: false}],
+        numeroInterior: [{value: this.titularPA.numInt, disabled: false}],
+        cp: [{value: this.titularPA.cp, disabled: false}],
+        colonia: [{value: this.titularPA.colonia, disabled: false}],
         municipio: [{value: null, disabled: false}],
         estado: [{value: null, disabled: false}],
         tipoPaquete: [{value: null, disabled: false}],
-        numeroPagos: [{value: null, disabled: false}],
+        numeroPagos: [{value: this.titularPA.numPagos, disabled: false}],
       }),
       sustituto: this.formBuilder.group({
         curp: [{value: null, disabled: false}],

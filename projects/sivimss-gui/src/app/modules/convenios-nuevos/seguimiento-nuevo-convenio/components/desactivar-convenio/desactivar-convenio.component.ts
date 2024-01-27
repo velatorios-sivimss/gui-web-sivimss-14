@@ -11,13 +11,6 @@ import {Documentos} from '../../models/documentos.interface';
 import {SeguimientoNuevoConvenio} from '../../models/seguimiento-nuevo-convenio.interface';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 
-export enum TipoAlerta {
-  Exito = 'success',
-  Info = 'info',
-  Precaucion = 'warning',
-  Error = 'error'
-}
-
 interface BeneficiarioResponse {
   idBeneficiario: number,
   curp: string,
