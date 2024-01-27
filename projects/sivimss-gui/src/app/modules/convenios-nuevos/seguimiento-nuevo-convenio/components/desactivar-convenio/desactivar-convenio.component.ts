@@ -168,7 +168,7 @@ export class DesactivarConvenioComponent implements OnInit {
       this.beneficiario1 = this.beneficiarios.find(beneficiario => beneficiario.idBeneficiario === idBeneficiario1)!;
     }
     if (idBeneficiario2 !== 0) {
-      this.beneficiario2 = this.beneficiarios.find(beneficiario => beneficiario.idBeneficiario === idBeneficiario1)!;
+      this.beneficiario2 = this.beneficiarios.find(beneficiario => beneficiario.idBeneficiario === idBeneficiario2)!;
     }
   }
 
