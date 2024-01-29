@@ -9,7 +9,7 @@ import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuest
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { RegistrarContratante } from './models/registro-contratante.interface';
+import { IContratanteRegistrado, IRegistrarContratante } from './models/registro-contratante.interface';
 import { PATRON_CURP } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import * as moment from 'moment';
@@ -32,7 +32,9 @@ export class RegistroComponent implements OnInit {
     { label: 'Opción 1', value: 1 },
     { label: 'Opción 2', value: 2 },
   ];
-
+  idUsuario?: number | null;
+  idContratante?: number | null;
+  idPersona?: number | null;
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   catalogoEstados: TipoDropdown[] = [];
@@ -259,7 +261,7 @@ export class RegistroComponent implements OnInit {
     }
   }
 
-  obtenerCP(): void {
+  obtenerCP(coloniaSeleccionada?: string | undefined): void {
     if (!this.domicilio.codigoPostal.value || this.domicilio.codigoPostal.invalid) {
       this.colonias = [];
       this.domicilio.estado.setValue(null);
@@ -277,6 +279,13 @@ export class RegistroComponent implements OnInit {
           this.domicilio.estado.setValue(respuesta[0].municipio.entidadFederativa.nombre);
           this.domicilio.municipio.setValue(respuesta[0].municipio.nombre);
           this.domicilio.colonia.markAsTouched();
+          if (coloniaSeleccionada) {
+            this.colonias.forEach((item: TipoDropdown) => {
+              if (item.label === coloniaSeleccionada) {
+                this.domicilio.colonia.setValue(item.value);
+              }
+            });
+          }
         } else {
           this.colonias = [];
           this.domicilio.estado.setValue(null);
@@ -292,22 +301,56 @@ export class RegistroComponent implements OnInit {
 
   validarCurp() {
     if (this.datosGenerales.curp.invalid) {
-      if (this.datosGenerales.curp.value !== '' &&
-        this.datosGenerales.curp.value !== '' &&
-        this.datosGenerales.curp.value !== null) {
-        this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no es válido.');
+      if (this.datosGenerales.curp.value !== '' && this.datosGenerales.curp.value !== null) {
+        this.ajustarForm();
+        this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
       }
     } else {
       this.registroService.validarCurpRfc({ rfc: null, curp: this.datosGenerales.curp.value }).subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
+        next: (respuesta: HttpRespuesta<IContratanteRegistrado>) => {
           this.datosGenerales.curp.setErrors({ 'incorrect': true });
           if (respuesta.mensaje === 'USUARIO REGISTRADO') {
-            this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP ya se encuentra registrado.');
-            this.datosGenerales.curp.patchValue(null);
-            
+            // Si idUsuario existe se trata de un usuario existente y se manda mensaje de CURP ya registrada
+            if (respuesta.datos.idUsuario) {
+              this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP ya se encuentra registrado.');
+              this.datosGenerales.curp.patchValue(null);
+              this.ajustarForm();
+            } else {
+              // Si idUsuario es null solo falta crear el usuario - Se debe pre-llenar formulario
+              this.datosGenerales.curp.setValue(respuesta.datos.curp);
+              this.datosGenerales.nss.setValue(respuesta.datos.nss);
+              this.datosGenerales.rfc.setValue(respuesta.datos.rfc);
+              this.datosGenerales.nombre.setValue(respuesta.datos.nomPersona);
+              this.datosGenerales.primerApellido.setValue(respuesta.datos.paterno);
+              this.datosGenerales.segundoApellido.setValue(respuesta.datos.materno);
+              this.datosGenerales.fechaNacimiento.setValue(respuesta.datos.fecNacimiento);
+              this.datosGenerales.sexo.setValue(respuesta.datos.idSexo);
+              this.datosGenerales.otro.setValue(respuesta.datos.otroSexo);
+              this.datosGenerales.nacionalidad.setValue(respuesta.datos.idPais === 119 ? 1 : 2);
+              this.datosGenerales.paisNacimiento.setValue(respuesta.datos.idPais);
+              this.datosGenerales.lugarNacimiento.setValue(respuesta.datos.idLugarNac);
+              this.datosGenerales.telefono.setValue(respuesta.datos.tel);
+              this.datosGenerales.correo.setValue(respuesta.datos.correo);
+              this.datosGenerales.correoConfirmacion.setValue(respuesta.datos.correo);
+
+              this.domicilio.calle.setValue(respuesta.datos.calle);
+              this.domicilio.numeroInterior.setValue(respuesta.datos.numInt);
+              this.domicilio.numeroExterior.setValue(respuesta.datos.numExt);
+              this.domicilio.codigoPostal.setValue(respuesta.datos.cp);
+              this.obtenerCP(respuesta.datos.colonia);
+              this.idUsuario = respuesta.datos.idUsuario;
+              this.idContratante = respuesta.datos.idContratante;
+              this.idPersona = respuesta.datos.idPersona;
+
+              this.form.disable();
+              this.datosGenerales.curp.enable();
+            }
+
           } else if (respuesta.mensaje === 'NO EXISTE CURP') {
+            this.ajustarForm();
             this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
           } else {
+            this.ajustarForm();
             this.datosGenerales.curp.setErrors(null);
           }
         },
@@ -381,8 +424,10 @@ export class RegistroComponent implements OnInit {
     });
   }
 
-  datosGuardar(): RegistrarContratante {
+  datosGuardar(): IRegistrarContratante {
+    debugger
     return {
+      idUsuario: this.idUsuario,
       nombre: this.datosGenerales.nombre.value,
       paterno: this.datosGenerales.primerApellido.value,
       materno: this.datosGenerales.segundoApellido.value,
@@ -390,7 +435,11 @@ export class RegistroComponent implements OnInit {
       curp: this.datosGenerales.curp.value,
       numSexo: this.datosGenerales.sexo.value,
       otroSexo: this.datosGenerales.otro.value,
-      fecNacimiento: this.datosGenerales.fechaNacimiento.value ? moment(this.datosGenerales.fechaNacimiento.value).format('DD-MM-YYYY') : null,
+      fecNacimiento: this.datosGenerales.fechaNacimiento.value ?
+        typeof this.datosGenerales.fechaNacimiento.value === 'object' ?
+          moment(this.datosGenerales.fechaNacimiento.value).format('DD-MM-YYYY') :
+          moment(this.datosGenerales.fechaNacimiento.value, 'DD/MM/YYYY').format('DD-MM-YYYY')
+        : null,
       idPais: this.datosGenerales.paisNacimiento.value,
       idLugarNac: this.datosGenerales.lugarNacimiento.value,
       tel: this.datosGenerales.telefono.value,
@@ -406,10 +455,22 @@ export class RegistroComponent implements OnInit {
         estado: this.domicilio.estado.value,
       },
       contratante: {
+        idPersona: this.idPersona,
+        idContratante: this.idContratante,
         matricula: null,
       },
     }
   }
+
+  ajustarForm() {
+    const curp = this.datosGenerales.curp.value;
+    this.form.reset();
+    this.form.enable();
+    this.datosGenerales.curp.setValue(curp);
+    this.domicilio.municipio.disable();
+    this.domicilio.estado.disable();
+  }
+
 
   get datosGenerales() {
     return (this.form.controls['datosGenerales'] as FormGroup).controls;
