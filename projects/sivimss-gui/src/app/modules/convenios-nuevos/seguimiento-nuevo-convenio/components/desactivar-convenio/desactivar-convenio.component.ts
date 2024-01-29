@@ -118,7 +118,6 @@ export class DesactivarConvenioComponent implements OnInit {
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
-  infoPersona: boolean = false;
   beneficiarios: BeneficiarioResponse[] = [];
   beneficiario1!: BeneficiarioResponse;
   beneficiario2!: BeneficiarioResponse;
@@ -127,6 +126,7 @@ export class DesactivarConvenioComponent implements OnInit {
   titularPA!: PreRegistroPA;
   tipoConvenio: string = '';
   promotor: boolean = false;
+  mismoSustituto: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,

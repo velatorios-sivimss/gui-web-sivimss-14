@@ -59,8 +59,7 @@
         <th pResizableColumn scope="col">RFC</th>
         <th pResizableColumn scope="col">Nombre afiliado</th>
         <th pResizableColumn scope="col">Tipo paquete</th>
-        <th pResizableColumn scope="col">Estatus</th>
-        <th scope="col"></th>
+        <th scope="col">Estatus</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-convenio>
@@ -71,16 +70,14 @@
         <td pResizableColumn> {{ convenio.NombreAfiliadoTitular }}</td>
         <td pResizableColumn> {{ convenio.tipoPaquete }}</td>
         <td>
-          <div class="contenedor-inputswitch">
-            <p-inputSwitch [(ngModel)]="!!convenio.indActivo"
-                           [routerLink]="['desactivar-convenio', convenio.idConvenioPlan, obtenerTipoConvenio(convenio.tipo)]"
-                           (onChange)="convenio.estatus = false"></p-inputSwitch>
-            <span class="activo" *ngIf="convenio.indActivo">Activo</span>
-            <span class="inactivo" *ngIf="!convenio.indActivo">Inactivo</span>
-          </div>
-        </td>
-        <td>
-          <div class="contenedor-celda-iconos">
+          <div class="contenedor-celda-iconos" [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'110px 40px'}">
+            <div class="contenedor-inputswitch">
+              <p-inputSwitch [(ngModel)]="!!convenio.indActivo"
+                             [routerLink]="['desactivar-convenio', convenio.idConvenioPlan, obtenerTipoConvenio(convenio.tipo)]"
+                             (onChange)="convenio.estatus = false"></p-inputSwitch>
+              <span class="activo" *ngIf="convenio.indActivo">Activo</span>
+              <span class="inactivo" *ngIf="!convenio.indActivo">Inactivo</span>
+            </div>
             <a (click)="abrirPanel($event,convenio)" *ngIf="!convenio.estatus else emptyDiv">
               <img
                 src="assets/images/imagen-icono-barras-horizontales.svg"
