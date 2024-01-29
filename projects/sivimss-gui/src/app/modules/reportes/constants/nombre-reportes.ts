@@ -20,7 +20,7 @@ export const NOMBRE_ENDPOINT:Map<number, any> = new Map(
     [6,	"/generar-reporte-comsiones"],
     [7,	"/reporte-serv-vel"],
     [8,	"/reporte-siniestros-pf"],
-    [9,	"/pago-anticipado-descargar-reporte-pa"]
+    [9,	"/reporte-concentrado-SFPA"]
   ]
 )
 

@@ -34,7 +34,7 @@ const routes: Routes = [
     }
   },
   {
-    path:'cancelar-pago/:id',
+    path:'cancelar-pago',
     component: CancelarServiciosFunerariosComponent,
   },
   {

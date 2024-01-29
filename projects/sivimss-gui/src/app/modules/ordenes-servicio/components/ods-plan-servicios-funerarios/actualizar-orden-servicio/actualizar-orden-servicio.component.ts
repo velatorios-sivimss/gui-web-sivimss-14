@@ -25,6 +25,8 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
   readonly DATOS_DEL_FINADO = 1;
   readonly CARACTERISTICAS_DEL_PRESUPUESTO = 2;
   readonly INFORMACION_DEL_SERVICIO = 3;
+  readonly DETALLE_ORDEN_SERVICIO = 4
+  detalle_orden_servicio = true;
 
   titulo: string = '';
 
@@ -167,7 +169,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
     let mostrarOtorgamiento = false;
     let salidaPaquete = [];
     let salidaPresupuesto = [];
-    if (datosPaquete != null && datosPaquete.caracteristicasPaqueteResponse != null && datosPaquete.caracteristicasDelPresupuesto != null) {
+    if (datosPaquete.caracteristicasPaqueteResponse != null && datosPaquete.caracteristicasDelPresupuesto != null) {
       let caracteristicasPaquete = datosPaquete.caracteristicasPaqueteResponse;
       observaciones = datosPaquete.caracteristicasDelPresupuesto.observaciones;
       notasServicio = datosPaquete.caracteristicasDelPresupuesto.notasServicio;
@@ -237,11 +239,13 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
       idPaquete = presupuesto.idPaquete;
       observaciones = presupuesto.observaciones;
       notasServicio = presupuesto.notasServicio;
+
       total = detallePresupuesto[0].importeMonto
       for (let element of detallePresupuesto) {
         if(element.proviene.includes('presupuesto')){
           total += Number(element.importeMonto * element.cantidad);
         }
+
         let utilizarArticulo = false;
         if (element.servicioDetalleTraslado == 'paquete') {
           utilizarArticulo = true;
@@ -312,10 +316,6 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
 
   datosInformacionServicio(datos: any): void {
     let validaPromotor = false;
-    let idPromotor = datos.informacionServicioVelacion.idPromotor ?? null;
-    if (idPromotor != null && Number(idPromotor) > 0) {
-      validaPromotor = true;
-    }
 
     let cp = datos.informacionServicioVelacion.cp;
     let codigoPostal = null;
@@ -327,7 +327,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
     let estado = null;
     let idDomicilio = null;
 
-    if (cp != null) {
+    if (cp) {
       codigoPostal = cp.codigoPostal;
       calle = cp.desCalle;
       interior = cp.numInterior;
@@ -339,22 +339,21 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
     }
 
     let datosEtapaInformacionServicio = {
-      fechaCortejo: datos.fechaCortejo ?? null,
-      fechaCremacion: datos.fechaCremacion ?? null,
-      fechaRecoger: datos.fechaRecoger ?? null,
-      horaRecoger: datos.horaRecoger ?? null,
-      horaCortejo: datos.horaCortejo ?? null,
-      horaCremacion: datos.horaCremacion ?? null,
-      idPanteon: datos.idPanteon ?? null,
-      idPromotor: datos.idPromotor ?? null,
-      idSala: datos.idSala ?? null,
-      fechaInstalacion:
-        datos.informacionServicioVelacion.fechaInstalacion ?? null,
-      fechaVelacion: datos.informacionServicioVelacion.fechaVelacion ?? null,
-      horaInstalacion:
-        datos.informacionServicioVelacion.horaInstalacion ?? null,
-      horaVelacion: datos.informacionServicioVelacion.horaVelacion ?? null,
-      idCapilla: datos.informacionServicioVelacion.idCapilla ?? null,
+      fechaCortejo: datos.fechaCortejo ? datos.fechaCortejo : null,
+      fechaCremacion: datos.fechaCremacion ? datos.fechaCremacion : null,
+      fechaRecoger: datos.fechaRecoger ? datos.fechaRecoger : null,
+      horaRecoger: datos.horaRecoger ? datos.horaRecoger : null,
+      horaCortejo: datos.horaCortejo ? datos.horaCortejo : null,
+      horaCremacion: datos.horaCremacion ? datos.horaCremacion : null,
+      idPanteon: datos.panteon ? datos.panteon : null,
+      panteon: datos.panteon ? datos.panteon : null,
+      idPromotor: datos.idPromotor ? datos.idPromotor : null,
+      idSala: datos.idSala ? datos.idSala : null,
+      fechaInstalacion: datos.informacionServicioVelacion.fechaInstalacion ? datos.informacionServicioVelacion.fechaInstalacion : null,
+      fechaVelacion: datos.informacionServicioVelacion.fechaVelacion ? datos.informacionServicioVelacion.fechaVelacion : null,
+      horaInstalacion: datos.informacionServicioVelacion.horaInstalacion ? datos.informacionServicioVelacion.horaInstalacion : null,
+      horaVelacion: datos.informacionServicioVelacion.horaVelacion ? datos.informacionServicioVelacion.horaVelacion : null,
+      idCapilla: datos.informacionServicioVelacion.idCapilla ? datos.informacionServicioVelacion.idCapilla : null,
       cp: codigoPostal,
       calle: calle,
       interior: interior,
@@ -371,15 +370,17 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
     );
   }
 
-  obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {
+  obtenerIdEtapaSeleccionada(datos: any) {
     //Con esta etapa que se recibe ya se puede modificar su estado.
     //Al modificar el estado de la etapa su estilo se actualiza.
     // this.etapas.forEach((etapa: Etapa) => etapa.estado = EtapaEstado.Inactivo);
     // etapaSeleccionada.estado = EtapaEstado.Activo;
-    this.idEtapaSeleccionada = idEtapaSeleccionada;
+    this.detalle_orden_servicio = datos.detalle_orden_servicio;
+    this.idEtapaSeleccionada = datos.idEtapaSeleccionada;
   }
 
   ngOnDestroy(): void {
+    localStorage.removeItem('drop_down')
     const datosEtapaFinado = {
       datosFinado: {
         tipoOrden: null,

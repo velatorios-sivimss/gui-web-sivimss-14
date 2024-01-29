@@ -37,6 +37,7 @@ import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 import {DetallePagoService} from "./services/detalle-pago.service";
 import { ModalModificarPagosComponent } from './components/modal-modificar-pagos/modal-modificar-pagos.component';
 import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
+import { ContratarPSFPAService } from "../../pages/privado/pages/mapa-contratar-plan-servicios-funerarios-pago-anticipado/services/contratar-psfpa.service";
 
 @NgModule({
   declarations:[
@@ -77,7 +78,8 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
   providers:[
     ServiciosFunerariosService,
     ServiciosFunerariosConsultaService,
-    DetallePagoService
+    DetallePagoService,
+    ContratarPSFPAService,
   ]
 })
 

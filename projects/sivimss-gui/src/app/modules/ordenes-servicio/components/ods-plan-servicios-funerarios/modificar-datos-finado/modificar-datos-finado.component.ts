@@ -4,7 +4,7 @@ import {
   OnInit,
   Output,
   AfterContentChecked,
-  ChangeDetectorRef,
+  ChangeDetectorRef, ViewChild,
 } from '@angular/core';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -48,6 +48,9 @@ import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.int
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
+import {ModalConvenioSfpaComponent} from "../modal-convenio-sfpa/modal-convenio-sfpa.component";
+import {Contratante} from "../../../models/contrato-sfpa.interface";
 
 @Component({
   selector: 'app-modificar-datos-finado-sf',
@@ -57,7 +60,13 @@ import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 export class ModificarDatosFinadoSFComponent
   implements OnInit, AfterContentChecked {
   @Output()
-  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
+  seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
+
+  @ViewChild('clinicaSeleccionada') clinicaSeleccionada: any;
+  @ViewChild('unidadSeleccionada') unidadSeleccionada: any;
+  @ViewChild('pensionSeleccionada') pensionSeleccionada: any;
+  @ViewChild('lugarNacimientoSelect') lugarNacimientoSelect: any;
+  @ViewChild('paisNacimientoSelect') paisNacimientoSelect: any;
   readonly POSICION_PAIS = 0;
   readonly POSICION_ESTADO = 1;
   readonly POSICION_UNIDADES_MEDICAS = 3;
@@ -159,7 +168,6 @@ export class ModificarDatosFinadoSFComponent
     this.unidadesMedicas = respuesta[this.POSICION_UNIDADES_MEDICAS];
     this.tipoPension = respuesta[this.POSICION_PENSION];
     this.folioInvalido = false;
-    // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
     else this.ocultarFolioEstatus = false;
@@ -172,46 +180,12 @@ export class ModificarDatosFinadoSFComponent
       .subscribe((datosEtapaFinado) => this.inicializarForm(datosEtapaFinado));
     this.desabilitarTodo();
     this.inicializarCalcularEdad();
-
   }
-
-
-  // consultarNSS(): void {
-  //   this.loaderService.activar();
-  //   if (!this.datosFinado.nss.value) {
-  //     return;
-  //   }
-  //   this.gestionarOrdenServicioService
-  //     .consultarNSS(this.datosFinado.nss.value)
-  //     .pipe(finalize(() => this.loaderService.desactivar()))
-  //     .subscribe(
-  //       (respuesta: HttpRespuesta<any>) => {
-  //         this.loaderService.desactivar();
-  //         if (respuesta) {
-  //
-  //           this.datosFinado.curp.setValue(respuesta.datos.curp);
-  //           this.datosFinado.nombre.setValue(respuesta.datos?.nombre);
-  //           this.datosFinado.primerApellido.setValue(respuesta.datos.primerApellido);
-  //           this.datosFinado.segundoApellido.setValue(respuesta.datos.segundoApellido);
-  //           this.datosFinado.sexo.setValue(respuesta.datos.sexo.idSexo == 1 ? 2 : 1 );
-  //
-  //           //TODO verificar más escenarios, actualmente la nacionalidad lo regresa como null
-  //           this.datosFinado.nacionalidad.setValue(1);
-  //
-  //         }
-  //         this.direccion.colonia.patchValue(null);
-  //         this.direccion.municipio.patchValue(null);
-  //         this.direccion.estado.patchValue(null);
-  //       },
-  //       (error: HttpErrorResponse) => {
-  //         console.log(error);
-  //       }
-  //     );
-  // }
 
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    this.idContratoPrevision = this.altaODS.finado.idContratoPrevision
   }
 
   ngAfterContentChecked(): void {
@@ -219,6 +193,8 @@ export class ModificarDatosFinadoSFComponent
   }
 
   inicializarForm(datosEtapaFinado: any): void {
+    if(datosEtapaFinado.datosFinado.folioConvenioPa)datosEtapaFinado.datosFinado.noContrato = datosEtapaFinado.datosFinado.folioConvenioPa
+    this.idContratoPrevision = datosEtapaFinado.datosFinado.idContratoPrevision;
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio, mes, dia] = fechaActual.split('-')
     let nacionalidad = 1;
@@ -240,24 +216,13 @@ export class ModificarDatosFinadoSFComponent
     let extremidad: boolean;
     let horaDeceso: any;
     let fechaDeceso: any;
-    if (typeof datosEtapaFinado.datosFinado.esObito == "string") {
-      datosEtapaFinado.datosFinado.esObito.includes("true") ? esObito = true : esObito = false;
-    } else {
-      esObito = datosEtapaFinado.datosFinado.esObito;
-    }
 
-    if (typeof datosEtapaFinado.datosFinado.esParaExtremidad == "string") {
-      datosEtapaFinado.datosFinado.esParaExtremidad.includes("true") ? extremidad = true : extremidad = false;
-    } else {
-      extremidad = datosEtapaFinado.datosFinado.esParaExtremidad;
-    }
     if (typeof datosEtapaFinado.datosFinado.horaDeceso == "string") {
       const [horas, minutos] = datosEtapaFinado.datosFinado.horaDeceso.split(':')
       datosEtapaFinado.datosFinado.horaDeceso = new Date(+anio, +mes, +dia, +horas, +minutos)
     }
     if (typeof datosEtapaFinado.datosFinado.fechaDefuncion == "string") {
       const [dia, mes, anio] = datosEtapaFinado.datosFinado.fechaDefuncion.split('/');
-      // fechaDeceso = new Date(anio + '/' + mes + '/' + dia);
       datosEtapaFinado.datosFinado.fechaDefuncion = new Date(anio + '/' + mes + '/' + dia);
     }
 
@@ -280,7 +245,7 @@ export class ModificarDatosFinadoSFComponent
         tipoOrden: [{value: datosEtapaFinado.datosFinado.tipoOrden, disabled: false},
           [Validators.required]],
         noContrato: [{value: datosEtapaFinado.datosFinado.folioConvenioPa ? datosEtapaFinado.datosFinado.folioConvenioPa : datosEtapaFinado.datosFinado.noContrato , disabled: false},
-          [Validators.required]],
+           [Validators.required]],
         velatorioPrevision: [{value: datosEtapaFinado.datosFinado.velatorioPrevision, disabled: false},
           [Validators.required]],
         matricula: [{value: datosEtapaFinado.datosFinado.matricula, disabled: false},
@@ -297,7 +262,7 @@ export class ModificarDatosFinadoSFComponent
           [Validators.required]],
         fechaNacimiento: [{value: fechaNacimiento, disabled: false},
           [Validators.required]],
-        edad: [{value: edad ? edad : null, disabled: true},
+        edad: [{value: edad, disabled: true},
           [Validators.required]],
         sexo: [{value: datosEtapaFinado.datosFinado.sexo, disabled: false},
           [Validators.required]],
@@ -316,7 +281,7 @@ export class ModificarDatosFinadoSFComponent
         horaDeceso: [{value: datosEtapaFinado.datosFinado.horaDeceso, disabled: false},
           [Validators.required]],
         clinicaAdscripcion: [{value: datosEtapaFinado.datosFinado.clinicaAdscripcion, disabled: false}],
-        unidadProcedencia: [{value: datosEtapaFinado.datosFinado.unidadProcedencia, disabled: false}],
+        unidadProcedencia: [{value: +datosEtapaFinado.datosFinado.unidadProcedencia, disabled: false}],
         procedenciaFinado: [{value: datosEtapaFinado.datosFinado.procedenciaFinado, disabled: false},
           [Validators.required],],
         tipoPension: [{value: datosEtapaFinado.datosFinado.tipoPension, disabled: false}],
@@ -337,6 +302,7 @@ export class ModificarDatosFinadoSFComponent
           [Validators.required]],
       }),
     });
+    this.colonias = [{label:datosEtapaFinado.direccion.colonia,value:datosEtapaFinado.direccion.colonia}]
     setTimeout(() => {
       if (datosEtapaFinado.datosFinado.procedenciaFinado) {
         this.changeProcedenciaFinado();
@@ -367,31 +333,6 @@ export class ModificarDatosFinadoSFComponent
     this.datosFinado.unidadProcedencia.updateValueAndValidity();
   }
 
-  // convertirAMayusculas(): void {
-  //   this.datosFinado.curp.setValue(this.datosFinado.curp.value.toUpperCase());
-  // }
-
-  // consultarMatriculaSiap(): void {
-  //   this.loaderService.activar();
-  //
-  //   this.gestionarOrdenServicioService
-  //     .consultarMatriculaSiap(this.datosFinado.matricula.value)
-  //     .pipe(finalize(() => this.loaderService.desactivar()))
-  //     .subscribe(
-  //       (respuesta: HttpRespuesta<any>) => {
-  //         if (!respuesta.datos) {
-  //           this.alertaService.mostrar(
-  //             TipoAlerta.Precaucion,
-  //             this.mensajesSistemaService.obtenerMensajeSistemaPorId(70)
-  //           );
-  //           this.datosFinado.matricula.setValue(null);
-  //         }
-  //       },
-  //       (error: HttpErrorResponse) => {
-  //         console.log(error);
-  //       }
-  //     );
-  // }
 
   consultarFolioPf(event: any): void {
     if (!this.datosFinado.noContrato.value) return;
@@ -402,39 +343,25 @@ export class ModificarDatosFinadoSFComponent
       next: (respuesta: HttpRespuesta<any>) => {
         this.folioInvalido = false
         if (respuesta.datos != null) {
-          const listaColonias: any = [{nombre: respuesta.datos.contratante.cp.desColonia}]
-          const [anio, mes, dia] = respuesta.datos.contratante.fechaNac.split('-');
-          const fecha = new Date(anio + '/' + mes + '/' + dia);
-          this.colonias = mapearArregloTipoDropdown(listaColonias, 'nombre', 'nombre')
-          this.idContratoPrevision = respuesta.datos.idConvenioPa
-          this.idPersona = respuesta.datos.contratante.idPersona;
-          this.idDomicilio = respuesta.datos.contratante.cp.idDomicilio
-          this.idVelatorioContratoPrevision = respuesta.datos.idVelatorio;
 
-          this.direccion.calle.setValue(respuesta.datos.contratante.cp.desCalle);
-          this.direccion.noExterior.setValue(respuesta.datos.contratante.cp.numExterior);
-          this.direccion.noInterior.setValue(respuesta.datos.contratante.cp.numInterior);
-          this.direccion.cp.setValue(respuesta.datos.contratante.cp.codigoPostal);
-          this.direccion.colonia.setValue(respuesta.datos.contratante.cp.desColonia);
-          this.direccion.municipio.setValue(respuesta.datos.contratante.cp.desMunicipio);
-          this.direccion.estado.setValue(respuesta.datos.contratante.cp.desEstado);
+          const ref = this.dialogService.open(ModalConvenioSfpaComponent, {
+            header: 'Número de contrato',
+            style: {maxWidth: '876px', width: '100%'},
+            data: {contratantes: respuesta.datos},
+          });
 
-          this.datosFinado.curp.setValue(respuesta.datos.contratante.curp);
-          this.datosFinado.nss.setValue(respuesta.datos.contratante.nss);
-          this.datosFinado.nombre.setValue(respuesta.datos.contratante.nomPersona);
-          this.datosFinado.primerApellido.setValue(respuesta.datos.contratante.primerApellido);
-          this.datosFinado.segundoApellido.setValue(respuesta.datos.contratante.segundoApellido);
-          this.datosFinado.sexo.setValue(+respuesta.datos.contratante.sexo);
-          this.datosFinado.otroTipoSexo.setValue(respuesta.datos.contratante.otroSexo);
-          this.datosFinado.fechaNacimiento.setValue(fecha);
-          this.datosFinado.nacionalidad.setValue(+respuesta.datos.contratante.idEstado ? 1 : 2);
-          this.datosFinado.lugarNacimiento.setValue(+respuesta.datos.contratante.idEstado);
-          this.datosFinado.paisNacimiento.setValue(+respuesta.datos.contratante.idPais);
-          this.datosFinado.velatorioPrevision.setValue(respuesta.datos.nombreVelatorio);
-          this.datosFinado.matricula.setValue(respuesta.datos.contratante.matricula);
-          this.datosFinado.edad.setValue(moment().diff(moment(this.datosFinado.fechaNacimiento.value), 'years'));
-          this.cambiarTipoSexo();
-          this.cambiarNacionalidad();
+          ref.onClose.subscribe((idContrato: number) => {
+            if(idContrato){
+              this.llenarDatosFinado(
+                respuesta.datos.contratante.filter((contratante:Contratante) => {
+                  return contratante.idPersona == idContrato
+                })
+              );
+              this.idContratoPrevision = respuesta.datos.idConvenioPa
+              this.idVelatorioContratoPrevision = respuesta.datos.idVelatorio;
+              this.datosFinado.velatorioPrevision.setValue(respuesta.datos.nombreVelatorio);
+            }
+          });
           return
         }
         this.folioInvalido = true
@@ -449,6 +376,38 @@ export class ModificarDatosFinadoSFComponent
         ));
       }
     })
+  }
+
+  llenarDatosFinado(contratanteSeleccionado:Contratante[]): void {
+    const contratante = contratanteSeleccionado[0]
+    const [anio, mes, dia] = contratante.fechaNac.split('-');
+    const fecha = new Date(anio + '/' + mes + '/' + dia);
+    this.colonias = [{label: contratante.cp.desColonia, value: contratante.cp.desColonia}];
+    this.idPersona = contratante.idPersona;
+    this.idDomicilio = contratante.cp.idDomicilio;
+    this.direccion.calle.setValue(contratante.cp.desCalle);
+    this.direccion.noExterior.setValue(contratante.cp.numExterior);
+    this.direccion.noInterior.setValue(contratante.cp.numInterior);
+    this.direccion.cp.setValue(contratante.cp.codigoPostal);
+    this.direccion.colonia.setValue(contratante.cp.desColonia);
+    this.direccion.municipio.setValue(contratante.cp.desMunicipio);
+    this.direccion.estado.setValue(contratante.cp.desEstado);
+
+    this.datosFinado.curp.setValue(contratante.curp);
+    this.datosFinado.nss.setValue(contratante.nss);
+    this.datosFinado.nombre.setValue(contratante.nomPersona);
+    this.datosFinado.primerApellido.setValue(contratante.primerApellido);
+    this.datosFinado.segundoApellido.setValue(contratante.segundoApellido);
+    this.datosFinado.sexo.setValue(+contratante.sexo);
+    this.datosFinado.otroTipoSexo.setValue(contratante.otroSexo);
+    this.datosFinado.fechaNacimiento.setValue(fecha);
+    this.datosFinado.nacionalidad.setValue(+contratante.idEstado ? 1 : 2);
+    this.datosFinado.lugarNacimiento.setValue(+contratante.idEstado);
+    this.datosFinado.paisNacimiento.setValue(+contratante.idPais);
+    this.datosFinado.matricula.setValue(contratante.matricula);
+    this.datosFinado.edad.setValue(moment().diff(moment(this.datosFinado.fechaNacimiento.value), 'years'));
+    this.cambiarTipoSexo();
+    this.cambiarNacionalidad();
   }
 
   cambiarTipoSexo(): void {
@@ -495,7 +454,6 @@ export class ModificarDatosFinadoSFComponent
     const formDireccion = this.form.controls['direccion'] as FormGroup;
 
     Object.keys(this.datosFinado).forEach((key) => {
-      const form = this.form.controls['datosFinado'] as FormGroup;
       if (formFinadoExentos.includes(key)) {
         return
       } else {
@@ -632,7 +590,7 @@ export class ModificarDatosFinadoSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(2);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:2, detalle_orden_servicio: true});
     this.datosAlta();
   }
 
@@ -717,6 +675,7 @@ export class ModificarDatosFinadoSFComponent
 
 
     this.altaODS.finado = this.finado;
+    this.llenarDescripcionDropDown();
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -782,7 +741,7 @@ export class ModificarDatosFinadoSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(0);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:0, detalle_orden_servicio: true});
     this.datosAlta();
   }
 
@@ -790,9 +749,22 @@ export class ModificarDatosFinadoSFComponent
     return this.form.invalid || this.folioInvalido
   }
 
+
   inicializarCalcularEdad() {
     if (this.datosFinado.fechaNacimiento.value != null)
       this.datosFinado.edad.setValue(moment().diff(moment(this.datosFinado.fechaNacimiento.value), 'years'));
+  }
+
+  llenarDescripcionDropDown(): void {
+    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    obj.finado.clinicaAdscripcion = this.clinicaSeleccionada?.selectedOption?.label ?? null;
+    obj.finado.tipoPension = this.pensionSeleccionada?.selectedOption?.label ?? null;
+    obj.finado.unidadProcedencia = this.unidadSeleccionada?.selectedOption?.label ?? null;
+    obj.finado.lugarNacimiento = this.lugarNacimientoSelect?.selectedOption?.label ?? null;
+    obj.finado.paisNacimiento = this.paisNacimientoSelect?.selectedOption?.label ?? null;
+    obj.finado.numeroContrato = this.datosFinado.noContrato.value
+    obj.finado.matricula = this.datosFinado.matricula.value
+    localStorage.setItem("drop_down",JSON.stringify(obj));
   }
 
 }

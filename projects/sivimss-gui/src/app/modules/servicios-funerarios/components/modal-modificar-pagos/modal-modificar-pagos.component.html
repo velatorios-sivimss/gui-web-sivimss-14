@@ -7,60 +7,65 @@
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Folio Plan SFPA</span>
-      <span class="texto-base">{{this.config.data.detallePago.numFolio}}</span>
+      <span class="texto-base">{{this.config.data.detallePago.folio}}</span>
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Tipo de pago</span>
-
       <span class="texto-base">Pago de Nuevos convenios de previsión funeraria PA</span>
     </div>
   </div>
   <div class="row">
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Número de pago</span>
-      <span class="texto-base">{{config.data.detalleRegistro.pagos}}</span>
+      <span class="texto-base">{{this.config.data.detallePago.noPagos}} </span>
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Total a cubrir</span>
-      <span class="texto-base">{{this.config.data.detallePago.restante | currency:"USD":"symbol"}}</span>
+      <span class="texto-base" *ngIf="config.data.detallePago.importeAcumulado; else sinRestante">
+        {{config.data.detallePago.importeAcumulado | currency:"USD":"symbol"}}
+      </span>
+      <ng-template #sinRestante>
+        <span class="font-bold">
+          {{config.data.detallePago.importeMensual | currency:"USD":"symbol"}}
+        </span>
+      </ng-template>
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Monto mensual a cubrir</span>
-      <span class="texto-base">{{mensalidades | currency:"USD":"symbol"}}</span>
+      <span class="texto-base">{{config.data.detallePago.importeMensual | currency:"USD":"symbol"}}</span>
     </div>
   </div>
 </div>
-<form [formGroup]="modificarPagoForm">
+<form [formGroup]="generarPagoForm">
   <div class="row mb-3">
     <div class="col-md-6">
-      <label class="control-label" for="metodoPago">Método de pago</label>
-      <p-dropdown #dd id="metodoPago" class="form-control" [filter]="true" filterBy="label" appendTo="body"
-                  [options]="metodoPago" placeholder="Selecciona método de pago" (onChange)="cambioMetodoPago(dd)"
-                  formControlName="metodoPago">
+      <label class="control-label" for="idMetodoPago">Método de pago</label>
+      <p-dropdown #dd id="idMetodoPago" class="form-control" [filter]="true" filterBy="label" appendTo="body"
+                  [options]="idMetodoPago" placeholder="Selecciona método de pago" (onChange)="cambioMetodoPago(dd)"
+                  formControlName="idMetodoPago">
       </p-dropdown>
 
     </div>
+
+  </div>
+
+  <div class="row mb-3">
     <div class="col-md-6" *ngIf="validacion.nombreBanco">
       <label class="control-label" for="nombreBanco">Nombre del banco:</label>
       <input id="nombreBanco" class="form-control" placeholder="Ingresa el nombre del banco" maxlength="20"
              formControlName="nombreBanco">
     </div>
-  </div>
-  <div class="row mb-3">
     <div class="col-md-6" *ngIf="validacion.numeroAutorizacion">
       <label class="control-label" for="numeroAutorizacion">Número de autorización:</label>
       <input id="numeroAutorizacion" class="form-control" alphanumericOnly maxlength="10"
              placeholder="Ingresa el número de autorización" formControlName="numeroAutorizacion">
-
     </div>
     <div class="col-md-6" *ngIf="validacion.importe">
       <label class="control-label" for="importe">Importe:</label>
-      <p-inputNumber id="importe" class="form-control" formControlName="importe" mode="decimal"
-                     [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="Ingresa el importe"
-                     [maxlength]="10" currency="USD" locale="en-US"></p-inputNumber>
+      <p-inputNumber id="importe" class="form-control" formControlName="importe" mode="decimal" [minFractionDigits]="2"
+                     [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD" [max]="this.config.data.detallePago.importeAcumulado" [min]="1"
+                     locale="en-US"></p-inputNumber>
     </div>
-  </div>
-  <div class="row mb-3">
     <div class="col-md-6" *ngIf="validacion.folioAutorizacion">
       <label class="control-label" for="folioAutorizacion">Folio de autorización:</label>
       <input id="folioAutorizacion" class="form-control" alphanumericOnly maxlength="20"
@@ -71,29 +76,47 @@
       <p-calendar styleClass="form-control" appendTo="body" id="fecha" formControlName="fecha" [showIcon]="true"
                   dateFormat="dd/mm/yy" placeholder="Fecha" [maxDate]="fechaActual"></p-calendar>
     </div>
+    <div class="col-md-6" *ngIf="validacion.valeParitaria">
+      <label class="control-label" for="valeParitaria">Folio vale paritaria:</label>
+      <input id="valeParitaria" class="form-control" alphanumericOnly maxlength="20"
+             placeholder="Ingresa el folio de autorización" formControlName="valeParitaria">
+    </div>
+    <div class="col-md-6" *ngIf="validacion.fechaVale">
+      <label class="control-label" for="fecha">Fecha:</label>
+      <p-calendar styleClass="form-control" appendTo="body" id="fechaVale" formControlName="fechaVale" [showIcon]="true"
+                  dateFormat="dd/mm/yy" placeholder="Fecha" [maxDate]="fechaActual"></p-calendar>
+    </div>
+    <div class="col-md-6" *ngIf="validacion.importeValeParitaria">
+      <label class="control-label" for="importeValeParitaria">Importe autorizado:</label>
+      <p-inputNumber id="importeValeParitaria" class="form-control" formControlName="importeValeParitaria" mode="decimal" [minFractionDigits]="2"
+                     [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD" [max]="this.config.data.detallePago.importeAcumulado" [min]="0"
+                     locale="en-US"></p-inputNumber>
+    </div>
   </div>
+
 </form>
+
 <div class="row mt-2">
   <div class="col-md-12 flex justify-content-end">
     <button type="button" class="btn btn-gold btn-md ml-3" (click)="cerrarModal()">Cancelar</button>
-    <button type="button" class="btn btn-primary btn-md ml-3" (click)="modificarPago()">Registrar pago</button>
+    <button type="button" class="btn btn-primary btn-md ml-3" (click)="confirmacionGuardar = true">Registrar
+      pago</button>
   </div>
 </div>
 
-<p-dialog [(visible)]="confirmacionGuardar" [modal]="true"
-          [style]="{maxWidth:'544px',width: '100%'}"
+<p-dialog [(visible)]="confirmacionGuardar" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
           [draggable]="false" [resizable]="false">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-center">
-        ¿Estás seguro de registrar el pago?
+        ¿Estás seguro de actulizar el pago?
       </span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
     <div class="flex justify-content-center">
       <button type="button" class="btn btn-gold btn-md ml-3" (click)="confirmacionGuardar = false">Cancelar</button>
-      <button type="button" class="btn btn-primary btn-md" (click)="modificarPago()">Aceptar</button>
+      <button type="button" class="btn btn-primary btn-md" (click)="guardarPago()">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>

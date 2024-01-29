@@ -2,663 +2,604 @@
   <app-titulo-principal titulo="CONTRATAR CONVENIO DE PREVISION FUNERARIA">
     <app-btn-regresar routerLink="../"></app-btn-regresar>
   </app-titulo-principal>
-  <form [formGroup]="form" #formPrincipal>
-    <div class="row mb-5">
-      <div class="col-md-6">
-        <label class="control-labe block">Tipo de contratación:</label>
-        <div class="flex mt-4">
-          <div class="flex align-items-center mx-2">
-            <p-radioButton [inputId]="'persona'" name="tipoContratacion" [value]="'persona'"
-              formControlName="tipoContratacion"></p-radioButton>
-            <label class="control-label m-0 mx-3" [for]="'persona'">Persona</label>
-          </div>
-          <div class="flex align-items-center mx-2">
-            <p-radioButton [inputId]="'grupo'" name="tipoContratacion" [value]="'grupo'"
-              formControlName="tipoContratacion"></p-radioButton>
-            <label class="control-label m-0 mx-3" [for]="'grupo'">Grupo</label>
-          </div>
+  <div class="row mb-5">
+    <div class="col-md-6">
+      <label class="control-labe block">Tipo de contratación:</label>
+      <div class="flex mt-4">
+        <div class="flex align-items-center mx-2">
+          <p-radioButton [inputId]="'persona'" name="tipoContratacion" [value]="'persona'"
+            (click)="clickContratacion('persona')" [(ngModel)]="tipoContratacion"
+            [disabled]="deshabilitarTipo" *ngIf="banderaCheckPersona"></p-radioButton>
+          <label class="control-label m-0 mx-3" [for]="'persona'" *ngIf="banderaCheckPersona">Persona</label>
+        </div>
+        <div class="flex align-items-center mx-2">
+          <p-radioButton [inputId]="'grupo'" name="tipoContratacion" [value]="'grupo'"
+            (click)="clickContratacion('grupo')" [(ngModel)]="tipoContratacion"
+            [disabled]="deshabilitarTipo" *ngIf="banderaCheckGrupo"></p-radioButton>
+          <label class="control-label m-0 mx-3" [for]="'grupo'" *ngIf="banderaCheckGrupo">Grupo</label>
         </div>
       </div>
     </div>
-
-    <div class="border-panel mb-5" *ngIf="f.tipoContratacion.value === TIPO_CONTRATACION_PERSONA">
-      <ng-container formGroupName="datosPersonales">
-        <h2 class="subtitulo-base">Datos personales</h2>
-        <div class="row mb-3">
-          <div class="col-md-3">
-            <label class="control-label" for="matricula">Matrícula:</label>
-            <input id="matricula" type="text" class="form-control" formControlName="matricula"
-              placeholder="Ingresa matrícula">
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="rfc">R.F.C.:</label>
-            <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa R.F.C.">
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="curp">CURP <span class="req">*</span>:</label>
-            <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa CURP">
-            <span class="campo-obligatorio"
-              *ngIf="datosPersonales.curp?.errors?.required && (datosPersonales.curp?.dirty || datosPersonales.curp?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="nombre">Nombre <span class="req">*</span>:</label>
-            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
-            <span class="campo-obligatorio"
-              *ngIf="datosPersonales.nombre?.errors?.required && (datosPersonales.nombre?.dirty || datosPersonales.nombre?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-3">
-            <label class="control-label" for="primerApellido">Primer apellido <span class="req">*</span>:</label>
-            <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
-              placeholder="Ingresa primer apellido">
-            <span class="campo-obligatorio"
-              *ngIf="datosPersonales.primerApellido?.errors?.required && (datosPersonales.primerApellido?.dirty || datosPersonales.primerApellido?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="segundoApellido">Segundo apellido <span class="req">*</span>:</label>
-            <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
-              placeholder="Ingresa segundo apellido">
-            <span class="campo-obligatorio"
-              *ngIf="datosPersonales.segundoApellido?.errors?.required && (datosPersonales.segundoApellido?.dirty || datosPersonales.segundoApellido?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
-            <p-dropdown id="sexo" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
-              [options]="dummyDropdown" [filter]="true" filterBy="label"></p-dropdown>
-            <span class="campo-obligatorio"
-              *ngIf="datosPersonales.sexo?.errors?.required && (datosPersonales.sexo?.dirty || datosPersonales.sexo?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="otro">Otro:</label>
-            <input id="otro" type="text" class="form-control" formControlName="otro" placeholder="Ingresa otro">
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-3">
-            <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
-            <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
-              placeholder="Selecciona lugar nacimiento" [options]="dummyDropdown" [filter]="true" filterBy="label">
-            </p-dropdown>
-            <span class="campo-obligatorio"
-              *ngIf="datosPersonales.lugarNacimiento?.errors?.required && (datosPersonales.lugarNacimiento?.dirty || datosPersonales.lugarNacimiento?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="fechaNacimiento">Fecha de nacimiento<span class="req">*</span>:</label>
-            <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento"
-              [showIcon]="true" dateFormat="dd/mm/yy" placeholder="Ingresa fecha de nacimiento" [maxDate]="fechaActual">
-            </p-calendar>
-            <span class="campo-obligatorio"
-              *ngIf="datosPersonales.fechaNacimiento?.errors?.required && (datosPersonales.fechaNacimiento?.dirty || datosPersonales.fechaNacimiento?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container formGroupName="domicilio">
-        <h2 class="subtitulo-base">Domicilio</h2>
-        <div class="row mb-3">
-          <div class="col-md-3">
-            <label class="control-label" for="codigoPostal">C.P. <span class="req">*</span>:</label>
-            <input id="codigoPostal" type="text" class="form-control" formControlName="codigoPostal"
-              placeholder="Ingresa código postal">
-            <span class="campo-obligatorio"
-              *ngIf="domicilio.codigoPostal?.errors?.required && (domicilio.codigoPostal?.dirty || domicilio.codigoPostal?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="asentamientoColonia">Asentamiento / Colonia <span
-                class="req">*</span>:</label>
-            <input id="asentamientoColonia" type="text" class="form-control" formControlName="asentamientoColonia"
-              placeholder="Ingresa asentamiento colonia">
-            <span class="campo-obligatorio"
-              *ngIf="domicilio.asentamientoColonia?.errors?.required && (domicilio.asentamientoColonia?.dirty || domicilio.asentamientoColonia?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="municipio">Municipio <span class="req">*</span>:</label>
-            <input id="municipio" type="text" class="form-control" formControlName="municipio"
-              placeholder="Ingresa municipio">
-            <span class="campo-obligatorio"
-              *ngIf="domicilio.municipio?.errors?.required && (domicilio.municipio?.dirty || domicilio.municipio?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="estado">Estado <span class="req">*</span>:</label>
-            <input id="estado" type="text" class="form-control" formControlName="estado" placeholder="Ingresa estado">
-            <span class="campo-obligatorio"
-              *ngIf="domicilio.estado?.errors?.required && (domicilio.estado?.dirty || domicilio.estado?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-3">
-            <label class="control-label" for="pais">País <span class="req">*</span>:</label>
-            <input id="pais" type="text" class="form-control" formControlName="pais" placeholder="Ingresa país">
-            <span class="campo-obligatorio"
-              *ngIf="domicilio.pais?.errors?.required && (domicilio.pais?.dirty || domicilio.pais?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="calle">Calle <span class="req">*</span>:</label>
-            <input id="calle" type="text" class="form-control" formControlName="calle" placeholder="Ingresa calle">
-            <span class="campo-obligatorio"
-              *ngIf="domicilio.calle?.errors?.required && (domicilio.calle?.dirty || domicilio.calle?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="numeroExterior">Número exterior <span class="req">*</span>:</label>
-            <input id="numeroExterior" type="text" class="form-control" formControlName="numeroExterior"
-              placeholder="Ingresa número exterior">
-            <span class="campo-obligatorio"
-              *ngIf="domicilio.numeroExterior?.errors?.required && (domicilio.numeroExterior?.dirty || domicilio.numeroExterior?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="numeroInterior">Número interior:</label>
-            <input id="numeroInterior" type="text" class="form-control" formControlName="numeroInterior"
-              placeholder="Ingresa número interior">
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-3">
-            <label class="control-label" for="correoElectronico">Correo electrónico <span class="req">*</span>:</label>
-            <input id="correoElectronico" type="text" class="form-control" formControlName="correoElectronico"
-              placeholder="Ingresa correo electrónico">
-            <span class="campo-obligatorio"
-              *ngIf="domicilio.correoElectronico?.errors?.required && (domicilio.correoElectronico?.dirty || domicilio.correoElectronico?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="telefono">Teléfono <span class="req">*</span>:</label>
-            <input id="telefono" type="text" class="form-control" formControlName="telefono"
-              placeholder="Ingresa teléfono">
-            <span class="campo-obligatorio"
-              *ngIf="domicilio.telefono?.errors?.required && (domicilio.telefono?.dirty || domicilio.telefono?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="enfermedadPrexistente">Enfermedad prexistente:</label>
-            <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente"
-              placeholder="Selecciona enfermedad prexistente" [options]="dummyDropdown" [filter]="true"
-              filterBy="label">
-            </p-dropdown>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="otro">Otro:</label>
-            <input id="otro" type="text" class="form-control" formControlName="otro" placeholder="Ingresa otro">
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-    <div class="border-panel mb-5" *ngIf="f.tipoContratacion.value === TIPO_CONTRATACION_GRUPO">
-      <ng-container formGroupName="datosGrupo">
-        <h2 class="subtitulo-base">Datos del grupo</h2>
-        <div class="row mb-3">
-          <div class="col-md-3">
-            <label class="control-label" for="nombreGrupo">Nombre(s)<span class="req">*</span>:</label>
-            <input id="nombreGrupo" type="text" class="form-control" formControlName="nombre"
-              placeholder="Ingresa nombre(s)">
-            <span class="campo-obligatorio"
-              *ngIf="datosGrupo.nombre?.errors?.required && (datosGrupo.nombre?.dirty || datosGrupo.nombre?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="razonSocial">Razón Social<span class="req">*</span>:</label>
-            <input id="razonSocial" type="text" class="form-control" formControlName="razonSocial"
-              placeholder="Ingresa Razón Social">
-            <span class="campo-obligatorio"
-              *ngIf="datosGrupo.razonSocial?.errors?.required && (datosGrupo.razonSocial?.dirty || datosGrupo.razonSocial?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="rfcGrupo">RFC <span class="req">*</span>:</label>
-            <input id="curpGrupo" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa RFC">
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="pais">País <span class="req">*</span>:</label>
-            <input id="pais" type="text" class="form-control" formControlName="pais" placeholder="Ingresa país">
-            <span class="campo-obligatorio"
-              *ngIf="datosGrupo.pais?.errors?.required && (datosGrupo.pais?.dirty || datosGrupo.pais?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-3">
-            <label class="control-label" for="codigoPostalGrupo">C.P. <span class="req">*</span>:</label>
-            <input id="codigoPostalGrupo" type="text" class="form-control" formControlName="codigoPostal"
-              placeholder="Ingresa C.P.">
-            <span class="campo-obligatorio"
-              *ngIf="datosGrupo.codigoPostal?.errors?.required && (datosGrupo.codigoPostal?.dirty || datosGrupo.codigoPostal?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="asentamientoColoniaGrupo">Asentamiento / Colonia <span
-                class="req">*</span>:</label>
-            <input id="asentamientoColoniaGrupo" type="text" class="form-control" formControlName="asentamientoColonia"
-              placeholder="Ingresa asentamiento">
-            <span class="campo-obligatorio"
-              *ngIf="datosGrupo.asentamientoColonia?.errors?.required && (datosGrupo.asentamientoColonia?.dirty || datosGrupo.asentamientoColonia?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="municipioGrupo">Municipio:</label>
-            <input id="municipioGrupo" type="text" class="form-control" formControlName="municipio"
-              placeholder="Ingresa municipio">
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="estadoGrupo">Estado:</label>
-            <input id="estadoGrupo" type="text" class="form-control" formControlName="estado"
-              placeholder="Ingresa estado">
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-3">
-            <label class="control-label" for="calleGrupo">Calle <span class="req">*</span>:</label>
-            <input id="calleGrupo" type="text" class="form-control" formControlName="calle" placeholder="Ingresa calle">
-            <span class="campo-obligatorio"
-              *ngIf="datosGrupo.calle?.errors?.required && (datosGrupo.calle?.dirty || datosGrupo.calle?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="numeroExteriorGrupo">Número exterior <span class="req">*</span>:</label>
-            <input id="numeroExteriorGrupo" type="text" class="form-control" formControlName="numeroExterior"
-              placeholder="Ingresa número exterior">
-            <span class="campo-obligatorio"
-              *ngIf="datosGrupo.numeroExterior?.errors?.required && (datosGrupo.numeroExterior?.dirty || datosGrupo.numeroExterior?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="numeroInteriorGrupo">Número interior:</label>
-            <input id="numeroInteriorGrupo" type="text" class="form-control" formControlName="numeroExterior"
-              placeholder="Ingresa número exterior">
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="telefonoGrupo">Teléfono<span class="req">*</span>:</label>
-            <input id="telefonoGrupo" type="text" class="form-control" formControlName="telefono"
-              placeholder="Ingresa teléfono">
-            <span class="campo-obligatorio"
-              *ngIf="datosGrupo.telefono?.errors?.required && (datosGrupo.telefono?.dirty || datosGrupo.telefono?.touched)">Este
-              campo es obligatorio *.</span>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="control-label" for="correoElectronicoGrupo">Correo electrónico:</label>
-            <input id="correoElectronicoGrupo" type="text" class="form-control" formControlName="correoElectronico"
-              placeholder="Ingresa correo electrónico">
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-    <ng-container *ngIf="f.tipoContratacion.value === TIPO_CONTRATACION_PERSONA">
-      <div class="border-panel mb-5">
-        <h2 class="subtitulo-base">Beneficiarios</h2>
-        <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true" [columnResizeMode]="'expand'">
-          <ng-template pTemplate="header">
-            <tr>
-              <th style="width: 4rem">
-                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-              </th>
-              <th scope="col">Velatorio</th>
-              <th scope="col">Fecha</th>
-              <th scope="col">Nombre</th>
-              <th scope="col">Primer apellido</th>
-              <th scope="col">Segundo apellido</th>
-              <th scope="col">Edad</th>
-              <th scope="col">Parentesco</th>
-              <th scope="col">CURP</th>
-              <th scope="col">RFC</th>
-              <th scope="col">Acta nacimiento</th>
-              <th scope="col">Correo electrónico</th>
-              <th scope="col">Teléfono</th>
-              <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-convenio>
-            <tr>
-              <td>
-                <p-tableCheckbox [value]="convenio.id"></p-tableCheckbox>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td style="border-left: 1px solid #b0b0b0;">
-                <div class="contenedor-celda-iconos">
-                  <a (click)="abrirPanel($event)" onCloseOnNavigation>
-                    <i class="pi pi-ellipsis-v"></i>
-                  </a>
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
-
-
-      <div class="border-panel mb-5">
-        <h2 class="subtitulo-base">Paquetes</h2>
-        <ng-container formGroupName="paquetes">
-          <div class="paquetes">
-            <div class="paquete">
-              <div class="paquete-titulo">
-                <p-checkbox formControlName="paqueteEconomico" [binary]="true"></p-checkbox>
-                <span>1. Paquete Económico</span>
-              </div>
-              <div>
-                <ul>
-                  <li>Recolección y traslado del cuerpo (hasta 100 km en la misma entidad federativa)
-                  </li>
-                  <li>
-                    Capilla en velatorio o en domicilio (hasta 24 horas)
-                  </li>
-                  <li>
-                    Apoyo para trámites
-                  </li>
-                  <li>
-                    Arreglo estético del cuerpo y embalsamamiento (en caso de ser necesario)
-                  </li>
-                  <li>
-                    No se incluye ataúd.
-                  </li>
-                </ul>
-                <div class="iconos">
-                  <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                  <img src="assets/images/sivimss-externos/material-symbols_candle-2.svg" alt="">
-                  <img src="assets/images/sivimss-externos/material-symbols_candle-2.svg" alt="">
-                </div>
-              </div>
+  </div>
+  <div *ngIf="mostrarPorPersona">
+    <form [formGroup]="formPersona" #formPrincipal (ngSubmit)="guardarPersona()">
+      <div class="border-panel mb-5" *ngIf="f.tipoContratacion.value === TIPO_CONTRATACION_PERSONA">
+        <ng-container formGroupName="datosPersonales">
+          <h2 class="subtitulo-base">Datos personales</h2>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="control-label" for="matricula">Matrícula:</label>
+              <input id="matricula" type="text" class="form-control" formControlName="matricula"
+                placeholder="Ingresa matrícula">
             </div>
-            <div class="paquete">
-              <div class="paquete-titulo">
-                <p-checkbox formControlName="paqueteBasico" [binary]="true"></p-checkbox>
-                <span>1. Paquete Básico</span>
-              </div>
-              <div>
-                <ul>
-                  <li>Recolección y traslado del cuerpo (hasta 100 km en la misma entidad federativa)
-                  </li>
-                  <li>
-                    Capilla en velatorio o en domicilio (hasta 24 horas)
-                  </li>
-                  <li>
-                    Apoyo para trámites
-                  </li>
-                  <li>
-                    Arreglo estético del cuerpo y embalsamamiento (en caso de ser necesario)
-                  </li>
-                  <li>
-                    Ataúd nuevo Básico
-                    <ul>
-                      <li>De acuerdo con la normatividad vigente que aplique para los Velatorios IMSS para el
-                        otorgamiento
-                        de servicios funerarios.</li>
-                    </ul>
-                  </li>
-                </ul>
-                <div class="iconos">
-                  <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                  <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                  <img src="assets/images/sivimss-externos/material-symbols_candle-2.svg" alt="">
-                </div>
-              </div>
+            <div class="col-md-3">
+              <label class="control-label" for="rfcPersona">R.F.C.:</label>
+              <input id="rfcPersona" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa R.F.C." maxlength="13">
             </div>
+            <div class="col-md-3">
+              <label class="control-label" for="curp">CURP <span class="req">*</span>:</label>
+              <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa CURP" maxlength="18">
+              <span class="campo-obligatorio"
+                *ngIf="datosPersonales.curp?.errors?.required && (datosPersonales.curp?.dirty || datosPersonales.curp?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="nombre">Nombre <span class="req">*</span>:</label>
+              <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
+              <span class="campo-obligatorio"
+                *ngIf="datosPersonales.nombre?.errors?.required && (datosPersonales.nombre?.dirty || datosPersonales.nombre?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="control-label" for="primerApellido">Primer apellido <span class="req">*</span>:</label>
+              <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
+                placeholder="Ingresa primer apellido">
+              <span class="campo-obligatorio"
+                *ngIf="datosPersonales.primerApellido?.errors?.required && (datosPersonales.primerApellido?.dirty || datosPersonales.primerApellido?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="segundoApellido">Segundo apellido <span class="req">*</span>:</label>
+              <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
+                placeholder="Ingresa segundo apellido">
+              <span class="campo-obligatorio"
+                *ngIf="datosPersonales.segundoApellido?.errors?.required && (datosPersonales.segundoApellido?.dirty || datosPersonales.segundoApellido?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
+              <input id="sexo" type="text" class="form-control" formControlName="sexo"
+                placeholder="Ingresa segundo apellido">
 
-            <div class="paquete">
-              <div class="paquete-titulo">
-                <p-checkbox formControlName="paqueteCremacion" [binary]="true"></p-checkbox>
-                <span>1. Paquete con Cremación</span>
-              </div>
-              <div>
-                <ul>
-                  <li>Recolección y traslado del cuerpo (hasta 100 km en la misma entidad federativa)
-                  </li>
-                  <li>
-                    Capilla en velatorio o en domicilio (hasta 24 horas)
-                  </li>
-                  <li>
-                    Apoyo para trámites
-                  </li>
-                  <li>
-                    Arreglo estético del cuerpo y embalsamamiento (en caso de ser necesario)
-                  </li>
-                  <li>
-                    Ataúd nuevo Básico
-                    <ul>
-                      <li>De acuerdo con la normatividad vigente que aplique para los Velatorios IMSS para el
-                        otorgamiento
-                        de servicios funerarios.</li>
-                      <li>
-                        La cremación únicamente aplica para los velatorios indicados en el “ANEXO C”.
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    En dicho paquete no se incluye la urna para cenizas.
-                  </li>
-                </ul>
-                <div class="iconos">
-                  <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                  <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                  <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                </div>
-              </div>
+            </div>
+            <div class="col-md-3" *ngIf="datosGeneralesContrante.idSexo==3">
+              <label class="control-label" for="otroSexo">Otro:</label>
+              <input id="otroSexo" type="text" class="form-control" formControlName="otro" placeholder="Ingresa otro">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
+              <input id="lugarNacimiento" type="text" class="form-control" formControlName="lugarNacimiento"
+                placeholder="Ingresa otro">
+
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="fechaNacimiento">Fecha de nacimiento<span class="req">*</span>:</label>
+              <input id="fechaNacimiento" type="text" class="form-control" formControlName="fechaNacimiento"
+                placeholder="Ingresa otro">
+
+            </div>
+          </div>
+        </ng-container>
+        <ng-container formGroupName="domicilio">
+          <h2 class="subtitulo-base">Domicilio</h2>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="control-label" for="codigoPostalPersona">C.P. <span class="req">*</span>:</label>
+              <input id="codigoPostalPersona" type="text" class="form-control" formControlName="codigoPostal"
+                (change)="buscarCodigoPostal()" placeholder="Ingresa código postal" maxlength="5" numbersOnly>
+              <span class="campo-obligatorio"
+                *ngIf="domicilio.codigoPostal?.errors?.required && (domicilio.codigoPostal?.dirty || domicilio.codigoPostal?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="asentamientoColoniaPersona">Asentamiento / Colonia <span
+                  class="req">*</span>:</label>
+              <p-dropdown id="asentamientoColoniaPersona" class="form-control" formControlName="asentamientoColonia"
+                appendTo="body" placeholder="Selecciona colonia" [options]="colonias" [filter]="true"
+                filterBy="label"></p-dropdown>
+              <span class="campo-obligatorio"
+                *ngIf="domicilio.asentamientoColonia?.errors?.required && (domicilio.asentamientoColonia?.dirty || domicilio.asentamientoColonia?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="municipioPersona">Municipio <span class="req">*</span>:</label>
+              <input id="municipioPersona" type="text" class="form-control" formControlName="municipio"
+                placeholder="Ingresa municipio">
+              <span class="campo-obligatorio"
+                *ngIf="domicilio.municipio?.errors?.required && (domicilio.municipio?.dirty || domicilio.municipio?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="estadoPersona">Estado <span class="req">*</span>:</label>
+              <input id="estadoPersona" type="text" class="form-control" formControlName="estado" placeholder="Ingresa estado">
+              <span class="campo-obligatorio"
+                *ngIf="domicilio.estado?.errors?.required && (domicilio.estado?.dirty || domicilio.estado?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="control-label" for="paisPersona">País <span class="req">*</span>:</label>
+              <p-dropdown id="paisPersona" class="form-control" formControlName="pais" appendTo="body"
+                placeholder="Selecciona país" [options]="paises" [filter]="true" filterBy="label"></p-dropdown>
+              <span class="campo-obligatorio"
+                *ngIf="domicilio.pais?.errors?.required && (domicilio.pais?.dirty || domicilio.pais?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="callePersona">Calle <span class="req">*</span>:</label>
+              <input id="callePersona" type="text" class="form-control" formControlName="calle" placeholder="Ingresa calle"
+              maxlength="30">
+              <span class="campo-obligatorio"
+                *ngIf="domicilio.calle?.errors?.required && (domicilio.calle?.dirty || domicilio.calle?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="numeroExteriorPersona">Número exterior <span class="req">*</span>:</label>
+              <input id="numeroExteriorPersona" type="text" class="form-control" formControlName="numeroExterior"
+                placeholder="Ingresa número exterior" maxlength="10" alphanumericOnly>
+              <span class="campo-obligatorio"
+                *ngIf="domicilio.numeroExterior?.errors?.required && (domicilio.numeroExterior?.dirty || domicilio.numeroExterior?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="numeroInteriorPersona">Número interior:</label>
+              <input id="numeroInteriorPersona" type="text" class="form-control" formControlName="numeroInterior"
+                placeholder="Ingresa número interior" maxlength="10" alphanumericOnly>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="control-label" for="correoElectronicoPersona">Correo electrónico <span
+                  class="req">*</span>:</label>
+              <input id="correoElectronicoPersona" type="text" class="form-control" formControlName="correoElectronico"
+                placeholder="Ingresa correo electrónico" maxlength="45" (blur)="validarCorreoElectronico(1)">
+              <span class="campo-obligatorio"
+                *ngIf="domicilio.correoElectronico?.errors?.required && (domicilio.correoElectronico?.dirty || domicilio.correoElectronico?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="telefonoPersona">Teléfono <span class="req">*</span>:</label>
+              <input id="telefonoPersona" type="text" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
+                placeholder="Ingresa teléfono">
+              <span class="campo-obligatorio"
+                *ngIf="domicilio.telefono?.errors?.required && (domicilio.telefono?.dirty || domicilio.telefono?.touched)">Este
+                campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="enfermedadPrexistente">Enfermedad prexistente:</label>
+              <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente"
+                appendTo="body" placeholder="Selecciona promotor" (onChange)="cambioEnfermedadPrexistente()"
+                [options]="enfermedadPrexistenteArray" [filter]="true" filterBy="label"></p-dropdown>
+            </div>
+            <div class="col-md-3" *ngIf="muestraOtraEnfermedad">
+              <label class="control-label" for="otro">Otro:</label>
+              <input maxlength="45" id="otro" type="text" class="form-control" formControlName="otro" placeholder="Ingresa otro">
             </div>
           </div>
         </ng-container>
       </div>
-    </ng-container>
+      <ng-container *ngIf="f.tipoContratacion.value === TIPO_CONTRATACION_PERSONA">
+        <div class="border-panel mb-5">
+          <div class="flex justify-content-between align-items-center">
+            <h2 class="subtitulo-base">Beneficiarios</h2>
+            <button class="btn btn-default btn-md ml-5" (click)="abrirModalRegistroNuevoBeneficiario($event)"
+              *ngIf="(beneficiarios.length < 3) && mostrarBotonAgregarBeneficiario" type="button">Nuevo
+              beneficiario</button>
+          </div>
+          <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true"
+            [columnResizeMode]="'expand'">
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col">Velatorio</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Primer apellido</th>
+                <th scope="col">Segundo apellido</th>
+                <th scope="col">Edad</th>
+                <th scope="col">Parentesco</th>
+                <th scope="col">CURP</th>
+                <th scope="col">RFC</th>
+                <th scope="col">Acta nacimiento</th>
+                <th scope="col">Correo electrónico</th>
+                <th scope="col">Teléfono</th>
+                <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-beneficiarios>
+              <tr>
+                <td>{{beneficiarios.velatorio }}</td>
+                <td>{{beneficiarios.fechaNacimiento}}</td>
+                <td>{{beneficiarios.nombreAfiliado}}</td>
+                <td>{{beneficiarios.primerApellido}}</td>
+                <td>{{beneficiarios.segundoApellido}}</td>
+                <td>{{beneficiarios.edad}}</td>
+                <td>{{beneficiarios.parentesco}}</td>
+                <td>{{beneficiarios.curp}}</td>
+                <td>{{beneficiarios.rfc}}</td>
+                <td>{{beneficiarios.ine}}</td>
+                <td>{{beneficiarios.correo}}</td>
+                <td>{{beneficiarios.telefono}}</td>
+                <td style="border-left: 1px solid #b0b0b0;">
+                  <div class="contenedor-celda-iconos">
+                    <a (click)="abrirPanel($event,beneficiarios)" onCloseOnNavigation>
+                      <i class="pi pi-ellipsis-v"></i>
+                    </a>
+                  </div>
+                </td>
+            </ng-template>
+          </p-table>
+        </div>
 
-
-    <div class="border-panel mb-5" *ngIf="f.tipoContratacion.value === TIPO_CONTRATACION_GRUPO">
-      <h2 class="subtitulo-base">Personas del grupo</h2>
-      <p-table styleClass="mt-5" [value]="personasGrupo" [paginator]="personasGrupo.length > 0"
-        [(first)]="numPaginaActual" [rows]="cantElementosPorPagina" [totalRecords]="totalElementos" [pageLinks]="3"
-        [resizableColumns]="true" [columnResizeMode]="'expand'">
-        <ng-template pTemplate="header">
-          <tr>
-            <th scope="col">Matricula</th>
-            <th scope="col">R.F.C.</th>
-            <th scope="col">CURP</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Primer apellido</th>
-            <th scope="col">Segundo apellido</th>
-            <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-convenio>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td style="border-left: 1px solid #b0b0b0;">
-              <div class="contenedor-celda-iconos">
-                <a (click)="abrirPanelGrupo($event)" onCloseOnNavigation>
-                  <i class="pi pi-ellipsis-v"></i>
-                </a>
+        <div class="border-panel mb-5">
+          <h2 class="subtitulo-base">Paquetes</h2>
+          <ng-container formGroupName="formPaquete">
+            <div class="paquetes">
+              <div class="paquete" *ngFor="let item of paquetes;">
+                <div class="paquete-titulo">
+                  <p-radioButton [inputId]="'item.idPaquete'" name="paquete" [value]="item.idPaquete"  formControlName="paquete"
+                                 (click)="seleccionaPaquete(item.idPaquete)"></p-radioButton>
+                  <span>{{item.nomPaquete}}</span>
+                </div>
+                <div>
+                  <ul>
+                    <li *ngFor="let contenido of item.serviciosPaquetes;">{{contenido}}
+                    </li>
+                  </ul>
+                  <div class="iconos">
+                    <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
+                    <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
+                    <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
+                  </div>
+                </div>
               </div>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorleft">
-          <div class="paginator-template">
-            <span class="total-elements">{{personasGrupo.length}} de {{totalElementos}}</span>
-          </div>
-        </ng-template>
-      </p-table>
-    </div>
-
-    <div class="border-panel mb-5">
-      <div class="row">
-        <div class="col-md-6">
-          <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
-          <div class="flex">
-            <div class="flex align-items-center mx-2">
-              <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
-                formControlName="gestionadoPorPromotor"></p-radioButton>
-              <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
             </div>
-            <div class="flex align-items-center mx-2">
-              <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false"
-                formControlName="gestionadoPorPromotor"></p-radioButton>
-              <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
-            </div>
-          </div>
+          </ng-container>
         </div>
-        <div class="col-md-6">
-          <label class="control-label" for="promotor">Promotor:</label>
-          <p-dropdown id="promotor" class="form-control" formControlName="promotor" placeholder="Selecciona promotor"
-            [options]="dummyDropdown" [filter]="true" filterBy="label"></p-dropdown>
-        </div>
-      </div>
-    </div>
-    <ng-container *ngIf="f.tipoContratacion.value === TIPO_CONTRATACION_PERSONA">
+      </ng-container>
 
       <div class="border-panel mb-5">
-        <div class="row mb-5">
-          <div class="col-md-2 flex flex-column">
-            <span class="etiqueta-base font-bold">Folio único del convenio</span>
-            <span class="texto-base font-normal">DOC-CRE-6-2</span>
-          </div>
-          <div class="col-md-2 flex flex-column">
-            <span class="etiqueta-base font-bold">Nombre completo</span>
-            <span class="texto-base font-normal">Nombre Apellido Apellido</span>
-          </div>
-          <div class="col-md-2 flex flex-column">
-            <span class="etiqueta-base font-bold">Delegación</span>
-            <span class="texto-base font-normal">Nombre de la delegación</span>
-          </div>
-          <div class="col-md-2 flex flex-column">
-            <span class="etiqueta-base font-bold">Velatorio</span>
-            <span class="texto-base font-normal">Nombre del velatorio</span>
-          </div>
-          <div class="col-md-2 flex flex-column">
-            <span class="etiqueta-base font-bold">Fecha</span>
-            <span class="texto-base font-normal">00-00-0000</span>
-          </div>
-        </div>
-        <div class="row mb-8">
-          <div class="col-md-2">
-            <label class="control-label" for="archivoXml">INE afiliado:</label>
-            <div (click)="handleClick('archivoXml', 'xml')" class="file-container">
-              <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml"
-                ngf-max-size="2MB" (change)="addAttachment($event)">
-              <input id="archivoXml" class="form-control">
-              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
-            </div>
-          </div>
-
-          <div class="col-md-2">
-            <label class="control-label" for="archivoXml">Copia CURP:</label>
-            <div (click)="handleClick('archivoXml', 'xml')" class="file-container">
-              <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml"
-                ngf-max-size="2MB" (change)="addAttachment($event)">
-              <input id="archivoXml" class="form-control">
-              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
-            </div>
-          </div>
-
-          <div class="col-md-2">
-            <label class="control-label" for="archivoXml">Copia RFC:</label>
-            <div (click)="handleClick('archivoXml', 'xml')" class="file-container">
-              <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml"
-                ngf-max-size="2MB" (change)="addAttachment($event)">
-              <input id="archivoXml" class="form-control">
-              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
-            </div>
-          </div>
-
-          <div class="col-md-2">
-            <label class="control-label" for="archivoXml">Acta de nacimiento beneficiario:</label>
-            <div (click)="handleClick('archivoXml', 'xml')" class="file-container">
-              <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml"
-                ngf-max-size="2MB" (change)="addAttachment($event)">
-              <input id="archivoXml" class="form-control">
-              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
-            </div>
-          </div>
-
-          <div class="col-md-2">
-            <label class="control-label" for="archivoXml">INE Beneficiario:</label>
-            <div (click)="handleClick('archivoXml', 'xml')" class="file-container">
-              <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml"
-                ngf-max-size="2MB" (change)="addAttachment($event)">
-              <input id="archivoXml" class="form-control">
-              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
-            </div>
-          </div>
-        </div>
         <div class="row">
-          <div class="col-md-12">
-            <ul>
-              <li class="text-archivos">
-                Arrastrar y soltar los archivos en la sección "Cargar Archivos" o selecciona la opción “Agregar
-                Archivo".
-              </li>
-              <li class="text-archivos">Subir archivos con formato PDF y/o imágenes: gif, jpeg y jpg. Si tienes dudas
-                puedes asistir a tu
-                Velatorio más cercano.</li>
-            </ul>
+          <div class="col-md-6">
+            <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
+            <div class="flex">
+              <div class="flex align-items-center mx-2">
+                <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
+                  formControlName="gestionadoPorPromotor" (click)="clickSeleccionaPromotor('persona')"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+              </div>
+              <div class="flex align-items-center mx-2">
+                <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false"
+                  formControlName="gestionadoPorPromotor" (click)="clickSeleccionaPromotor('persona')"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="control-label" for="promotorPersona">Promotor:</label>
+            <p-dropdown id="promotorPersona" class="form-control" formControlName="promotor" appendTo="body"
+              placeholder="Selecciona promotor" [options]="promotores" [filter]="true" filterBy="label"
+              [readonly]="seleccionarPromotor"></p-dropdown>
           </div>
         </div>
       </div>
-    </ng-container>
-    <div class="mt-3 mb-3">
-      <span class="texto-base font-normal">*Campos obligatorios</span>
-    </div>
-    <div class="row">
-      <div class="col-md-12 flex justify-content-end align-items-center">
-        <button class="btn btn-gold btn-md">Cancelar</button>
-        <button class="btn btn-primary btn-md ml-4">Guardar</button>
+      <ng-container *ngIf="f.tipoContratacion.value === TIPO_CONTRATACION_PERSONA">
+
+        <div class="border-panel mb-5" formGroupName="archivos">
+          <div class="row mb-5">
+            <div class="col-md-2 flex flex-column">
+              <span class="etiqueta-base font-bold">Folio único del convenio</span>
+              <span class="texto-base font-normal">{{folioConvenio}}</span>
+            </div>
+            <div class="col-md-3 flex flex-column">
+              <span class="etiqueta-base font-bold">Nombre completo</span>
+              <span class="texto-base font-normal">{{nombreCompleto}}</span>
+            </div>
+            <div class="col-md-3 flex flex-column">
+              <span class="etiqueta-base font-bold">Delegación</span>
+              <span class="texto-base font-normal">{{delegacion}}</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+              <span class="etiqueta-base font-bold">Velatorio</span>
+              <span class="texto-base font-normal">{{velatorio}}</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+              <span class="etiqueta-base font-bold">Fecha</span>
+              <span class="texto-base font-normal">{{fecha}}</span>
+            </div>
+          </div>
+          <div class="row mb-8">
+            <div class="col-md-2">
+              <label class="control-label" for="curp">Copia INE:</label>
+              <div (click)="handleClick('archivoIneUpload')" class="file-container">
+                <input class="hidden" type="file" id="archivoIneUpload" name="archivoIneUpload"
+                  accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB" (change)="addAttachment($event)">
+                <input id="archivoIne" class="form-control" formControlName="archivoIne" readonly>
+                <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <label class="control-label" for="curp">Copia CURP:</label>
+              <div (click)="handleClick('archivoCURPUpload')" class="file-container">
+                <input class="hidden" type="file" id="archivoCURPUpload" name="archivoCURPUpload"
+                  accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB" (change)="addAttachment($event)">
+                <input id="archivoCurp" class="form-control" formControlName="archivoCurp" readonly>
+                <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <label class="control-label" for="rfc">Copia RFC:</label>
+              <div (click)="handleClick('archivoRFCUpload')" class="file-container">
+                <input class="hidden" type="file" id="archivoRFCUpload" name="archivoRFCUpload"
+                  accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB" (change)="addAttachment($event)">
+                <input id="archivoRfc" class="form-control" formControlName="archivoRfc" readonly>
+                <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <ul>
+                <li class="text-archivos">
+                  Arrastrar y soltar los archivos en la sección "Cargar Archivos" o selecciona la opción “Agregar
+                  Archivo".
+                </li>
+                <li class="text-archivos">Subir archivos con formato PDF y/o imágenes: gif, jpeg y jpg. Si tienes dudas
+                  puedes asistir a tu Velatorio más cercano.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <div class="mt-3 mb-3">
+        <span class="texto-base font-normal">*Campos obligatorios</span>
       </div>
-    </div>
-  </form>
+      <div class="row">
+        <div class="col-md-12 flex justify-content-end align-items-center">
+          <button class="btn btn-gold btn-md" type="button">Cancelar</button>
+          <button class="btn btn-primary btn-md ml-4" type="submit" [disabled]="!this.formPersona.valid"
+            *ngIf="mostrarBontonGaurdarPersona">Guardar</button>
+          <button class="btn ml-4 btn-gold btn-md" type="button" *ngIf="!mostrarBontonGaurdarPersona"
+          (click)="mostrarMensajeGuardado = true">Terminar contratación</button>
+        </div>
+      </div>
+    </form>
+    <p-overlayPanel #overlayPanel [appendTo]="formPrincipal">
+      <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+          <app-overlay-panel-opcion titulo="Editar" (click)="abrirModalEditarBeneficiario($event)">
+          </app-overlay-panel-opcion>
+          <app-overlay-panel-opcion titulo="Desactivar" (click)="abrirModalDesactivarBeneficiario($event)">
+          </app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+      </ng-template>
+    </p-overlayPanel>
+
+
+  </div>
+
+
+  <div *ngIf="!mostrarPorPersona">
+    <form [formGroup]="formEmpresa" (ngSubmit)="guardarEmpresa()">
+      <div class="border-panel mb-5">
+        <ng-container formGroupName="datosGrupo">
+          <h2 class="subtitulo-base">Datos del grupo </h2>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="control-label" for="nombreGrupo">Nombre(s)<span class="req">*</span>:</label>
+              <input id="nombreGrupo" type="text" class="form-control" formControlName="nombre"
+                     placeholder="Ingresa nombre(s)" maxlength="20">
+              <span class="campo-obligatorio"
+                    *ngIf="datosGrupo.nombre?.errors?.required && (datosGrupo.nombre?.dirty || datosGrupo.nombre?.touched)">Este
+              campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="razonSocial">Razón Social<span class="req">*</span>:</label>
+              <input id="razonSocial" type="text" class="form-control" formControlName="razonSocial"
+                     placeholder="Ingresa Razón Social" maxlength="50">
+              <span class="campo-obligatorio"
+                    *ngIf="datosGrupo.razonSocial?.errors?.required && (datosGrupo.razonSocial?.dirty || datosGrupo.razonSocial?.touched)">Este
+              campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="rfc">RFC <span class="req">*</span>:</label>
+              <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa RFC" maxlength="13"
+              (blur)="validarRfc()">
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="pais">País <span class="req">*</span>:</label>
+              <p-dropdown id="pais" class="form-control" formControlName="pais" appendTo="body"
+                          placeholder="Selecciona país" [options]="paises" [filter]="true" filterBy="label"></p-dropdown>
+              <span class="campo-obligatorio"
+                    *ngIf="domicilio.pais?.errors?.required && (domicilio.pais?.dirty || domicilio.pais?.touched)">Este
+              campo es obligatorio *.</span>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="control-label" for="codigoPostalGrupo">C.P. <span class="req">*</span>:</label>
+              <input id="codigoPostalGrupo" type="text" class="form-control" formControlName="codigoPostal"
+                     (change)="buscarCodigoPostalEmpresa()" placeholder="Ingresa C.P." maxlength="5" numbersOnly>
+              <span class="campo-obligatorio"
+                    *ngIf="datosGrupo.codigoPostal?.errors?.required && (datosGrupo.codigoPostal?.dirty || datosGrupo.codigoPostal?.touched)">Este
+              campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="asentamientoColonia">Asentamiento / Colonia <span
+                class="req">*</span>:</label>
+              <p-dropdown id="asentamientoColonia" class="form-control" formControlName="asentamientoColonia"
+                          appendTo="body" placeholder="Selecciona colonia" [options]="coloniasEmpresa" [filter]="true"
+                          filterBy="label"></p-dropdown>
+              <span class="campo-obligatorio"
+                    *ngIf="domicilio.asentamientoColonia?.errors?.required && (domicilio.asentamientoColonia?.dirty || domicilio.asentamientoColonia?.touched)">Este
+              campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="municipio">Municipio:</label>
+              <input id="municipio" type="text" class="form-control" formControlName="municipio"
+                     placeholder="Ingresa municipio">
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="estado">Estado:</label>
+              <input id="estado" type="text" class="form-control" formControlName="estado" placeholder="Ingresa estado">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="control-label" for="calle">Calle <span class="req">*</span>:</label>
+              <input id="calle" type="text" class="form-control" formControlName="calle" placeholder="Ingresa calle"
+                     maxlength="30">
+              <span class="campo-obligatorio"
+                    *ngIf="datosGrupo.calle?.errors?.required && (datosGrupo.calle?.dirty || datosGrupo.calle?.touched)">Este
+              campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="numeroExteriorGrupo">Número exterior <span class="req">*</span>:</label>
+              <input id="numeroExteriorGrupo" type="text" class="form-control" formControlName="numeroExterior"
+                     placeholder="Ingresa número exterior" maxlength="5" alphanumericOnly>
+              <span class="campo-obligatorio"
+                    *ngIf="datosGrupo.numeroExterior?.errors?.required && (datosGrupo.numeroExterior?.dirty || datosGrupo.numeroExterior?.touched)">Este
+              campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="numeroInteriorGrupo">Número interior:</label>
+              <input id="numeroInteriorGrupo" type="text" class="form-control" formControlName="numeroExterior"
+                     placeholder="Ingresa número interior" maxlength="4" alphanumericOnly>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
+              <input id="telefono" type="text" class="form-control" formControlName="telefono"
+                     placeholder="Ingresa teléfono" maxlength="10" numbersOnly>
+              <span class="campo-obligatorio"
+                    *ngIf="datosGrupo.telefono?.errors?.required && (datosGrupo.telefono?.dirty || datosGrupo.telefono?.touched)">Este
+              campo es obligatorio *.</span>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="control-label" for="correoElectronico">Correo electrónico:</label>
+              <input id="correoElectronico" type="text" class="form-control" formControlName="correoElectronico"
+              placeholder="Ingresa correo electrónico" maxlength="45" (blur)="validarCorreoElectronico(2)">
+            </div>
+          </div>
+        </ng-container>
+
+      </div>
+      <div class="border-panel mb-5">
+        <div class="flex justify-content-between align-items-center">
+          <h2 class="subtitulo-base">Personas del grupo</h2>
+          <button class="btn btn-default btn-md ml-5" (click)="agregarPersonaGrupo()"
+                  *ngIf="!mostrarBontonGaurdarPersona" type="button">Nueva persona</button>
+        </div>
+        <p-table styleClass="mt-5" [value]="personasGrupo" [paginator]="false"
+                 [(first)]="numPaginaActual" [rows]="cantElementosPorPagina" [totalRecords]="totalElementos" [pageLinks]="3"
+                 [resizableColumns]="true" [columnResizeMode]="'expand'">
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Matricula</th>
+              <th scope="col">R.F.C.</th>
+              <th scope="col">CURP</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Primer apellido</th>
+              <th scope="col">Segundo apellido</th>
+<!--              <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>-->
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-personasGrupo>
+            <tr>
+              <td>{{personasGrupo.matricula}}</td>
+              <td>{{personasGrupo.rfc}}</td>
+              <td>{{personasGrupo.curp}}</td>
+              <td>{{personasGrupo.nombre}}</td>
+              <td>{{personasGrupo.primerApellido}}</td>
+              <td>{{personasGrupo.segundoApellido}}</td>
+<!--              <td style="border-left: 1px solid #b0b0b0;">-->
+<!--                <div class="contenedor-celda-iconos">-->
+<!--                  <a (click)="abrirPanelGrupo($event)" onCloseOnNavigation>-->
+<!--                    <i class="pi pi-ellipsis-v"></i>-->
+<!--                  </a>-->
+<!--                </div>-->
+<!--              </td>-->
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+              <span class="total-elements">{{personasGrupo.length}} de {{totalElementos}}</span>
+            </div>
+          </ng-template>
+        </p-table>
+      </div>
+      <div class="border-panel mb-5">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
+            <div class="flex">
+              <div class="flex align-items-center mx-2">
+                <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
+                               formControlName="gestionadoPorPromotor" (click)="clickSeleccionaPromotor('empresa')"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+              </div>
+              <div class="flex align-items-center mx-2">
+                <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false"
+                               formControlName="gestionadoPorPromotor" (click)="clickSeleccionaPromotor('empresa')"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="control-label" for="promotor">Promotor:</label>
+            <p-dropdown id="promotor" class="form-control" formControlName="promotor" appendTo="body"
+                        placeholder="Selecciona promotor" [options]="promotores" [filter]="true" filterBy="label"
+                        [readonly]="seleccionarPromotorEmpresa"></p-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3 mb-3">
+        <span class="texto-base font-normal">*Campos obligatorios</span>
+      </div>
+      <div class="row">
+        <div class="col-md-12 flex justify-content-end align-items-center">
+          <button class="btn btn-gold btn-md" type="button">Cancelar</button>
+          <button class="btn btn-primary btn-md ml-4" type="submit" [disabled]="!this.formEmpresa.valid"
+                  *ngIf="mostrarBontonGaurdarPersona">Guardar</button>
+          <button class="btn btn-gold ml-4 btn-md"
+                  (click)="mostrarMensajeGuardado = true" type="button" *ngIf="!mostrarBontonGaurdarPersona">Terminar
+            contratación</button>
+        </div>
+      </div>
+    </form>
+    <p-overlayPanel #overlayPanelGrupo>
+      <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+          <app-overlay-panel-opcion titulo="Registrar" routerLink="registro-de-persona-del-grupo">
+          </app-overlay-panel-opcion>
+          <app-overlay-panel-opcion titulo="Editar" routerLink="registro-de-persona-del-grupo">
+          </app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+      </ng-template>
+    </p-overlayPanel>
+  </div>
 </div>
 
-<p-overlayPanel #overlayPanel [appendTo]="formPrincipal">
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar" (click)="abrirModalRegistroBeneficiario($event)">
-      </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Editar" (click)="abrirModalEditarBeneficiario($event)">
-      </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Desactivar" (click)="abrirModalDesactivarBeneficiario($event)">
-      </app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
-  </ng-template>
-</p-overlayPanel>
 
-<p-overlayPanel #overlayPanelGrupo [appendTo]="formPrincipal">
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar" routerLink="registro-de-persona-del-grupo">
-      </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Editar" routerLink="registro-de-persona-del-grupo">
-      </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Desactivar" (click)="mostrarModalDesactivarBeneficiarioGrupo = true;">
-      </app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
-  </ng-template>
-</p-overlayPanel>
+
+
+
 
 
 <p-dialog [(visible)]="mostrarModalTipoArchivoIncorrecto" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
@@ -712,18 +653,19 @@
 </p-dialog>
 
 
-<p-dialog [(visible)]="mostrarModalDesactivarBeneficiarioGrupo" [modal]="true"
-  [style]="{maxWidth:'544px',width: '100%'}" [closable]="false" [draggable]="false" [resizable]="false"
-  header="Órdenes">
+
+<p-dialog [(visible)]="mostrarMensajeGuardado" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}" [closable]="false" [draggable]="false" [resizable]="false"
+          header="">
   <ng-template pTemplate="content">
     <div>
-      <p class="mt-2 text-center">¿Está seguro que desea desactivar este beneficiario?</p>
+      <p class="mt-2 text-center">{{mensajeConfirmacionGuardado}}</p>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
     <div class="flex justify-content-center">
-      <button class="btn btn-primary btn-md ml-4"
-        (click)="mostrarModalDesactivarBeneficiarioGrupo = false;">Aceptar</button>
+      <button type="button" class="btn btn-default btn-md" (click)="mostrarMensajeGuardado = false">Cancelar</button>
+      <button class="btn btn-primary btn-md ml-4" (click)="guardarConvenio()">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>

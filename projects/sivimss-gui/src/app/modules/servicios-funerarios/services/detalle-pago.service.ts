@@ -38,10 +38,11 @@ export class DetallePagoService extends BaseService<HttpRespuesta<any>, any>{
       `${this._funcionalidad}/pago-anticipado-modificar-pago`, pago)
   }
 
-  desactivarPago(idPlanBitacora: number): Observable<HttpRespuesta<any>> {
+  desactivarPago(bitacora: any): Observable<HttpRespuesta<any>> {
     return this._http.put<HttpRespuesta<any>>(this._base +  `${this._funcionalidad}/pago-anticipado-desactivar-pago`,
-      {idPlanBitacora:idPlanBitacora})
+      bitacora)
   }
+
   generarReporte(objeto:any): Observable<Blob> {
     const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -50,5 +51,10 @@ export class DetallePagoService extends BaseService<HttpRespuesta<any>, any>{
 
     return this._http.post<any>(this._base + `${this._funcionalidad}/pago-anticipado-descargar-reporte/generarDocumento/pdf`,
       objeto, {headers, responseType: 'blob' as 'json'})
+  }
+
+  obtenerDetalleBitacoraPago(idPagoSFPA: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base +
+      `${this._funcionalidad}/buscar-filtros/pago-anticipado-bitacora-pago`, {idPagoParcialidad: idPagoSFPA});
   }
 }

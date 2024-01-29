@@ -2,6 +2,7 @@ import { Contratante } from "./contratante.interface";
 import { Domicilio } from "./domicilio.interface";
 
 export interface RegistrarContratante {
+    idUsuario?: number | null;
     nombre?: string;
     paterno?: string;
     materno?: string;

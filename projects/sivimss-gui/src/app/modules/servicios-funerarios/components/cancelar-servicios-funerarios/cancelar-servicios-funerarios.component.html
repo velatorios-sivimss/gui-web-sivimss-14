@@ -1,10 +1,14 @@
-<app-titulo-principal titulo="Cancelar plan sfpa"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['../']"></app-btn-regresar>
+  <app-titulo-principal titulo="Cancelar plan sfpa" class="col"></app-titulo-principal>
+</div>
+
 <app-table-panel class="mb-3 block">
   <div class="row table-panel-row">
     <div class="col-md-12">
       <div class="table-panel-column flex-row">
         <span class="text-4xl">Convenio</span>
-        <span class="text-3xl font-bold inline-block ml-4">DOC-000001</span>
+        <span class="text-3xl font-bold inline-block ml-4">{{folioConvenio}}</span>
       </div>
     </div>
   </div>
@@ -12,13 +16,13 @@
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Velatorio</label>
-        <span>Velatorio IMSS 20 Ecatepec</span>
+        <span>{{nombreVelatorio}}</span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Fecha</label>
-        <span>26-04-2023</span>
+        <span>{{fecIngresa}}</span>
       </div>
     </div>
   </div>
@@ -36,151 +40,158 @@
   </div>
   <p-accordion styleClass="sivimss-accordion">
     <p-accordionTab>
-      <ng-template pTemplate="header">Datos del afiliado</ng-template>
+      <ng-template pTemplate="header">Datos del titular</ng-template>
       <ng-template pTemplate="content">
         <app-table-panel class="mb-6">
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>CURP</label>
-                <span></span>
+                <label>CURP:</label>
+                <span>{{fdt.curp.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>RFC</label>
-                <span></span>
+                <label>RFC:</label>
+                <span>{{fdt.rfc.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Matrícula</label>
-                <span></span>
+                <label>Matrícula:</label>
+                <span>{{fdt.matricula.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>NSS</label>
-                <span></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="row table-panel-row">
-            <div class="col-md-3">
-              <div class="table-panel-column">
-                <label>Nombre</label>
-                <span></span>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="table-panel-column">
-                <label>Primer apellido</label>
-                <span></span>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="table-panel-column">
-                <label>Segundo apellido</label>
-                <span></span>
+                <label>NSS:</label>
+                <span>{{fdt.nss.value}}</span>
               </div>
             </div>
           </div>
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Fecha de nacimiento</label>
-                <span></span>
+                <label>Nombre(s):</label>
+                <span>{{fdt.nombre.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Sexo</label>
-                <span></span>
+                <label>Primer apellido:</label>
+                <span>{{fdt.primerApellido.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Nacionalidad</label>
-                <span></span>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="table-panel-column">
-                <label>Lugar de nacimiento</label>
-                <span>CDMX</span>
+                <label>Segundo apellido:</label>
+                <span>{{fdt.segundoApellido.value}}</span>
               </div>
             </div>
           </div>
-
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Correo electrónico</label>
-                <span></span>
+                <label>Fecha de nacimiento:</label>
+                <span>{{fdt.fechaNacimiento.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Teléfono</label>
-                <span></span>
+                <label>Sexo:</label>
+                <span>{{fdt.sexo.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Nacionalidad:</label>
+                <span>{{fdt.nacionalidad.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Lugar de nacimiento:</label>
+                <span>{{fdt.lugarNacimiento.value}}</span>
               </div>
             </div>
           </div>
-
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Calle</label>
-                <span></span>
+                <label>Teléfono celular:</label>
+                <span>{{fdt.telefono.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Número exterior</label>
-                <span></span>
+                <label>Teléfono:</label>
+                <span>{{fdt.telefonoFijo.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>C.P.</label>
-                <span></span>
+                <label>Correo electrónico:</label>
+                <span>{{fdt.correoElectronico.value}}</span>
               </div>
             </div>
           </div>
-
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Colonia</label>
-                <span></span>
+                <label>Calle:</label>
+                <span>{{fdt.calle.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Municipio</label>
-                <span></span>
+                <label>Número exterior:</label>
+                <span>{{fdt.numeroExterior.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Estado</label>
-                <span></span>
+                <label>Número interior:</label>
+                <span>{{fdt.numeroInterior.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>C.P:</label>
+                <span>{{fdt.cp.value}}</span>
               </div>
             </div>
           </div>
-
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Colonia:</label>
+                <span>{{fdt.colonia.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Municipio:</label>
+                <span>{{fdt.municipio.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Estado:</label>
+                <span>{{fdt.estado.value}}</span>
+              </div>
+            </div>
+          </div>
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Tipo de paquete</label>
-                <span></span>
+                <span>{{fdt.tipoPaquete.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>No. de pagos</label>
-                <span></span>
+                <span>{{fdt.numeroPago.value}}</span>
               </div>
             </div>
           </div>
@@ -188,144 +199,450 @@
       </ng-template>
     </p-accordionTab>
     <p-accordionTab>
-      <ng-template pTemplate="header">Datos del contratante</ng-template>
+      <ng-template pTemplate="header">Datos del titular substituto</ng-template>
       <ng-template pTemplate="content">
         <app-table-panel class="mb-6">
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>CURP</label>
-                <span></span>
+                <label>CURP:</label>
+                <span>{{fdts.curp.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>RFC</label>
-                <span></span>
+                <label>RFC:</label>
+                <span>{{fdts.rfc.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Matrícula</label>
-                <span></span>
+                <label>Matrícula:</label>
+                <span>{{fdts.matricula.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>NSS</label>
-                <span></span>
+                <label>NSS:</label>
+                <span>{{fdts.nss.value}}</span>
               </div>
             </div>
           </div>
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Nombre</label>
-                <span></span>
+                <label>Nombre(s):</label>
+                <span>{{fdts.nombre.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Primer apellido</label>
-                <span></span>
+                <label>Primer apellido:</label>
+                <span>{{fdts.primerApellido.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Segundo apellido</label>
-                <span></span>
+                <label>Segundo apellido:</label>
+                <span>{{fdts.segundoApellido.value}}</span>
               </div>
             </div>
           </div>
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Fecha de nacimiento</label>
-                <span></span>
+                <label>Fecha de nacimiento:</label>
+                <span>{{fdts.fechaNacimiento.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Sexo</label>
-                <span></span>
+                <label>Sexo:</label>
+                <span>{{fdts.sexo.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Nacionalidad</label>
-                <span></span>
+                <label>Nacionalidad:</label>
+                <span>{{fdts.nacionalidad.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Lugar de nacimiento</label>
-                <span></span>
+                <label>Lugar de nacimiento:</label>
+                <span>{{fdts.lugarNacimiento.value}}</span>
               </div>
             </div>
           </div>
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Correo electrónico</label>
-                <span></span>
+                <label>Teléfono:</label>
+                <span>{{fdts.telefonoFijo.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Teléfono</label>
-                <span></span>
+                <label>Correo electrónico:</label>
+                <span>{{fdts.correoElectronico.value}}</span>
               </div>
             </div>
           </div>
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Calle</label>
-                <span></span>
+                <label>Calle:</label>
+                <span>{{fdts.calle.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Número exterior</label>
-                <span></span>
+                <label>Número exterior:</label>
+                <span>{{fdts.numeroExterior.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>C.P</label>
-                <span></span>
+                <label>Número interior:</label>
+                <span>{{fdts.numeroInterior.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>C.P:</label>
+                <span>{{fdts.cp.value}}</span>
               </div>
             </div>
           </div>
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Colonia</label>
-                <span></span>
+                <label>Colonia:</label>
+                <span>{{fdts.colonia.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Municipio</label>
-                <span></span>
+                <label>Municipio:</label>
+                <span>{{fdts.municipio.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
-                <label>Estado</label>
-                <span></span>
+                <label>Estado:</label>
+                <span>{{fdts.estado.value}}</span>
               </div>
             </div>
           </div>
-
-
+        </app-table-panel>
+      </ng-template>
+    </p-accordionTab>
+    <p-accordionTab>
+      <ng-template pTemplate="header">Datos Beneficiario 1</ng-template>
+      <ng-template pTemplate="content">
+        <app-table-panel class="mb-6">
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>CURP:</label>
+                <span>{{fdb1.curp.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>RFC:</label>
+                <span>{{fdb1.rfc.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Matrícula:</label>
+                <span>{{fdb1.matricula.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>NSS:</label>
+                <span>{{fdb1.nss.value}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Nombre(s):</label>
+                <span>{{fdb1.nombre.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Primer apellido:</label>
+                <span>{{fdb1.primerApellido.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Segundo apellido:</label>
+                <span>{{fdb1.segundoApellido.value}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Fecha de nacimiento:</label>
+                <span>{{fdb1.fechaNacimiento.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Sexo:</label>
+                <span>{{fdb1.sexo.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Nacionalidad:</label>
+                <span>{{fdb1.nacionalidad.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Lugar de nacimiento:</label>
+                <span>{{fdb1.lugarNacimiento.value}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Teléfono:</label>
+                <span>{{fdb1.telefonoFijo.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Correo electrónico:</label>
+                <span>{{fdb1.correoElectronico.value}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Calle:</label>
+                <span>{{fdb1.calle.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Número exterior:</label>
+                <span>{{fdb1.numeroExterior.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Número interior:</label>
+                <span>{{fdb1.numeroInterior.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>C.P:</label>
+                <span>{{fdb1.cp.value}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Colonia:</label>
+                <span>{{fdb1.colonia.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Municipio:</label>
+                <span>{{fdb1.municipio.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Estado:</label>
+                <span>{{fdb1.estado.value}}</span>
+              </div>
+            </div>
+          </div>
+        </app-table-panel>
+      </ng-template>
+    </p-accordionTab>
+    <p-accordionTab>
+      <ng-template pTemplate="header">Datos Beneficiario 2</ng-template>
+      <ng-template pTemplate="content">
+        <app-table-panel class="mb-6">
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>CURP:</label>
+                <span>{{fdb2.curp.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>RFC:</label>
+                <span>{{fdb2.rfc.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Matrícula:</label>
+                <span>{{fdb2.matricula.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>NSS:</label>
+                <span>{{fdb2.nss.value}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Nombre(s):</label>
+                <span>{{fdb2.nombre.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Primer apellido:</label>
+                <span>{{fdb2.primerApellido.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Segundo apellido:</label>
+                <span>{{fdb2.segundoApellido.value}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Fecha de nacimiento:</label>
+                <span>{{fdb2.fechaNacimiento.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Sexo:</label>
+                <span>{{fdb2.sexo.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Nacionalidad:</label>
+                <span>{{fdb2.nacionalidad.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Lugar de nacimiento:</label>
+                <span>{{fdb2.lugarNacimiento.value}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Teléfono:</label>
+                <span>{{fdb2.telefonoFijo.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Correo electrónico:</label>
+                <span>{{fdb2.correoElectronico.value}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Calle:</label>
+                <span>{{fdb2.calle.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Número exterior:</label>
+                <span>{{fdb2.numeroExterior.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Número interior:</label>
+                <span>{{fdb2.numeroInterior.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>C.P:</label>
+                <span>{{fdb2.cp.value}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Colonia:</label>
+                <span>{{fdb2.colonia.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Municipio:</label>
+                <span>{{fdb2.municipio.value}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Estado:</label>
+                <span>{{fdb2.estado.value}}</span>
+              </div>
+            </div>
+          </div>
         </app-table-panel>
       </ng-template>
     </p-accordionTab>
   </p-accordion>
+
+  <!-- <div class="border-panel mb-5">
+    <div class="row">
+        <div class="col-md-6">
+            <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
+            <div class="flex">
+                <div class="flex align-items-center mx-2">
+                    <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true" [disabled]="true">
+                    </p-radioButton>
+                    <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+                </div>
+                <div class="flex align-items-center mx-2">
+                    <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false" [disabled]="true">
+                    </p-radioButton>
+                    <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label class="control-label" for="promotor">Promotor:</label>
+        </div>
+    </div>
+</div> -->
+
   <div class="flex justify-content-center">
     <div class="col-md-6">
-      <p class="text-center">¿Estás seguro de cancelar este Plan de Servicios Funerarios Pago Anticipado del convenio con folio XXXX?</p>
+      <p class="text-center">¿Estás seguro de cancelar este Plan de Servicios Funerarios Pago Anticipado del convenio con folio  ?</p>
     </div>
   </div>
 </ng-container>

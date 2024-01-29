@@ -7,27 +7,18 @@
             <div class="addresses">
                 <div class="input-search-container">
                     <div class="input-search">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" [(ngModel)]="filtroVelatorio"
+                            (keyup)="filtrarVelatorios($event)">
                         <i class="pi pi-search"></i>
                     </div>
                 </div>
-                <div class="address">
-                    <span class="address-title">No. 01 Doctores</span>
-                    <span class="address-description">Dr. Rafael Lucio No. 237, esquina Dr Isidro Olvera, Col. Doctores,
-                        C.P. 06720, Ciudad de México</span>
-                    <span class="address-telephone">55 5607 3412</span>
-                </div>
-                <div class="address">
-                    <span class="address-title">No. 01 Doctores</span>
-                    <span class="address-description">Dr. Rafael Lucio No. 237, esquina Dr Isidro Olvera, Col. Doctores,
-                        C.P. 06720, Ciudad de México</span>
-                    <span class="address-telephone">55 5607 3412</span>
-                </div>
-                <div class="address">
-                    <span class="address-title">No. 01 Doctores</span>
-                    <span class="address-description">Dr. Rafael Lucio No. 237, esquina Dr Isidro Olvera, Col. Doctores,
-                        C.P. 06720, Ciudad de México</span>
-                    <span class="address-telephone">55 5607 3412</span>
+                <div class="listadoVelatorios">
+                    <div class="address" *ngFor="let velatorio of listaVelatorios"
+                        (click)="seleccionarVelatorio(velatorio.idVelatorio)">
+                        <span class="address-title"> {{velatorio.nombreVelatorio}} </span>
+                        <span class="address-description">{{velatorio.direccion}}</span>
+                        <span class="address-telephone">{{velatorio.telefono}}</span>
+                    </div>
                 </div>
             </div>
         </div>
