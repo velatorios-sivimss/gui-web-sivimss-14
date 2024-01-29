@@ -4,6 +4,6 @@ export interface Domicilio {
     numExt?: string | null;
     cp?: number;
     colonia?: string;
-    municipio?: number;
-    estado?: number;
+    municipio?: string;
+    estado?: string;
 }
