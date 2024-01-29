@@ -22,7 +22,6 @@ import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {validarUsuarioLogueado} from "../../../../../utils/funciones";
-import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 interface DialogoAGF {
   idFinado: number,
@@ -261,6 +260,7 @@ export class ControlPagoComponent implements OnInit {
   abrirModalAGF(): void {
     const data: DialogoAGF = this.generarDatosDialogoAGF();
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo("Registro de Ayuda de Gastos de Funeral", data);
+    this.cargadorService.activar();
     this.dialogService.open(RegistrarAgfComponent, REGISTRAR_PAGO_CONFIG);
   }
 

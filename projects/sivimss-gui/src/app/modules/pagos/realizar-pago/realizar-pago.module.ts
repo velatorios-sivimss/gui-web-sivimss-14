@@ -39,6 +39,7 @@ import { ModificarTipoPagoComponent } from './components/modificar-tipo-pago/mod
 import { EliminarTipoPagoComponent } from './components/eliminar-tipo-pago/eliminar-tipo-pago.component';
 import { BtnRegresarModule } from "../../../shared/btn-regresar/btn-regresar.module";
 import { ControlPagoComponent } from './components/control-pago/control-pago.component';
+import {TooltipModule} from "primeng/tooltip";
 
 
 @NgModule({
@@ -76,7 +77,8 @@ import { ControlPagoComponent } from './components/control-pago/control-pago.com
     CeldaStickyModule,
     AccordionModule,
     InputNumberModule,
-    BtnRegresarModule
+    BtnRegresarModule,
+    TooltipModule
   ],
   providers: [RealizarPagoService]
 })

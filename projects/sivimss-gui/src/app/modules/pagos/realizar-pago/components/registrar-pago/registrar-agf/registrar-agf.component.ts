@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {RealizarPagoService} from '../../../services/realizar-pago.service';
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {diferenciaUTC, mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {DetalleAyudaGastosFuneral} from '../../../modelos/ayudaGastosFuneral.interface';
 import {RegistroAGF} from "../../../modelos/registroAGF.interface";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
@@ -38,8 +38,9 @@ export class RegistrarAgfComponent implements OnInit {
 
   readonly CAPTURA_DE_AGF: number = 1;
   readonly VALIDACION_DE_AGF: number = 2;
-  readonly  ERROR_AGF: number = 3;
+  readonly ERROR_AGF: number = 3;
   pasoRegistrarAGF: number = 1;
+  aniosDiferencia: number = 0;
 
   datos_agf!: RegistroAGF;
 
@@ -65,9 +66,7 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.cargadorService.activar();
     this.cargarCatalogos();
-    this.obtenerDetalleAGF();
     this.inicializarAgfForm();
   }
 
@@ -104,6 +103,8 @@ export class RegistrarAgfComponent implements OnInit {
     const identifiaciones = respuesta[this.POSICION_CATALOGO_IDENTIFICACIONES].datos || [];
     this.identificaciones = mapearArregloTipoDropdown(identifiaciones, "desTipoId", "idTipoId");
     this.detalleAGF = respuesta[this.POSICION_DETALLE_AGF].datos[0];
+    const fechaDefuncion: Date = new Date(diferenciaUTC(this.detalleAGF.fecDeceso));
+    this.aniosDiferencia = this.calcularDiferenciaEnAnios(fechaDefuncion);
   }
 
   seleccionarBeneficiario(): void {
@@ -137,10 +138,10 @@ export class RegistrarAgfComponent implements OnInit {
       ramo: [{value: null, disabled: false}, [Validators.required]],
       identificacionOficial: [{value: null, disabled: false}, [Validators.required]],
       numeroIdentificacion: [{value: null, disabled: false}, [Validators.required]],
-      curp: [{value: false, disabled: false}],
-      actaDefuncion: [{value: false, disabled: false}],
-      cuentaGastos: [{value: false, disabled: false}],
-      documentoNSS: [{value: false, disabled: false}],
+      curp: [{value: false, disabled: false}, [Validators.requiredTrue]],
+      actaDefuncion: [{value: false, disabled: false}, [Validators.requiredTrue]],
+      cuentaGastos: [{value: false, disabled: false}, [Validators.requiredTrue]],
+      documentoNSS: [{value: false, disabled: false}, [Validators.requiredTrue]],
     })
   }
 
@@ -195,6 +196,32 @@ export class RegistrarAgfComponent implements OnInit {
   cancelar(): void {
     this.ref.close();
   }
+
+  esAnioBisiesto(anio: number): boolean {
+    return (anio % 4 === 0 && anio % 100 !== 0) || (anio % 400 === 0);
+  }
+
+  calcularDiferenciaEnAnios(fechaDada: Date): number {
+    const fechaActual: Date = new Date();
+
+    const anioActual: number = fechaActual.getFullYear();
+    const anioFechaDada: number = fechaDada.getFullYear();
+
+    let diferenciaEnAnios: number = anioActual - anioFechaDada;
+    if (
+      (fechaActual.getMonth() < fechaDada.getMonth()) ||
+      (fechaActual.getMonth() === fechaDada.getMonth() && fechaActual.getDate() < fechaDada.getDate())
+    ) {
+      diferenciaEnAnios--;
+    }
+    for (let anio: number = anioFechaDada; anio < anioActual; anio++) {
+      if (this.esAnioBisiesto(anio)) {
+        diferenciaEnAnios--;
+      }
+    }
+    return diferenciaEnAnios;
+  }
+
 
   get fagf() {
     return this.agfForm.controls

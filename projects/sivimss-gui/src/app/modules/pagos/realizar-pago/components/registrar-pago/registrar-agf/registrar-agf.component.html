@@ -96,7 +96,8 @@
       </div>
       <div class="flex justify-content-end mt-5">
         <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="agfForm.invalid">
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="agfForm.invalid || aniosDiferencia > 1"
+                [pTooltip]="'Para ser acredor al servicio de AGF la fecha de defunción no puede ser superior a 2 años'" tooltipPosition="bottom">
           Guardar
         </button>
       </div>
@@ -124,3 +125,4 @@
     </div>
   </ng-container>
 </ng-container>
+
