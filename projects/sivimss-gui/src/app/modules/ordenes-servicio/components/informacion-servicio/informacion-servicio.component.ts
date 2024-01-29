@@ -455,9 +455,9 @@ export class InformacionServicioComponent implements OnInit {
       header: 'Agregar panteón',
       style: {maxWidth: '876px', width: '100%'},
     });
-    ref.onClose.subscribe((val: number) => {
+    ref.onClose.subscribe((val: any) => {
       if (val) {
-        this.idPanteon = val
+        this.idPanteon = val.idPanteon;
         this.inhumacion.agregarPanteon.disable();
         this.confirmarGuardarPanteon = true
         return
