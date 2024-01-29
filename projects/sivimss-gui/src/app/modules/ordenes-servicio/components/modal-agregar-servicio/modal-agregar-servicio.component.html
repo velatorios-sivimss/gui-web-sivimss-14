@@ -25,7 +25,7 @@
         <label class="control-label" for="origen">Origen<span class="req">*</span>:</label>
         <div class="input-busqueda">
           <input id="origen" type="text" #origen class="form-control" formControlName="origen"
-                 [readOnly]="disableddMapa" placeholder="Ingresa dirección de origen" maxlength="45"
+                  placeholder="Ingresa dirección de origen" maxlength="45"
                  (keyup.enter)="buscar($event,origen.value,'origen')">
           <i class="pi pi-spin pi-spinner buscar-icon" *ngIf="mostrarLoaderOrigen"></i>
           <i class="pi pi-times limpiar-input" (click)="limpiarInput('origen')"></i>
@@ -39,7 +39,7 @@
         <label class="control-label" for="destino">Destino<span class="req">*</span>:</label>
         <div class="input-busqueda">
           <input id="destino" type="text" #destino class="form-control" formControlName="destino"
-                 [readOnly]="disableddMapa" placeholder="Ingresa dirección de destino" maxlength="45"
+                  placeholder="Ingresa dirección de destino" maxlength="45"
                  (keyup.enter)="buscar($event,destino.value,'destino')">
           <i class="pi pi-spin pi-spinner buscar-icon" *ngIf="mostrarLoaderDestino"></i>
           <i class="pi pi-times limpiar-input" (click)="limpiarInput('destino')"></i>
@@ -53,7 +53,7 @@
       <div class="col-md-6">
         <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
 
-        <input id="kilometraje" type="text" [readOnly]="true" class="form-control" formControlName="kilometraje"
+        <input id="kilometraje" type="text" [readOnly]="false" class="form-control" formControlName="kilometraje"
                placeholder="kilometraje">
 
         <span class="campo-obligatorio"

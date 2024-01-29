@@ -178,10 +178,8 @@ export class ModificarDatosFinadoSFComponent
     this.gestionarEtapasService.datosEtapaFinado$
       .asObservable()
       .subscribe((datosEtapaFinado) => this.inicializarForm(datosEtapaFinado));
-    this.datosFinado.tipoOrden.setValue(1);
-
-
     this.desabilitarTodo();
+    this.inicializarCalcularEdad();
   }
 
 
@@ -241,13 +239,13 @@ export class ModificarDatosFinadoSFComponent
       let a = moment(anio + '-' + mes + '-' + dia);
       edad = moment().diff(a, 'years');
     }
-
+    this.idContratoPrevision = datosEtapaFinado.datosFinado.idContratoPrevision
     this.form = this.formBuilder.group({
       datosFinado: this.formBuilder.group({
         tipoOrden: [{value: datosEtapaFinado.datosFinado.tipoOrden, disabled: false},
           [Validators.required]],
-        noContrato: [{value: datosEtapaFinado.datosFinado.noContrato, disabled: false},
-          [Validators.required]],
+        noContrato: [{value: datosEtapaFinado.datosFinado.folioConvenioPa ? datosEtapaFinado.datosFinado.folioConvenioPa : datosEtapaFinado.datosFinado.noContrato , disabled: false},
+           [Validators.required]],
         velatorioPrevision: [{value: datosEtapaFinado.datosFinado.velatorioPrevision, disabled: false},
           [Validators.required]],
         matricula: [{value: datosEtapaFinado.datosFinado.matricula, disabled: false},
@@ -269,7 +267,7 @@ export class ModificarDatosFinadoSFComponent
         sexo: [{value: datosEtapaFinado.datosFinado.sexo, disabled: false},
           [Validators.required]],
         otroTipoSexo: [{value: datosEtapaFinado.datosFinado.otroTipoSexo, disabled: false}],
-        nacionalidad: [{value: nacionalidad, disabled: false},
+        nacionalidad: [{value: datosEtapaFinado.datosFinado.nacionalidad, disabled: false},
           [Validators.required]],
         lugarNacimiento: [{value: datosEtapaFinado.datosFinado.lugarNacimiento, disabled: false},
           [Validators.required]],
@@ -658,9 +656,9 @@ export class ModificarDatosFinadoSFComponent
     this.finado.segundoApellido = datosEtapaFinado.datosFinado.segundoApellido;
     this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
     this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
-    this.finado.fechaNac = moment(datosEtapaFinado.datosFinado.tipoOrden).format('yyyy-MM-DD');
-    this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
-    this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
+    this.finado.fechaNac = moment(datosEtapaFinado.datosFinado.fechaNacimiento).format('yyyy-MM-DD');
+    this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
+    this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
     this.finado.fechaDeceso = moment(datosEtapaFinado.datosFinado.fechaDefuncion).format('yyyy-MM-DD');
     this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
     this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
@@ -750,6 +748,13 @@ export class ModificarDatosFinadoSFComponent
   validarBotonAceptar(): boolean {
     return this.form.invalid || this.folioInvalido
   }
+
+
+  inicializarCalcularEdad() {
+    if (this.datosFinado.fechaNacimiento.value != null)
+      this.datosFinado.edad.setValue(moment().diff(moment(this.datosFinado.fechaNacimiento.value), 'years'));
+  }
+
   llenarDescripcionDropDown(): void {
     let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
     obj.finado.clinicaAdscripcion = this.clinicaSeleccionada?.selectedOption?.label ?? null;
@@ -761,4 +766,5 @@ export class ModificarDatosFinadoSFComponent
     obj.finado.matricula = this.datosFinado.matricula.value
     localStorage.setItem("drop_down",JSON.stringify(obj));
   }
+
 }

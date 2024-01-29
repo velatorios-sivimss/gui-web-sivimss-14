@@ -149,8 +149,9 @@ export class ModalAgregarArticulosComplementariosComponent implements OnInit {
       idArticulo: this.idArticulo,
       idTipoServicio: null,
       idProveedor: this.idProveedor,
-      totalPaquete: this.costo,
-      importe: this.costo,
+      totalPaquete: this.costo * Number(this.f.cantidad.value),
+      importe: this.costo * Number(this.f.cantidad.value),
+      totalx: this.costo,
       esDonado: false,
       proviene: 'presupuesto',
     };

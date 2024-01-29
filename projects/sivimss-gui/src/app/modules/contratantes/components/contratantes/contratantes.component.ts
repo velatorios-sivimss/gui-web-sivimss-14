@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { OverlayPanel } from "primeng/overlaypanel";
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import { FormBuilder, FormGroup, FormGroupDirective, Validators } from "@angular/forms";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
@@ -73,7 +73,8 @@ export class ContratantesComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private renderer: Renderer2,
   ) { }
 
   ngOnInit(): void {
@@ -187,32 +188,26 @@ export class ContratantesComponent implements OnInit, OnDestroy {
     if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
-
     this.loaderService.activar();
-    this.descargaArchivosService.descargarArchivo(
-      this.contratantesService.descargarReporteTabla(this.reporteTabla(tipoReporte)),
-      configuracionArchivo
-    ).pipe(
+    this.contratantesService.descargarReporteTabla(this.reporteTabla(tipoReporte)).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next: (respuesta: any) => {
-        if (respuesta) {
-          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-          this.modalConfirmacion();
-        }
+      next: (blob: any) => {
+        let link = this.renderer.createElement('a');
+        const file = new Blob([blob], {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download', 'Listado contratantes');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.modalConfirmacion();
       },
       error: (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error);
-        const mensaje = this.alertas?.filter((msj: any) => {
-          return msj.idMensaje == error?.error?.mensaje;
-        })
-        if (mensaje) {
-          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
-        } else {
-          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
-        }
-      },
-    });
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    })
   }
 
   reporteTabla(tipoReporte: string): ReporteTabla {
@@ -263,7 +258,7 @@ export class ContratantesComponent implements OnInit, OnDestroy {
     }
   }
 
-  
+
   ngOnDestroy(): void {
     if (this.detalleRef) {
       this.detalleRef.destroy();

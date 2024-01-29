@@ -7,5 +7,6 @@ export interface Pago {
   folio: string,
   nomContratante: string,
   tipoPago: string,
-  idPagoBitacora: number
+  idPagoBitacora: number,
+  indModPago: number
 }

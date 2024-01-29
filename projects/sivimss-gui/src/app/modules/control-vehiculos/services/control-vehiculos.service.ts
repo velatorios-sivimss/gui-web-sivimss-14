@@ -45,8 +45,8 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consulta-ods`, { idODS });
   }
 
-  obtenerOperadores(idVehiculo: number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consulta-operador`, { idVehiculo });
+  obtenerOperadores(idDelegacion: number | null, idVelatorio: number | null): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consulta-operador`, { idDelegacion, idVelatorio });
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {

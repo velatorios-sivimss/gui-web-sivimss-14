@@ -180,6 +180,7 @@ export class ModificarInformacionServicioSFComponent
     this.buscarCapillas();
     this.buscarSalas();
     this.buscarPromotor();
+    this.validarExistenciaPromotor();
   }
 
   validarExistenciaPanteon(datos:any): void {
@@ -263,8 +264,8 @@ export class ModificarInformacionServicioSFComponent
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          {value: !!datos.idPanteon, disabled: datos.idPanteon}
-        ],
+           {value:  !!datos.idPanteon, disabled: !!datos.idPanteon}
+         ],
       }),
       recoger: this.formBuilder.group({
         fecha: [
@@ -1092,5 +1093,9 @@ export class ModificarInformacionServicioSFComponent
     obj.informacion.capilla = this.idCapilla?.selectedOption?.label ?? null;
     obj.informacion.sala = this.salaCambio?.selectedOption?.label ?? null;
     localStorage.setItem("drop_down",JSON.stringify(obj));
+  }
+
+  validarExistenciaPromotor(): void {
+    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable();
   }
 }

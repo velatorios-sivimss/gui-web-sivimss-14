@@ -21,6 +21,8 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _modificarPago: string = 'actualizar-pagos';
   private readonly _imprimirPago: string = 'generar-pdf-tabla-pagos';
   private readonly _funcionalidadAGF: number = 96;
+  private readonly _validaAGF: string = 'valida-uso-agf';
+  private readonly _validaVale: string = 'consultar-vale-paritaria';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "crear_pagos", "",
@@ -53,46 +55,40 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
-  consultarPagosODS(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  consultarPagosODS(body: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
-      .append("tamanio", tamanio)
-      .append("servicio", this._odsPagos);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._odsPagos}`, body, {params});
   }
 
-  consultarPagosConvenio(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  consultarPagosConvenio(body: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
-      .append("tamanio", tamanio)
-      .append("servicio", this._prevFunPagos);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._prevFunPagos}`, body, {params});
   }
 
-  consultarPagosRenovacionConvenio(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  consultarPagosRenovacionConvenio(body: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
-      .append("tamanio", tamanio)
-      .append("servicio", this._renPrevFunPagos);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._renPrevFunPagos}`, body, {params});
   }
 
-  consultarFoliosODS(): Observable<HttpRespuesta<any>> {
-    const params: HttpParams = new HttpParams()
-      .append("servicio", this._odsFolios);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  consultarFoliosODS(idVelatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { idVelatorio: number | null } = {idVelatorio}
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._odsFolios}`, body);
   }
 
-  consultarFoliosPrevFun(): Observable<HttpRespuesta<any>> {
-    const params: HttpParams = new HttpParams()
-      .append("servicio", this._prevFunFolios);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  consultarFoliosPrevFun(idVelatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { idVelatorio: number | null } = {idVelatorio}
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._prevFunFolios}`, body);
   }
 
-  consultarFoliosRenPrevFun(): Observable<HttpRespuesta<any>> {
-    const params: HttpParams = new HttpParams()
-      .append("servicio", this._renPrevFunFolios);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  consultarFoliosRenPrevFun(idVelatorio: number | null): Observable<HttpRespuesta<any>> {
+    const body: { idVelatorio: number | null } = {idVelatorio}
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._renPrevFunFolios}`, body);
   }
 
   consultarDetallePago(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
@@ -107,6 +103,16 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
 
   modificarMetodoPago(body: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._modificarPago}`, body)
+  }
+
+  consultarIdODSAGF(idODS: number): Observable<HttpRespuesta<any>> {
+    const body = {idODS}
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._validaAGF}`, body)
+  }
+
+  consultarIdODSVale(idOds: number): Observable<HttpRespuesta<any>> {
+    const body = {idOds}
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._validaVale}`, body)
   }
 
   descargarListado(body: any): Observable<Blob> {
@@ -131,7 +137,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   consultarBeneficiarios(nss: number, fechaDefuncion: string) {
-    const body = { cveNSS: nss, fechaDefuncion }
+    const body = {cveNSS: nss, fechaDefuncion}
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidadAGF}/beneficiarios-regis-agf`, body);
   }
 

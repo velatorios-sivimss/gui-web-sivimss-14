@@ -745,7 +745,7 @@ export class DatosFinadoComponent implements OnInit, OnDestroy{
       this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
       this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
       this.finado.fechaNac = moment(
-        datosEtapaFinado.datosFinado.tipoOrden
+        datosEtapaFinado.datosFinado.fechaNacimiento
       ).format('yyyy-MM-DD');
       this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
       this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
@@ -1121,7 +1121,7 @@ export class DatosFinadoComponent implements OnInit, OnDestroy{
       this.datosFinado.fechaNacimiento.setValue(fecha);
       this.datosFinado.sexo.setValue(persona.finado?.sexo);
       this.datosFinado.velatorioPrevision.setValue(persona.nombreVelatorio);
-      if (Number(persona.finado.idPais) == 119) {
+      if (Number(persona.finado.idPais) == 119 || persona.finado.idPais === null) {
         this.datosFinado.nacionalidad.setValue(1);
         this.datosFinado.lugarNacimiento.setValue(Number(persona.finado.idEstado));
       } else {

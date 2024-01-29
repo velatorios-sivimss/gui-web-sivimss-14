@@ -104,7 +104,7 @@
             <td>{{paquete.grupo}}</td>
             <td>{{paquete.concepto}}</td>
             <td>{{paquete.cantidad}}</td>
-            <td>{{paquete.importe | currency:"USD":"symbol"}}</td>
+            <td>{{ paquete.totalx ?  paquete.totalx : paquete.importe | currency:"USD":"symbol"}}</td>
             <td>{{paquete.proveedor}}</td>
             <td>{{paquete.totalPaquete | currency:"USD":"symbol"}}</td>
             <td style="width:200px">

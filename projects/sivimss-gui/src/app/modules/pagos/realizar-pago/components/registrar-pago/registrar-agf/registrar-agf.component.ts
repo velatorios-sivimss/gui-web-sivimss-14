@@ -8,9 +8,12 @@ import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.
 import {RealizarPagoService} from '../../../services/realizar-pago.service';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {DetalleAyudaGastosFuneral} from '../../../modelos/ayudaGastosFuneral.interface';
-import * as moment from "moment/moment";
 import {RegistroAGF} from "../../../modelos/registroAGF.interface";
-import {RegistroPago} from "../../../modelos/registroPago.interface";
+import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
+import {finalize} from "rxjs/operators";
+import {forkJoin, Observable} from "rxjs";
+import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
+import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/services/alerta.service";
 
 @Component({
   selector: 'app-registrar-agf',
@@ -29,9 +32,16 @@ export class RegistrarAgfComponent implements OnInit {
   idRegistro!: number;
   importeTotal!: number;
 
+  readonly POSICION_CATALOGO_RAMOS: number = 0;
+  readonly POSICION_CATALOGO_IDENTIFICACIONES: number = 1;
+  readonly POSICION_DETALLE_AGF: number = 2;
+
   readonly CAPTURA_DE_AGF: number = 1;
   readonly VALIDACION_DE_AGF: number = 2;
+  readonly  ERROR_AGF: number = 3;
   pasoRegistrarAGF: number = 1;
+
+  datos_agf!: RegistroAGF;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,7 +49,14 @@ export class RegistrarAgfComponent implements OnInit {
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private router: Router,
+    private mensajesSistemaService: MensajesSistemaService,
+    private cargadorService: LoaderService,
+    private alertaService: AlertaService,
     private route: ActivatedRoute) {
+    this.obtenerDatosAGF();
+  }
+
+  obtenerDatosAGF(): void {
     this.idFinado = this.config.data.idFinado;
     this.idPagoBitacora = this.config.data.idPagoBitacora;
     this.idFlujoPago = this.config.data.idFlujoPago;
@@ -48,24 +65,67 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.obtenerRamos();
+    this.cargadorService.activar();
+    this.cargarCatalogos();
     this.obtenerDetalleAGF();
-    this.obtenerIdentificaciones();
     this.inicializarAgfForm();
   }
 
-  aceptar(): void {
+  cargarCatalogos(): void {
+    forkJoin([this.obtenerRamos(), this.obtenerIdentificaciones(), this.obtenerDetalleAGF()]).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]): void => this.procesarCatalogos(respuesta),
+      error: (error: HttpErrorResponse) => this.mostrarMensajeError(error)
+    })
+  }
+
+  obtenerRamos(): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.obtenerRamos();
+  }
+
+  obtenerDetalleAGF(): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.obtenerDetalleAGF(this.idFinado);
+  }
+
+  obtenerIdentificaciones(): Observable<HttpRespuesta<any>> {
+    return this.realizarPagoService.obtenerIdentificaciones();
+  }
+
+  private mostrarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    const ERROR: string = 'Error al consultar la información.';
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+  }
+
+  procesarCatalogos(respuesta: [HttpRespuesta<any>, HttpRespuesta<any>, HttpRespuesta<any>]): void {
+    const ramos = respuesta[this.POSICION_CATALOGO_RAMOS].datos || [];
+    this.ramos = mapearArregloTipoDropdown(ramos, "desRamo", "idRamo");
+    const identifiaciones = respuesta[this.POSICION_CATALOGO_IDENTIFICACIONES].datos || [];
+    this.identificaciones = mapearArregloTipoDropdown(identifiaciones, "desTipoId", "idTipoId");
+    this.detalleAGF = respuesta[this.POSICION_DETALLE_AGF].datos[0];
+  }
+
+  seleccionarBeneficiario(): void {
     this.ref.close();
-    const registroAGF: RegistroAGF = this.crearRegistroAGF();
-    const datos_agf: string = window.btoa(JSON.stringify(registroAGF));
-    const registroPago: RegistroPago = this.crearRegistroPago();
-    const datos_pago: string = window.btoa(JSON.stringify(registroPago))
+    const datos_agf: string = window.btoa(JSON.stringify(this.datos_agf));
     const fecDefuncion: string = this.obtenerFechaDefuncion(this.detalleAGF.fecDeceso);
-    void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss, fecDefuncion],
-      {relativeTo: this.route, queryParams: {datos_agf, datos_pago}})
+    void this.router.navigate(['../../agf-seleccion-beneficiarios', this.detalleAGF.cveNss, fecDefuncion],
+      {relativeTo: this.route, queryParams: {datos_agf}})
+  }
+
+  verificarTipoRamo(): void {
+    this.datos_agf = this.crearRegistroAGF();
+    const ramo = this.agfForm.get('ramo')?.value;
+    if ([3].includes(ramo)) {
+      this.seleccionarBeneficiario();
+      return;
+    }
+    this.crearAGF();
   }
 
   obtenerFechaDefuncion(fecDeceso: string): string {
+    if (!fecDeceso) return '';
     const partes: string[] = fecDeceso.split('/');
     if (partes.length !== 3) return '';
     const [dia, mes, anio] = partes;
@@ -84,29 +144,6 @@ export class RegistrarAgfComponent implements OnInit {
     })
   }
 
-  obtenerRamos(): void {
-    this.ramos = [];
-    this.realizarPagoService.obtenerRamos().subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.ramos = mapearArregloTipoDropdown(respuesta.datos, "desRamo", "idRamo");
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-      }
-    })
-  }
-
-  obtenerDetalleAGF(): void {
-    this.realizarPagoService.obtenerDetalleAGF(this.idFinado).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.detalleAGF = respuesta.datos[0];
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-      }
-    })
-  }
-
   crearRegistroAGF(): RegistroAGF {
     return {
       casillaActDef: this.agfForm.get('actaDefuncion')?.value,
@@ -114,45 +151,45 @@ export class RegistrarAgfComponent implements OnInit {
       casillaCurp: this.agfForm.get('curp')?.value,
       casillaNssi: this.agfForm.get('documentoNSS')?.value,
       cveCURP: this.detalleAGF.cveCurp,
-      cveNSS: this.detalleAGF.cveNss,
+      cveNSS: this.detalleAGF.cveNss.toString(),
       fecDefuncion: this.detalleAGF.fecDeceso,
       idFinado: this.idFinado,
       idRamo: this.agfForm.get('ramo')?.value,
       idTipoId: this.agfForm.get('identificacionOficial')?.value,
       idVelatorio: this.detalleAGF.idVelatorio,
       numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value,
-      cveCURPBeneficiario: "",
-      nombreBeneficiario: "",
-      idPagoDetalle: null
+      cveCURPBeneficiario: '',
+      nombreBeneficiario: '',
+      idPagoBitacora: this.idPagoBitacora
     }
   }
 
-  crearRegistroPago(): RegistroPago {
-    let fechaValeAGF = moment(new Date()).format('YYYY-MM-DD');
-    return {
-      descBanco: null,
-      fechaPago: null,
-      fechaValeAGF: fechaValeAGF,
-      idFlujoPago: this.idFlujoPago,
-      idMetodoPago: 2,
-      idPagoBitacora: this.idPagoBitacora,
-      idRegistro: this.idRegistro,
-      importePago: this.importeTotal,
-      importeRegistro: this.importeTotal,
-      numAutorizacion: ""
-    }
+  crearAGF(): void {
+    this.realizarPagoService.guardarAGF(this.datos_agf).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (): void => this.manejoRespuestaExitosaPago(),
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
+    });
   }
 
-  obtenerIdentificaciones(): void {
-    this.identificaciones = [];
-    this.realizarPagoService.obtenerIdentificaciones().subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.identificaciones = mapearArregloTipoDropdown(respuesta.datos, "desTipoId", "idTipoId");
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-      }
-    })
+  private manejoRespuestaExitosaPago(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
+    this.actualizarPagina();
+  }
+
+  private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
+    this.pasoRegistrarAGF = this.ERROR_AGF;
+    console.log(error);
+  }
+
+  actualizarPagina(): void {
+    window.location.reload();
+  }
+
+  concluirServicioAGF(): void {
+    this.ref.close();
+    window.location.reload();
   }
 
   cancelar(): void {
