@@ -51,8 +51,9 @@
   </div>
   <div class="col-md-4">
     <label class="control-label" for="paisNacimiento">Pais de Nacimiento<span class="req">*</span>:</label>
-    <input id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
-           placeholder="Inserta el pais de nacimiento">
+    <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento" [options]="paises"
+                placeholder="Seleccionar el pais de nacimiento" [filter]="true" filterBy="label">
+    </p-dropdown>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="lugarNacimiento">Lugar de Nacimiento<span class="req">*</span>:</label>

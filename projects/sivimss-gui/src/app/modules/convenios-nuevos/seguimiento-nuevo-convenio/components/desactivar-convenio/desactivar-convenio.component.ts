@@ -93,7 +93,8 @@ interface PreRegistroPA {
   "idTitularSust": number,
   "beneficiario1": number,
   "beneficiario2": number,
-  "gestionPromotor": boolean
+  "gestionPromotor": boolean,
+  "activo": number
 }
 
 @Component({
@@ -127,6 +128,7 @@ export class DesactivarConvenioComponent implements OnInit {
   tipoConvenio: string = '';
   promotor: boolean = false;
   mismoSustituto: boolean = false;
+  activo: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -152,6 +154,7 @@ export class DesactivarConvenioComponent implements OnInit {
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
     }
     this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
+    this.activo = this.titularPA.activo === 1;
     this.beneficiarios = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
     this.promotor = this.titularPA.gestionPromotor;
     this.obtenerBeneficiarios()

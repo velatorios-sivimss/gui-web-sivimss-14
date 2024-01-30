@@ -10,6 +10,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 interface BeneficiarioResponse {
   idBeneficiario: number,
@@ -132,6 +133,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   beneficiario2!: BeneficiarioResponse;
   titularPA!: PreRegistroPA;
 
+
   constructor(
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
@@ -139,6 +141,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     public dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+
   ) {
     this.tipoConvenio = this.activatedRoute.snapshot.params.tipoConvenio ?? '';
     this.cargarCatalogos();
@@ -166,6 +169,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     const paquetes = respuesta[this.POSICION_PAQUETES].datos;
     this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
   }
+
+
 
   obtenerBeneficiarios(): void {
     const idBeneficiario1: number = this.titularPA.beneficiario1;
@@ -207,7 +212,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         municipio: [{value: this.convenioPersona.municipio, disabled: false}],
         estado: [{value: this.convenioPersona.estado, disabled: false}],
         nacionalidad: [{value: null, disabled: false}],
-        paisNacimiento: [{value: this.convenioPersona.pais, disabled: false}],
+        paisNacimiento: [{value: parseInt(this.convenioPersona.pais), disabled: false}],
         lugarNacimiento: [{value: this.convenioPersona.lugarNac, disabled: false}],
         correoElectronico: [{value: this.convenioPersona.correo, disabled: false}],
         telefono: [{value: this.convenioPersona.telFijo, disabled: false}],
@@ -250,7 +255,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         sexo: [{value: this.titularPA.idSexo, disabled: false}],
         fechaNacimiento: [{value: null, disabled: false}],
         nacionalidad: [{value: null, disabled: false}],
-        paisNacimiento: [{value: this.titularPA.idPais, disabled: false}],
+        paisNacimiento: [{value: +this.titularPA.idPais, disabled: false}],
         lugarNacimiento: [{value: null, disabled: false}],
         telefonoCelular: [{value: this.titularPA.telCelular, disabled: false}],
         telefonoFijo: [{value: this.titularPA.telFijo, disabled: false}],
@@ -334,7 +339,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         municipio: [{value: null, disabled: false}],
         estado: [{value: null, disabled: false}],
       }),
-    })
+    });
+    console.log(this.contratacionNuevoConvenioForm.get('titular'))
+
   }
 
   cargarBeneficiarios(): void {
