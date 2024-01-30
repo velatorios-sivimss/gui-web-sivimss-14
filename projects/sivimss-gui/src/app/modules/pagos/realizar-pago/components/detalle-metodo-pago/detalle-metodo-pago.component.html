@@ -67,7 +67,7 @@
       </ng-template>
       <ng-template pTemplate="content">
         <div class="flex-row flex justify-content-between"
-             *ngIf="['Efectivo', 'Traslado oficial'].includes(pago.metodoPago)">
+             *ngIf="[5,8].includes(pago.idMetodoPago)">
           <div>
             <span class="flex flex-column texto-base">Fecha de pago:</span>
             <span class="flex flex-column etiqueta-base">{{pago.fechaPago}}</span>
@@ -81,23 +81,23 @@
             <span class="flex flex-column etiqueta-base mr-4">{{pago.metodoPago}}</span>
           </div>
         </div>
-        <div class="row grid" *ngIf="!['Efectivo', 'Traslado oficial','Vale paritaria'].includes(pago.metodoPago)">
+        <div class="row grid" *ngIf="![5,8,1].includes(pago.idMetodoPago)">
           <div class="col">
             <span class="flex flex-column texto-base">Fecha de pago:</span>
             <span class="flex flex-column etiqueta-base">{{pago.fechaPago }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column texto-base"
-                  *ngIf="!['Transferencia', 'Deposito'].includes(pago.metodoPago)">Número de Autorización</span>
+                  *ngIf="![6,7].includes(pago.idMetodoPago)">Número de Autorización</span>
             <span class="flex flex-column texto-base"
-                  *ngIf="['Transferencia', 'Deposito'].includes(pago.metodoPago)">Folio de Autorización</span>
+                  *ngIf="[6,7].includes(pago.idMetodoPago)">Folio de Autorización</span>
             <span class="flex flex-column etiqueta-base">{{pago.numAutorizacion}}</span>
           </div>
           <div class="col">
             <span class="flex flex-column texto-base"
-                  *ngIf="!['Transferencia', 'Deposito'].includes(pago.metodoPago)">Nombre del banco</span>
+                  *ngIf="![6,7].includes(pago.idMetodoPago)">Nombre del banco</span>
             <span class="flex flex-column texto-base"
-                  *ngIf="['Transferencia', 'Deposito'].includes(pago.metodoPago)">Banco</span>
+                  *ngIf="[6,7].includes(pago.idMetodoPago)">Banco</span>
             <span class="flex flex-column etiqueta-base">{{pago.nomBanco}}</span>
           </div>
           <div class="col">
@@ -109,7 +109,7 @@
             <span class="flex flex-column etiqueta-base">{{pago.metodoPago}}</span>
           </div>
         </div>
-        <div class="row grid" *ngIf="['Vale paritaria'].includes(pago.metodoPago)">
+        <div class="row grid" *ngIf="[1].includes(pago.idMetodoPago)">
           <div class="col">
             <span class="flex flex-column texto-base">Fecha:</span>
             <span class="flex flex-column etiqueta-base">{{pago.fechaPago }}</span>

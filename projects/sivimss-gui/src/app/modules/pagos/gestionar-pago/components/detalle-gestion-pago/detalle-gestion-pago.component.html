@@ -3,7 +3,7 @@
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
       <div class="table-panel-header-column">
-        <span>Folio </span><span class="font-bold ml-3">{{registroPago.folio}}</span>
+        <span>Folio </span><span class="font-bold ml-3">{{ registroPago.folio }}</span>
       </div>
     </ng-template>
     <ng-template appCustomTemplate="right-header">
@@ -11,7 +11,7 @@
         <div class="flex flex-column">
           <span>Fecha de pago</span>
           <div class="contenedor-inputswitch">
-            <span class="font-bold ml-4">{{registroPago.fecPago}}</span>
+            <span class="font-bold ml-4">{{ registroPago.fecPago }}</span>
           </div>
         </div>
       </div>
@@ -28,11 +28,11 @@
           <div class="accordion-header-right">
             <div class="estatus">
               <span>Importe</span>
-              <b>{{pago.importe | currency}}</b>
+              <b>{{ pago.importe | currency }}</b>
             </div>
-            <div class="ml-7" *ngIf="['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.desMetodoPago)"></div>
+            <div class="ml-7" *ngIf="[1, 2].includes(pago.idMetodoPago)"></div>
             <a class="ml-5 cursor-pointer" (click)="mostrarOverlay($event, pago)"
-               *ngIf="!['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.desMetodoPago)">
+               *ngIf="![1, 2].includes(pago.idMetodoPago)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>
@@ -42,19 +42,19 @@
         <div class="row grid">
           <div class="col">
             <span class="flex flex-column etiqueta-base font-bold">Fecha:</span>
-            <span class="texto-base">{{pago.fecPago }}</span>
+            <span class="texto-base">{{ pago.fecPago }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column etiqueta-base font-bold">Total:</span>
-            <span class="texto-base">{{pago.importe | currency}}</span>
+            <span class="texto-base">{{ pago.importe | currency }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column etiqueta-base font-bold">Folio de autorización:</span>
-            <span class="texto-base">{{pago.numAutorizacion}}</span>
+            <span class="texto-base">{{ pago.numAutorizacion }}</span>
           </div>
           <div class="col">
             <span class="flex flex-column etiqueta-base font-bold">Banco:</span>
-            <span class="texto-base">{{pago.desBanco}}</span>
+            <span class="texto-base">{{ pago.desBanco }}</span>
           </div>
         </div>
         <ng-container *ngIf="pago.motivoModifica">
@@ -62,7 +62,7 @@
           <div class="row grid">
             <div class="col">
               <span class="flex flex-column etiqueta-base font-bold">Motivo de modificación:</span>
-              <span class="texto-base">{{pago.motivoModifica}}</span>
+              <span class="texto-base">{{ pago.motivoModifica }}</span>
             </div>
           </div>
         </ng-container>
@@ -71,7 +71,7 @@
           <div class="row grid">
             <div class="col">
               <span class="flex flex-column etiqueta-base font-bold">Motivo de cancelación:</span>
-              <span class="texto-base">{{pago.motivoCancela}}</span>
+              <span class="texto-base">{{ pago.motivoCancela }}</span>
             </div>
           </div>
         </ng-container>
@@ -84,7 +84,7 @@
       <div class="col">
         <span class="flex flex-column etiqueta-base align-items-end mr-15">Monto Total</span>
         <span
-          class="flex flex-column texto-base align-items-end font-bold mr-15">{{registroPago.montoTotal | currency}}</span>
+          class="flex flex-column texto-base align-items-end font-bold mr-15">{{ registroPago.montoTotal | currency }}</span>
       </div>
     </div>
   </div>
@@ -99,9 +99,11 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion class="text-center" titulo="Modificar pago" (click)="modificarTipoPago()" onCloseOnNavigation>
+      <app-overlay-panel-opcion class="text-center" titulo="Modificar pago" (click)="modificarTipoPago()"
+                                onCloseOnNavigation>
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion class="text-center" titulo="Cancelar pago" (click)="cancelarTipoPago()" onCloseOnNavigation>
+      <app-overlay-panel-opcion class="text-center" titulo="Cancelar pago" (click)="cancelarTipoPago()"
+                                onCloseOnNavigation>
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
