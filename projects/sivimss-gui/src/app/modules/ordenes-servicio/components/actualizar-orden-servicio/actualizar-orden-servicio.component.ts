@@ -247,6 +247,9 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
       }
       for (let element of detallePresupuesto) {
         if(element.proviene.includes('presupuesto')){
+          if(element.cantidad > 1){
+            element.importeMonto = element.importeMonto / element.cantidad
+          }
           total += Number(element.importeMonto * element.cantidad);
         }
         let utilizarArticulo = false;
