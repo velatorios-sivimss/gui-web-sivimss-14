@@ -155,7 +155,8 @@ export class DesactivarConvenioComponent implements OnInit {
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
     }
     this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
-    this.mismoSustituto = !respuesta[this.POSICION_CONVENIO].datos.sustituto
+    this.mismoSustituto = !respuesta[this.POSICION_CONVENIO].datos.sustituto;
+    this.obtenerSustitutoDesdeTitular();
     this.activo = this.titularPA.activo === 1;
     this.beneficiarios = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
     this.promotor = this.titularPA.gestionPromotor;
@@ -178,7 +179,9 @@ export class DesactivarConvenioComponent implements OnInit {
   }
 
   obtenerSustitutoDesdeTitular(): void {
-
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"][this.POSICION_CONVENIO].datos
+    if (!this.mismoSustituto) this.sustituto = respuesta.sustituto;
+    console.log(!this.mismoSustituto)
   }
 
   aceptar() {

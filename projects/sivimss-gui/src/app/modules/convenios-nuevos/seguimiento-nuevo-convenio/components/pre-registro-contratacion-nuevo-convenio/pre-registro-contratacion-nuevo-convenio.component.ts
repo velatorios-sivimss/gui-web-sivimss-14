@@ -10,7 +10,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
-import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 interface BeneficiarioResponse {
   idBeneficiario: number,
