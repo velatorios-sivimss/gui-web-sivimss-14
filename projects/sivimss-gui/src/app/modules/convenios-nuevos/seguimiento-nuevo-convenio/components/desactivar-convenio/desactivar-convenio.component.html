@@ -50,7 +50,23 @@
               <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
             </div>
           </div>
-          <app-resumen-titular-beneficiario [titular]="'beneficiario'"></app-resumen-titular-beneficiario>
+          <ng-container *ngIf="!mismoSustituto">
+            <app-resumen-titular-beneficiario [titular]="'beneficiario'" [matricula]="sustituto.matricula"
+                                              [rfc]="sustituto.rfc"
+                                              [curp]="sustituto.curp" [nombre]="sustituto.nombre"
+                                              [nss]="sustituto.nss" [primerApellido]="sustituto.primerApellido"
+                                              [segundoApellido]="sustituto.segundoApellido"
+                                              [calle]="sustituto.calle" [numeroExterior]="sustituto.numExt"
+                                              [numeroInterior]="sustituto.numInt" [codigoPostal]="sustituto.cp"
+                                              [colonia]="sustituto.colonia" [municipio]="sustituto.municipio"
+                                              [estado]="sustituto.estado"
+                                              [lugarNacimiento]="sustituto.lugarNac"
+                                              [correoElectronico]="sustituto.correo"
+                                              [telefono]="sustituto.telCelular"
+                                              [nacionalidad]="+sustituto.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'">
+
+            </app-resumen-titular-beneficiario>
+          </ng-container>
         </ng-template>
       </p-accordionTab>
     </p-accordion>
@@ -75,7 +91,7 @@
                                               [lugarNacimiento]="beneficiario1.lugarNac"
                                               [correoElectronico]="beneficiario1.correo"
                                               [telefono]="beneficiario1.telCelular"
-                                              [nacionalidad]="+titularPA.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
+                                              [nacionalidad]="+beneficiario1.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
             ></app-resumen-titular-beneficiario>
           </ng-container>
         </ng-template>
@@ -102,7 +118,7 @@
                                               [lugarNacimiento]="beneficiario2.lugarNac"
                                               [correoElectronico]="beneficiario2.correo"
                                               [telefono]="beneficiario2.telCelular"
-                                              [nacionalidad]="+titularPA.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
+                                              [nacionalidad]="+beneficiario2.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
             ></app-resumen-titular-beneficiario>
           </ng-container>
         </ng-template>
@@ -256,7 +272,8 @@
 
 <div class="row mt-3 mb-2">
   <div class="col-md-12 mt-4">
-    <p class="mensaje-cancelacion-orden">¿Está seguro de {{ activo ? 'activar' :  'desactivar' }} el registro seleccionado?</p>
+    <p class="mensaje-cancelacion-orden">¿Está seguro de {{ activo ? 'desactivar' : 'activar' }} el registro
+      seleccionado?</p>
   </div>
   <div class="col-md-12 flex justify-content-end mt-6 mb-4">
     <button type="submit" class="btn btn-default btn-md" routerLink="./../../../">Cancelar</button>

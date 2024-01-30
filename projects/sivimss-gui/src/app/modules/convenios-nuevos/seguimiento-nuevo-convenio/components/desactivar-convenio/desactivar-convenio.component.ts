@@ -122,6 +122,7 @@ export class DesactivarConvenioComponent implements OnInit {
   beneficiarios: BeneficiarioResponse[] = [];
   beneficiario1!: BeneficiarioResponse;
   beneficiario2!: BeneficiarioResponse;
+  sustituto!: BeneficiarioResponse;
   convenioPersona!: ConvenioPersona;
   convenioEmpresa!: ConvenioEmpresa;
   titularPA!: PreRegistroPA;
@@ -154,6 +155,7 @@ export class DesactivarConvenioComponent implements OnInit {
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
     }
     this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
+    this.mismoSustituto = !respuesta[this.POSICION_CONVENIO].datos.sustituto
     this.activo = this.titularPA.activo === 1;
     this.beneficiarios = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
     this.promotor = this.titularPA.gestionPromotor;
@@ -173,6 +175,10 @@ export class DesactivarConvenioComponent implements OnInit {
     if (idBeneficiario2 !== 0) {
       this.beneficiario2 = this.beneficiarios.find(beneficiario => beneficiario.idBeneficiario === idBeneficiario2)!;
     }
+  }
+
+  obtenerSustitutoDesdeTitular(): void {
+
   }
 
   aceptar() {
