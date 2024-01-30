@@ -307,45 +307,38 @@ export class RegistroComponent implements OnInit {
       }
     } else {
       this.registroService.validarCurpRfc({ rfc: null, curp: this.datosGenerales.curp.value }).subscribe({
-        next: (respuesta: HttpRespuesta<IContratanteRegistrado>) => {
+        next: (respuesta: HttpRespuesta<IContratanteRegistrado[]>) => {
           this.datosGenerales.curp.setErrors({ 'incorrect': true });
           if (respuesta.mensaje === 'USUARIO REGISTRADO') {
-            // Si idUsuario existe se trata de un usuario existente y se manda mensaje de CURP ya registrada
-            if (respuesta.datos.idUsuario) {
-              this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP ya se encuentra registrado.');
-              this.datosGenerales.curp.patchValue(null);
-              this.ajustarForm();
-            } else {
-              // Si idUsuario es null solo falta crear el usuario - Se debe pre-llenar formulario
-              this.datosGenerales.curp.setValue(respuesta.datos.curp);
-              this.datosGenerales.nss.setValue(respuesta.datos.nss);
-              this.datosGenerales.rfc.setValue(respuesta.datos.rfc);
-              this.datosGenerales.nombre.setValue(respuesta.datos.nomPersona);
-              this.datosGenerales.primerApellido.setValue(respuesta.datos.paterno);
-              this.datosGenerales.segundoApellido.setValue(respuesta.datos.materno);
-              this.datosGenerales.fechaNacimiento.setValue(respuesta.datos.fecNacimiento);
-              this.datosGenerales.sexo.setValue(respuesta.datos.idSexo);
-              this.datosGenerales.otro.setValue(respuesta.datos.otroSexo);
-              this.datosGenerales.nacionalidad.setValue(respuesta.datos.idPais === 119 ? 1 : 2);
-              this.datosGenerales.paisNacimiento.setValue(respuesta.datos.idPais);
-              this.datosGenerales.lugarNacimiento.setValue(respuesta.datos.idLugarNac);
-              this.datosGenerales.telefono.setValue(respuesta.datos.tel);
-              this.datosGenerales.correo.setValue(respuesta.datos.correo);
-              this.datosGenerales.correoConfirmacion.setValue(respuesta.datos.correo);
+            const datosUsuario = respuesta.datos[0];
+            // Si idUsuario es null solo falta crear el usuario - Se debe pre-llenar formulario
+            this.datosGenerales.curp.setValue(datosUsuario.curp);
+            this.datosGenerales.nss.setValue(datosUsuario.nss);
+            this.datosGenerales.rfc.setValue(datosUsuario.rfc);
+            this.datosGenerales.nombre.setValue(datosUsuario.nomPersona);
+            this.datosGenerales.primerApellido.setValue(datosUsuario.paterno);
+            this.datosGenerales.segundoApellido.setValue(datosUsuario.materno);
+            this.datosGenerales.fechaNacimiento.setValue(datosUsuario.fecNacimiento);
+            this.datosGenerales.sexo.setValue(datosUsuario.idSexo);
+            this.datosGenerales.otro.setValue(datosUsuario.otroSexo);
+            this.datosGenerales.nacionalidad.setValue(datosUsuario.idPais === 119 ? 1 : 2);
+            this.datosGenerales.paisNacimiento.setValue(datosUsuario.idPais);
+            this.datosGenerales.lugarNacimiento.setValue(datosUsuario.idLugarNac);
+            this.datosGenerales.telefono.setValue(datosUsuario.tel);
+            this.datosGenerales.correo.setValue(datosUsuario.correo);
+            this.datosGenerales.correoConfirmacion.setValue(datosUsuario.correo);
 
-              this.domicilio.calle.setValue(respuesta.datos.calle);
-              this.domicilio.numeroInterior.setValue(respuesta.datos.numInt);
-              this.domicilio.numeroExterior.setValue(respuesta.datos.numExt);
-              this.domicilio.codigoPostal.setValue(respuesta.datos.cp);
-              this.obtenerCP(respuesta.datos.colonia);
-              this.idUsuario = respuesta.datos.idUsuario;
-              this.idContratante = respuesta.datos.idContratante;
-              this.idPersona = respuesta.datos.idPersona;
+            this.domicilio.calle.setValue(datosUsuario.calle);
+            this.domicilio.numeroInterior.setValue(datosUsuario.numInt);
+            this.domicilio.numeroExterior.setValue(datosUsuario.numExt);
+            this.domicilio.codigoPostal.setValue(datosUsuario.cp);
+            this.obtenerCP(datosUsuario.colonia);
+            this.idUsuario = datosUsuario?.idUsuario ?? null;
+            this.idContratante = datosUsuario?.idContratante;
+            this.idPersona = datosUsuario?.idPersona;
 
-              this.form.disable();
-              this.datosGenerales.curp.enable();
-            }
-
+            this.form.disable();
+            this.datosGenerales.curp.enable();
           } else if (respuesta.mensaje === 'NO EXISTE CURP') {
             this.ajustarForm();
             this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
@@ -425,7 +418,6 @@ export class RegistroComponent implements OnInit {
   }
 
   datosGuardar(): IRegistrarContratante {
-    debugger
     return {
       idUsuario: this.idUsuario,
       nombre: this.datosGenerales.nombre.value,
