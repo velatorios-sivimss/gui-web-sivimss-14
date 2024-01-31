@@ -16,9 +16,9 @@ export class ContratarPSFPAService extends BaseService<HttpRespuesta<any>, any> 
     super(_http, `${environment.api.loginContratante}`, "", "", 1, "", "", "");
   }
 
-  consutaCP(cp: string): Observable<any> {
-    return this._http.get<any>(
-      `http://serviciosdigitalesinterno-stage.imss.gob.mx/serviciosDigitales-rest/v1/domicilios/asentamientos/codigoPostal/` + cp
+  consutaCP(cp: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      `${environment.api.servicios_externos}consultar/codigo-postal/` + cp
     );
   }
 
