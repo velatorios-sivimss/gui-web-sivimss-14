@@ -22,4 +22,6 @@ export interface BeneficiarioResponse {
   municipio: string,
   idEstado: string,
   estado: string
+  sexo: string
+  pais: string
 }

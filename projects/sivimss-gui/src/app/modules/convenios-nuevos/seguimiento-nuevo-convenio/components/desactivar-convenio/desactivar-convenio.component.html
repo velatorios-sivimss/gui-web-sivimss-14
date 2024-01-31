@@ -20,7 +20,8 @@
                                             [numeroInterior]="titularPA.numInt" [codigoPostal]="titularPA.cp"
                                             [colonia]="titularPA.colonia" [municipio]="titularPA.municipio"
                                             [estado]="titularPA.estado" [paisNacimiento]="titularPA.pais"
-                                            [lugarNacimiento]="titularPA.lugarNac" [fechaNacimiento]="titularPA.fecNacimiento"
+                                            [lugarNacimiento]="titularPA.lugarNac"
+                                            [fechaNacimiento]="titularPA.fecNacimiento"
                                             [correoElectronico]="titularPA.correo"
                                             [telefonoCelular]="titularPA.telCelular" [telefonoFijo]="titularPA.telFijo"
                                             [tipoPaquete]="titularPA.nomPaquete" [numeroPagos]="titularPA.numPagos"
@@ -50,7 +51,7 @@
               <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
             </div>
           </div>
-          <ng-container *ngIf="!mismoSustituto">
+          <ng-container>
             <app-resumen-titular-beneficiario [titular]="'beneficiario'" [matricula]="sustituto.matricula"
                                               [rfc]="sustituto.rfc"
                                               [curp]="sustituto.curp" [nombre]="sustituto.nombre"
@@ -60,8 +61,8 @@
                                               [numeroInterior]="sustituto.numInt" [codigoPostal]="sustituto.cp"
                                               [colonia]="sustituto.colonia" [municipio]="sustituto.municipio"
                                               [estado]="sustituto.estado" [fechaNacimiento]="sustituto.fecNacimiento"
-                                              [lugarNacimiento]="sustituto.lugarNac"
-                                              [correoElectronico]="sustituto.correo"
+                                              [lugarNacimiento]="sustituto.lugarNac" [sexo]="sustituto.sexo"
+                                              [correoElectronico]="sustituto.correo" [paisNacimiento]="sustituto.pais"
                                               [telefono]="sustituto.telCelular"
                                               [nacionalidad]="+sustituto.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'">
 
@@ -87,9 +88,10 @@
                                               [calle]="beneficiario1.calle" [numeroExterior]="beneficiario1.numExt"
                                               [numeroInterior]="beneficiario1.numInt" [codigoPostal]="beneficiario1.cp"
                                               [colonia]="beneficiario1.colonia" [municipio]="beneficiario1.municipio"
-                                              [estado]="beneficiario1.estado" [fechaNacimiento]="beneficiario1.fecNacimiento"
-                                              [lugarNacimiento]="beneficiario1.lugarNac"
-                                              [correoElectronico]="beneficiario1.correo"
+                                              [estado]="beneficiario1.estado"
+                                              [fechaNacimiento]="beneficiario1.fecNacimiento"
+                                              [lugarNacimiento]="beneficiario1.lugarNac" [sexo]="beneficiario1.sexo"
+                                              [correoElectronico]="beneficiario1.correo" [paisNacimiento]="beneficiario1.pais"
                                               [telefono]="beneficiario1.telCelular"
                                               [nacionalidad]="+beneficiario1.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
             ></app-resumen-titular-beneficiario>
@@ -114,8 +116,9 @@
                                               [calle]="beneficiario2.calle" [numeroExterior]="beneficiario2.numExt"
                                               [numeroInterior]="beneficiario2.numInt" [codigoPostal]="beneficiario2.cp"
                                               [colonia]="beneficiario2.colonia" [municipio]="beneficiario2.municipio"
-                                              [estado]="beneficiario2.estado" [fechaNacimiento]="beneficiario2.fecNacimiento"
-                                              [lugarNacimiento]="beneficiario2.lugarNac"
+                                              [estado]="beneficiario2.estado"
+                                              [fechaNacimiento]="beneficiario2.fecNacimiento" [paisNacimiento]="beneficiario2.pais"
+                                              [lugarNacimiento]="beneficiario2.lugarNac" [sexo]="beneficiario2.sexo"
                                               [correoElectronico]="beneficiario2.correo"
                                               [telefono]="beneficiario2.telCelular"
                                               [nacionalidad]="+beneficiario2.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
