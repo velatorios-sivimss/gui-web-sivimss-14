@@ -39,6 +39,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   readonly POSICION_PAISES: number = 1;
   readonly POSICION_NUMERO_PAGOS: number = 2;
   readonly POSICION_PAQUETE: number = 3;
+  readonly POSICION_PROMOTOR: number = 4;
 
   menuStep: MenuItem[] = MENU_STEPPER;
   indice: number = 0;
@@ -97,9 +98,10 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       respuesta[this.POSICION_NUMERO_PAGOS].datos, 'DES_TIPO_PAGO_MENSUAL', 'ID_TIPO_PAGO_MENSUAL');
     this.tipoPaquete = mapearArregloTipoDropdown(respuesta[this.POSICION_PAQUETE].datos,
       'nomPaquete', 'idPaquete');
+    this.catPromotores = mapearArregloTipoDropdown(respuesta[this.POSICION_PROMOTOR].datos,
+      'NOMBRE', 'ID_PROMOTOR');
     this.paqueteBackUp = respuesta[this.POSICION_PAQUETE].datos;
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
-    this.obtenerPromotores();
     this.inicializarFormPromotor();
     this.inicializarFormDatosTitular();
     this.inicializarFormDatosTitularSubstituto();
@@ -110,9 +112,11 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   inicializarFormPromotor(): void {
     this.promotorForm = this.formBuilder.group({
-      gestionadoPorPromotor: [{ value: null, disabled: false }, [Validators.nullValidator]],
+      gestionadoPorPromotor: [{ value: false, disabled: false }, [Validators.nullValidator]],
       promotor: [{ value: null, disabled: false }, [Validators.nullValidator]],
     });
+
+    this.handleGestionPromotor();
   }
 
   inicializarFormDatosTitular(): void {
@@ -240,19 +244,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     formularios[posicion].setValue(formularios[posicion].value.toLowerCase());
   }
 
-  obtenerPromotores() {
-    this.contratarPSFPAService.obtenerPaises()
-      .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          this.catPromotores = mapearArregloTipoDropdown(respuesta.datos, "promotor", "idPromotor");
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error("ERROR: ", error);
-        }
-      });
-  }
-
   consultarCurp(posicion: number): void {
     let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].curp.value) return;
@@ -378,6 +369,16 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
     }
     return
+  }
+
+  handleGestionPromotor() {
+    if (this.fp.gestionadoPorPromotor.value) {
+      this.fp.promotor.enable();
+    } else {
+      this.fp.promotor.setValue(null);
+      this.fp.promotor.disable();
+    }
+
   }
 
   validarUsuarioTitular(curp: string, rfc: string, nss: string, posicion: number): void {
@@ -667,7 +668,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   generarObjetoPlanSFPA(): AgregarPlanSFPA {
     let objetoTitularSubstituto = {
-      persona: 'contratante', //Si es la misma persona no mandar este objeto
+      persona: 'titular substituto', //Si es la misma persona no mandar este objeto
       rfc: this.fdts.rfc.value,
       curp: this.fdts.curp.value,
       matricula: this.fdts.matricula?.value ?? "",
@@ -697,7 +698,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     }
 
     let objetoBeneficiario1 = {
-      persona: '',
+      persona: 'beneficiario 1',
       rfc: this.fdb1.rfc.value,
       curp: this.fdb1.curp.value,
       matricula: this.fdb1.matricula?.value ?? "",
@@ -727,7 +728,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     }
 
     let objetoBeneficiario2 = {
-      persona: '',
+      persona: 'beneficiario 2',
       rfc: this.fdb2.rfc.value,
       curp: this.fdb2.curp.value,
       matricula: this.fdb2.matricula?.value ?? "",
@@ -756,10 +757,13 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       }
     }
 
+    const numPago = this.numeroPago.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? '';
+
     let objetoTitular = {
       idTipoContratacion: 1,
       idPaquete: this.fdt.tipoPaquete.value,
       idTipoPagoMensual: this.fdt.numeroPago.value,
+      numPagoMensual: +numPago,
       indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0, //Cuando te vas a contratante SI 1 no 0
       indModificarTitularSubstituto: 0, //Cuando es alta se manda en 0 acualizar es 1
       monPrecio: this.consultarMonPrecio(),

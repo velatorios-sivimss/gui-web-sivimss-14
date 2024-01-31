@@ -16,6 +16,7 @@ export class ServiciosFunerariosResolver implements  Resolve<HttpRespuesta<any>>
     const catPaises$ = this.serviciosFunerariosService.obtenerCatalogoPais();
     const catNumeroPagos$ = this.serviciosFunerariosService.obtenerCatalogoNumeroPagos();
     const catPaquetes$ = this.serviciosFunerariosService.obtenerCatalogoPaquetes();
-    return forkJoin([catEstados$,catPaises$,catNumeroPagos$,catPaquetes$]);
+    const catPromotores$ = this.serviciosFunerariosService.obtenerCatalogoPromotores();
+    return forkJoin([catEstados$,catPaises$,catNumeroPagos$,catPaquetes$,catPromotores$]);
   }
 }
