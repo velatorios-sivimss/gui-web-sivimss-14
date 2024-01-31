@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {LazyLoadEvent} from 'primeng/api';
 import {DialogService} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -10,92 +9,9 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/cons
 import {Documentos} from '../../models/documentos.interface';
 import {SeguimientoNuevoConvenio} from '../../models/seguimiento-nuevo-convenio.interface';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
-
-interface BeneficiarioResponse {
-  idBeneficiario: number,
-  curp: string,
-  rfc: string,
-  matricula: string,
-  nss: string,
-  nombre: string,
-  primerApellido: string,
-  segundoApellido: string,
-  idSexo: string,
-  fecNacimiento: string,
-  idPais: string,
-  lugarNac: string,
-  telFijo: string,
-  telCelular: string,
-  correo: string,
-  calle: string,
-  numExt: string,
-  numInt: string,
-  cp: string,
-  colonia: string,
-  municipio: string,
-  idEstado: string,
-  estado: string
-}
-
-interface ConvenioEmpresa {
-  nombre: string,
-  razonSocial: string,
-  rfc: string,
-  pais: string,
-  idPais: number,
-  cp: string,
-  colonia: string,
-  estado: string,
-  municipio: string,
-  calle: string,
-  numInterior: string,
-  numExterior: string
-  telefono: string,
-  correo: string,
-  idConvenio: number,
-  idEmpresa: number,
-  idPromotor: number,
-  folioConvenio: string
-}
-
-interface PreRegistroPA {
-  "idPersona": number,
-  "idContratante": number,
-  "idDomicilio": number,
-  "folioConvenio": string,
-  "curp": string,
-  "rfc": string,
-  "matricula": string,
-  "nss": string,
-  "nombre": string,
-  "primerApellido": string,
-  "segundoApellido": string,
-  "idSexo": number,
-  "fecNacimiento": string,
-  "pais": string,
-  "idPais": number,
-  "lugarNac": string,
-  "idLugarNac": number,
-  "telCelular": string,
-  "telFijo": string,
-  "correo": string,
-  "calle": string,
-  "numExt": string,
-  "numInt": string,
-  "cp": string,
-  "colonia": string,
-  "municipio": string,
-  "estado": string,
-  "idPaquete": number,
-  "numPagos": string,
-  "nomPaquete": string,
-  "titularSust": string,
-  "idTitularSust": number,
-  "beneficiario1": number,
-  "beneficiario2": number,
-  "gestionPromotor": boolean,
-  "activo": number
-}
+import {PreRegistroPA} from "../../models/preRegistroPA.interface";
+import {ConvenioEmpresa} from "../../models/convenioEmpresa.interface";
+import {BeneficiarioResponse} from "../../models/beneficiarioResponse.interface";
 
 @Component({
   selector: 'app-desactivar-convenio',
