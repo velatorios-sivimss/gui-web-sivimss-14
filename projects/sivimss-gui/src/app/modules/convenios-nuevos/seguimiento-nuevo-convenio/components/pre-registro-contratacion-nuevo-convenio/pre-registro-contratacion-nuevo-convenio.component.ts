@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -163,6 +163,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     if (this.tipoConvenio === '1') {
       this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
       this.beneficiariosPA = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
+      this.folio = this.titularPA.folioConvenio;
       this.obtenerBeneficiarios()
     }
     const paquetes = respuesta[this.POSICION_PAQUETES].datos;
@@ -244,8 +245,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormularioPA(): void {
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
-        curp: [{value: this.titularPA.curp, disabled: false}],
-        rfc: [{value: this.titularPA.rfc, disabled: false}],
+        curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
+        rfc: [{value: this.titularPA.rfc, disabled: false}, [Validators.required]],
         matricula: [{value: this.titularPA.matricula, disabled: false}],
         nns: [{value: this.titularPA.nss, disabled: false}],
         nombre: [{value: this.titularPA.nombre, disabled: false}],
@@ -339,8 +340,6 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         estado: [{value: null, disabled: false}],
       }),
     });
-    console.log(this.contratacionNuevoConvenioForm.get('titular'))
-
   }
 
   cargarBeneficiarios(): void {
