@@ -9,13 +9,14 @@ import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogo
 import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo";
 import {CATALOGO_NUMERO_PAGOS} from "../../constants/catalogos";
 import {CommonModule} from "@angular/common";
+import {CalendarModule} from "primeng/calendar";
 
 @Component({
   selector: 'app-datos-titular-beneficiario',
   templateUrl: './datos-titular-beneficiario.component.html',
   styleUrls: ['./datos-titular-beneficiario.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, DropdownModule, UtileriaModule,CommonModule],
+  imports: [ReactiveFormsModule, DropdownModule, UtileriaModule, CommonModule, CalendarModule],
   viewProviders: [
     {
       provide: ControlContainer,
@@ -25,12 +26,13 @@ import {CommonModule} from "@angular/common";
 })
 export class DatosTitularBeneficiarioComponent implements OnInit {
 
+  parentContainer: ControlContainer =  inject(ControlContainer)
+
   paises: TipoDropdown[] = [];
   numeroPagos: TipoDropdown[] = CATALOGO_NUMERO_PAGOS;
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
-
-  parentContainer: ControlContainer =  inject(ControlContainer)
+  fechaActual: Date = new Date();
 
   constructor(private autenticacionService: AutenticacionService) {
     this.cargarCatalogosLocalStorage();
@@ -63,4 +65,6 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   get parentFormGroup() {
     return (this.parentContainer.control as FormGroup).controls
   }
+
+  protected readonly Date = Date;
 }

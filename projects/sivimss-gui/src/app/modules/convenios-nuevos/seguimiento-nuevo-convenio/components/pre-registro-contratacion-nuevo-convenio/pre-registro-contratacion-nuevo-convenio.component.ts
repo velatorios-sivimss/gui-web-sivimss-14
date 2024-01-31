@@ -9,7 +9,7 @@ import {Documentos} from '../../models/documentos.interface';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
-import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 interface BeneficiarioResponse {
   idBeneficiario: number,
@@ -243,32 +243,33 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   inicializarFormularioPA(): void {
+    const fecNacimiento = new Date(diferenciaUTC(this.titularPA.fecNacimiento));
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
         rfc: [{value: this.titularPA.rfc, disabled: false}, [Validators.required]],
-        matricula: [{value: this.titularPA.matricula, disabled: false}],
-        nss: [{value: this.titularPA.nss, disabled: false}],
-        nombre: [{value: this.titularPA.nombre, disabled: false}],
-        primerApellido: [{value: this.titularPA.primerApellido, disabled: false}],
-        segundoApellido: [{value: this.titularPA.segundoApellido, disabled: false}],
-        sexo: [{value: this.titularPA.idSexo, disabled: false}],
-        fechaNacimiento: [{value: null, disabled: false}],
-        nacionalidad: [{value: null, disabled: false}],
+        matricula: [{value: this.titularPA.matricula, disabled: false}, [Validators.required]],
+        nss: [{value: this.titularPA.nss, disabled: false}, [Validators.required]],
+        nombre: [{value: this.titularPA.nombre, disabled: false}, [Validators.required]],
+        primerApellido: [{value: this.titularPA.primerApellido, disabled: false}, [Validators.required]],
+        segundoApellido: [{value: this.titularPA.segundoApellido, disabled: false}, [Validators.required]],
+        sexo: [{value: this.titularPA.idSexo, disabled: false}, [Validators.required]],
+        fechaNacimiento: [{value: fecNacimiento, disabled: false}, [Validators.required]],
+        nacionalidad: [{value: null, disabled: false}, [Validators.required]],
         paisNacimiento: [{value: +this.titularPA.idPais, disabled: false}],
         lugarNacimiento: [{value: null, disabled: false}],
-        telefonoCelular: [{value: this.titularPA.telCelular, disabled: false}],
-        telefonoFijo: [{value: this.titularPA.telFijo, disabled: false}],
-        correoElectronico: [{value: this.titularPA.correo, disabled: false}],
-        calle: [{value: this.titularPA.calle, disabled: false}],
-        numeroExterior: [{value: this.titularPA.numExt, disabled: false}],
-        numeroInterior: [{value: this.titularPA.numInt, disabled: false}],
-        cp: [{value: this.titularPA.cp, disabled: false}],
-        colonia: [{value: this.titularPA.colonia, disabled: false}],
-        municipio: [{value: null, disabled: false}],
-        estado: [{value: null, disabled: false}],
-        tipoPaquete: [{value: null, disabled: false}],
-        numeroPagos: [{value: this.titularPA.numPagos, disabled: false}],
+        telefonoCelular: [{value: this.titularPA.telCelular, disabled: false}, [Validators.required]],
+        telefonoFijo: [{value: this.titularPA.telFijo, disabled: false}, [Validators.required]],
+        correoElectronico: [{value: this.titularPA.correo, disabled: false}, [Validators.required]],
+        calle: [{value: this.titularPA.calle, disabled: false}, [Validators.required]],
+        numeroExterior: [{value: this.titularPA.numExt, disabled: false}, [Validators.required]],
+        numeroInterior: [{value: this.titularPA.numInt, disabled: false}, [Validators.required]],
+        cp: [{value: this.titularPA.cp, disabled: false}, [Validators.required]],
+        colonia: [{value: this.titularPA.colonia, disabled: false}, [Validators.required]],
+        municipio: [{value: this.titularPA.municipio, disabled: false}, [Validators.required]],
+        estado: [{value: this.titularPA.estado, disabled: false}, [Validators.required]],
+        tipoPaquete: [{value: null, disabled: false}, [Validators.required]],
+        numeroPagos: [{value: this.titularPA.numPagos, disabled: false}, [Validators.required]],
       }),
       sustituto: this.formBuilder.group({
         curp: [{value: null, disabled: false}],
