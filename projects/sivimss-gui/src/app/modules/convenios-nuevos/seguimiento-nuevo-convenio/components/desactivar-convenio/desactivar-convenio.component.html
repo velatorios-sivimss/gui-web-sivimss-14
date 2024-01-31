@@ -91,7 +91,8 @@
                                               [estado]="beneficiario1.estado"
                                               [fechaNacimiento]="beneficiario1.fecNacimiento"
                                               [lugarNacimiento]="beneficiario1.lugarNac" [sexo]="beneficiario1.sexo"
-                                              [correoElectronico]="beneficiario1.correo" [paisNacimiento]="beneficiario1.pais"
+                                              [correoElectronico]="beneficiario1.correo"
+                                              [paisNacimiento]="beneficiario1.pais"
                                               [telefono]="beneficiario1.telCelular"
                                               [nacionalidad]="+beneficiario1.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
             ></app-resumen-titular-beneficiario>
@@ -117,7 +118,8 @@
                                               [numeroInterior]="beneficiario2.numInt" [codigoPostal]="beneficiario2.cp"
                                               [colonia]="beneficiario2.colonia" [municipio]="beneficiario2.municipio"
                                               [estado]="beneficiario2.estado"
-                                              [fechaNacimiento]="beneficiario2.fecNacimiento" [paisNacimiento]="beneficiario2.pais"
+                                              [fechaNacimiento]="beneficiario2.fecNacimiento"
+                                              [paisNacimiento]="beneficiario2.pais"
                                               [lugarNacimiento]="beneficiario2.lugarNac" [sexo]="beneficiario2.sexo"
                                               [correoElectronico]="beneficiario2.correo"
                                               [telefono]="beneficiario2.telCelular"
@@ -276,7 +278,7 @@
 <div class="row mt-3 mb-2">
   <div class="col-md-12 mt-4">
     <p class="mensaje-cancelacion-orden">¿Está seguro de {{ activo ? 'desactivar' : 'activar' }} el registro
-      seleccionado?</p>
+      seleccionado {{ titularPA.folioConvenio.padStart(6, '0') }}?</p>
   </div>
   <div class="col-md-12 flex justify-content-end mt-6 mb-4">
     <button type="submit" class="btn btn-default btn-md" routerLink="./../../../">Cancelar</button>
