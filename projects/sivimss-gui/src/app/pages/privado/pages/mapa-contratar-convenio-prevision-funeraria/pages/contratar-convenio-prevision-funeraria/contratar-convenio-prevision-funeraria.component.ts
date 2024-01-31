@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormGroup, Validators, FormBuilder} from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ModalRegistrarBeneficiarioComponent } from './components/modal-registrar-beneficiario/modal-registrar-beneficiario.component';
-import { DialogService} from 'primeng/dynamicdialog';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import { ModalEditarBeneficiarioComponent } from './components/modal-editar-beneficiario/modal-editar-beneficiario.component';
 import {
   DIEZ_ELEMENTOS_POR_PAGINA,
@@ -30,7 +30,7 @@ import {MensajesSistemaService} from "../../../../../../services/mensajes-sistem
   templateUrl: './contratar-convenio-prevision-funeraria.component.html',
   styleUrls: ['./contratar-convenio-prevision-funeraria.component.scss'],
 })
-export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
+export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnDestroy {
   formPersona!: FormGroup;
   formEmpresa!: FormGroup;
   promotores: any[] = [];
@@ -98,6 +98,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   mensajeConfirmacionGuardado: string = "";
   banderaCheckPersona: boolean = true;
   banderaCheckGrupo: boolean = true;
+  refBeneficiario!: DynamicDialogRef;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -1150,7 +1151,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
 
   abrirModalRegistroNuevoBeneficiario(event: MouseEvent): void {
     event.stopPropagation();
-    const ref = this.dialogService.open(ModalRegistrarBeneficiarioComponent, {
+    this.refBeneficiario = this.dialogService.open(ModalRegistrarBeneficiarioComponent, {
       header: 'Registrar beneficiario',
       style: { maxWidth: '876px', width: '100%' },
       data: {
@@ -1161,7 +1162,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
         idContratante: this.idContratante,
       },
     });
-    ref.onClose.subscribe((respuesta: any) => {
+    this.refBeneficiario.onClose.subscribe((respuesta: any) => {
       if (respuesta == 'exito') {
         this.alertaService.mostrar(
           TipoAlerta.Exito,
@@ -1314,6 +1315,12 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit {
   validarRfc(): void {
     if(this.datosGrupo.rfc?.errors?.pattern){
       this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.refBeneficiario) {
+      this.refBeneficiario.destroy();
     }
   }
 }
