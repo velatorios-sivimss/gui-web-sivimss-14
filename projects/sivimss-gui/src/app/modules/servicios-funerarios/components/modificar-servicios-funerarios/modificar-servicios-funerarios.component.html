@@ -470,7 +470,7 @@
       <form [formGroup]="datosBeneficiario1Form">
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="curpContratante">CURP<span class="req">*</span>:</label>
+            <label class="control-label" for="curpContratante">CURP:</label>
             <input id="curpContratante" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
                    (change)="convertirMayusculas(4)" (blur)="consultarCurp(2)" maxlength="18">
             <span class="campo-obligatorio"
@@ -659,7 +659,7 @@
       <form [formGroup]="datosBeneficiario2Form">
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="curpContratante">CURP<span class="req">*</span>:</label>
+            <label class="control-label" for="curpContratante">CURP:</label>
             <input id="curpContratante" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
                    (change)="convertirMayusculas(6)" (blur)="consultarCurp(3)" maxlength="18">
             <span class="campo-obligatorio"
@@ -848,12 +848,14 @@
             <div class="flex">
                 <div class="flex align-items-center mx-2">
                     <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
-                        formControlName="gestionadoPorPromotor"></p-radioButton>
+                        formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
+                      </p-radioButton>
                     <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                     <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false"
-                        formControlName="gestionadoPorPromotor"></p-radioButton>
+                        formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
+                      </p-radioButton>
                     <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
                 </div>
             </div>
