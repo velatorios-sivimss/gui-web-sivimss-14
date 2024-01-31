@@ -47,6 +47,10 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/consulta-paquetes`);
   }
 
+  obtenerCatalogoPromotores(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/consulta-promotores`);
+  }
+
   consultarCURP(curp: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-contratante-curp`,
       { curp: curp });

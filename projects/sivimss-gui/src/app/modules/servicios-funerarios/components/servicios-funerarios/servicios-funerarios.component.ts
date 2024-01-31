@@ -80,7 +80,7 @@ export class ServiciosFunerariosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private serviciosFunerariosService: ServiciosFunerariosConsultaService,
     private readonly loaderService: LoaderService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
@@ -140,10 +140,10 @@ export class ServiciosFunerariosComponent implements OnInit {
 
     if (+usuario?.idOficina === 3) {
       this.ff.velatorio.setValue(+usuario?.idVelatorio);
-    } else {
-      this.velatorio = [];
     }
-    this.paginar(undefined, true);
+
+    // this.paginar(undefined, true);
+    this.servicioFunerario = [];
   }
 
   paginar(event?: LazyLoadEvent, obtenerNuevosDatos?: boolean): void {
@@ -217,9 +217,9 @@ export class ServiciosFunerariosComponent implements OnInit {
   obtenerObjetoParaFiltrado(): PaginadoInterface {
     return {
       idVelatorio:
-        this.ff.velatorio.getRawValue() === ''
-          ? null
-          : this.ff.velatorio.getRawValue(),
+        this.ff.velatorio.getRawValue()
+          ? String(this.ff.velatorio.getRawValue())
+          : null,
       numFolioPlanSfpa:
         this.ff.folioPlanSFPA.getRawValue() === ''
           ? null
@@ -243,7 +243,9 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   obtenerObjetoParaReporte(tipoReporte: string): GenerarReporte {
     return {
-      idVelatorio: this.ff.velatorio.value ?? null,
+      idVelatorio: this.ff.velatorio.getRawValue()
+        ? String(this.ff.velatorio.getRawValue())
+        : null,
       numFolioPlanSfpa: this.ff.folioPlanSFPA.value ?? null,
       rfc: this.ff.rfc.value ?? null,
       curp: this.ff.curp.value ?? null,

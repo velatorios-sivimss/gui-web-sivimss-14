@@ -843,12 +843,14 @@
             <div class="flex">
                 <div class="flex align-items-center mx-2">
                     <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
-                        formControlName="gestionadoPorPromotor"></p-radioButton>
+                        formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
+                      </p-radioButton>
                     <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                     <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false"
-                        formControlName="gestionadoPorPromotor"></p-radioButton>
+                        formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
+                      </p-radioButton>
                     <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
                 </div>
             </div>
