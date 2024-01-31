@@ -96,8 +96,7 @@ export class DesactivarConvenioComponent implements OnInit {
 
   obtenerSustitutoDesdeTitular(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"][this.POSICION_CONVENIO].datos
-    if (!this.mismoSustituto) this.sustituto = respuesta.sustituto;
-    this.sustituto = this.titularPA as unknown as BeneficiarioResponse
+    this.sustituto = !this.mismoSustituto ? respuesta.sustituto : this.titularPA as unknown as BeneficiarioResponse;
   }
 
   aceptar() {
