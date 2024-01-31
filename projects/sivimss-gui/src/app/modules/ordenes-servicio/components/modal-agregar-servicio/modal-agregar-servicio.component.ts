@@ -216,7 +216,21 @@ export class ModalAgregarServicioComponent
     this.consultarKilometraje = false;
     this.servicioTraslado = false;
 
-    if(tipoServicio.includes("TRASLADO")){
+    this.serviciosCompletos.forEach((datos: any) => {
+      if (Number(datos.idServicio) == Number(dd.selectedOption.value)) {
+        this.concepto = datos.nombreServicio;
+        this.grupo = datos.grupo;
+        this.idProveedor = datos.idProveedor;
+        this.idTipoServicio = datos.idTipoServicio;
+        if (Number(datos.idServicio) == 4) {
+          this.disableddMapa = false;
+        } else {
+          this.disableddMapa = true;
+        }
+      }
+    });
+
+    if(this.idTipoServicio == 4){
       this.servicioTraslado = true;
       this.ocultarMapa = false;
       // servicio: [{ value: null, disabled: false }, validacionServicio],
@@ -239,19 +253,7 @@ export class ModalAgregarServicioComponent
       this.f.destino.updateValueAndValidity();
     }
 
-    this.serviciosCompletos.forEach((datos: any) => {
-      if (Number(datos.idServicio) == Number(dd.selectedOption.value)) {
-        this.concepto = datos.nombreServicio;
-        this.grupo = datos.grupo;
-        this.idProveedor = datos.idProveedor;
-        this.idTipoServicio = datos.idTipoServicio;
-        if (Number(datos.idServicio) == 4) {
-          this.disableddMapa = false;
-        } else {
-          this.disableddMapa = true;
-        }
-      }
-    });
+
 
     this.consultarProveeedorServicio();
   }
