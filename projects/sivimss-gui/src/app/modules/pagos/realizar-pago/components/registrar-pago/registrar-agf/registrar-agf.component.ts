@@ -147,6 +147,7 @@ export class RegistrarAgfComponent implements OnInit {
 
   crearRegistroAGF(): RegistroAGF {
     return {
+      idBeneficiario: 0,
       casillaActDef: this.agfForm.get('actaDefuncion')?.value,
       casillaCogf: this.agfForm.get('cuentaGastos')?.value,
       casillaCurp: this.agfForm.get('curp')?.value,

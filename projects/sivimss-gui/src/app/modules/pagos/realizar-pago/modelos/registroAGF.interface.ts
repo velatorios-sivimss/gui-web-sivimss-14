@@ -13,5 +13,6 @@ export interface RegistroAGF {
   idVelatorio: number,
   nombreBeneficiario: string,
   numIdentificacion: number,
-  idPagoBitacora: number
+  idPagoBitacora: number,
+  idBeneficiario: number
 }

@@ -12,6 +12,7 @@ import {Location} from "@angular/common";
 interface Beneficiario {
   nombreBeneficiario: string;
   curp: string;
+  numComponente: string;
 }
 
 @Component({
@@ -48,9 +49,10 @@ export class SeleccionBeneficiariosAgfComponent {
     );
   }
 
-  seleccionarBeneficiario(nombre: string, curp: string): void {
+  seleccionarBeneficiario(nombre: string, curp: string, id: string): void {
     this.datos_agf.cveCURPBeneficiario = curp;
     this.datos_agf.nombreBeneficiario = nombre;
+    this.datos_agf.idBeneficiario = +id;
     this.cargadorService.activar();
     this.realizarPagoService.guardarAGF(this.datos_agf).pipe(
       finalize(() => this.cargadorService.desactivar())
