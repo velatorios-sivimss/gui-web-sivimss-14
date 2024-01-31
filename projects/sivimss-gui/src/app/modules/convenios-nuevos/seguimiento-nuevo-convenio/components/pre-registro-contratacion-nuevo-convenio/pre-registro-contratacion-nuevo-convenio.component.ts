@@ -10,90 +10,9 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/funciones";
-
-interface BeneficiarioResponse {
-  idBeneficiario: number,
-  curp: string,
-  rfc: string,
-  matricula: string,
-  nss: string,
-  nombre: string,
-  primerApellido: string,
-  segundoApellido: string,
-  idSexo: string,
-  fecNacimiento: string,
-  idPais: string,
-  lugarNac: string,
-  telFijo: string,
-  telCelular: string,
-  correo: string,
-  calle: string,
-  numExt: string,
-  numInt: string,
-  cp: string,
-  colonia: string,
-  municipio: string,
-  idEstado: string,
-  estado: string
-}
-
-interface ConvenioEmpresa {
-  nombre: string,
-  razonSocial: string,
-  rfc: string,
-  idPais: number,
-  cp: string,
-  colonia: string,
-  estado: string,
-  municipio: string,
-  calle: string,
-  numInterior: string,
-  numExterior: string
-  telefono: string,
-  correo: string,
-  idConvenio: number,
-  idEmpresa: number,
-  idPromotor: number,
-  folioConvenio: string
-}
-
-interface PreRegistroPA {
-  "idPersona": number,
-  "idContratante": number,
-  "idDomicilio": number,
-  "folioConvenio": string,
-  "curp": string,
-  "rfc": string,
-  "matricula": string,
-  "nss": string,
-  "nombre": string,
-  "primerApellido": string,
-  "segundoApellido": string,
-  "idSexo": number,
-  "fecNacimiento": string,
-  "pais": string,
-  "idPais": number,
-  "lugarNac": string,
-  "idLugarNac": number,
-  "telCelular": string,
-  "telFijo": string,
-  "correo": string,
-  "calle": string,
-  "numExt": string,
-  "numInt": string,
-  "cp": string,
-  "colonia": string,
-  "municipio": string,
-  "estado": string,
-  "idPaquete": number,
-  "numPagos": string,
-  "nomPaquete": string,
-  "titularSust": string,
-  "idTitularSust": number,
-  "beneficiario1": number,
-  "beneficiario2": number,
-  "gestionPromotor": boolean
-}
+import {ConvenioEmpresa} from "../../models/convenioEmpresa.interface";
+import {BeneficiarioResponse} from "../../models/beneficiarioResponse.interface";
+import {PreRegistroPA} from "../../models/preRegistroPA.interface";
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
@@ -184,6 +103,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   inicializarTipoFormulario(): void {
+    if (!['1', '2', '3'].includes(this.tipoConvenio)) return;
     if (this.tipoConvenio === '3') {
       this.inicializarFormulario();
       return;
