@@ -668,7 +668,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   generarObjetoPlanSFPA(): AgregarPlanSFPA {
     let objetoTitularSubstituto = {
-      persona: 'contratante', //Si es la misma persona no mandar este objeto
+      persona: 'titular substituto', //Si es la misma persona no mandar este objeto
       rfc: this.fdts.rfc.value,
       curp: this.fdts.curp.value,
       matricula: this.fdts.matricula?.value ?? "",
@@ -698,7 +698,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     }
 
     let objetoBeneficiario1 = {
-      persona: 'beneficiario',
+      persona: 'beneficiario 1',
       rfc: this.fdb1.rfc.value,
       curp: this.fdb1.curp.value,
       matricula: this.fdb1.matricula?.value ?? "",
@@ -728,7 +728,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     }
 
     let objetoBeneficiario2 = {
-      persona: 'beneficiario',
+      persona: 'beneficiario 2',
       rfc: this.fdb2.rfc.value,
       curp: this.fdb2.curp.value,
       matricula: this.fdb2.matricula?.value ?? "",
