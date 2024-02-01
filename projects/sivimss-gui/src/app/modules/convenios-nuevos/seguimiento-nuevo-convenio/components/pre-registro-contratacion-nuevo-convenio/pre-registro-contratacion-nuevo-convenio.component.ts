@@ -2,7 +2,7 @@ import {Component, ViewChild} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
-import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {Documentos} from '../../models/documentos.interface';
@@ -13,6 +13,7 @@ import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/fun
 import {ConvenioEmpresa} from "../../models/convenioEmpresa.interface";
 import {BeneficiarioResponse} from "../../models/beneficiarioResponse.interface";
 import {PreRegistroPA} from "../../models/preRegistroPA.interface";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
@@ -51,7 +52,6 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   beneficiario2!: BeneficiarioResponse;
   titularPA!: PreRegistroPA;
 
-
   constructor(
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
@@ -59,11 +59,16 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     public dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-
+    private location: Location
   ) {
     this.tipoConvenio = this.activatedRoute.snapshot.params.tipoConvenio ?? '';
     this.cargarCatalogos();
     this.inicializarTipoFormulario();
+  }
+
+  errorCargarRegistro(): void {
+    this.alertaService.mostrar(TipoAlerta.Error, 'El registro no pudo ser cargado, Intenta nuevamente mas tarde.');
+    this.location.back();
   }
 
   ngOnInit(): void {
@@ -71,13 +76,16 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   cargarCatalogos(): void {
-    const respuesta = this.activatedRoute.snapshot.data["respuesta"]
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    if (!respuesta[this.POSICION_CONVENIO].datos) this.errorCargarRegistro();
+    this.cargarCatalogosGenerales();
     if (this.tipoConvenio === '3') {
       this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
       this.folio = this.convenioPersona.folioConvenio
     }
     if (this.tipoConvenio === '2') {
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
+      this.folio = this.convenioEmpresa.folioConvenio;
     }
     if (this.tipoConvenio === '1') {
       this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
@@ -85,11 +93,13 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       this.folio = this.titularPA.folioConvenio;
       this.obtenerBeneficiarios()
     }
+  }
+
+  cargarCatalogosGenerales(): void {
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     const paquetes = respuesta[this.POSICION_PAQUETES].datos;
     this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
   }
-
-
 
   obtenerBeneficiarios(): void {
     const idBeneficiario1: number = this.titularPA.beneficiario1;

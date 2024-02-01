@@ -3,7 +3,7 @@ import {FormBuilder} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DialogService} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
-import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {Documentos} from '../../models/documentos.interface';
@@ -12,6 +12,7 @@ import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 import {PreRegistroPA} from "../../models/preRegistroPA.interface";
 import {ConvenioEmpresa} from "../../models/convenioEmpresa.interface";
 import {BeneficiarioResponse} from "../../models/beneficiarioResponse.interface";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-desactivar-convenio',
@@ -46,6 +47,7 @@ export class DesactivarConvenioComponent implements OnInit {
   promotor: boolean = false;
   mismoSustituto: boolean = false;
   activo: boolean = false;
+  folioConvenio: string = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -54,6 +56,7 @@ export class DesactivarConvenioComponent implements OnInit {
     public dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private location: Location
   ) {
     this.tipoConvenio = activatedRoute.snapshot.params.tipoConvenio ?? '';
   }
@@ -63,20 +66,31 @@ export class DesactivarConvenioComponent implements OnInit {
   }
 
   cargarCatalogos(): void {
-    const respuesta = this.activatedRoute.snapshot.data["respuesta"]
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    if (!respuesta[this.POSICION_CONVENIO].datos) this.errorCargarRegistro();
     if (this.tipoConvenio === '3') {
-      this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
+      this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos.detalleConvenioPFModel;
+      this.folioConvenio = this.convenioPersona.folioConvenio;
     }
     if (this.tipoConvenio === '2') {
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
+      this.folioConvenio = this.convenioEmpresa.folioConvenio;
     }
-    this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
-    this.mismoSustituto = !respuesta[this.POSICION_CONVENIO].datos.sustituto;
-    this.obtenerSustitutoDesdeTitular();
-    this.activo = this.titularPA.activo === 1;
-    this.beneficiarios = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
-    this.promotor = this.titularPA.gestionPromotor;
-    this.obtenerBeneficiarios()
+    if (this.tipoConvenio === '1') {
+      this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
+      this.folioConvenio = this.titularPA.folioConvenio;
+      this.mismoSustituto = !respuesta[this.POSICION_CONVENIO].datos.sustituto;
+      this.obtenerSustitutoDesdeTitular();
+      this.activo = this.titularPA.activo === 1;
+      this.beneficiarios = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
+      this.promotor = this.titularPA.gestionPromotor;
+      this.obtenerBeneficiarios();
+    }
+  }
+
+  errorCargarRegistro(): void {
+    this.alertaService.mostrar(TipoAlerta.Error, 'El registro no pudo ser cargado, Intenta nuevamente mas tarde.');
+    this.location.back();
   }
 
   regresar() {
