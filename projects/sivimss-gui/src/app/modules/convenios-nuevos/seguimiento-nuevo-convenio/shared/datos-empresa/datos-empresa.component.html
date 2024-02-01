@@ -2,42 +2,69 @@
   <div class="col-md-4">
     <label class="control-label" for="nombre">Nombre<span class="req">*</span>:</label>
     <input id="nombre" class="form-control" formControlName="nombre" placeholder="Inserta el nombre">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.nombre?.errors?.required  && (parentFormGroup.nombre?.dirty || parentFormGroup.nombre?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="razonSocial">Razón social<span class="req">*</span>:</label>
     <input id="razonSocial" class="form-control" formControlName="razonSocial" placeholder="Inserta la razón social">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.razonSocial?.errors?.required  && (parentFormGroup.razonSocial?.dirty || parentFormGroup.razonSocial?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="rfc">R.F.C.<span class="req">*</span>:</label>
     <input id="rfc" class="form-control" formControlName="rfc" placeholder="Inserta el R.F.C.">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.rfc?.errors?.required  && (parentFormGroup.rfc?.dirty || parentFormGroup.rfc?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
 </div>
 <div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" for="pais">País<span class="req">*</span>:</label>
     <input id="pais" class="form-control" formControlName="pais" placeholder="Inserta el PAIS">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.pais?.errors?.required  && (parentFormGroup.pais?.dirty || parentFormGroup.pais?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="cp">Código postal<span class="req">*</span>:</label>
     <input id="cp" class="form-control" formControlName="cp" placeholder="Inserta el código postal">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.cp?.errors?.required  && (parentFormGroup.cp?.dirty || parentFormGroup.cp?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
     <input id="colonia" class="form-control" formControlName="colonia" placeholder="Inserta la colonia">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.colonia?.errors?.required  && (parentFormGroup.colonia?.dirty || parentFormGroup.colonia?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
 </div>
 <div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
     <input id="estado" class="form-control" formControlName="estado" placeholder="Inserta el estado">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.estado?.errors?.required  && (parentFormGroup.estado?.dirty || parentFormGroup.estado?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="municipio">Municipio<span class="req">*</span>:</label>
     <input id="municipio" class="form-control" formControlName="municipio" placeholder="Inserta el municipio">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.municipio?.errors?.required  && (parentFormGroup.municipio?.dirty || parentFormGroup.municipio?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="calle">Calle:</label>
     <input id="calle" class="form-control" formControlName="calle" placeholder="Inserta la calle">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.calle?.errors?.required  && (parentFormGroup.calle?.dirty || parentFormGroup.calle?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
 </div>
 <div class="row mb-3">
@@ -45,20 +72,32 @@
     <label class="control-label" for="numeroExterior">Número exterior<span class="req">*</span>:</label>
     <input id="numeroExterior" class="form-control" formControlName="numeroExterior"
            placeholder="Inserta el número exterior">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.numeroExterior?.errors?.required  && (parentFormGroup.numeroExterior?.dirty || parentFormGroup.numeroExterior?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="numeroInterior">Número interior<span class="req">*</span>:</label>
     <input id="numeroInterior" class="form-control" formControlName="numeroInterior"
            placeholder="Inserta el número interior">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.numeroInterior?.errors?.required  && (parentFormGroup.numeroInterior?.dirty || parentFormGroup.numeroInterior?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
     <input id="telefono" class="form-control" formControlName="telefono" placeholder="Inserta el teléfono">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.telefono?.errors?.required  && (parentFormGroup.telefono?.dirty || parentFormGroup.telefono?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
 </div>
 <div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" for="correo">Correo electrónico<span class="req">*</span>:</label>
     <input id="correo" class="form-control" formControlName="correo" placeholder="Inserta el correo electronico">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.correo?.errors?.required  && (parentFormGroup.correo?.dirty || parentFormGroup.correo?.touched)">
+      Este campo es obligatorio *.</span>
   </div>
 </div>
