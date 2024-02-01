@@ -17,7 +17,7 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   }
 
   base: string = 'http://localhost:8001/mssivimss-pre-reg-conven/v1/sivimss';
-  _filtros: string = 'preregistros';
+  _filtros: string = 'buscar-preregistros';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -30,17 +30,16 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   }
 
   buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
-    const body = {pagina, tamanio, ...filtros}
-    return this._http.post<HttpRespuesta<any>>(this.base + `/buscar/${this._filtros}`,
-      body);
+    const params: HttpParams = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._filtros}`,
+      filtros, {params});
   }
 
-  // buscarConvenioPorPersona(id: number): Observable<HttpRespuesta<any>> {
-  //   return this._http.get<HttpRespuesta<any>>(`${this.base}/buscar/persona/${id}`);
-  // }
-
-  buscarConvenioPorPersona(id: number, idTipo: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${this.base}/buscar/${idTipo}/${id}`);
+  buscarConvenioPorPersona(idConvenio: number, idFLujo: number): Observable<HttpRespuesta<any>> {
+    const body = {idFLujo, idConvenio}
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/buscar-detalle-preregistros`, body);
   }
 
   buscarBeneficiarioPorPersona(id: number): Observable<HttpRespuesta<any>> {

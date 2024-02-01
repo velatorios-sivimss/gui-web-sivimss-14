@@ -13,7 +13,7 @@ export const environment = {
     // notificaciones: 'mssivimss-notificaciones/v1/notificaciones/avisos',
 
     mssivimss: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ctrol-permisos/v1/sivimss/service/',
-    login: 'http://localhost:8078/mssivimss-oauth/v1',
+    login: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1',
     loginContratante: 'http://localhost:8085/mssivimss-oauth/v1',
     servicios_externos: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/catalogos/externos/',
     servicios_externos_reportes: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/reportes/',

@@ -29,7 +29,6 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
   parentContainer: ControlContainer =  inject(ControlContainer)
 
   paises: TipoDropdown[] = [];
-  numeroPagos: TipoDropdown[] = CATALOGO_NUMERO_PAGOS;
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   fechaActual: Date = new Date();
