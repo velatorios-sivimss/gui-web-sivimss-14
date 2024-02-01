@@ -16,7 +16,7 @@ export interface ServiciosFunerariosInterface {
   matricula?: number;
   nss?: number;
   sexo?: number;
-  fechaNacimiento?: string;
+  fechaNacimiento?: number | null;
   nacionalidad?: number;
   lugarNacimiento?: string;
   telefono?: number;
@@ -64,13 +64,16 @@ export interface GenerarReporte{
 }
 
 export interface AgregarPlanSFPA {
+                    idPlanSfpa?: number | null,
+            indTipoPagoMensual?: boolean | null,
              idTipoContratacion: number | null,
                       idPaquete: number | null,
                       monPrecio: number | null,
              idTipoPagoMensual : number | null,
            indTitularSubstituto: number | null,
+                 numPagoMensual: number | null,
   indModificarTitularSubstituto: number | null,
-        titularesBeneficiarios :Persona[] | null
+        titularesBeneficiarios : Persona[],
 }
 
 export interface Persona {
@@ -84,7 +87,7 @@ export interface Persona {
   segundoApellido?: string | null,
   sexo?: number | null,
   otroSexo?: string | null,
-  fecNacimiento?: any,
+  fecNacimiento?: string | null,
   idPais?: number | null,
   idEstado?: number | null,
   telefono?: string | null,

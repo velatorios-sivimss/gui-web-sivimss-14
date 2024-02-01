@@ -853,10 +853,10 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        if (respuesta && respuesta.length > 0) {
-          this.setearCatalogoColonias(catalogo ?? '', mapearArregloTipoDropdown(respuesta, 'nombre', 'nombre'));
-          formGroupName.estado.setValue(respuesta[0].municipio.entidadFederativa.nombre);
-          formGroupName.municipio.setValue(respuesta[0].municipio.nombre);
+        if (respuesta && respuesta.datos.length > 0) {
+          this.setearCatalogoColonias(catalogo ?? '', mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre'));
+          formGroupName.estado.setValue(respuesta.datos[0].municipio.entidadFederativa.nombre);
+          formGroupName.municipio.setValue(respuesta.datos[0].municipio.nombre);
           formGroupName.asentamientoColonia.markAsTouched();
         } else {
           this.setearCatalogoColonias(catalogo ?? '', []);

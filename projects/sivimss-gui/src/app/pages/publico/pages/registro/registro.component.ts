@@ -274,10 +274,10 @@ export class RegistroComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        if (respuesta && respuesta.length > 0) {
-          this.colonias = mapearArregloTipoDropdown(respuesta, 'nombre', 'nombre');
-          this.domicilio.estado.setValue(respuesta[0].municipio.entidadFederativa.nombre);
-          this.domicilio.municipio.setValue(respuesta[0].municipio.nombre);
+        if (respuesta && respuesta.datos.length > 0) {
+          this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
+          this.domicilio.estado.setValue(respuesta.datos[0].municipio.entidadFederativa.nombre);
+          this.domicilio.municipio.setValue(respuesta.datos[0].municipio.nombre);
           this.domicilio.colonia.markAsTouched();
           if (coloniaSeleccionada) {
             this.colonias.forEach((item: TipoDropdown) => {
