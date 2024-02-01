@@ -1,12 +1,22 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ControlContainer, ReactiveFormsModule} from "@angular/forms";
+import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {DropdownModule} from "primeng/dropdown";
+import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
+import {CommonModule} from "@angular/common";
+import {CalendarModule} from "primeng/calendar";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {CATALOGO_NUMERO_PAGOS} from "../../constants/catalogos";
+import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo";
+import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-datos-sustituto-beneficiario',
   templateUrl: './datos-sustituto-beneficiario.component.html',
   styleUrls: ['./datos-sustituto-beneficiario.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DropdownModule, UtileriaModule, CommonModule, CalendarModule],
   viewProviders: [
     {
       provide: ControlContainer,
@@ -16,9 +26,28 @@ import {ControlContainer, ReactiveFormsModule} from "@angular/forms";
 })
 export class DatosSustitutoBeneficiarioComponent implements OnInit {
 
-  constructor() { }
+  parentContainer: ControlContainer =  inject(ControlContainer)
+
+  paises: TipoDropdown[] = [];
+  numeroPagos: TipoDropdown[] = CATALOGO_NUMERO_PAGOS;
+  tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
+  nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
+  fechaActual: Date = new Date();
+
+  constructor(private autenticacionService: AutenticacionService) {
+    this.cargarCatalogosLocalStorage();
+  }
 
   ngOnInit(): void {
+  }
+
+  cargarCatalogosLocalStorage(): void {
+    const catalogoPais = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_pais');
+    this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
+  }
+
+  get parentFormGroup() {
+    return (this.parentContainer.control as FormGroup).controls
   }
 
 }

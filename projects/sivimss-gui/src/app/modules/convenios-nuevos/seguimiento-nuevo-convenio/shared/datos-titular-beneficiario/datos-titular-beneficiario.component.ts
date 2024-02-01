@@ -66,5 +66,4 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     return (this.parentContainer.control as FormGroup).controls
   }
 
-  protected readonly Date = Date;
 }
