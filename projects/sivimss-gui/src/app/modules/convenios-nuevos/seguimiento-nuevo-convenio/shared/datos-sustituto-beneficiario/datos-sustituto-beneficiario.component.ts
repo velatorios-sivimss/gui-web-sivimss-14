@@ -46,6 +46,23 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
   }
 
+
+  validarCurp($event: any): void {
+
+  }
+
+  validarRfc($event: any): void {
+
+  }
+
+  cambioTipoSexo($event: any): void {
+
+  }
+
+  cambioNacionalidad($event: any): void {
+
+  }
+
   get parentFormGroup() {
     return (this.parentContainer.control as FormGroup).controls
   }

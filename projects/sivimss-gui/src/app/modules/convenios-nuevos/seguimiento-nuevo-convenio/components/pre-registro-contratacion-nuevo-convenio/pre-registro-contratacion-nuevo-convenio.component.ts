@@ -163,7 +163,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   inicializarFormularioPA(): void {
-    const fecNacimiento = new Date(diferenciaUTC(this.titularPA.fecNacimiento));
+    const fecNacimiento: Date = new Date(diferenciaUTC(this.titularPA.fecNacimiento));
+    const fecNacimientoBen1: Date = new Date(diferenciaUTC(this.beneficiario1.fecNacimiento));
+    const fecNacimientoBen2: Date = new Date(diferenciaUTC(this.beneficiario2.fecNacimiento));
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
@@ -222,20 +224,20 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         nombre: [{value: this.beneficiario1?.nombre ?? null, disabled: true}],
         primerApellido: [{value: this.beneficiario1?.primerApellido ?? null, disabled: true}],
         segundoApellido: [{value: this.beneficiario1?.segundoApellido ?? null, disabled: true}],
-        sexo: [{value: null, disabled: true}],
-        fechaNacimiento: [{value: null, disabled: true}],
+        sexo: [{value: +this.beneficiario1?.idSexo ?? null, disabled: true}],
+        fechaNacimiento: [{value: fecNacimientoBen1 ?? null, disabled: true}],
         nacionalidad: [{value: null, disabled: true}],
         paisNacimiento: [{value: null, disabled: true}],
         lugarNacimiento: [{value: null, disabled: true}],
-        telefono: [{value: null, disabled: true}],
+        telefono: [{value: this.beneficiario1.telFijo, disabled: true}],
         correoElectronico: [{value: this.beneficiario1?.correo ?? null, disabled: true}],
         calle: [{value: this.beneficiario1?.calle ?? null, disabled: true}],
         numeroExterior: [{value: this.beneficiario1?.numExt ?? null, disabled: true}],
         numeroInterior: [{value: this.beneficiario1?.numInt ?? null, disabled: true}],
         cp: [{value: this.beneficiario1?.cp ?? null, disabled: true}],
         colonia: [{value: this.beneficiario1?.colonia ?? null, disabled: true}],
-        municipio: [{value: null, disabled: true}],
-        estado: [{value: null, disabled: true}],
+        municipio: [{value: this.beneficiario1?.municipio ?? null, disabled: true}],
+        estado: [{value: this.beneficiario1?.estado ?? null, disabled: true}],
       }),
       beneficiario2: this.formBuilder.group({
         curp: [{value: this.beneficiario2?.curp ?? null, disabled: true}],
@@ -245,8 +247,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         nombre: [{value: this.beneficiario2?.nombre ?? null, disabled: true}],
         primerApellido: [{value: this.beneficiario2?.primerApellido ?? null, disabled: true}],
         segundoApellido: [{value: this.beneficiario2?.segundoApellido ?? null, disabled: true}],
-        sexo: [{value: null, disabled: true}],
-        fechaNacimiento: [{value: null, disabled: true}],
+        sexo: [{value: +this.beneficiario2?.idSexo ?? null, disabled: true}],
+        fechaNacimiento: [{value: fecNacimientoBen2 ?? null, disabled: true}],
         nacionalidad: [{value: null, disabled: true}],
         paisNacimiento: [{value: null, disabled: true}],
         lugarNacimiento: [{value: null, disabled: true}],

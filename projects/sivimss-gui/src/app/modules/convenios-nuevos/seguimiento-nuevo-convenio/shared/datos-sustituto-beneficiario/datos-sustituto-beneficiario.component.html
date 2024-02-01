@@ -57,15 +57,19 @@
   </div>
   <div class="col-md-4">
     <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
-    <input id="sexo" class="form-control" formControlName="sexo" placeholder="Inserta el sexo">
+    <p-dropdown id="sexo" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
+                (onChange)="cambioTipoSexo($event)" [options]="tipoSexo" [filter]="true"
+                filterBy="label"></p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.sexo?.errors?.required  && (parentFormGroup.sexo?.dirty || parentFormGroup.sexo?.touched)">
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="fechaNacimiento">Fecha de Nacimiento<span class="req">*</span>:</label>
-    <input id="fechaNacimiento" class="form-control" formControlName="fechaNacimiento"
-           placeholder="Inserta la fecha de nacimiento">
+    <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento"
+                [showIcon]="true" dateFormat="dd-mm-yy" placeholder="Ingresa fecha de nacimiento"
+                [maxDate]="fechaActual">
+    </p-calendar>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.fechaNacimiento?.errors?.required  && (parentFormGroup.fechaNacimiento?.dirty || parentFormGroup.fechaNacimiento?.touched)">
       Este campo es obligatorio *.</span>
