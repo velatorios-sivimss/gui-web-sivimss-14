@@ -34,7 +34,7 @@
       <p-accordionTab>
         <ng-template pTemplate="header">
           <div class="flex justify-content-between align-items-center flex-1">
-            <span>Datos de titular substituto</span>
+            <span>Datos de titular sustituto</span>
           </div>
         </ng-template>
         <ng-template pTemplate="content">
@@ -42,12 +42,12 @@
           <div class="flex">
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'titularSi'" name="titular" [value]="true"
-                             [(ngModel)]="mismoSustituto"></p-radioButton>
+                             [(ngModel)]="mismoSustituto" [disabled]="true"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'titularSi'">Sí</label>
             </div>
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'titularNo'" name="titular" [value]="false"
-                             [(ngModel)]="mismoSustituto"></p-radioButton>
+                             [(ngModel)]="mismoSustituto" [disabled]="true"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
             </div>
           </div>
