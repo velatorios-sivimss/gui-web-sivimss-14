@@ -19,6 +19,7 @@ import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/aute
 export class RestablecerContraseniaComponent implements OnInit {
   form!: FormGroup;
   mostrarModalFormatoContrasenia: boolean = false;
+  usuario: string = '';
 
   constructor(
     public autenticacionContratanteService: AutenticacionService,
@@ -30,19 +31,19 @@ export class RestablecerContraseniaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.usuario = params['usuario']
+    });
     this.inicializarForm();
   }
 
   inicializarForm(): void {
     this.form = this.formBuilder.group(
       {
-        usuario: [{ value: this.autenticacionContratanteService.usuario, disabled: true }, [Validators.required]],
+        usuario: [{ value: this.autenticacionContratanteService.usuario ?? this.usuario, disabled: true }, [Validators.required]],
         contraseniaAnterior: [{ value: this.autenticacionContratanteService.contrasenia, disabled: true }],
-        contraseniaNueva: [
-          '', [Validators.required, Validators.pattern(PATRON_CONTRASENIA)],
-        ],
-        contraseniaConfirmacion: [
-          '', [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
+        contraseniaNueva: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
+        contraseniaConfirmacion: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
       },
       { validators: [confirmacionContraseniadValidator] }
     );

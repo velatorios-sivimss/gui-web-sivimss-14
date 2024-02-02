@@ -1,36 +1,40 @@
-import {HttpClient, HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import {BnNgIdleService} from 'bn-ng-idle';
-import {ValidaRolGuard} from "projects/sivimss-gui/src/app/guards/valida-rol.guard";
-import {MensajesSistemaService} from "projects/sivimss-gui/src/app/services/mensajes-sistema.service";
-import {SidebarModule} from "projects/sivimss-gui/src/app/shared/sidebar/sidebar.module";
-import {TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION} from "projects/sivimss-gui/src/app/utils/tokens";
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
-import {AutenticacionInterceptor} from 'projects/sivimss-gui/src/app/interceptors/autenticacion.interceptor';
-import {AutenticacionService} from 'projects/sivimss-gui/src/app/services/autenticacion.service';
-import {BloqueaUsuarioLogueadoGuard} from 'projects/sivimss-gui/src/app/guards/bloquea-usuario-logueado.guard';
-import {ErrorInterceptor} from 'projects/sivimss-gui/src/app/interceptors/error.interceptor';
-import {PermiteUsuarioLogueadoGuard} from 'projects/sivimss-gui/src/app/guards/permite-usuario-logueado.guard';
-import {PaginaNoEncontradaComponent} from './components/pagina-no-encontrada/pagina-no-encontrada.component';
-import {HeaderImssPublicoComponent} from './components/header-imss-publico/header-imss-publico.component';
-import {LoaderModule} from './shared/loader/loader.module';
-import {AlertaModule} from './shared/alerta/alerta.module';
-import {SubHeaderPrivadoComponent} from './components/sub-header-privado/sub-header-privado.component';
-import {BreadcrumbModule} from "./shared/breadcrumb/breadcrumb.module";
-import {PopoverModule} from "./shared/popover/popover.module";
-import {UtileriaModule} from "./shared/utileria/utileria.module";
-import {NgOptimizedImage} from "@angular/common";
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { BnNgIdleService } from 'bn-ng-idle';
+import { ValidaRolGuard } from 'projects/sivimss-gui/src/app/guards/valida-rol.guard';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { SidebarModule } from 'projects/sivimss-gui/src/app/shared/sidebar/sidebar.module';
+import { TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION } from 'projects/sivimss-gui/src/app/utils/tokens';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { AutenticacionInterceptor } from 'projects/sivimss-gui/src/app/interceptors/autenticacion.interceptor';
+import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
+import { BloqueaUsuarioLogueadoGuard } from 'projects/sivimss-gui/src/app/guards/bloquea-usuario-logueado.guard';
+import { ErrorInterceptor } from 'projects/sivimss-gui/src/app/interceptors/error.interceptor';
+import { PermiteUsuarioLogueadoGuard } from 'projects/sivimss-gui/src/app/guards/permite-usuario-logueado.guard';
+import { PaginaNoEncontradaComponent } from './components/pagina-no-encontrada/pagina-no-encontrada.component';
+import { HeaderImssPublicoComponent } from './components/header-imss-publico/header-imss-publico.component';
+import { LoaderModule } from './shared/loader/loader.module';
+import { AlertaModule } from './shared/alerta/alerta.module';
+import { SubHeaderPrivadoComponent } from './components/sub-header-privado/sub-header-privado.component';
+import { BreadcrumbModule } from './shared/breadcrumb/breadcrumb.module';
+import { PopoverModule } from './shared/popover/popover.module';
+import { UtileriaModule } from './shared/utileria/utileria.module';
+import { NgOptimizedImage } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import {BadgeModule} from "primeng/badge";
-import {OverlayModule} from "primeng/overlay";
+import { BadgeModule } from 'primeng/badge';
+import { OverlayModule } from 'primeng/overlay';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
-  return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json')
+  return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -38,56 +42,55 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AppComponent,
     PaginaNoEncontradaComponent,
     HeaderImssPublicoComponent,
-    SubHeaderPrivadoComponent
+    SubHeaderPrivadoComponent,
   ],
-    imports: [
-        BrowserModule,
-        TranslateModule.forRoot({
-            defaultLanguage: 'es',
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient],
-            },
-        }),
-        BrowserAnimationsModule,
-        HttpClientModule,
-        AppRoutingModule,
-        SidebarModule.forRoot({
-            tiempoTransicion: .25,
-            widthMenuSidebar: 320,
-            inicializarMenuSidebarAbierto: false
-        }),
-        BreadcrumbModule,
-        LoaderModule,
-        AlertaModule,
-        PopoverModule,
-        UtileriaModule,
-        NgOptimizedImage,
-        DialogModule,
-        BadgeModule,
-        OverlayModule
-    ],
+  imports: [
+    BrowserModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'es',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
+    BrowserAnimationsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    SidebarModule.forRoot({
+      tiempoTransicion: 0.25,
+      widthMenuSidebar: 320,
+      inicializarMenuSidebarAbierto: false,
+    }),
+    BreadcrumbModule,
+    LoaderModule,
+    AlertaModule,
+    PopoverModule,
+    UtileriaModule,
+    NgOptimizedImage,
+    DialogModule,
+    BadgeModule,
+    OverlayModule,
+  ],
   providers: [
     AutenticacionService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AutenticacionInterceptor,
-      multi: true
+      multi: true,
     },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptor,
-      multi: true
+      multi: true,
     },
     PermiteUsuarioLogueadoGuard,
     BloqueaUsuarioLogueadoGuard,
     ValidaRolGuard,
     BnNgIdleService,
     MensajesSistemaService,
-    {provide: TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION, useValue: 300}, // Tiempo en segundos
+    { provide: TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION, useValue: 300 }, // Tiempo en segundos
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}

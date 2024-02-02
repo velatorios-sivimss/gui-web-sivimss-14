@@ -1008,6 +1008,7 @@ export class ModificarDatosContratanteComponent
     this.altaODS.idOperador = null;
 
     let datos = datosEtapaContratante;
+    this.altaODS.idContratantePf = this.datosConsulta.idContratantePf
     this.altaODS.idParentesco = datos.idParentesco;
     this.contratante.matricula = datos.contratante.matricula;
     this.contratante.idPersona = this.idPersona;
@@ -1020,6 +1021,9 @@ export class ModificarDatosContratanteComponent
     this.contratante.sexo = datos.contratante.sexo;
     this.contratante.otroSexo = datos.contratante.primerApellido;
 
+    if(typeof datos.contratante.fechaNac == 'string'){
+
+    }
     let [dia, mes, anio] = datos.contratante.fechaNac.split('/');
     dia = dia.substr(0, 2);
     const fecha = new Date(anio + "-" + mes + "-" + dia)
@@ -1078,14 +1082,15 @@ export class ModificarDatosContratanteComponent
     let municipio = finado.cp?.desMunicipio ?? null;
     let estado = finado.cp?.desEstado ?? null;
     let idDomicilio = finado.cp?.idDomicilio ?? null;
-
     let datosEtapaFinado = {
       datosFinado: {
+        idVelatorioContratoPrevision: finado.idVelatorioContratoPrevision ?? null,
+        idContratoPrevision: finado.idContratoPrevision ?? null,
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.folioContrato,
-        velatorioPrevision: finado.idVelatorioContratoPrevision,
+        velatorioPrevision: finado.nombreVelatorio,
         esObito: finado.esobito,
         esParaExtremidad: finado.extremidad,
         matricula: matricula,

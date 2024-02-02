@@ -14,6 +14,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { OverlayPanelOpcionesModule } from 'projects/sivimss-gui/src/app/shared/overlay-panel-opciones/overlay-panel-opciones.module';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DialogModule } from 'primeng/dialog';
+import {UtileriaModule} from "../../../../../../../../shared/utileria/utileria.module";
 
 @NgModule({
   declarations: [RegistroPersonaGrupoComponent],
@@ -34,6 +35,7 @@ import { DialogModule } from 'primeng/dialog';
     OverlayPanelOpcionesModule,
     OverlayPanelModule,
     DialogModule,
+    UtileriaModule,
   ],
 })
 export class RegistroPersonaGrupoModule {}

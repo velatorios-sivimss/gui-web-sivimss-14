@@ -5,7 +5,7 @@ import {
   Output,
   AfterContentChecked,
   ChangeDetectorRef,
-  Renderer2,
+  Renderer2, ViewChild,
 } from '@angular/core';
 import {
   ModalAgregarPanteonComponent
@@ -29,7 +29,6 @@ import {InformacionServicioInterface} from '../../../models/InformacionServicio.
 import {InformacionServicioVelacionInterface} from '../../../models/InformacionServicioVelacion.interface';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
-import {ConfirmacionServicio} from '../../../../renovacion-extemporanea/models/convenios-prevision.interface';
 import {Router, ActivatedRoute} from '@angular/router';
 import {
   AlertaService,
@@ -48,6 +47,8 @@ import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface
 import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {PanteonInterace} from "../../../constants/panteon.interace";
+import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 
 @Component({
   selector: 'app-modificar-informacion-servicio-sf',
@@ -59,9 +60,11 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 export class ModificarInformacionServicioSFComponent
   implements OnInit, AfterContentChecked {
   @Output()
-  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
-  @Output()
-  confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
+  seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
+  // @Output()
+  // confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
+  @ViewChild('idCapilla') idCapilla: any;
+  @ViewChild('salaCambio') salaCambio: any;
 
   readonly POSICION_PAIS = 0;
   readonly POSICION_ESTADO = 1;
@@ -108,7 +111,9 @@ export class ModificarInformacionServicioSFComponent
   servicioExtremidad: boolean = false;
   confirmarPreOrden: boolean = false;
   confirmarGuardarPanteon: boolean = false;
+  existePanteon: boolean = false;
   colonias:TipoDropdown[] = [];
+  direcPanteon!: PanteonInterace;
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -175,13 +180,28 @@ export class ModificarInformacionServicioSFComponent
     this.buscarCapillas();
     this.buscarSalas();
     this.buscarPromotor();
+    this.validarExistenciaPromotor();
+  }
+
+  validarExistenciaPanteon(datos:any): void {
+    this.existePanteon = !!datos.idPanteon
+    if(!this.existePanteon)return
+    this.direcPanteon = {
+      calle: datos.panteon.calle,
+      noExterior: datos.panteon.noExterior ?? null,
+      noInterior: datos.panteon.noInterior,
+      colonia: datos.panteon.colonia,
+      cp: datos.panteon.cp,
+      estado: datos.panteon.estado,
+      municipio: datos.panteon.municipio,
+    }
   }
 
   llenarFormulario(datos: any): void {
-    this.idPanteon = datos.idPanteon;
     let fechaVelacion;
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio, mes, dia] = fechaActual.split('-')
+    this.validarExistenciaPanteon(datos);
 
     if (typeof datos.horaVelacion == "string") {
       const [horas, minutos] = datos.horaVelacion.split(':')
@@ -193,7 +213,6 @@ export class ModificarInformacionServicioSFComponent
     } else {
       fechaVelacion = datos.fechaVelacion;
     }
-
 
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
@@ -245,8 +264,8 @@ export class ModificarInformacionServicioSFComponent
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          {value: null, disabled: false}
-        ],
+           {value:  !!datos.idPanteon, disabled: !!datos.idPanteon}
+         ],
       }),
       recoger: this.formBuilder.group({
         fecha: [
@@ -336,7 +355,7 @@ export class ModificarInformacionServicioSFComponent
         fecha: [{value: null, disabled: false}, [Validators.required]],
         hora: [{value: null, disabled: false}, [Validators.required]],
         gestionadoPorPromotor: [
-          {value: null, disabled: false},
+          {value: false, disabled: true},
           [Validators.required],
         ],
         promotor: [{value: null, disabled: false}, [Validators.required]],
@@ -592,11 +611,21 @@ export class ModificarInformacionServicioSFComponent
       header: 'Agregar panteón',
       style: {maxWidth: '876px', width: '100%'},
     });
-    ref.onClose.subscribe((val: number) => {
-      if (val) {
-        this.idPanteon = val;
+    ref.onClose.subscribe((val: any) => {
+      if (val.idPanteon) {
+        this.existePanteon = true;
+        this.idPanteon = val.idPanteon;
         this.inhumacion.agregarPanteon.disable();
         this.confirmarGuardarPanteon = true
+        this.direcPanteon = {
+          calle: val.formularioPanteon.calle,
+          noExterior: val.formularioPanteon.noExterior ?? null,
+          noInterior: val.formularioPanteon.noInterior,
+          colonia: val.formularioPanteon.colonia,
+          cp: val.formularioPanteon.cp,
+          estado: val.formularioPanteon.estado,
+          municipio: val.formularioPanteon.municipio,
+        }
         return;
       }
       this.inhumacion.agregarPanteon.setValue(false);
@@ -638,9 +667,11 @@ export class ModificarInformacionServicioSFComponent
   }
 
   preorden(): void {
-    this.altaODS.idEstatus = 1;
     this.llenarDatos();
-    this.guardarODS(0)
+    this.altaODS.idEstatus = 1;
+    window.scrollTo(0, 0);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
+    // this.guardarODS(0)
   }
 
   guardarODS(consumoTablas: number): void {
@@ -781,6 +812,7 @@ export class ModificarInformacionServicioSFComponent
       horaCortejo: formulario.cortejo.hora,
       horaCremacion: formulario.lugarCremacion.hora,
       idPanteon: this.idPanteon,
+      panteon: this.direcPanteon,
       idPromotor: formulario.cortejo.promotor,
       idSala: formulario.lugarCremacion.sala,
       cp: formulario.lugarVelacion.cp,
@@ -798,47 +830,17 @@ export class ModificarInformacionServicioSFComponent
       gestionadoPorPromotor: null,
       promotor: formulario.cortejo.promotor,
     };
-    this.informacionServicio.fechaCortejo =
-      formulario.cortejo.fecha == null
-        ? null
-        : moment(
-          typeof formulario.cortejo.fecha === "string" ? this.parseoFecha(formulario.cortejo.fecha) : formulario.cortejo.fecha
-        ).format('yyyy-MM-DD');
+    this.informacionServicio.fechaCortejo = this.validarFecha(formulario.cortejo.fecha);
 
-    this.informacionServicio.fechaCremacion =
-      formulario.lugarCremacion.fecha == null
-        ? null
-        : moment(
-          typeof formulario.lugarCremacion.fecha === "string" ? this.parseoFecha(formulario.lugarCremacion.fecha) : formulario.lugarCremacion.fecha
-        ).format('yyyy-MM-DD');
+    this.informacionServicio.fechaCremacion = this.validarFecha(formulario.lugarCremacion.fecha);
 
-    this.informacionServicio.fechaRecoger =
-      formulario.recoger.fecha == null
-        ? null
-        : moment(
-          typeof formulario.recoger.fecha === "string" ? this.parseoFecha(formulario.recoger.fecha) : formulario.recoger.fecha
-        ).format('yyyy-MM-DD');
+    this.informacionServicio.fechaRecoger = this.validarFecha(formulario.recoger.fecha)
 
-    this.informacionServicio.horaRecoger =
-      formulario.recoger.hora == null
-        ? null
-        : moment(
-          typeof formulario.recoger.hora === "string" ? this.parseoHora(formulario.recoger.fecha,formulario.recoger.hora) : formulario.recoger.hora
-        ).format('HH:mm');
+    this.informacionServicio.horaRecoger = this.validarHora(formulario.recoger.hora,formulario.recoger.fecha);
 
-    this.informacionServicio.horaCortejo =
-      formulario.cortejo.hora == null
-        ? null
-        : moment(
-          typeof formulario.cortejo.hora === "string" ? this.parseoHora(formulario.cortejo.fecha,formulario.cortejo.hora) : formulario.cortejo.hora
-        ).format('HH:mm');
+    this.informacionServicio.horaCortejo = this.validarHora(formulario.cortejo.hora,formulario.cortejo.fecha);
 
-    this.informacionServicio.horaCremacion =
-      formulario.lugarCremacion.hora == null
-        ? null
-        : moment(
-          typeof formulario.lugarCremacion.hora === "string" ? this.parseoHora(formulario.lugarCremacion.fecha,formulario.lugarCremacion.hora) : formulario.lugarCremacion.hora
-        ).format('HH:mm');
+    this.informacionServicio.horaCremacion = this.validarHora(formulario.lugarCremacion.hora,formulario.lugarCremacion.fecha);
 
     this.informacionServicio.idPanteon = this.idPanteon;
     this.informacionServicio.idPromotor = formulario.cortejo.promotor;
@@ -852,6 +854,7 @@ export class ModificarInformacionServicioSFComponent
     this.cpVelacion.numExterior = formulario.lugarVelacion.exterior;
     this.cpVelacion.numInterior = formulario.lugarVelacion.interior;
     this.informacionServicioVelacion.cp = this.cpVelacion;
+
     if (
       formulario.lugarVelacion.cp == '' ||
       formulario.lugarVelacion.cp == null
@@ -859,33 +862,13 @@ export class ModificarInformacionServicioSFComponent
       this.informacionServicioVelacion.cp = null;
     }
 
-    this.informacionServicioVelacion.fechaInstalacion =
-      formulario.instalacionServicio.fecha == null
-        ? null
-        : moment(
-          typeof formulario.instalacionServicio.fecha === "string" ? this.parseoFecha(formulario.instalacionServicio.fecha) : formulario.instalacionServicio.fecha
-        ).format('yyyy-MM-DD');
+    this.informacionServicioVelacion.fechaInstalacion = this.validarFecha(formulario.instalacionServicio.fecha);
 
-    this.informacionServicioVelacion.fechaVelacion =
-      formulario.lugarVelacion.fecha == null
-        ? null
-        : moment(
-          typeof formulario.lugarVelacion.fecha === "string" ?this.parseoFecha(formulario.lugarVelacion.fecha) : formulario.lugarVelacion.fecha
-        ).format('yyyy-MM-DD');
+    this.informacionServicioVelacion.fechaVelacion = this.validarFecha(formulario.lugarVelacion.fecha);
 
-    this.informacionServicioVelacion.horaInstalacion =
-      formulario.instalacionServicio.hora == null
-        ? null
-        : moment(
-          typeof formulario.instalacionServicio.hora === "string" ? this.parseoHora(formulario.instalacionServicio.fecha,formulario.instalacionServicio.hora) : formulario.instalacionServicio.hora
-        ).format('HH:mm');
+    this.informacionServicioVelacion.horaInstalacion = this.validarHora(formulario.instalacionServicio.hora,formulario.instalacionServicio.fecha)
 
-    this.informacionServicioVelacion.horaVelacion =
-      formulario.lugarVelacion.hora == null
-        ? null
-        : moment(
-          typeof formulario.lugarVelacion.hora === "string" ? this.parseoHora(formulario.lugarVelacion.fecha,formulario.lugarVelacion.hora) : formulario.lugarVelacion.hora
-        ).format('HH:mm');
+    this.informacionServicioVelacion.horaVelacion = this.validarHora(formulario.lugarVelacion.hora, formulario.lugarVelacion.fecha)
 
     this.informacionServicioVelacion.idCapilla =
       formulario.lugarVelacion.capilla;
@@ -894,8 +877,31 @@ export class ModificarInformacionServicioSFComponent
 
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
+    this.llenarDescripcionDropDown();
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datos);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
+  }
+
+  validarHora(hora:any,fecha:any):any {
+    if(hora){
+      if(typeof hora === "string"){
+        return moment(this.parseoHora(fecha,hora)).format('HH:mm');
+      }else{
+       return moment(hora).format('HH:mm');
+      }
+    }
+    return null
+  }
+
+  validarFecha(fecha:any):any {
+    if(fecha){
+      if(typeof fecha === "string"){
+        return moment(this.parseoFecha(fecha)).format('yyyy-MM-DD');
+      }else{
+        return moment(fecha).format('yyyy-MM-DD');
+      }
+    }
+    return null;
   }
 
   descargarContratoServInmediatos(idOrdenServicio: number, consumoTablas: number): void {
@@ -1011,9 +1017,11 @@ export class ModificarInformacionServicioSFComponent
   }
 
   generada(): void {
-    this.altaODS.idEstatus = 2;
     this.llenarDatos();
-    this.guardarODS(1)
+    this.altaODS.idEstatus = 2;
+    window.scrollTo(0, 0);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
+    // this.guardarODS(1)
   }
 
   regresar() {
@@ -1077,7 +1085,17 @@ export class ModificarInformacionServicioSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(2);
     this.llenarDatos();
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:2, detalle_orden_servicio: true});
+  }
+  llenarDescripcionDropDown(): void {
+    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    obj.informacion.capilla = this.idCapilla?.selectedOption?.label ?? null;
+    obj.informacion.sala = this.salaCambio?.selectedOption?.label ?? null;
+    localStorage.setItem("drop_down",JSON.stringify(obj));
+  }
+
+  validarExistenciaPromotor(): void {
+    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable();
   }
 }

@@ -18,7 +18,7 @@
         <section class="titulo-body">
           <p>
             DIRECCIÓN DE PRESTACIONES ECONÓMICAS Y SOCIALES COORDINACIÓN DE CENTROS VACACIONALES, VELATORIOS, UNIDAD DE
-            CONGRESO Y TIENDAS
+            CONGRESOS Y TIENDAS
           </p>
           <p>
             RECIBO DE PAGO DE TRÁMITES POR CUENTA DEL CONTRATANTE
@@ -74,8 +74,9 @@
                       *ngIf="f?.tramite?.errors?.required && (f?.tramite?.dirty || f?.tramite?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="grid-item">
-                <label class="control-label" for="descripcionTramite">DESCRIPCIÓN:</label>
-                <input id="descripcionTramite" class="form-control" formControlName="descripcionTramite">
+                <label class="control-label" for="descripcionTramite">IMPORTE:</label>
+                <p-inputNumber id="descripcionTramite" class="form-control" formControlName="descripcionTramite"
+                               mode="currency" currency="USD" locale="en-US"></p-inputNumber>
               </div>
               <div class="grid-item"></div>
               <div class="grid-item">
@@ -88,8 +89,9 @@
                       *ngIf="f?.derecho?.errors?.required && (f?.derecho?.dirty || f?.derecho?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="grid-item">
-                <label class="control-label" for="descripcionDerecho">DESCRIPCIÓN:</label>
-                <input id="descripcionDerecho" class="form-control" formControlName="descripcionDerecho">
+                <label class="control-label" for="descripcionDerecho">IMPORTE:</label>
+                <p-inputNumber id="descripcionDerecho" class="form-control" formControlName="descripcionDerecho"
+                               mode="currency" currency="USD" locale="en-US"></p-inputNumber>
               </div>
               <div class="grid-item"></div>
               <div class="grid-item mt-5">

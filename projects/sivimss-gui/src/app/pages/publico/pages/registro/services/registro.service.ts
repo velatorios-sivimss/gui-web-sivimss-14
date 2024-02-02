@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { environment } from 'projects/sivimss-gui/src/environments/environment';
 import { Observable } from 'rxjs';
-import { RegistrarContratante } from '../models/registro-contratante.interface';
+import { IRegistrarContratante } from '../models/registro-contratante.interface';
 import { ValidarRfcCurp } from '../../autenticacion/models/validar-rfc-curp.interface';
 import { BaseService } from 'projects/sivimss-gui/src/app/utils/base-service';
 
@@ -13,13 +13,13 @@ export class RegistroService extends BaseService<HttpRespuesta<any>, any> {
     super(_http, `${environment.api.loginContratante}`, "", "", 1, "", "", "");
   }
 
-  registrarContratante(contratante: RegistrarContratante): Observable<HttpRespuesta<any>> {
+  registrarContratante(contratante: IRegistrarContratante): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${environment.api.loginContratante}/registrar/contratante`, contratante);
   }
 
-  consutaCP(cp: string): Observable<any> {
-    return this._http.get<any>(
-      `http://serviciosdigitalesinterno-stage.imss.gob.mx/serviciosDigitales-rest/v1/domicilios/asentamientos/codigoPostal/` + cp
+  consutaCP(cp: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      `${environment.api.servicios_externos}consultar/codigo-postal/` + cp
     );
   }
 

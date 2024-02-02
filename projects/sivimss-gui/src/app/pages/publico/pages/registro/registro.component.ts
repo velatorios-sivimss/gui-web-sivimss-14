@@ -9,7 +9,7 @@ import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuest
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { RegistrarContratante } from './models/registro-contratante.interface';
+import { IContratanteRegistrado, IRegistrarContratante } from './models/registro-contratante.interface';
 import { PATRON_CURP } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import * as moment from 'moment';
@@ -32,7 +32,9 @@ export class RegistroComponent implements OnInit {
     { label: 'Opción 1', value: 1 },
     { label: 'Opción 2', value: 2 },
   ];
-
+  idUsuario?: number | null;
+  idContratante?: number | null;
+  idPersona?: number | null;
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   catalogoEstados: TipoDropdown[] = [];
@@ -127,7 +129,7 @@ export class RegistroComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.required],
+          [Validators.nullValidator],
         ],
         paisNacimiento: [
           {
@@ -141,7 +143,7 @@ export class RegistroComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [],
+          [Validators.nullValidator],
         ],
         telefono: [
           {
@@ -255,21 +257,16 @@ export class RegistroComponent implements OnInit {
     this.datosGenerales.paisNacimiento.patchValue(null);
     this.datosGenerales.lugarNacimiento.patchValue(null);
     if (this.datosGenerales.nacionalidad.value === 1) {
-      this.datosGenerales.lugarNacimiento.setValidators(Validators.required);
-      this.datosGenerales.lugarNacimiento.updateValueAndValidity();
       this.datosGenerales.paisNacimiento.setValue(119);
-    } else {
-      this.datosGenerales.lugarNacimiento.clearValidators();
-      this.datosGenerales.lugarNacimiento.updateValueAndValidity();
     }
   }
 
-  obtenerCP(): void {
+  obtenerCP(coloniaSeleccionada?: string | undefined): void {
     if (!this.domicilio.codigoPostal.value || this.domicilio.codigoPostal.invalid) {
       this.colonias = [];
       this.domicilio.estado.setValue(null);
       this.domicilio.municipio.setValue(null);
-      this.domicilio.colonia.markAsTouched();
+      this.domicilio.colonia.setValue(null);
       return
     }
     this.loaderService.activar();
@@ -277,11 +274,18 @@ export class RegistroComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        if (respuesta && respuesta.length > 0) {
-          this.colonias = mapearArregloTipoDropdown(respuesta, 'nombre', 'nombre');
-          this.domicilio.estado.setValue(respuesta[0].municipio.entidadFederativa.nombre);
-          this.domicilio.municipio.setValue(respuesta[0].municipio.nombre);
+        if (respuesta && respuesta.datos.length > 0) {
+          this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
+          this.domicilio.estado.setValue(respuesta.datos[0].municipio.entidadFederativa.nombre);
+          this.domicilio.municipio.setValue(respuesta.datos[0].municipio.nombre);
           this.domicilio.colonia.markAsTouched();
+          if (coloniaSeleccionada) {
+            this.colonias.forEach((item: TipoDropdown) => {
+              if (item.label === coloniaSeleccionada) {
+                this.domicilio.colonia.setValue(item.value);
+              }
+            });
+          }
         } else {
           this.colonias = [];
           this.domicilio.estado.setValue(null);
@@ -297,19 +301,49 @@ export class RegistroComponent implements OnInit {
 
   validarCurp() {
     if (this.datosGenerales.curp.invalid) {
-      if (this.datosGenerales.curp.value !== '') {
-        this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no es válido.');
+      if (this.datosGenerales.curp.value !== '' && this.datosGenerales.curp.value !== null) {
+        this.ajustarForm();
+        this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
       }
     } else {
       this.registroService.validarCurpRfc({ rfc: null, curp: this.datosGenerales.curp.value }).subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
+        next: (respuesta: HttpRespuesta<IContratanteRegistrado[]>) => {
           this.datosGenerales.curp.setErrors({ 'incorrect': true });
           if (respuesta.mensaje === 'USUARIO REGISTRADO') {
-            this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP ya se encuentra registrado.');
-            this.datosGenerales.curp.patchValue(null);
+            const datosUsuario = respuesta.datos[0];
+            // Si idUsuario es null solo falta crear el usuario - Se debe pre-llenar formulario
+            this.datosGenerales.curp.setValue(datosUsuario.curp);
+            this.datosGenerales.nss.setValue(datosUsuario.nss);
+            this.datosGenerales.rfc.setValue(datosUsuario.rfc);
+            this.datosGenerales.nombre.setValue(datosUsuario.nomPersona);
+            this.datosGenerales.primerApellido.setValue(datosUsuario.paterno);
+            this.datosGenerales.segundoApellido.setValue(datosUsuario.materno);
+            this.datosGenerales.fechaNacimiento.setValue(datosUsuario.fecNacimiento);
+            this.datosGenerales.sexo.setValue(datosUsuario.idSexo);
+            this.datosGenerales.otro.setValue(datosUsuario.otroSexo);
+            this.datosGenerales.nacionalidad.setValue(datosUsuario.idPais === 119 ? 1 : 2);
+            this.datosGenerales.paisNacimiento.setValue(datosUsuario.idPais);
+            this.datosGenerales.lugarNacimiento.setValue(datosUsuario.idLugarNac);
+            this.datosGenerales.telefono.setValue(datosUsuario.tel);
+            this.datosGenerales.correo.setValue(datosUsuario.correo);
+            this.datosGenerales.correoConfirmacion.setValue(datosUsuario.correo);
+
+            this.domicilio.calle.setValue(datosUsuario.calle);
+            this.domicilio.numeroInterior.setValue(datosUsuario.numInt);
+            this.domicilio.numeroExterior.setValue(datosUsuario.numExt);
+            this.domicilio.codigoPostal.setValue(datosUsuario.cp);
+            this.obtenerCP(datosUsuario.colonia);
+            this.idUsuario = datosUsuario?.idUsuario ?? null;
+            this.idContratante = datosUsuario?.idContratante;
+            this.idPersona = datosUsuario?.idPersona;
+
+            this.form.disable();
+            this.datosGenerales.curp.enable();
           } else if (respuesta.mensaje === 'NO EXISTE CURP') {
+            this.ajustarForm();
             this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
           } else {
+            this.ajustarForm();
             this.datosGenerales.curp.setErrors(null);
           }
         },
@@ -329,7 +363,9 @@ export class RegistroComponent implements OnInit {
       this.datosGenerales.rfc.setValidators(Validators.maxLength(13));
       this.datosGenerales.rfc.updateValueAndValidity();
       const regex: RegExp = new RegExp(/^([A-Z,Ñ&]{3,4}(\d{2})(0[1-9]|1[0-2])(0[1-9]|1\d|2\d|3[0-1])[A-Z|\d]{3})$/);
-      if (!regex.test(this.datosGenerales.rfc.value)) {
+      if (!regex.test(this.datosGenerales.rfc.value) &&
+        this.datosGenerales.rfc.value !== '' &&
+        this.datosGenerales.rfc.value !== null) {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
         this.datosGenerales.rfc.setErrors({ 'incorrect': true });
       } else {
@@ -352,7 +388,9 @@ export class RegistroComponent implements OnInit {
   }
 
   validarEmail() {
-    if (this.datosGenerales.correo.invalid) {
+    if (this.datosGenerales.correo.invalid &&
+      this.datosGenerales.correo.value !== '' &&
+      this.datosGenerales.correo.value !== null) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'Tu correo electrónico no es válido.');
     }
   }
@@ -379,8 +417,9 @@ export class RegistroComponent implements OnInit {
     });
   }
 
-  datosGuardar(): RegistrarContratante {
+  datosGuardar(): IRegistrarContratante {
     return {
+      idUsuario: this.idUsuario,
       nombre: this.datosGenerales.nombre.value,
       paterno: this.datosGenerales.primerApellido.value,
       materno: this.datosGenerales.segundoApellido.value,
@@ -388,7 +427,11 @@ export class RegistroComponent implements OnInit {
       curp: this.datosGenerales.curp.value,
       numSexo: this.datosGenerales.sexo.value,
       otroSexo: this.datosGenerales.otro.value,
-      fecNacimiento: this.datosGenerales.fechaNacimiento.value ? moment(this.datosGenerales.fechaNacimiento.value).format('DD-MM-YYYY') : null,
+      fecNacimiento: this.datosGenerales.fechaNacimiento.value ?
+        typeof this.datosGenerales.fechaNacimiento.value === 'object' ?
+          moment(this.datosGenerales.fechaNacimiento.value).format('DD-MM-YYYY') :
+          moment(this.datosGenerales.fechaNacimiento.value, 'DD/MM/YYYY').format('DD-MM-YYYY')
+        : null,
       idPais: this.datosGenerales.paisNacimiento.value,
       idLugarNac: this.datosGenerales.lugarNacimiento.value,
       tel: this.datosGenerales.telefono.value,
@@ -404,10 +447,22 @@ export class RegistroComponent implements OnInit {
         estado: this.domicilio.estado.value,
       },
       contratante: {
+        idPersona: this.idPersona,
+        idContratante: this.idContratante,
         matricula: null,
       },
     }
   }
+
+  ajustarForm() {
+    const curp = this.datosGenerales.curp.value;
+    this.form.reset();
+    this.form.enable();
+    this.datosGenerales.curp.setValue(curp);
+    this.domicilio.municipio.disable();
+    this.domicilio.estado.disable();
+  }
+
 
   get datosGenerales() {
     return (this.form.controls['datosGenerales'] as FormGroup).controls;

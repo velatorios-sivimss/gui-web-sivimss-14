@@ -1,9 +1,9 @@
 export interface Domicilio {
     calle?: string;
     numInt?: string | null;
-    numExt?: string;
+    numExt?: string | null;
     cp?: number;
     colonia?: string;
-    municipio?: number;
-    estado?: number;
+    municipio?: string;
+    estado?: string;
 }

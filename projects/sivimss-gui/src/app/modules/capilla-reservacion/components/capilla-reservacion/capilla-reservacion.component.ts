@@ -159,11 +159,6 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
     this.agregarSalidaRef.onClose.subscribe((respuesta: boolean) => {
       if (respuesta) {
-        this.f.delegacion.patchValue(0);
-        this.f.velatorio.patchValue(0);
-        this.velatorios = [];
-        this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
-          { label: delegacion.label, value: delegacion.value })) || [];
         this.registrarEntradaForm.reset();
         this.registrarSalidaForm.reset();
       }
@@ -197,11 +192,6 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
     this.creacionRef.onClose.subscribe((estatus: boolean) => {
       if (estatus) {
-        this.f.delegacion.patchValue(0);
-        this.f.velatorio.patchValue(0);
-        this.velatorios = mapearArregloTipoDropdown(this.respuesta[0]?.datos, 'velatorio', 'id');
-        this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
-          { label: delegacion.label, value: delegacion.value })) || [];
         this.registrarEntradaForm.reset();
         this.registrarSalidaForm.reset();
       }

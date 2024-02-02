@@ -24,38 +24,44 @@
                 <h2 class="subtitulo-base">Datos personales</h2>
                 <div class="row mb-3">
                     <div class="col-md-3">
-                        <label class="control-label" for="curp">CURP <span class="req">*</span>:</label>
-                        <input id="curp" type="text" class="form-control" formControlName="curp"
-                            placeholder="Ingresa CURP">
+                        <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
+                        <input id="curp" type="text" class="form-control" formControlName="curp" alphanumericOnly
+                            trimmer (blur)="validarCurp(datosPersonales);" oninput="this.value = this.value.toUpperCase()"
+                            maxlength="18" placeholder="Ingresa curp">
                         <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.curp?.errors?.required && (datosPersonales.curp?.dirty || datosPersonales.curp?.touched)">Este
+                            *ngIf="datosPersonales.curp?.errors?.required  && (datosPersonales.curp?.dirty || datosPersonales.curp?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="rfc">R.F.C.:</label>
-                        <input id="rfc" type="text" class="form-control" formControlName="rfc"
-                            placeholder="Ingresa R.F.C.">
+                        <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa R.F.C."
+                            maxlength="13" trimmer folioOdsAlphanumeric (blur)="validarRfc(datosPersonales)">
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="matricula">Matrícula:</label>
                         <input id="matricula" type="text" class="form-control" formControlName="matricula"
-                            placeholder="Ingresa matrícula">
+                            placeholder="Ingresa matrícula" maxlength="10">
                     </div>
                     <div class="col-md-3">
-                        <label class="control-label" for="nombre">Nombre <span class="req">*</span>:</label>
-                        <input id="nombre" type="text" class="form-control" formControlName="nombre"
-                            placeholder="Ingresa nombre">
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.nombre?.errors?.required && (datosPersonales.nombre?.dirty || datosPersonales.nombre?.touched)">Este
-                            campo es obligatorio *.</span>
+                        <label class="control-label" for="nss">NSS:</label>
+                        <input id="nss" type="text" class="form-control" formControlName="nss"
+                            placeholder="Ingresa NSS" maxlength="11">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3">
+                        <label class="control-label" for="nombre">Nombre(s) <span class="req">*</span>:</label>
+                        <input id="nombre" type="text" class="form-control" formControlName="nombre"
+                            placeholder="Ingresa nombre" maxlength="30" trimmer alphanumericOnly>
+                        <span class="campo-obligatorio"
+                            *ngIf="datosPersonales.nombre?.errors?.required && (datosPersonales.nombre?.dirty || datosPersonales.nombre?.touched)">Este
+                            campo es obligatorio *.</span>
+                    </div>
+                    <div class="col-md-3">
                         <label class="control-label" for="primerApellido">Primer apellido <span
                                 class="req">*</span>:</label>
                         <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
-                            placeholder="Ingresa primer apellido">
+                            placeholder="Ingresa primer apellido" maxlength="20" trimmer alphanumericOnly>
                         <span class="campo-obligatorio"
                             *ngIf="datosPersonales.primerApellido?.errors?.required && (datosPersonales.primerApellido?.dirty || datosPersonales.primerApellido?.touched)">Este
                             campo es obligatorio *.</span>
@@ -64,23 +70,26 @@
                         <label class="control-label" for="segundoApellido">Segundo apellido <span
                                 class="req">*</span>:</label>
                         <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
-                            placeholder="Ingresa segundo apellido">
+                            placeholder="Ingresa segundo apellido" maxlength="20" trimmer alphanumericOnly>
                         <span class="campo-obligatorio"
                             *ngIf="datosPersonales.segundoApellido?.errors?.required && (datosPersonales.segundoApellido?.dirty || datosPersonales.segundoApellido?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
+                </div>
+                <div class="row mb-3">
                     <div class="col-md-3">
                         <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
                         <p-dropdown id="sexo" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
-                            [options]="dummyDropdown" [filter]="true" filterBy="label"></p-dropdown>
+                            (onChange)="cambioTipoSexo(datosPersonales)" [options]="tipoSexo" [filter]="true"
+                            filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
                             *ngIf="datosPersonales.sexo?.errors?.required && (datosPersonales.sexo?.dirty || datosPersonales.sexo?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" *ngIf="datosPersonales.sexo.value === 3">
                         <label class="control-label" for="otro">Otro:</label>
                         <input id="otro" type="text" class="form-control" formControlName="otro"
-                            placeholder="Ingresa otro">
+                            placeholder="Ingresa otro" maxlength="10">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -97,32 +106,25 @@
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
-                        <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
-                            placeholder="Selecciona nacionalidad" [options]="dummyDropdown" [filter]="true"
-                            filterBy="label">
-                        </p-dropdown>
+                        <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad" (onChange)="cambioNacionalidad(datosPersonales)"
+                            placeholder="Selecciona nacionalidad" [options]="nacionalidad" [filter]="true"
+                            filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
                             *ngIf="datosPersonales.nacionalidad?.errors?.required && (datosPersonales.nacionalidad?.dirty || datosPersonales.nacionalidad?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="paisNacimiento">País de nacimiento<span
-                                class="req">*</span>:</label>
+                    <div class="col-md-3" *ngIf="datosPersonales.nacionalidad.value === 2">
+                        <label class="control-label" for="paisNacimiento">Pais de nacimiento:</label>
                         <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
-                            placeholder="Selecciona país nacimiento" [options]="dummyDropdown" [filter]="true"
-                            filterBy="label">
-                        </p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.paisNacimiento?.errors?.required && (datosPersonales.paisNacimiento?.dirty || datosPersonales.paisNacimiento?.touched)">Este
-                            campo es obligatorio *.</span>
+                            placeholder="Selecciona país de nacimiento" [options]="catalogoPaises" [filter]="true"
+                            filterBy="label"></p-dropdown>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" *ngIf="datosPersonales.nacionalidad.value === 1">
                         <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span
                                 class="req">*</span>:</label>
                         <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
-                            placeholder="Selecciona lugar nacimiento" [options]="dummyDropdown" [filter]="true"
-                            filterBy="label">
-                        </p-dropdown>
+                            placeholder="Selecciona lugar de nacimiento" [options]="catalogoEstados" [filter]="true"
+                            filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
                             *ngIf="datosPersonales.lugarNacimiento?.errors?.required && (datosPersonales.lugarNacimiento?.dirty || datosPersonales.lugarNacimiento?.touched)">Este
                             campo es obligatorio *.</span>
@@ -133,7 +135,7 @@
                         <label class="control-label" for="telefonoCelular">Teléfono celular <span
                                 class="req">*</span>:</label>
                         <input id="telefonoCelular" type="text" class="form-control" formControlName="telefonoCelular"
-                            placeholder="Ingresa teléfono celular">
+                            placeholder="Ingresa teléfono celular" trimmer numbersOnly maxlength="10">
                         <span class="campo-obligatorio"
                             *ngIf="datosPersonales.telefonoCelular?.errors?.required && (datosPersonales.telefonoCelular?.dirty || datosPersonales.telefonoCelular?.touched)">Este
                             campo es obligatorio *.</span>
@@ -142,7 +144,7 @@
                         <label class="control-label" for="telefonoFijo">Teléfono fijo <span
                                 class="req">*</span>:</label>
                         <input id="telefonoFijo" type="text" class="form-control" formControlName="telefonoFijo"
-                            placeholder="Ingresa teléfono fijo">
+                            placeholder="Ingresa teléfono fijo" trimmer numbersOnly maxlength="10">
                         <span class="campo-obligatorio"
                             *ngIf="datosPersonales.telefonoFijo?.errors?.required && (datosPersonales.telefonoFijo?.dirty || datosPersonales.telefonoFijo?.touched)">Este
                             campo es obligatorio *.</span>
@@ -151,7 +153,7 @@
                         <label class="control-label" for="correoElectronico">Correo electrónico <span
                                 class="req">*</span>:</label>
                         <input id="correoElectronico" type="text" class="form-control"
-                            formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
+                            formControlName="correoElectronico" placeholder="Ingresa correo electrónico" maxlength="45" trimmer>
                         <span class="campo-obligatorio"
                             *ngIf="datosPersonales.correoElectronico?.errors?.required && (datosPersonales.correoElectronico?.dirty || datosPersonales.correoElectronico?.touched)">Este
                             campo es obligatorio *.</span>
@@ -164,7 +166,7 @@
                     <div class="col-md-6">
                         <label class="control-label" for="calle">Calle <span class="req">*</span>:</label>
                         <input id="calle" type="text" class="form-control" formControlName="calle"
-                            placeholder="Ingresa calle">
+                            placeholder="Ingresa calle" maxlength="30" trimmer textOnly>
                         <span class="campo-obligatorio"
                             *ngIf="domicilio.calle?.errors?.required && (domicilio.calle?.dirty || domicilio.calle?.touched)">Este
                             campo es obligatorio *.</span>
@@ -173,7 +175,7 @@
                         <label class="control-label" for="numeroExterior">Número exterior <span
                                 class="req">*</span>:</label>
                         <input id="numeroExterior" type="text" class="form-control" formControlName="numeroExterior"
-                            placeholder="Ingresa número exterior">
+                            placeholder="Ingresa número exterior" maxlength="10" trimmer alphanumericOnly>
                         <span class="campo-obligatorio"
                             *ngIf="domicilio.numeroExterior?.errors?.required && (domicilio.numeroExterior?.dirty || domicilio.numeroExterior?.touched)">Este
                             campo es obligatorio *.</span>
@@ -181,14 +183,14 @@
                     <div class="col-md-3">
                         <label class="control-label" for="numeroInterior">Número interior:</label>
                         <input id="numeroInterior" type="text" class="form-control" formControlName="numeroInterior"
-                            placeholder="Ingresa número interior">
+                            placeholder="Ingresa número interior" maxlength="10" trimmer alphanumericOnly>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <label class="control-label" for="codigoPostal">C.P. <span class="req">*</span>:</label>
                         <input id="codigoPostal" type="text" class="form-control" formControlName="codigoPostal"
-                            placeholder="Ingresa código postal">
+                            placeholder="Ingresa código postal" maxlength="5" trimmer numbersOnly (blur)="obtenerCP(domicilio, 'catColoniasTitular')">
                         <span class="campo-obligatorio"
                             *ngIf="domicilio.codigoPostal?.errors?.required && (domicilio.codigoPostal?.dirty || domicilio.codigoPostal?.touched)">Este
                             campo es obligatorio *.</span>
@@ -196,12 +198,13 @@
                     <div class="col-md-3">
                         <label class="control-label" for="asentamientoColonia">Asentamiento / Colonia <span
                                 class="req">*</span>:</label>
-                        <input id="asentamientoColonia" type="text" class="form-control"
-                            formControlName="asentamientoColonia" placeholder="Ingresa asentamiento colonia">
+                        <p-dropdown id="asentamientoColonia" class="form-control" formControlName="asentamientoColonia"
+                            placeholder="Selecciona asentamiento colonia" [options]="catColoniasTitular" [filter]="true"
+                            filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
                             *ngIf="domicilio.asentamientoColonia?.errors?.required && (domicilio.asentamientoColonia?.dirty || domicilio.asentamientoColonia?.touched)">Este
                             campo es obligatorio *.</span>
-                    </div>
+                    </div>                    
                     <div class="col-md-3">
                         <label class="control-label" for="municipio">Municipio <span class="req">*</span>:</label>
                         <input id="municipio" type="text" class="form-control" formControlName="municipio"
@@ -221,134 +224,41 @@
                 </div>
             </ng-container>
         </div>
-
-
-
-
         <div class="border-panel mb-5">
             <h2 class="subtitulo-base">Paquetes</h2>
-            <ng-container formGroupName="paquetes">
+            <ng-container formGroupName="formPaquete">
                 <div class="paquetes">
-                    <div class="paquete">
-                        <div class="paquete-titulo">
-                            <p-checkbox formControlName="paqueteEconomico" [binary]="true"></p-checkbox>
-                            <span>1. Paquete Económico</span>
-                        </div>
-                        <div>
-                            <ul>
-                                <li>Recolección y traslado del cuerpo (hasta 100 km en la misma entidad federativa)
-                                </li>
-                                <li>
-                                    Capilla en velatorio o en domicilio (hasta 24 horas)
-                                </li>
-                                <li>
-                                    Apoyo para trámites
-                                </li>
-                                <li>
-                                    Arreglo estético del cuerpo y embalsamamiento (en caso de ser necesario)
-                                </li>
-                                <li>
-                                    No se incluye ataúd.
-                                </li>
-                            </ul>
-                            <div class="iconos">
-                                <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                                <img src="assets/images/sivimss-externos/material-symbols_candle-2.svg" alt="">
-                                <img src="assets/images/sivimss-externos/material-symbols_candle-2.svg" alt="">
-                            </div>
-                        </div>
+                  <div class="paquete" *ngFor="let item of paquetes;">
+                    <div class="paquete-titulo">
+                        <p-radioButton [inputId]="'item.idPaquete'" name="paquete" [value]="item.idPaquete"  formControlName="paquete"
+                                       (click)="seleccionaPaquete(item.idPaquete)"></p-radioButton>
+                        <span>{{item.nomPaquete}}</span>
                     </div>
-                    <div class="paquete">
-                        <div class="paquete-titulo">
-                            <p-checkbox formControlName="paqueteBasico" [binary]="true"></p-checkbox>
-                            <span>1. Paquete Básico</span>
-                        </div>
-                        <div>
-                            <ul>
-                                <li>Recolección y traslado del cuerpo (hasta 100 km en la misma entidad federativa)
-                                </li>
-                                <li>
-                                    Capilla en velatorio o en domicilio (hasta 24 horas)
-                                </li>
-                                <li>
-                                    Apoyo para trámites
-                                </li>
-                                <li>
-                                    Arreglo estético del cuerpo y embalsamamiento (en caso de ser necesario)
-                                </li>
-                                <li>
-                                    Ataúd nuevo Básico
-                                    <ul>
-                                        <li>De acuerdo con la normatividad vigente que aplique para los Velatorios IMSS
-                                            para el
-                                            otorgamiento
-                                            de servicios funerarios.</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <div class="iconos">
-                                <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                                <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                                <img src="assets/images/sivimss-externos/material-symbols_candle-2.svg" alt="">
-                            </div>
-                        </div>
+                    <div>
+                      <ul>
+                        <li *ngFor="let contenido of item.serviciosPaquetes;">{{contenido}}
+                        </li>
+                      </ul>
+                      <div class="iconos">
+                        <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
+                        <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
+                        <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
+                      </div>
                     </div>
-
-                    <div class="paquete">
-                        <div class="paquete-titulo">
-                            <p-checkbox formControlName="paqueteCremacion" [binary]="true"></p-checkbox>
-                            <span>1. Paquete con Cremación</span>
-                        </div>
-                        <div>
-                            <ul>
-                                <li>Recolección y traslado del cuerpo (hasta 100 km en la misma entidad federativa)
-                                </li>
-                                <li>
-                                    Capilla en velatorio o en domicilio (hasta 24 horas)
-                                </li>
-                                <li>
-                                    Apoyo para trámites
-                                </li>
-                                <li>
-                                    Arreglo estético del cuerpo y embalsamamiento (en caso de ser necesario)
-                                </li>
-                                <li>
-                                    Ataúd nuevo Básico
-                                    <ul>
-                                        <li>De acuerdo con la normatividad vigente que aplique para los Velatorios IMSS
-                                            para el
-                                            otorgamiento
-                                            de servicios funerarios.</li>
-                                        <li>
-                                            La cremación únicamente aplica para los velatorios indicados en el “ANEXO
-                                            C”.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    En dicho paquete no se incluye la urna para cenizas.
-                                </li>
-                            </ul>
-                            <div class="iconos">
-                                <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                                <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                                <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                            </div>
-                        </div>
-                    </div>
+                  </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-4">
                         <label class="control-label" for="numeroPago">Número de pagos<span class="req">*</span>:</label>
                         <p-dropdown id="numeroPago" class="form-control" formControlName="numeroPago"
-                            placeholder="Selecciona número pago" [options]="dummyDropdown" [filter]="true"
+                            placeholder="Selecciona número pago" [options]="catNumPagos" [filter]="true"
                             filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="paquetes.numeroPago?.errors?.required && (paquetes.numeroPago?.dirty || paquetes.numeroPago?.touched)">Este
-                            campo es obligatorio *.</span>
+                        <!-- <span class="campo-obligatorio"
+                            *ngIf="numeroPago?.errors?.required && (numeroPago?.dirty || numeroPago?.touched)">Este
+                            campo es obligatorio *.</span> -->
                     </div>
                 </div>
-            </ng-container>
+              </ng-container>
         </div>
         <div class="border-panel mb-5">
             <ng-container formGroupName="datosPersonalesTitularSubstituto">
@@ -359,12 +269,12 @@
                         <div class="flex">
                             <div class="flex align-items-center mx-2">
                                 <p-radioButton [inputId]="'titularSi'" name="sonDatosTitular" [value]="true"
-                                    formControlName="sonDatosTitular"></p-radioButton>
+                                    (click)="datosIguales(true)" formControlName="sonDatosTitular"></p-radioButton>
                                 <label class="control-label m-0 mx-3" [for]="'titularSi'">Sí</label>
                             </div>
                             <div class="flex align-items-center mx-2">
                                 <p-radioButton [inputId]="'titularNo'" name="sonDatosTitular" [value]="false"
-                                    formControlName="sonDatosTitular"></p-radioButton>
+                                    (click)="datosIguales(false)" formControlName="sonDatosTitular"></p-radioButton>
                                 <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
                             </div>
                         </div>
@@ -373,126 +283,119 @@
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <label class="control-label" for="curp2">CURP <span class="req">*</span>:</label>
-                        <input id="curp2" type="text" class="form-control" formControlName="curp"
-                            placeholder="Ingresa CURP">
+                        <input id="curp2" type="text" class="form-control" formControlName="curp" alphanumericOnly
+                            trimmer (blur)="validarCurp(datosPersonalesTitularSubstituto);" oninput="this.value = this.value.toUpperCase()"
+                            maxlength="18" placeholder="Ingresa CURP">
                         <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.curp?.errors?.required && (datosPersonales.curp?.dirty || datosPersonales.curp?.touched)">Este
+                            *ngIf="datosPersonalesTitularSubstituto.curp?.errors?.required && (datosPersonalesTitularSubstituto.curp?.dirty || datosPersonalesTitularSubstituto.curp?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
                     <div class="col-md-3">
-                        <label class="control-label" for="rfc2">R.F.C.:</label>
+                        <label class="control-label" for="rfc2">R.F.C. <span class="req">*</span>:</label>
                         <input id="rfc2" type="text" class="form-control" formControlName="rfc"
-                            placeholder="Ingresa R.F.C.">
+                            placeholder="Ingresa R.F.C." maxlength="13" trimmer folioOdsAlphanumeric (blur)="validarRfc(datosPersonalesTitularSubstituto)">
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="matricula2">Matrícula:</label>
                         <input id="matricula2" type="text" class="form-control" formControlName="matricula"
-                            placeholder="Ingresa matrícula">
+                            placeholder="Ingresa matrícula" maxlength="10">
                     </div>
                     <div class="col-md-3">
-                        <label class="control-label" for="nombre2">Nombre <span class="req">*</span>:</label>
-                        <input id="nombre2" type="text" class="form-control" formControlName="nombre"
-                            placeholder="Ingresa nombre">
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.nombre?.errors?.required && (datosPersonales.nombre?.dirty || datosPersonales.nombre?.touched)">Este
-                            campo es obligatorio *.</span>
+                        <label class="control-label" for="nss2">NSS:</label>
+                        <input id="nss2" type="text" class="form-control" formControlName="nss"
+                            placeholder="Ingresa NSS" maxlength="11">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3">
+                        <label class="control-label" for="nombre2">Nombre <span class="req">*</span>:</label>
+                        <input id="nombre2" type="text" class="form-control" formControlName="nombre"
+                            placeholder="Ingresa nombre" maxlength="30" trimmer alphanumericOnly>
+                        <span class="campo-obligatorio"
+                            *ngIf="datosPersonalesTitularSubstituto.nombre?.errors?.required && (datosPersonalesTitularSubstituto.nombre?.dirty || datosPersonalesTitularSubstituto.nombre?.touched)">Este
+                            campo es obligatorio *.</span>
+                    </div>
+                    <div class="col-md-3">
                         <label class="control-label" for="primerApellido2">Primer apellido <span
                                 class="req">*</span>:</label>
                         <input id="primerApellido2" type="text" class="form-control" formControlName="primerApellido"
-                            placeholder="Ingresa primer apellido">
+                            placeholder="Ingresa primer apellido" maxlength="20" trimmer alphanumericOnly>
                         <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.primerApellido?.errors?.required && (datosPersonales.primerApellido?.dirty || datosPersonales.primerApellido?.touched)">Este
+                            *ngIf="datosPersonalesTitularSubstituto.primerApellido?.errors?.required && (datosPersonalesTitularSubstituto.primerApellido?.dirty || datosPersonalesTitularSubstituto.primerApellido?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="segundoApellido2">Segundo apellido <span
                                 class="req">*</span>:</label>
                         <input id="segundoApellido2" type="text" class="form-control" formControlName="segundoApellido"
-                            placeholder="Ingresa segundo apellido">
+                            placeholder="Ingresa segundo apellido" maxlength="20" trimmer alphanumericOnly>
                         <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.segundoApellido?.errors?.required && (datosPersonales.segundoApellido?.dirty || datosPersonales.segundoApellido?.touched)">Este
+                            *ngIf="datosPersonalesTitularSubstituto.segundoApellido?.errors?.required && (datosPersonalesTitularSubstituto.segundoApellido?.dirty || datosPersonalesTitularSubstituto.segundoApellido?.touched)">Este
                             campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="sexo2">Sexo<span class="req">*</span>:</label>
-                        <p-dropdown id="sexo2" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
-                            [options]="dummyDropdown" [filter]="true" filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.sexo?.errors?.required && (datosPersonales.sexo?.dirty || datosPersonales.sexo?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="otro2">Otro:</label>
-                        <input id="otro2" type="text" class="form-control" formControlName="otro"
-                            placeholder="Ingresa otro">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3">
-                        <label class="control-label" for="fechaNacimiento2">Fecha de nacimiento<span
+                        <label class="control-label" for="sexo2">Sexo <span class="req">*</span>:</label>
+                        <p-dropdown id="sexo2" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
+                            (onChange)="cambioTipoSexo(datosPersonalesTitularSubstituto)" [options]="tipoSexo" [filter]="true"
+                            filterBy="label"></p-dropdown>
+                        <span class="campo-obligatorio"
+                            *ngIf="datosPersonalesTitularSubstituto.sexo?.errors?.required && (datosPersonalesTitularSubstituto.sexo?.dirty || datosPersonalesTitularSubstituto.sexo?.touched)">Este
+                            campo es obligatorio *.</span>
+                    </div>
+                    <div class="col-md-3" *ngIf="datosPersonalesTitularSubstituto.sexo.value === 3">
+                        <label class="control-label" for="otro2">Otro:</label>
+                        <input id="otro2" type="text" class="form-control" formControlName="otro"
+                            placeholder="Ingresa otro" maxlength="10">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="control-label" for="fechaNacimiento2">Fecha de nacimiento <span
                                 class="req">*</span>:</label>
                         <p-calendar id="fechaNacimiento2" styleClass="form-control" formControlName="fechaNacimiento"
                             [showIcon]="true" dateFormat="dd/mm/yy" placeholder="Ingresa fecha de nacimiento"
                             [maxDate]="fechaActual">
                         </p-calendar>
                         <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.fechaNacimiento?.errors?.required && (datosPersonales.fechaNacimiento?.dirty || datosPersonales.fechaNacimiento?.touched)">Este
+                            *ngIf="datosPersonalesTitularSubstituto.fechaNacimiento?.errors?.required && (datosPersonalesTitularSubstituto.fechaNacimiento?.dirty || datosPersonalesTitularSubstituto.fechaNacimiento?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="nacionalidad2">Nacionalidad<span class="req">*</span>:</label>
-                        <p-dropdown id="nacionalidad2" class="form-control" formControlName="nacionalidad"
-                            placeholder="Selecciona nacionalidad" [options]="dummyDropdown" [filter]="true"
-                            filterBy="label">
-                        </p-dropdown>
+                        <p-dropdown id="nacionalidad2" class="form-control" formControlName="nacionalidad" (onChange)="cambioNacionalidad(datosPersonalesTitularSubstituto)"
+                            placeholder="Selecciona nacionalidad" [options]="nacionalidad" [filter]="true"
+                            filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.nacionalidad?.errors?.required && (datosPersonales.nacionalidad?.dirty || datosPersonales.nacionalidad?.touched)">Este
+                            *ngIf="datosPersonalesTitularSubstituto.nacionalidad?.errors?.required && (datosPersonalesTitularSubstituto.nacionalidad?.dirty || datosPersonalesTitularSubstituto.nacionalidad?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="paisNacimiento2">País de nacimiento<span
-                                class="req">*</span>:</label>
+                    <div class="col-md-3" *ngIf="datosPersonalesTitularSubstituto.nacionalidad.value === 2">
+                        <label class="control-label" for="paisNacimiento2">Pais de nacimiento:</label>
                         <p-dropdown id="paisNacimiento2" class="form-control" formControlName="paisNacimiento"
-                            placeholder="Selecciona país nacimiento" [options]="dummyDropdown" [filter]="true"
-                            filterBy="label">
-                        </p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.paisNacimiento?.errors?.required && (datosPersonales.paisNacimiento?.dirty || datosPersonales.paisNacimiento?.touched)">Este
-                            campo es obligatorio *.</span>
+                            placeholder="Selecciona país de nacimiento" [options]="catalogoPaises" [filter]="true"
+                            filterBy="label"></p-dropdown>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" *ngIf="datosPersonalesTitularSubstituto.nacionalidad.value === 1">
                         <label class="control-label" for="lugarNacimiento2">Lugar de nacimiento<span
                                 class="req">*</span>:</label>
                         <p-dropdown id="lugarNacimiento2" class="form-control" formControlName="lugarNacimiento"
-                            placeholder="Selecciona lugar nacimiento" [options]="dummyDropdown" [filter]="true"
-                            filterBy="label">
-                        </p-dropdown>
+                            placeholder="Selecciona lugar de nacimiento" [options]="catalogoEstados" [filter]="true"
+                            filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.lugarNacimiento?.errors?.required && (datosPersonales.lugarNacimiento?.dirty || datosPersonales.lugarNacimiento?.touched)">Este
+                            *ngIf="datosPersonalesTitularSubstituto.lugarNacimiento?.errors?.required && (datosPersonalesTitularSubstituto.lugarNacimiento?.dirty || datosPersonalesTitularSubstituto.lugarNacimiento?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-3">
-                        <label class="control-label" for="telefonoCelular2">Teléfono celular <span
-                                class="req">*</span>:</label>
-                        <input id="telefonoCelular2" type="text" class="form-control" formControlName="telefonoCelular"
-                            placeholder="Ingresa teléfono celular">
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.telefonoCelular?.errors?.required && (datosPersonales.telefonoCelular?.dirty || datosPersonales.telefonoCelular?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="telefonoFijo2">Teléfono fijo <span
-                                class="req">*</span>:</label>
+                        <label class="control-label" for="telefonoFijo2">Teléfono <span class="req">*</span>:</label>
                         <input id="telefonoFijo2" type="text" class="form-control" formControlName="telefonoFijo"
-                            placeholder="Ingresa teléfono fijo">
+                            placeholder="Ingresa teléfono fijo" trimmer numbersOnly maxlength="10">
                         <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.telefonoFijo?.errors?.required && (datosPersonales.telefonoFijo?.dirty || datosPersonales.telefonoFijo?.touched)">Este
+                            *ngIf="datosPersonalesTitularSubstituto.telefonoFijo?.errors?.required && (datosPersonalesTitularSubstituto.telefonoFijo?.dirty || datosPersonalesTitularSubstituto.telefonoFijo?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
                     <div class="col-md-3">
@@ -501,7 +404,7 @@
                         <input id="correoElectronico2" type="text" class="form-control"
                             formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
                         <span class="campo-obligatorio"
-                            *ngIf="datosPersonales.correoElectronico?.errors?.required && (datosPersonales.correoElectronico?.dirty || datosPersonales.correoElectronico?.touched)">Este
+                            *ngIf="datosPersonalesTitularSubstituto.correoElectronico?.errors?.required && (datosPersonalesTitularSubstituto.correoElectronico?.dirty || datosPersonalesTitularSubstituto.correoElectronico?.touched)">Este
                             campo es obligatorio *.</span>
                     </div>
                 </div>
@@ -536,7 +439,7 @@
                     <div class="col-md-3">
                         <label class="control-label" for="codigoPostal2">C.P. <span class="req">*</span>:</label>
                         <input id="codigoPostal2" type="text" class="form-control" formControlName="codigoPostal"
-                            placeholder="Ingresa código postal">
+                            placeholder="Ingresa código postal" maxlength="5" trimmer numbersOnly (blur)="obtenerCP(domicilioTitularSubstituto, 'catColoniasSubstituto')">
                         <span class="campo-obligatorio"
                             *ngIf="domicilio.codigoPostal?.errors?.required && (domicilio.codigoPostal?.dirty || domicilio.codigoPostal?.touched)">Este
                             campo es obligatorio *.</span>
@@ -544,8 +447,9 @@
                     <div class="col-md-3">
                         <label class="control-label" for="asentamientoColonia2">Asentamiento / Colonia <span
                                 class="req">*</span>:</label>
-                        <input id="asentamientoColonia2" type="text" class="form-control"
-                            formControlName="asentamientoColonia" placeholder="Ingresa asentamiento colonia">
+                        <p-dropdown id="asentamientoColonia2" class="form-control" formControlName="asentamientoColonia"
+                            placeholder="Selecciona asentamiento colonia" [options]="catColoniasSubstituto" [filter]="true"
+                            filterBy="label"></p-dropdown>
                         <span class="campo-obligatorio"
                             *ngIf="domicilio.asentamientoColonia?.errors?.required && (domicilio.asentamientoColonia?.dirty || domicilio.asentamientoColonia?.touched)">Este
                             campo es obligatorio *.</span>
@@ -570,70 +474,58 @@
             </ng-container>
         </div>
 
-        <div class="border-panel mb-5">
-            <h2 class="subtitulo-base">Beneficiarios</h2>
-            <p-table styleClass="mt-5 mb-8 last-sticky-column" appActivarUltimaCeldaSticky [value]="beneficiarios" [resizableColumns]="true"
+        <ng-container>
+            <div class="border-panel mb-5">
+            <div class="flex justify-content-between align-items-center">
+                <h2 class="subtitulo-base">Beneficiarios</h2>
+                <button class="btn btn-default btn-md ml-5" (click)="abrirModalRegistroNuevoBeneficiario($event)"
+                *ngIf="(beneficiarios.length < 3)" type="button">Nuevo
+                beneficiario</button>
+            </div>
+            <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true"
                 [columnResizeMode]="'expand'">
                 <ng-template pTemplate="header">
-                    <tr>
-                        <th scope="col">CURP</th>
-                        <th scope="col">RFC</th>
-                        <th scope="col">Matrícula</th>
-                        <th scope="col">NSS</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Primer apellido</th>
-                        <th scope="col">Segundo apellido</th>
-                        <th scope="col">Sexo</th>
-                        <th scope="col">Fecha de nacimiento</th>
-                        <th scope="col">Nacionalidad</th>
-                        <th scope="col">País de nacimiento</th>
-                        <th scope="col">Lugar de nacimiento</th>
-                        <th scope="col">Teléfono</th>
-                        <th scope="col">Correo electrónico</th>
-                        <th scope="col">Calle</th>
-                        <th scope="col">No. Ext.</th>
-                        <th scope="col">No. Int.</th>
-                        <th scope="col">CP</th>
-                        <th scope="col">Colonia</th>
-                        <th scope="col">Municipio</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
-                    </tr>
+                <tr>
+                    <th scope="col">Velatorio</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Primer apellido</th>
+                    <th scope="col">Segundo apellido</th>
+                    <th scope="col">Edad</th>
+                    <th scope="col">Parentesco</th>
+                    <th scope="col">CURP</th>
+                    <th scope="col">RFC</th>
+                    <th scope="col">Acta nacimiento</th>
+                    <th scope="col">Correo electrónico</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
+                </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-beneficiario>
-                    <tr>
-                        <td>{{ beneficiario.curp }}</td>
-                        <td>{{ beneficiario.rfc }}</td>
-                        <td>{{ beneficiario.matricula }}</td>
-                        <td>{{ beneficiario.nss }}</td>
-                        <td>{{ beneficiario.nombre }}</td>
-                        <td>{{ beneficiario.primerApellido }}</td>
-                        <td>{{ beneficiario.segundoApellido }}</td>
-                        <td>{{ beneficiario.sexo }}</td>
-                        <td>{{ beneficiario.fechaNacimiento }}</td>
-                        <td>{{ beneficiario.nacionalidad }}</td>
-                        <td>{{ beneficiario.paisNacimiento }}</td>
-                        <td>{{ beneficiario.lugarNacimiento }}</td>
-                        <td>{{ beneficiario.telefono }}</td>
-                        <td>{{ beneficiario.correoElectronico }}</td>
-                        <td>{{ beneficiario.calle }}</td>
-                        <td>{{ beneficiario.noExt }}</td>
-                        <td>{{ beneficiario.noInt }}</td>
-                        <td>{{ beneficiario.cp }}</td>
-                        <td>{{ beneficiario.colonia }}</td>
-                        <td>{{ beneficiario.municipio }}</td>
-                        <td>{{ beneficiario.estado }}</td>
-                        <td style="border-left: 1px solid #b0b0b0;">
-                            <div class="contenedor-celda-iconos">
-                                <a (click)="abrirPanel($event)" onCloseOnNavigation>
-                                    <i class="pi pi-ellipsis-v"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
+                <ng-template pTemplate="body" let-beneficiarios>
+                <tr>
+                    <td>{{beneficiarios.velatorio }}</td>
+                    <td>{{beneficiarios.fechaNacimiento}}</td>
+                    <td>{{beneficiarios.nombreAfiliado}}</td>
+                    <td>{{beneficiarios.primerApellido}}</td>
+                    <td>{{beneficiarios.segundoApellido}}</td>
+                    <td>{{beneficiarios.edad}}</td>
+                    <td>{{beneficiarios.parentesco}}</td>
+                    <td>{{beneficiarios.curp}}</td>
+                    <td>{{beneficiarios.rfc}}</td>
+                    <td>{{beneficiarios.ine}}</td>
+                    <td>{{beneficiarios.correo}}</td>
+                    <td>{{beneficiarios.telefono}}</td>
+                    <td style="border-left: 1px solid #b0b0b0;">
+                    <div class="contenedor-celda-iconos">
+                        <a (click)="abrirPanel($event,beneficiarios)" onCloseOnNavigation>
+                        <i class="pi pi-ellipsis-v"></i>
+                        </a>
+                    </div>
+                    </td>
                 </ng-template>
             </p-table>
-        </div>
+            </div>
+        </ng-container>
 
         <div class="border-panel mb-5">
             <div class="row">
@@ -642,7 +534,7 @@
                     <div class="flex">
                         <div class="flex align-items-center mx-2">
                             <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
-                                formControlName="gestionadoPorPromotor"></p-radioButton>
+                                formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()"></p-radioButton>
                             <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
                         </div>
                         <div class="flex align-items-center mx-2">
@@ -654,8 +546,8 @@
                 </div>
                 <div class="col-md-6">
                     <label class="control-label" for="promotor">Promotor:</label>
-                    <p-dropdown id="promotor" class="form-control" formControlName="promotor"
-                        placeholder="Selecciona promotor" [options]="dummyDropdown" [filter]="true"
+                    <p-dropdown id="promotor" class="form-control" formControlName="promotor" (onClick)="handleGestionPromotor()"
+                        placeholder="Selecciona promotor" [options]="catPromotores" [filter]="true"
                         filterBy="label"></p-dropdown>
                 </div>
             </div>
@@ -665,15 +557,15 @@
             <span class="texto-base font-normal">*Campos obligatorios</span>
         </div>
         <div class="row">
-            <div class="col-md-12 flex justify-content-end align-items-center">
+            <div class="col-md-12 flex justify-content-end align-items-center" *ngIf="!ocultarBtnGuardar">
                 <button class="btn btn-gold btn-md">Cancelar</button>
-                <button class="btn btn-primary btn-md ml-4" (click)="mostrarModalConfirmacionInformacionCapturada = true">Guardar</button>
+                <button class="btn btn-primary btn-md ml-4" (click)="guardar();" [disabled]="form.invalid">Guardar</button>
             </div>
         </div>
     </form>
 </div>
 
-<p-overlayPanel #overlayPanel [appendTo]="formPrincipal">
+<!-- <p-overlayPanel #overlayPanel [appendTo]="formPrincipal">
     <ng-template pTemplate="content">
         <app-overlay-panel-opciones>
             <app-overlay-panel-opcion titulo="Registrar" (click)="abrirModalRegistroBeneficiario($event)">
@@ -684,10 +576,10 @@
             </app-overlay-panel-opcion>
         </app-overlay-panel-opciones>
     </ng-template>
-</p-overlayPanel>
+</p-overlayPanel> -->
 
 
-<p-dialog [(visible)]="mostrarModalTipoArchivoIncorrecto" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+<!-- <p-dialog [(visible)]="mostrarModalTipoArchivoIncorrecto" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
     [closable]="false" [draggable]="false" [resizable]="false" header="Órdenes">
     <ng-template pTemplate="content">
         <div>
@@ -700,16 +592,17 @@
             <button class="btn btn-primary btn-md" (click)="mostrarModalTipoArchivoIncorrecto = false;">Aceptar</button>
         </div>
     </ng-template>
-</p-dialog>
+</p-dialog> -->
 
 
 <p-dialog [(visible)]="mostrarModalConfirmacionInformacionCapturada" [modal]="true"
     [style]="{maxWidth:'544px',width: '100%'}" [closable]="false" [draggable]="false" [resizable]="false"
-    header="Órdenes">
+    header="Guardar">
     <ng-template pTemplate="content">
         <div>
-            <p class="mt-2 text-center">¿Estás seguro de guardar la información capturada para tu convenio de Previsión
-                Funeraria?</p>
+            <p class="mt-2 text-center">
+                ¿Estás seguro de guardar la información capturada para tu Plan de Servicios Funerarios?
+            </p>
         </div>
     </ng-template>
     <ng-template pTemplate="footer">
@@ -717,18 +610,19 @@
             <button class="btn btn-gold btn-md"
                 (click)="mostrarModalConfirmacionInformacionCapturada = false;">Cancelar</button>
             <button class="btn btn-primary btn-md ml-4"
-                (click)="mostrarModalConfirmacionInformacionCapturada = false;">Aceptar</button>
+                (click)="mostrarModalConfirmacionInformacionCapturada = false; confirmarGuardar();">Aceptar</button>
         </div>
     </ng-template>
 </p-dialog>
 
 <p-dialog [(visible)]="mostrarModalValidacionRegistro" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-    [closable]="false" [draggable]="false" [resizable]="false" header="Órdenes">
+    [closable]="false" [draggable]="false" [resizable]="false" header="Registro">
     <ng-template pTemplate="content">
         <div>
-            <p class="mt-2 text-center">El registro de contratación de una previsión funeraria deberá ser validado por
-                el área
-                responsable. Acude a tu velatorio más cercano por tu contrato</p>
+            <p class="mt-2 text-center">
+                El registro de contratación de una previsión funeraria deberá ser validado por
+                el área responsable. Acude a tu velatorio más cercano por tu contrato.
+            </p>
         </div>
     </ng-template>
     <ng-template pTemplate="footer">

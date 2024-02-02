@@ -55,7 +55,12 @@
       <span class="control-label">*Campos obligatorios</span>
     </div>
     <div class="my-4" *ngIf="form.errors">
-      <span class="validacion-contrasenias campo-obligatorio" *ngIf="form.errors?.contraseniasDiferentes">
+      <span class="validacion-contrasenias campo-obligatorio"
+        *ngIf="form.errors?.contraseniasDiferentes &&
+        f.contraseniaNueva.value !== null &&
+        f.contraseniaNueva.value !== '' &&
+        f.contraseniaConfirmacion.value !== null &&
+        f.contraseniaConfirmacion.value !== ''">
         Las contraseñas ingresadas no coinciden.
       </span>
     </div>
@@ -71,7 +76,7 @@
 
 <p-dialog [(visible)]="mostrarModalFormatoContrasenia" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" [showHeader]="false">
+          [draggable]="false" [resizable]="false" [showHeader]="true" header="Restablecer Contraseña">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">La contraseña ingresada no es válida, debe cumplir la siguiente norma:</span>

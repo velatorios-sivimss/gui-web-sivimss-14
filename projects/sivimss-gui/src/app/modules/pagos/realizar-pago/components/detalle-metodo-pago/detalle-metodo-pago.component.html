@@ -1,119 +1,143 @@
-<app-table-panel>
-  <ng-template appCustomTemplate="left-header">
-    <div class="table-panel-header-column">
-      <span class="activo">Folio {{registroPago.folio}}</span>
-    </div>
-  </ng-template>
-  <ng-template appCustomTemplate="right-header">
-    <div class="table-panel-header-column">
-      <div class="flex flex-column">
-        <span class="ml-5 font-14">Estatus</span>
-        <div class="contenedor-inputswitch">
-          <span class="font-bold font-14">{{registroPago.estatusPago}}</span>
-        </div>
-      </div>
-      <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
-        <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-      </a>
-    </div>
-  </ng-template>
-</app-table-panel>
-<div class="bg-g">
-  <app-table-panel class="pb-3 bg-g">
-    <div class="row grid mt-2 mb-2">
-      <div class="col">
-        <span class="ml-5">Tipo de pago</span>
-        <div class="contenedor-inputswitch">
-          <span class="font-bold">{{registroPago.tipoPago}}</span>
-        </div>
-      </div>
-    </div>
-  </app-table-panel>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button"
+                    (click)="regresarPaginaPrevia()"></app-btn-regresar>
+  <app-titulo-principal [titulo]="titulo" class="col"></app-titulo-principal>
 </div>
 
-<h2 class="subtitulo pt-4 pb-4">Métodos de pago</h2>
-<p-accordion styleClass="sivimss-accordion sivimss-accordionColor">
-  <p-accordionTab *ngFor="let pago of registroPago.metodosPago">
-    <ng-template pTemplate="header">
-      <div class="sivimss-acoordion-header">
-        <div class="accordion-header-left font-bold font-14">
-          {{ pago.metodoPago }}
-        </div>
-        <div class="accordion-header-right">
-          <div class="estatus">
-            <span>Importe</span>
-            <b>{{pago.importe | currency}}</b>
-          </div>
-        </div>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="content">
+<div class="border-panel mb-5">
+  <div class="row flex border-panel mx-0 bg-g mb-5">
+    <div class="col-12">
       <div class="row grid">
-        <div class="col">
-          <span class="flex flex-column etiqueta-base">Número de autorización</span>
-          <span class="texto-base">{{pago.numAutorizacion}}</span>
-        </div>
-        <div class="col">
-          <span class="flex flex-column etiqueta-base">Nombre del banco</span>
-          <span class="texto-base">{{pago.nomBanco}}</span>
-        </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Fecha de pago</span>
-          <span class="texto-base">{{pago.fechaPago}}</span>
+          <span class="flex flex-column etiqueta-base font-bold">{{registroPago.fechaUltimaPago}}</span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">{{tipoFolio}}</span>
+          <span class="flex flex-column etiqueta-base font-bold">{{registroPago.folio}}</span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Tipo de pago</span>
+          <span class="flex flex-column etiqueta-base font-bold">{{tipoPago}}</span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Estatus</span>
+          <span class="flex flex-column etiqueta-base font-bold">{{registroPago.estatusPago}}</span>
         </div>
       </div>
-      <hr>
+    </div>
+  </div>
+
+  <div class="row flex border-panel mx-0">
+    <div class="col-md-12">
       <div class="row grid">
         <div class="col">
-          <span class="flex flex-column etiqueta-base">Importe</span>
-          <span class="texto-base">{{pago.importe | currency}}</span>
-        </div>
-        <div class="col">
+          <span class="flex flex-column texto-base font-bold p28">{{registroPago.totalAPagar | currency}}</span>
           <span class="flex flex-column etiqueta-base">Total a pagar</span>
-          <span class="texto-base">{{registroPago.totalAPagar | currency}}</span>
         </div>
         <div class="col">
+          <span class="flex flex-column texto-base font-bold p28">{{registroPago.totalPagado | currency}}</span>
+          <span class="flex flex-column etiqueta-base">Total Pagado</span>
         </div>
-      </div>
-    </ng-template>
-  </p-accordionTab>
-</p-accordion>
-<div class="row flex mb-4">
-  <div class="col-md-8 font-17 ">
-    Total a pagar para cubrir el total de {{tipoPago}}:
-    <span class="font-bold activo">{{ registroPago.totalPorCubrir | currency }}</span>
-  </div>
-  <div class="col-md-4">
-    <div class="row grid">
-      <div class="col ">
-        <span class="flex flex-column etiqueta-base align-items-end">Total Pagado</span>
-        <span
-          class="flex flex-column texto-base align-items-end font-bold">{{registroPago.totalPagado | currency}}</span>
-      </div>
-      <div class="col">
-        <span class="flex flex-column etiqueta-base align-items-end">Total a pagar</span>
-        <span
-          class="flex flex-column texto-base align-items-end font-bold">{{registroPago.totalAPagar | currency}}</span>
+        <div class="col font-17">
+          <span class="flex flex-column texto-base font-bold p28">{{ registroPago.totalPorCubrir | currency }}</span>
+          <span class="flex flex-column etiqueta-base">Diferencia entre total a pagar y total pagado</span>
+        </div>
       </div>
     </div>
   </div>
 </div>
-<div class="flex  mb-4 justify-content-end">
+
+<div class="border-panel" *ngIf="registroPago.metodosPago.length > 0">
+  <h2 class="subtitulo pt-4 pb-4">Datos de pago</h2>
+  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor">
+    <p-accordionTab *ngFor="let pago of registroPago.metodosPago">
+      <ng-template pTemplate="header">
+        <div class="sivimss-acoordion-header">
+          <div class="accordion-header-left font-bold font-14">
+            {{pago.metodoPago}}
+          </div>
+          <div class="accordion-header-right">
+            <div class="estatus">
+              <span>Importe</span>
+              <b>{{pago.importe | currency}}</b>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <div class="flex-row flex justify-content-between"
+             *ngIf="['Efectivo', 'Traslado oficial'].includes(pago.metodoPago)">
+          <div>
+            <span class="flex flex-column texto-base">Fecha de pago:</span>
+            <span class="flex flex-column etiqueta-base">{{pago.fechaPago}}</span>
+          </div>
+          <div>
+            <span class="flex flex-column texto-base">Total a pagar:</span>
+            <span class="flex flex-column etiqueta-base">{{registroPago.totalAPagar | currency}}</span>
+          </div>
+          <div>
+            <span class="flex flex-column texto-base mr-4">Tipo de Pago</span>
+            <span class="flex flex-column etiqueta-base mr-4">{{pago.metodoPago}}</span>
+          </div>
+        </div>
+        <div class="row grid" *ngIf="!['Efectivo', 'Traslado oficial','Vale paritaria'].includes(pago.metodoPago)">
+          <div class="col">
+            <span class="flex flex-column texto-base">Fecha de pago:</span>
+            <span class="flex flex-column etiqueta-base">{{pago.fechaPago }}</span>
+          </div>
+          <div class="col">
+            <span class="flex flex-column texto-base"
+                  *ngIf="!['Transferencia', 'Deposito'].includes(pago.metodoPago)">Número de Autorización</span>
+            <span class="flex flex-column texto-base"
+                  *ngIf="['Transferencia', 'Deposito'].includes(pago.metodoPago)">Folio de Autorización</span>
+            <span class="flex flex-column etiqueta-base">{{pago.numAutorizacion}}</span>
+          </div>
+          <div class="col">
+            <span class="flex flex-column texto-base"
+                  *ngIf="!['Transferencia', 'Deposito'].includes(pago.metodoPago)">Nombre del banco</span>
+            <span class="flex flex-column texto-base"
+                  *ngIf="['Transferencia', 'Deposito'].includes(pago.metodoPago)">Banco</span>
+            <span class="flex flex-column etiqueta-base">{{pago.nomBanco}}</span>
+          </div>
+          <div class="col">
+            <span class="flex flex-column texto-base">Total a pagar</span>
+            <span class="flex flex-column etiqueta-base">{{registroPago.totalAPagar | currency}}</span>
+          </div>
+          <div class="col">
+            <span class="flex flex-column texto-base">Tipo de Pago</span>
+            <span class="flex flex-column etiqueta-base">{{pago.metodoPago}}</span>
+          </div>
+        </div>
+        <div class="row grid" *ngIf="['Vale paritaria'].includes(pago.metodoPago)">
+          <div class="col">
+            <span class="flex flex-column texto-base">Fecha:</span>
+            <span class="flex flex-column etiqueta-base">{{pago.fechaPago }}</span>
+          </div>
+          <div class="col">
+            <span class="flex flex-column texto-base">Total a pagar:</span>
+            <span class="flex flex-column etiqueta-base">{{registroPago.totalAPagar | currency}}</span>
+          </div>
+          <div class="col">
+            <span class="flex flex-column texto-base">Folio vale paritaria:</span>
+            <span class="flex flex-column etiqueta-base">{{pago.numAutorizacion}}</span>
+          </div>
+          <div class="col">
+            <span class="flex flex-column texto-base">Fecha folio vale paritaria:</span>
+            <span class="flex flex-column etiqueta-base">{{pago.fechaValeParAGF | date:'dd/MM/YYYY'}}</span>
+          </div>
+          <div class="col">
+            <span class="flex flex-column texto-base ml-6">Tipo de Pago:</span>
+            <span class="flex flex-column etiqueta-base ml-6">{{pago.metodoPago}}</span>
+          </div>
+        </div>
+      </ng-template>
+    </p-accordionTab>
+  </p-accordion>
+</div>
+
+<div class="flex mb-4 justify-content-end">
   <button class="ml-6 mt-3 btn btn-primary btn-md" [routerLink]="'./../..'">
     Regresar
   </button>
 </div>
-
-<p-overlayPanel #overlayPanel>
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion class="text-center" titulo="Ir a Pago" *ngIf="registroPago.estatusPago !== 'Pagado'"
-                                (click)="redireccionPago()">
-      </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion class="text-center" titulo="Modificar método de pago"
-                                *ngIf="registroPago.estatusPago === 'Pagado'"
-                                [routerLink]="['../../modificar-metodo-de-pago', idPagoBitacora]">
-      </app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
-  </ng-template>
-</p-overlayPanel>

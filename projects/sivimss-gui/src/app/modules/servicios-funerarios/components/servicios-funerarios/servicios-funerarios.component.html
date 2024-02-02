@@ -48,9 +48,9 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="afiliado">Afiliado:</label>
+        <label class="control-label" for="afiliado">Titular:</label>
         <input id="afiliado" class="form-control" formControlName="afiliado"
-               placeholder="Ingresa el afiliado" alphanumericOnly maxlength="50">
+               placeholder="Ingresa el nombre del titular" alphanumericOnly maxlength="50">
       </div>
       <div class="col-md-3">
         <label class="control-label" for="rangoInicio">Fecha inicio:</label>
@@ -76,8 +76,7 @@
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Planes SFPA</h2>
     <button *appValidaRol="['AGREGAR_PLAN_SFPA','ALTA']" type="button" class="btn btn-primary btn-lg"
-            routerLink="registrar-nuevo-plan-sfpa">Agregar nuevo plan
-      SFPA
+            routerLink="registrar-nuevo-plan-sfpa">Agregar nuevo plan SFPA
     </button>
   </div>
 
@@ -89,7 +88,7 @@
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn scope="col">Folio Plan SFPA</th>
-        <th pResizableColumn scope="col">Afiliado</th>
+        <th pResizableColumn scope="col">Titular</th>
         <th pResizableColumn scope="col">Estado</th>
         <th pResizableColumn scope="col">Correo electrónico</th>
         <th pResizableColumn scope="col">Paquete</th>
@@ -153,11 +152,11 @@
     <ng-template pTemplate="content">
       <app-overlay-panel-opciones>
         <app-overlay-panel-opcion (click)="verContrato()" titulo="Ver contrato"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion (click)="detallePago()" titulo="Detalle pago"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion (click)="detallePago()" titulo="Detalle de pago"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="validarEstatusPlan()"
                                   (click)="modificarPago()" titulo="Modificar Plan"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="validarEstatusPlan()"
-                                  (click)="mostrarModalCancelarPlan = true"
+                                  (click)="cancelarPago()"
                                   titulo="Cancelar Plan"></app-overlay-panel-opcion>
       </app-overlay-panel-opciones>
     </ng-template>

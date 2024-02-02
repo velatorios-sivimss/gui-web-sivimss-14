@@ -170,6 +170,7 @@ export class InformacionServicioComponent implements OnInit {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
         this.lugarVelacion.hora.enable();
+        this.cortejo.gestionadoPorPromotor.enable();
       }
 
       if (+datos.idTipoServicio == 2) {
@@ -454,9 +455,9 @@ export class InformacionServicioComponent implements OnInit {
       header: 'Agregar panteón',
       style: {maxWidth: '876px', width: '100%'},
     });
-    ref.onClose.subscribe((val: number) => {
+    ref.onClose.subscribe((val: any) => {
       if (val) {
-        this.idPanteon = val
+        this.idPanteon = val.idPanteon;
         this.inhumacion.agregarPanteon.disable();
         this.confirmarGuardarPanteon = true
         return
@@ -738,6 +739,7 @@ export class InformacionServicioComponent implements OnInit {
         link.remove();
       },
       error: (error: HttpErrorResponse) => {
+        if(error.error.datos === null)return
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }

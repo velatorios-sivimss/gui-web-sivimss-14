@@ -174,7 +174,6 @@ export class ModalAgregarUrnaComponent implements OnInit {
       proviene: 'presupuesto',
     };
 
-    console.log(salida);
     this.ref.close(salida);
   }
 

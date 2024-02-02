@@ -82,7 +82,7 @@
 
       </ng-template>
     </p-accordionTab>
-    <p-accordionTab>
+    <p-accordionTab [hidden]="true">
       <ng-template pTemplate="header">
         <div class="flex justify-content-between align-items-center w-full">
           <span>Presupuesto</span>
@@ -108,7 +108,7 @@
               <td>{{paquete.grupo}}</td>
               <td>{{paquete.concepto}}</td>
               <td>{{paquete.cantidad}}</td>
-              <td>{{paquete.importe | currency:"USD":"symbol"}}</td>
+              <td>{{ paquete.totalx ?  paquete.totalx : paquete.importe | currency:"USD":"symbol"}}</td>
               <td>{{paquete.proveedor}}</td>
               <td>{{paquete.totalPaquete | currency:"USD":"symbol"}}</td>
               <td style="width:200px">
@@ -180,7 +180,7 @@
       <div class="col-md-12 flex justify-content-end align-items-center">
         <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
         <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-        <button type="button" [disabled]="validacionFormulario()" (click)="continuar()"
+        <button type="button" [disabled]="false" (click)="continuar()"
                 class="btn btn-md btn-primary ml-5">Aceptar
         </button>
       </div>

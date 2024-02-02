@@ -1,16 +1,17 @@
 <div class="row mb-3">
     <div class="col-md-6 flex flex-column align-items-center">
         <span class="etiqueta-base font-bold">Cuota de recuperación</span>
-        <span class="texto-base font-normal">$00,000.00</span>
+        <span class="texto-base font-normal">{{datosGeneralesRenovacion.cuotaRecuperacion |
+            currency:'CAD':'symbol-narrow':'4.2-2' }}</span>
     </div>
     <div class="col-md-6 flex flex-column align-items-center">
         <span class="etiqueta-base font-bold">Fecha de renovación</span>
-        <span class="texto-base font-normal">00-00-0000</span>
+        <span class="texto-base font-normal">{{datosGeneralesRenovacion.fecRenovacion}}</span>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12 flex justify-content-center">
-        <button class="btn btn-gold btn-md">Cancelar</button>
+        <button class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
         <button class="btn btn-primary btn-md ml-5">Realizar pago</button>
     </div>
 </div>

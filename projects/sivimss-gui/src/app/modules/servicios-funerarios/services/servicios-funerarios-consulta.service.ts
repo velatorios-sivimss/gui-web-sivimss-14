@@ -58,14 +58,4 @@ export class ServiciosFunerariosConsultaService extends BaseService<HttpRespuest
       `${this._funcionalidad}/buscar/genera-reporte`,
       {idPlanSFPA: idPlanSfpa});
   }
-
-
-  cancelarPlanSfpa(idPlanSfpa: any): Observable<HttpRespuesta<any>> {
-    const estatusCancelar: number = 6;
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/cancela-plan-sfpa`,
-      {idPlanSfpa:idPlanSfpa,idEstatusPlanSfpa:estatusCancelar});
-  }
-
-
-
 }

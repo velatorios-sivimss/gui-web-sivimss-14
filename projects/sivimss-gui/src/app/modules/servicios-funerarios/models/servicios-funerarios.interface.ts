@@ -16,7 +16,7 @@ export interface ServiciosFunerariosInterface {
   matricula?: number;
   nss?: number;
   sexo?: number;
-  fechaNacimiento?: string;
+  fechaNacimiento?: number | null;
   nacionalidad?: number;
   lugarNacimiento?: string;
   telefono?: number;
@@ -64,35 +64,41 @@ export interface GenerarReporte{
 }
 
 export interface AgregarPlanSFPA {
+                    idPlanSfpa?: number | null,
+            indTipoPagoMensual?: boolean | null,
              idTipoContratacion: number | null,
                       idPaquete: number | null,
                       monPrecio: number | null,
+                    indPromotor?: number | null,
+                     idPromotor?: number | null,
+               numFolioPlanSFPA?: string | null,
              idTipoPagoMensual : number | null,
            indTitularSubstituto: number | null,
+                 numPagoMensual: number | null,
   indModificarTitularSubstituto: number | null,
-        titularesBeneficiarios :Persona[] | null
+        titularesBeneficiarios : Persona[],
 }
 
 export interface Persona {
-  persona: string | null,
-  rfc: string | null,
-  curp: string | null,
-  matricula: string | null,
-  nss: string | null,
-  nomPersona: string | null,
-  primerApellido: string | null,
-  segundoApellido: string | null,
-  sexo: number | null,
-  otroSexo: string | null,
-  fecNacimiento: any,
-  idPais: number | null,
-  idEstado: number | null,
-  telefono: string | null,
-  telefonoFijo: string | null,
-  correo: string | null,
+  persona?: string | null,
+  rfc?: string | null,
+  curp?: string | null,
+  matricula?: string | null,
+  nss?: string | null,
+  nomPersona?: string | null,
+  primerApellido?: string | null,
+  segundoApellido?: string | null,
+  sexo?: number | null,
+  otroSexo?: string | null,
+  fecNacimiento?: string | null,
+  idPais?: number | null,
+  idEstado?: number | null,
+  telefono?: string | null,
+  telefonoFijo?: string | null,
+  correo?: string | null,
   tipoPersona?: string | null,
-  ine: string | null,
-  cp: CodigoPostal | null
+  ine?: string | null,
+  cp?: CodigoPostal | null
 }
 
 export interface CodigoPostal {
