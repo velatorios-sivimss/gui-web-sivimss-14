@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ModalEditarBeneficiarioComponent } from '../../../consulta-convenio-prevision-funeraria/pages/mi-convenio-prevision-funeraria/components/modal-editar-beneficiario/modal-editar-beneficiario.component';
 import { ModalDesactivarBeneficiarioComponent } from '../../../mapa-contratar-convenio-prevision-funeraria/pages/contratar-convenio-prevision-funeraria/components/modal-desactivar-beneficiario/modal-desactivar-beneficiario.component';
@@ -15,6 +15,9 @@ import { finalize } from 'rxjs/operators';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { ActivatedRoute } from '@angular/router';
+import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { Beneficiarios } from '../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
 
 @Component({
   selector: 'app-contratar-plan-servicios-funerarios-pago-anticipado',
@@ -29,15 +32,8 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   overlayPanel!: OverlayPanel;
 
   readonly NOT_FOUND_RENAPO: string = "CURP no válido.";
-
-  // dummyDropdown: { label: string; value: number }[] = [
-  //   { label: 'Opción 1', value: 1 },
-  //   { label: 'Opción 2', value: 2 },
-  // ];
-
   form!: FormGroup;
   fechaActual: Date = new Date();
-  beneficiarios = [];
   mostrarModalTipoArchivoIncorrecto: boolean = false;
   mostrarModalConfirmacionInformacionCapturada: boolean = false;
   ocultarBtnGuardar: boolean = false;
@@ -54,6 +50,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   catColoniasBeneficiario1: TipoDropdown[] = [];
   catColoniasBeneficiario2: TipoDropdown[] = [];
   paquetes: any[] = [];
+  claseRadioPaquetes: string = "radioPaquetes";
   catNumPagos: { label: string; value: number }[] = [
     { label: '1', value: 1 },
     { label: '3', value: 3 },
@@ -64,6 +61,13 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   idPaquete: string | null = null;
   velatorio: string = '';
   idVelatorio: number | null = null;
+  idConvenioPf: number | null = null;
+  idDomicilio: number | null = null;
+  idContratante: number | null = null;
+  refBeneficiario!: DynamicDialogRef;
+  parentesco: any[] = [];
+  beneficiarios: Beneficiarios[] = [];
+  itemBeneficiarios: Beneficiarios = {} as Beneficiarios;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -72,6 +76,8 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     private alertaService: AlertaService,
     private readonly loaderService: LoaderService,
     private rutaActiva: ActivatedRoute,
+    private consultaConveniosService: BusquedaConveniosPFServic,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
@@ -79,6 +85,9 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     this.obtenerPaises();
     this.obtenerEstados();
     this.obtenerPromotores();
+    this.obtenerPaquete();
+    this.buscarParentesco();
+    this.handleGestionPromotor();
     this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
     this.velatorio = this.rutaActiva.snapshot.queryParams.velatorio;
   }
@@ -206,6 +215,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
           [Validators.required],
         ],
       }),
+
       domicilio: this.formBuilder.group({
         calle: [
           {
@@ -257,6 +267,17 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
           [Validators.required],
         ],
       }),
+
+      formPaquete: this.formBuilder.group({
+        paquete: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.nullValidator]
+        ]
+      }),
+
       datosPersonalesTitularSubstituto: this.formBuilder.group({
         sonDatosTitular: [
           {
@@ -430,322 +451,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
           [Validators.required],
         ],
       }),
-      datosPersonalesBeneficiario1: this.formBuilder.group({
-        curp: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        rfc: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        matricula: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        nss: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        nombre: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        primerApellido: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        segundoApellido: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        sexo: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        otro: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        fechaNacimiento: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        nacionalidad: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        paisNacimiento: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        lugarNacimiento: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        telefonoFijo: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        correoElectronico: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-      }),
-      domicilioBeneficiario1: this.formBuilder.group({
-        calle: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        numeroExterior: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        numeroInterior: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        codigoPostal: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        asentamientoColonia: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        municipio: [
-          {
-            value: null,
-            disabled: true,
-          },
-          [Validators.nullValidator],
-        ],
-        estado: [
-          {
-            value: null,
-            disabled: true,
-          },
-          [Validators.nullValidator],
-        ],
-      }),
-      datosPersonalesBeneficiario2: this.formBuilder.group({
-        curp: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        rfc: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        matricula: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        nss: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        nombre: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        primerApellido: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        segundoApellido: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        sexo: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        otro: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        fechaNacimiento: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        nacionalidad: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        paisNacimiento: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        lugarNacimiento: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        telefonoFijo: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        correoElectronico: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-      }),
-      domicilioBeneficiario2: this.formBuilder.group({
-        calle: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        numeroExterior: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        numeroInterior: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        codigoPostal: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        asentamientoColonia: [
-          {
-            value: null,
-            disabled: false,
-          },
-          [Validators.nullValidator],
-        ],
-        municipio: [
-          {
-            value: null,
-            disabled: true,
-          },
-          [Validators.nullValidator],
-        ],
-        estado: [
-          {
-            value: null,
-            disabled: true,
-          },
-          [Validators.nullValidator],
-        ],
-      }),
       paquetes: this.formBuilder.group({
         paqueteEconomico: [
           {
@@ -778,7 +483,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       ],
       gestionadoPorPromotor: [
         {
-          value: null,
+          value: false,
           disabled: false,
         },
         [Validators.nullValidator],
@@ -793,8 +498,13 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     });
   }
 
-  seleccionaPaquete(idPaquete: string): void {
-    this.idPaquete = idPaquete;
+  handleGestionPromotor() {
+    if (this.f.gestionadoPorPromotor.value) {
+      this.f.promotor.enable();
+    } else {
+      this.f.promotor.setValue(null);
+      this.f.promotor.disable();
+    }
   }
 
   obtenerEstados() {
@@ -824,11 +534,11 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   }
 
   obtenerPromotores() {
-    this.contratarPSFPAService.obtenerPaises()
+    this.contratarPSFPAService.obtenerPromotores()
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          this.catPromotores = mapearArregloTipoDropdown(respuesta.datos, "promotor", "idPromotor");
+          this.catPromotores = mapearArregloTipoDropdown(respuesta.datos, 'NOMBRE', 'ID_PROMOTOR');
         },
         error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
@@ -836,8 +546,69 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       });
   }
 
-  abrirPanel(event: MouseEvent): void {
+  buscarParentesco(): void {
+    this.consultaConveniosService
+      .parentesco()
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Exito, msg);
+            return;
+          }
+          if (respuesta.mensaje === 'Exito')
+            this.parentesco = mapearArregloTipoDropdown(
+              respuesta.datos,
+              'nombreParentesco',
+              'idParentesco'
+            );
+          else {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Exito, msg);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        },
+      });
+  }
+
+  obtenerPaquete(): void {
+    this.loaderService.activar();
+    this.consultaConveniosService
+      .buscarPaquetes(this.rutaActiva.snapshot.queryParams.idVelatorio)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Exito, msg);
+            return;
+          }
+
+          if (respuesta.mensaje === 'Exito') {
+            this.paquetes = respuesta.datos || [];
+            if (this.paquetes.length == 0) {
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                'No hay paquetes asignados al velatorio'
+              );
+            }
+          } else {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Exito, msg);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        },
+      });
+  }
+
+  abrirPanel(event: MouseEvent, itemBeneficiarios: Beneficiarios): void {
     this.overlayPanel.toggle(event);
+    this.itemBeneficiarios = itemBeneficiarios;
   }
 
   obtenerCP(formGroupName?: any, catalogo?: string): void {
@@ -867,6 +638,30 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
+      }
+    });
+  }
+
+  abrirModalRegistroNuevoBeneficiario(event: MouseEvent): void {
+    event.stopPropagation();
+    this.refBeneficiario = this.dialogService.open(ModalRegistrarBeneficiarioComponent, {
+      header: 'Registrar beneficiario',
+      style: { maxWidth: '876px', width: '100%' },
+      data: {
+        idConvenio: this.idConvenioPf,
+        parentesco: this.parentesco,
+        idVelatorio: this.idVelatorio,
+        velatorio: this.velatorio,
+        idContratante: this.idContratante,
+      },
+    });
+    this.refBeneficiario.onClose.subscribe((respuesta: any) => {
+      if (respuesta == 'exito') {
+        this.alertaService.mostrar(
+          TipoAlerta.Exito,
+          'Beneficiario actualizado correctamente'
+        );
+        this.detalleConvenio();
       }
     });
   }
@@ -977,6 +772,10 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     this.obtenerCP(this.domicilioTitularSubstituto, 'catColoniasSubstituto');
   }
 
+  seleccionaPaquete(idPaquete: string): void {
+    this.idPaquete = idPaquete;
+  }
+
   guardar(): void {
     if (this.form.valid) {
       this.mostrarModalConfirmacionInformacionCapturada = true;
@@ -988,6 +787,35 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     this.form.disable();
     this.ocultarBtnGuardar = true;
     this.mostrarModalValidacionRegistro = true;
+  }
+
+  detalleConvenio() {
+    let idPlan = this.idConvenioPf + '';
+    this.consultaConveniosService
+      .detalleConvenio(idPlan)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            console.log(respuesta.mensaje);
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Exito, msg);
+            return;
+          }
+
+          if (respuesta.mensaje === 'Exito') {
+            this.beneficiarios = respuesta.datos.beneficiarios || [];
+            console.log('los beneficarios', this.beneficiarios);
+          } else {
+            this.beneficiarios = [];
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Exito, msg);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        },
+      });
   }
 
   get f() {
@@ -1009,26 +837,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
 
   get domicilioTitularSubstituto() {
     return (this.form.controls['domicilioTitularSubstituto'] as FormGroup)
-      .controls;
-  }
-
-  get datosPersonalesBeneficiario1() {
-    return (this.form.controls['datosPersonalesBeneficiario1'] as FormGroup)
-      .controls;
-  }
-
-  get domicilioBeneficiario1() {
-    return (this.form.controls['domicilioBeneficiario1'] as FormGroup)
-      .controls;
-  }
-
-  get datosPersonalesBeneficiario2() {
-    return (this.form.controls['datosPersonalesBeneficiario2'] as FormGroup)
-      .controls;
-  }
-
-  get domicilioBeneficiario2() {
-    return (this.form.controls['domicilioBeneficiario2'] as FormGroup)
       .controls;
   }
 }
