@@ -121,9 +121,11 @@ export class ModificarMetodoPagoComponent implements OnInit {
   obtenerMetodosPago(): void {
     if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
       this.filtrarCatalogosODS();
+      return;
     }
     if (this.registroPago.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
       this.tiposPago = TIPO_PAGO_CATALOGOS_CONVENIO;
+      return;
     }
     this.tiposPago = TIPO_PAGO_CATALOGOS_CONVENIO;
   }
