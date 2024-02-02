@@ -8,6 +8,7 @@ export const environment = {
     servicios_externos_reportes: 'mssivimss-ser-externos/v1/reportes/',
     notificaciones: 'mssivimss-notificaciones/v1/notificaciones/avisos',
     conveniosPF: 'mssivimss-ods-prefune-on/v1/',
+    conveniosPSF: 'mssivimss-cpsf/v1',
   },
 
 

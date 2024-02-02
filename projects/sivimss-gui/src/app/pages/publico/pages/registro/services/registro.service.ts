@@ -14,7 +14,7 @@ export class RegistroService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   registrarContratante(contratante: IRegistrarContratante): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${environment.api.loginContratante}/registrar/contratante`, contratante);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}/registrar/contratante`, contratante);
   }
 
   consutaCP(cp: string): Observable<HttpRespuesta<any>> {
@@ -24,15 +24,15 @@ export class RegistroService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerPaises(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${environment.api.loginContratante}/catalogos/consulta/pais`);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}/catalogos/consulta/pais`);
   }
 
   obtenerEstados(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${environment.api.loginContratante}/catalogos/consulta/estado`);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}/catalogos/consulta/estado`);
   }
 
   validarCurpRfc(datos: ValidarRfcCurp): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${environment.api.loginContratante}/catalogos/consulta/rfc-curp`, datos);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}/catalogos/consulta/rfc-curp`, datos);
   }
 
 }

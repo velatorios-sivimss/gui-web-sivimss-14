@@ -86,8 +86,16 @@
     color: #BFBFBF;
 }
 
-:host ::ng-deep .overlay-panel-opciones .overlay-panel-opcion{
+:host ::ng-deep .overlay-panel-opciones .overlay-panel-opcion {
     text-align: center;
     display: block;
     color: #9D244A;
+}
+
+.lienzo-paquetes {
+    height: 300px;
+    overflow-y: scroll;
+    box-shadow: 0px 0px 2px 1px #888888;
+    padding: 15px 0px;
+    justify-content: space-around;
 }
