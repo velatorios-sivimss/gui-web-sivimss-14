@@ -37,6 +37,7 @@ export class DesactivarConvenioComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   beneficiarios: BeneficiarioResponse[] = [];
+  solicitantes: any[] = [];
   beneficiario1!: BeneficiarioResponse;
   beneficiario2!: BeneficiarioResponse;
   sustituto!: BeneficiarioResponse;

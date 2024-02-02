@@ -91,6 +91,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
 
   cargarCatalogos(): void {
     this.catalogoNiveles = this.activatedRoute.snapshot.data["respuesta"];
+    console.log(this.catalogoNiveles)
     this.obtenerVelatorios();
   }
 

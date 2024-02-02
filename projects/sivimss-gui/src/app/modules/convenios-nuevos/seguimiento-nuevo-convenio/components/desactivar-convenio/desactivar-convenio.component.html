@@ -189,6 +189,7 @@
           </div>
         </ng-template>
         <ng-template pTemplate="content">
+          <ng-container *ngIf="solicitantes.length > 0 else SinSolicitantes"></ng-container>
         </ng-template>
       </p-accordionTab>
     </p-accordion>
@@ -232,7 +233,7 @@
             <div class="col-md-4">
               <div class="table-panel-column">
                 <label>Tipo de paquete</label>
-                <span>Sencillo</span>
+                <span>{{ convenioPersona?.tipoPaquete }}</span>
               </div>
             </div>
           </div>
@@ -298,6 +299,14 @@
   <div class="row table-panel-row">
     <div class="col-md-12 mt-4">
       <p class="mensaje-cancelacion-orden font-14">Información de beneficiario no registrada.</p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template pTemplate="content" #SinSolicitantes>
+  <div class="row table-panel-row">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">El convenio no tiene solicitantes registrados.</p>
     </div>
   </div>
 </ng-template>

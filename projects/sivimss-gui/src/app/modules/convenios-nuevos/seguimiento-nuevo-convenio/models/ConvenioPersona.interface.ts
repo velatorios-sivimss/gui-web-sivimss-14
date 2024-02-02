@@ -24,5 +24,6 @@ export interface ConvenioPersona {
   matricula: string,
   fecNacimiento: string,
   telFijo: string,
-  telCelular: string
+  telCelular: string,
+  tipoPaquete: string
 }
