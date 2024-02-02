@@ -31,7 +31,7 @@ export class ContratarPSFPAService extends BaseService<HttpRespuesta<any>, any> 
   }
 
   obtenerPromotores(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${environment.api.loginContratante}/catalogos/consulta/promotores`);
+    return this._http.get<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-cpsf/v1/linea-plan-sfpa/consulta-promotores`);
   }
 
   validarCurpRfc(datos: ValidarRfcCurp): Observable<HttpRespuesta<any>> {

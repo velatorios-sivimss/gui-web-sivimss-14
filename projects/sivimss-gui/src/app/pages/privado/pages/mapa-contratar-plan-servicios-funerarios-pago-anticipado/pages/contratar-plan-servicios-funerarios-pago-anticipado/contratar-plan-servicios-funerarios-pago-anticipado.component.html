@@ -226,13 +226,13 @@
         </div>
         <div class="border-panel mb-5">
             <h2 class="subtitulo-base">Paquetes</h2>
-            <ng-container>
+            <ng-container formGroupName="formPaquete">
                 <div class="paquetes">
                   <div class="paquete" *ngFor="let item of paquetes;">
                     <div class="paquete-titulo">
-                      <input type="radio" name="paquetes" [value]="item.idPaquete"
-                        (click)="seleccionaPaquete(item.idPaquete)" />
-                      <span>{{item.nomPaquete}}</span>
+                        <p-radioButton [inputId]="'item.idPaquete'" name="paquete" [value]="item.idPaquete"  formControlName="paquete"
+                                       (click)="seleccionaPaquete(item.idPaquete)"></p-radioButton>
+                        <span>{{item.nomPaquete}}</span>
                     </div>
                     <div>
                       <ul>
@@ -473,384 +473,59 @@
                 </div>
             </ng-container>
         </div>
-        <div class="border-panel mb-5">
-            <ng-container formGroupName="datosPersonalesBeneficiario1">
-                <h2 class="subtitulo-base">Datos personales de beneficiario 1</h2>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="curp3">CURP:</label>
-                        <input id="curp3" type="text" class="form-control" formControlName="curp" alphanumericOnly
-                            trimmer (blur)="validarCurp(datosPersonalesBeneficiario1);" oninput="this.value = this.value.toUpperCase()"
-                            maxlength="18" placeholder="Ingresa CURP">
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario1.curp?.errors?.required && (datosPersonalesBeneficiario1.curp?.dirty || datosPersonalesBeneficiario1.curp?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="rfc3">R.F.C.:</label>
-                        <input id="rfc3" type="text" class="form-control" formControlName="rfc"
-                            placeholder="Ingresa R.F.C." maxlength="13" trimmer folioOdsAlphanumeric (blur)="validarRfc(datosPersonalesBeneficiario1)">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="matricula3">Matrícula:</label>
-                        <input id="matricula3" type="text" class="form-control" formControlName="matricula"
-                            placeholder="Ingresa matrícula" maxlength="10">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="nss3">NSS:</label>
-                        <input id="nss3" type="text" class="form-control" formControlName="nss"
-                            placeholder="Ingresa NSS" maxlength="11">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="nombre3">Nombre:</label>
-                        <input id="nombre3" type="text" class="form-control" formControlName="nombre"
-                            placeholder="Ingresa nombre" maxlength="30" trimmer alphanumericOnly>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario1.nombre?.errors?.required && (datosPersonalesBeneficiario1.nombre?.dirty || datosPersonalesBeneficiario1.nombre?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="primerApellido3">Primer apellido:</label>
-                        <input id="primerApellido3" type="text" class="form-control" formControlName="primerApellido"
-                            placeholder="Ingresa primer apellido" maxlength="20" trimmer alphanumericOnly>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario1.primerApellido?.errors?.required && (datosPersonalesBeneficiario1.primerApellido?.dirty || datosPersonalesBeneficiario1.primerApellido?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="segundoApellido3">Segundo apellido:</label>
-                        <input id="segundoApellido3" type="text" class="form-control" formControlName="segundoApellido"
-                            placeholder="Ingresa segundo apellido" maxlength="20" trimmer alphanumericOnly>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario1.segundoApellido?.errors?.required && (datosPersonalesBeneficiario1.segundoApellido?.dirty || datosPersonalesBeneficiario1.segundoApellido?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="sexo3">Sexo:</label>
-                        <p-dropdown id="sexo3" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
-                            (onChange)="cambioTipoSexo(datosPersonalesBeneficiario1)" [options]="tipoSexo" [filter]="true"
-                            filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario1.sexo?.errors?.required && (datosPersonalesBeneficiario1.sexo?.dirty || datosPersonalesBeneficiario1.sexo?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3" *ngIf="datosPersonalesBeneficiario1.sexo.value === 3">
-                        <label class="control-label" for="otro3">Otro:</label>
-                        <input id="otro3" type="text" class="form-control" formControlName="otro"
-                            placeholder="Ingresa otro" maxlength="10">
-                    </div>
-                </div>
 
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="fechaNacimiento3">Fecha de nacimiento:</label>
-                        <p-calendar id="fechaNacimiento3" styleClass="form-control" formControlName="fechaNacimiento"
-                            [showIcon]="true" dateFormat="dd/mm/yy" placeholder="Ingresa fecha de nacimiento"
-                            [maxDate]="fechaActual">
-                        </p-calendar>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario1.fechaNacimiento?.errors?.required && (datosPersonalesBeneficiario1.fechaNacimiento?.dirty || datosPersonalesBeneficiario1.fechaNacimiento?.touched)">Este
-                            campo es obligatorio *.</span>
+        <ng-container>
+            <div class="border-panel mb-5">
+            <div class="flex justify-content-between align-items-center">
+                <h2 class="subtitulo-base">Beneficiarios</h2>
+                <button class="btn btn-default btn-md ml-5" (click)="abrirModalRegistroNuevoBeneficiario($event)"
+                *ngIf="(beneficiarios.length < 3)" type="button">Nuevo
+                beneficiario</button>
+            </div>
+            <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true"
+                [columnResizeMode]="'expand'">
+                <ng-template pTemplate="header">
+                <tr>
+                    <th scope="col">Velatorio</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Primer apellido</th>
+                    <th scope="col">Segundo apellido</th>
+                    <th scope="col">Edad</th>
+                    <th scope="col">Parentesco</th>
+                    <th scope="col">CURP</th>
+                    <th scope="col">RFC</th>
+                    <th scope="col">Acta nacimiento</th>
+                    <th scope="col">Correo electrónico</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
+                </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-beneficiarios>
+                <tr>
+                    <td>{{beneficiarios.velatorio }}</td>
+                    <td>{{beneficiarios.fechaNacimiento}}</td>
+                    <td>{{beneficiarios.nombreAfiliado}}</td>
+                    <td>{{beneficiarios.primerApellido}}</td>
+                    <td>{{beneficiarios.segundoApellido}}</td>
+                    <td>{{beneficiarios.edad}}</td>
+                    <td>{{beneficiarios.parentesco}}</td>
+                    <td>{{beneficiarios.curp}}</td>
+                    <td>{{beneficiarios.rfc}}</td>
+                    <td>{{beneficiarios.ine}}</td>
+                    <td>{{beneficiarios.correo}}</td>
+                    <td>{{beneficiarios.telefono}}</td>
+                    <td style="border-left: 1px solid #b0b0b0;">
+                    <div class="contenedor-celda-iconos">
+                        <a (click)="abrirPanel($event,beneficiarios)" onCloseOnNavigation>
+                        <i class="pi pi-ellipsis-v"></i>
+                        </a>
                     </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="nacionalidad3">Nacionalidad:</label>
-                        <p-dropdown id="nacionalidad3" class="form-control" formControlName="nacionalidad" (onChange)="cambioNacionalidad(datosPersonalesBeneficiario1)"
-                            placeholder="Selecciona nacionalidad" [options]="nacionalidad" [filter]="true"
-                            filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario1.nacionalidad?.errors?.required && (datosPersonalesBeneficiario1.nacionalidad?.dirty || datosPersonalesBeneficiario1.nacionalidad?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3" *ngIf="datosPersonalesBeneficiario1.nacionalidad.value === 2">
-                        <label class="control-label" for="paisNacimiento3">Pais de nacimiento:</label>
-                        <p-dropdown id="paisNacimiento3" class="form-control" formControlName="paisNacimiento"
-                            placeholder="Selecciona país de nacimiento" [options]="catalogoPaises" [filter]="true"
-                            filterBy="label"></p-dropdown>
-                    </div>
-                    <div class="col-md-3" *ngIf="datosPersonalesBeneficiario1.nacionalidad.value === 1">
-                        <label class="control-label" for="lugarNacimiento3">Lugar de nacimiento:</label>
-                        <p-dropdown id="lugarNacimiento3" class="form-control" formControlName="lugarNacimiento"
-                            placeholder="Selecciona lugar de nacimiento" [options]="catalogoEstados" [filter]="true"
-                            filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario1.lugarNacimiento?.errors?.required && (datosPersonalesBeneficiario1.lugarNacimiento?.dirty || datosPersonalesBeneficiario1.lugarNacimiento?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="telefonoFijo3">Teléfono:</label>
-                        <input id="telefonoFijo3" type="text" class="form-control" formControlName="telefonoFijo"
-                            placeholder="Ingresa teléfono fijo" trimmer numbersOnly maxlength="10">
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario1.telefonoFijo?.errors?.required && (datosPersonalesBeneficiario1.telefonoFijo?.dirty || datosPersonalesBeneficiario1.telefonoFijo?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="correoElectronico3">Correo electrónico:</label>
-                        <input id="correoElectronico3" type="text" class="form-control"
-                            formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario1.correoElectronico?.errors?.required && (datosPersonalesBeneficiario1.correoElectronico?.dirty || datosPersonalesBeneficiario1.correoElectronico?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                </div>
-            </ng-container>
-            <ng-container formGroupName="domicilioBeneficiario1">
-                <h2 class="subtitulo-base">Domicilio</h2>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="control-label" for="calle3">Calle:</label>
-                        <input id="calle3" type="text" class="form-control" formControlName="calle"
-                            placeholder="Ingresa calle">
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario1.calle?.errors?.required && (domicilioBeneficiario1.calle?.dirty || domicilioBeneficiario1.calle?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="numeroExterior3">Número exterior:</label>
-                        <input id="numeroExterior3" type="text" class="form-control" formControlName="numeroExterior"
-                            placeholder="Ingresa número exterior">
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario1.numeroExterior?.errors?.required && (domicilioBeneficiario1.numeroExterior?.dirty || domicilioBeneficiario1.numeroExterior?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="numeroInterior3">Número interior:</label>
-                        <input id="numeroInterior3" type="text" class="form-control" formControlName="numeroInterior"
-                            placeholder="Ingresa número interior">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="codigoPostal3">C.P.:</label>
-                        <input id="codigoPostal3" type="text" class="form-control" formControlName="codigoPostal"
-                            placeholder="Ingresa código postal" maxlength="5" trimmer numbersOnly (blur)="obtenerCP(domicilioBeneficiario1, 'catColoniasBeneficiario1')">
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario1.codigoPostal?.errors?.required && (domicilioBeneficiario1.codigoPostal?.dirty || domicilioBeneficiario1.codigoPostal?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="asentamientoColonia3">Asentamiento / Colonia:</label>
-                        <p-dropdown id="asentamientoColonia3" class="form-control" formControlName="asentamientoColonia"
-                            placeholder="Selecciona asentamiento colonia" [options]="catColoniasBeneficiario1" [filter]="true"
-                            filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario1.asentamientoColonia?.errors?.required && (domicilioBeneficiario1.asentamientoColonia?.dirty || domicilioBeneficiario1.asentamientoColonia?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="municipio3">Municipio:</label>
-                        <input id="municipio3" type="text" class="form-control" formControlName="municipio"
-                            placeholder="Ingresa municipio">
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario1.municipio?.errors?.required && (domicilioBeneficiario1.municipio?.dirty || domicilioBeneficiario1.municipio?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="estado3">Estado:</label>
-                        <input id="estado3" type="text" class="form-control" formControlName="estado"
-                            placeholder="Ingresa estado">
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario1.estado?.errors?.required && (domicilioBeneficiario1.estado?.dirty || domicilioBeneficiario1.estado?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                </div>
-            </ng-container>
-        </div>
-        <div class="border-panel mb-5">
-            <ng-container formGroupName="datosPersonalesBeneficiario2">
-                <h2 class="subtitulo-base">Datos personales de beneficiario 2</h2>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="curp4">CURP:</label>
-                        <input id="curp4" type="text" class="form-control" formControlName="curp" alphanumericOnly
-                            trimmer (blur)="validarCurp(datosPersonalesBeneficiario2);" oninput="this.value = this.value.toUpperCase()"
-                            maxlength="18" placeholder="Ingresa CURP">
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario2.curp?.errors?.required && (datosPersonalesBeneficiario2.curp?.dirty || datosPersonalesBeneficiario2.curp?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="rfc4">R.F.C.:</label>
-                        <input id="rfc4" type="text" class="form-control" formControlName="rfc"
-                            placeholder="Ingresa R.F.C." maxlength="13" trimmer folioOdsAlphanumeric (blur)="validarRfc(datosPersonalesBeneficiario2)">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="matricula4">Matrícula:</label>
-                        <input id="matricula4" type="text" class="form-control" formControlName="matricula"
-                            placeholder="Ingresa matrícula" maxlength="10">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="nss4">NSS:</label>
-                        <input id="nss4" type="text" class="form-control" formControlName="nss"
-                            placeholder="Ingresa NSS" maxlength="11">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="nombre4">Nombre:</label>
-                        <input id="nombre4" type="text" class="form-control" formControlName="nombre"
-                            placeholder="Ingresa nombre" maxlength="30" trimmer alphanumericOnly>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario2.nombre?.errors?.required && (datosPersonalesBeneficiario2.nombre?.dirty || datosPersonalesBeneficiario2.nombre?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="primerApellido4">Primer apellido:</label>
-                        <input id="primerApellido4" type="text" class="form-control" formControlName="primerApellido"
-                            placeholder="Ingresa primer apellido" maxlength="20" trimmer alphanumericOnly>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario2.primerApellido?.errors?.required && (datosPersonalesBeneficiario2.primerApellido?.dirty || datosPersonalesBeneficiario2.primerApellido?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="segundoApellido4">Segundo apellido:</label>
-                        <input id="segundoApellido4" type="text" class="form-control" formControlName="segundoApellido"
-                            placeholder="Ingresa segundo apellido" maxlength="20" trimmer alphanumericOnly>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario2.segundoApellido?.errors?.required && (datosPersonalesBeneficiario2.segundoApellido?.dirty || datosPersonalesBeneficiario2.segundoApellido?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="sexo4">Sexo:</label>
-                        <p-dropdown id="sexo4" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
-                            (onChange)="cambioTipoSexo(datosPersonalesBeneficiario2)" [options]="tipoSexo" [filter]="true"
-                            filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario2.sexo?.errors?.required && (datosPersonalesBeneficiario2.sexo?.dirty || datosPersonalesBeneficiario2.sexo?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3" *ngIf="datosPersonalesBeneficiario2.sexo.value === 3">
-                        <label class="control-label" for="otro4">Otro:</label>
-                        <input id="otro4" type="text" class="form-control" formControlName="otro"
-                            placeholder="Ingresa otro" maxlength="10">
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="fechaNacimiento4">Fecha de nacimiento:</label>
-                        <p-calendar id="fechaNacimiento4" styleClass="form-control" formControlName="fechaNacimiento"
-                            [showIcon]="true" dateFormat="dd/mm/yy" placeholder="Ingresa fecha de nacimiento"
-                            [maxDate]="fechaActual">
-                        </p-calendar>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario2.fechaNacimiento?.errors?.required && (datosPersonalesBeneficiario2.fechaNacimiento?.dirty || datosPersonalesBeneficiario2.fechaNacimiento?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="nacionalidad4">Nacionalidad:</label>
-                        <p-dropdown id="nacionalidad4" class="form-control" formControlName="nacionalidad" (onChange)="cambioNacionalidad(datosPersonalesBeneficiario2)"
-                            placeholder="Selecciona nacionalidad" [options]="nacionalidad" [filter]="true"
-                            filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario2.nacionalidad?.errors?.required && (datosPersonalesBeneficiario2.nacionalidad?.dirty || datosPersonalesBeneficiario2.nacionalidad?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3" *ngIf="datosPersonalesBeneficiario2.nacionalidad.value === 2">
-                        <label class="control-label" for="paisNacimiento4">Pais de nacimiento:</label>
-                        <p-dropdown id="paisNacimiento4" class="form-control" formControlName="paisNacimiento"
-                            placeholder="Selecciona país de nacimiento" [options]="catalogoPaises" [filter]="true"
-                            filterBy="label"></p-dropdown>
-                    </div>
-                    <div class="col-md-3" *ngIf="datosPersonalesBeneficiario2.nacionalidad.value === 1">
-                        <label class="control-label" for="lugarNacimiento4">Lugar de nacimiento:</label>
-                        <p-dropdown id="lugarNacimiento4" class="form-control" formControlName="lugarNacimiento"
-                            placeholder="Selecciona lugar de nacimiento" [options]="catalogoEstados" [filter]="true"
-                            filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario2.lugarNacimiento?.errors?.required && (datosPersonalesBeneficiario2.lugarNacimiento?.dirty || datosPersonalesBeneficiario2.lugarNacimiento?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="telefonoFijo4">Teléfono:</label>
-                        <input id="telefonoFijo4" type="text" class="form-control" formControlName="telefonoFijo"
-                            placeholder="Ingresa teléfono fijo" trimmer numbersOnly maxlength="10">
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario2.telefonoFijo?.errors?.required && (datosPersonalesBeneficiario2.telefonoFijo?.dirty || datosPersonalesBeneficiario2.telefonoFijo?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="correoElectronico4">Correo electrónico:</label>
-                        <input id="correoElectronico4" type="text" class="form-control"
-                            formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
-                        <span class="campo-obligatorio"
-                            *ngIf="datosPersonalesBeneficiario2.correoElectronico?.errors?.required && (datosPersonalesBeneficiario2.correoElectronico?.dirty || datosPersonalesBeneficiario2.correoElectronico?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                </div>
-            </ng-container>
-            <ng-container formGroupName="domicilioBeneficiario2">
-                <h2 class="subtitulo-base">Domicilio</h2>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="control-label" for="calle4">Calle:</label>
-                        <input id="calle4" type="text" class="form-control" formControlName="calle"
-                            placeholder="Ingresa calle">
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario2.calle?.errors?.required && (domicilioBeneficiario2.calle?.dirty || domicilioBeneficiario2.calle?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="numeroExterior4">Número exterior:</label>
-                        <input id="numeroExterior4" type="text" class="form-control" formControlName="numeroExterior"
-                            placeholder="Ingresa número exterior">
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario2.numeroExterior?.errors?.required && (domicilioBeneficiario2.numeroExterior?.dirty || domicilioBeneficiario2.numeroExterior?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="numeroInterior4">Número interior:</label>
-                        <input id="numeroInterior4" type="text" class="form-control" formControlName="numeroInterior"
-                            placeholder="Ingresa número interior">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="control-label" for="codigoPostal4">C.P.:</label>
-                        <input id="codigoPostal4" type="text" class="form-control" formControlName="codigoPostal"
-                            placeholder="Ingresa código postal" maxlength="5" trimmer numbersOnly (blur)="obtenerCP(domicilioBeneficiario2, 'catColoniasBeneficiario2')">
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario2.codigoPostal?.errors?.required && (domicilioBeneficiario2.codigoPostal?.dirty || domicilioBeneficiario2.codigoPostal?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="asentamientoColonia4">Asentamiento / Colonia:</label>
-                        <p-dropdown id="asentamientoColonia4" class="form-control" formControlName="asentamientoColonia"
-                            placeholder="Selecciona asentamiento colonia" [options]="catColoniasBeneficiario2" [filter]="true"
-                            filterBy="label"></p-dropdown>
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario2.asentamientoColonia?.errors?.required && (domicilioBeneficiario2.asentamientoColonia?.dirty || domicilioBeneficiario2.asentamientoColonia?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="municipio4">Municipio:</label>
-                        <input id="municipio4" type="text" class="form-control" formControlName="municipio"
-                            placeholder="Ingresa municipio">
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario2.municipio?.errors?.required && (domicilioBeneficiario2.municipio?.dirty || domicilioBeneficiario2.municipio?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="control-label" for="estado4">Estado:</label>
-                        <input id="estado4" type="text" class="form-control" formControlName="estado"
-                            placeholder="Ingresa estado">
-                        <span class="campo-obligatorio"
-                            *ngIf="domicilioBeneficiario2.estado?.errors?.required && (domicilioBeneficiario2.estado?.dirty || domicilioBeneficiario2.estado?.touched)">Este
-                            campo es obligatorio *.</span>
-                    </div>
-                </div>
-            </ng-container>
-        </div>
+                    </td>
+                </ng-template>
+            </p-table>
+            </div>
+        </ng-container>
 
         <div class="border-panel mb-5">
             <div class="row">
@@ -859,7 +534,7 @@
                     <div class="flex">
                         <div class="flex align-items-center mx-2">
                             <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
-                                formControlName="gestionadoPorPromotor"></p-radioButton>
+                                formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()"></p-radioButton>
                             <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
                         </div>
                         <div class="flex align-items-center mx-2">
@@ -871,7 +546,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="control-label" for="promotor">Promotor:</label>
-                    <p-dropdown id="promotor" class="form-control" formControlName="promotor"
+                    <p-dropdown id="promotor" class="form-control" formControlName="promotor" (onClick)="handleGestionPromotor()"
                         placeholder="Selecciona promotor" [options]="catPromotores" [filter]="true"
                         filterBy="label"></p-dropdown>
                 </div>

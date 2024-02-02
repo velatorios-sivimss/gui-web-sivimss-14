@@ -22,7 +22,6 @@ import { CatalogoPaquetes } from "../../models/catalogos.interface";
 import { AgregarPlanSFPA } from "../../models/servicios-funerarios.interface";
 import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
 import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface";
-import { ContratarPSFPAService } from 'projects/sivimss-gui/src/app/pages/privado/pages/mapa-contratar-plan-servicios-funerarios-pago-anticipado/services/contratar-psfpa.service';
 import { CURP } from 'projects/sivimss-gui/src/app/utils/regex';
 
 
@@ -85,7 +84,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private serviciosFunerariosService: ServiciosFunerariosService,
-    private contratarPSFPAService: ContratarPSFPAService,
     private route: ActivatedRoute,
     private router: Router,
   ) {
@@ -770,6 +768,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0, //Cuando te vas a contratante SI 1 no 0
       indModificarTitularSubstituto: 0, //Cuando es alta se manda en 0 acualizar es 1
       monPrecio: this.consultarMonPrecio(),
+      indPromotor: this.fp.gestionadoPorPromotor.value ? 1 : 0,// si = 1, No = 0
+      idPromotor: this.fp.promotor.value,
       titularesBeneficiarios: [
         {
           persona: 'titular',

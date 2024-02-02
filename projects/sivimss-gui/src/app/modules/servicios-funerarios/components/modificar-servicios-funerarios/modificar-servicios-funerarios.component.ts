@@ -20,7 +20,6 @@ import { AgregarPlanSFPA, Persona } from "../../models/servicios-funerarios.inte
 import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface";
 import * as moment from "moment/moment";
 import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
-import { ContratarPSFPAService } from 'projects/sivimss-gui/src/app/pages/privado/pages/mapa-contratar-plan-servicios-funerarios-pago-anticipado/services/contratar-psfpa.service';
 
 @Component({
   selector: 'app-modificar-servicios-funerarios',
@@ -36,6 +35,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   readonly POSICION_PAISES: number = 1;
   readonly POSICION_NUMERO_PAGOS: number = 2;
   readonly POSICION_PAQUETE: number = 3;
+  readonly POSICION_PROMOTOR: number = 4;
 
   indice: number = 0;
   menuStep: MenuItem[] = MENU_STEPPER;
@@ -79,7 +79,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private serviciosFunerariosService: ServiciosFunerariosService,
     private route: ActivatedRoute,
-    private contratarPSFPAService: ContratarPSFPAService,
     private router: Router,
   ) {
   }
@@ -92,6 +91,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       respuesta[this.POSICION_NUMERO_PAGOS].datos, 'DES_TIPO_PAGO_MENSUAL', 'ID_TIPO_PAGO_MENSUAL');
     this.tipoPaquete = mapearArregloTipoDropdown(respuesta[this.POSICION_PAQUETE].datos,
       'nomPaquete', 'idPaquete');
+    this.catPromotores = mapearArregloTipoDropdown(respuesta[this.POSICION_PROMOTOR].datos,
+      'NOMBRE', 'ID_PROMOTOR');
     this.paqueteBackUp = respuesta[this.POSICION_PAQUETE].datos;
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
     this.idPlanSfpa = Number(this.route.snapshot.queryParams.idPlanSfpa);
@@ -104,16 +105,33 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        this.folioConvenio = respuesta.datos.numFolioPlanSFPA;
+        const { datos } = respuesta;
+        this.idPlanSfpa = datos.idPlanSfpa;
+        this.folioConvenio = datos.numFolioPlanSFPA;
         this.nombreVelatorio = respuesta.datos.desIdVelatorio;
         this.fecIngresa = respuesta.datos.fecIngreso;
+        let objetoTitular = datos.titularesBeneficiarios[0];
 
-        this.obtenerPromotores();
-        this.inicializarFormPromotor();
-        this.inicializarFormDatosTitular(respuesta.datos);
-        this.inicializarFormDatosTitularSubstituto(respuesta.datos ? respuesta.datos : null);
-        this.inicializarFormDatosBeneficiario1(respuesta.datos ? respuesta.datos : null);
-        this.inicializarFormDatosBeneficiario2(respuesta.datos ? respuesta.datos : null);
+        let objetoSubstituto =
+          datos.indTitularSubstituto === 1
+            ? objetoTitular
+            : datos.titularesBeneficiarios[1];
+
+        let objetoBeneficiario1 =
+          datos.indTitularSubstituto === 1
+            ? datos.titularesBeneficiarios[1]
+            : datos.titularesBeneficiarios[2];
+
+        let objetoBeneficiario2 =
+          datos.indTitularSubstituto === 1
+            ? datos.titularesBeneficiarios[2]
+            : datos.titularesBeneficiarios[3];
+
+        this.inicializarFormPromotor(datos.indPromotor, datos.idPromotor);
+        this.inicializarFormDatosTitular(datos.idPaquete, datos.idTipoPagoMensual, objetoTitular);
+        this.inicializarFormDatosTitularSubstituto(datos.indTitularSubstituto, objetoSubstituto);
+        this.inicializarFormDatosBeneficiario1(objetoBeneficiario1);
+        this.inicializarFormDatosBeneficiario2(objetoBeneficiario2);
 
         if (respuesta.datos.numPago > 0) {
           this.fdt.tipoPaquete.disable();
@@ -126,251 +144,193 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     });
   }
 
-  inicializarFormPromotor(): void {
+  inicializarFormPromotor(indPromotor: number, idPromotor: number): void {
     this.promotorForm = this.formBuilder.group({
-      gestionadoPorPromotor: [{ value: null, disabled: false }, [Validators.nullValidator]],
-      promotor: [{ value: null, disabled: false }, [Validators.nullValidator]],
+      gestionadoPorPromotor: [{ value: indPromotor === 1, disabled: false }, [Validators.nullValidator]],
+      promotor: [{ value: idPromotor, disabled: false }, [Validators.nullValidator]],
     });
 
     this.handleGestionPromotor();
   }
 
-  inicializarFormDatosTitular(titular: any): void {
-    const [anio, mes, dia] = titular.titularesBeneficiarios[0].fecNacimiento.split('-');
-    const fecha = new Date(anio + '/' + mes + '/' + dia);
+  inicializarFormDatosTitular(idPaquete: number, idTipoPagoMensual: number, titular: Persona): void {
+    let fecha: Date | null = null;
+    if (titular.fecNacimiento) {
+      const [anio, mes, dia] = titular.fecNacimiento.split('-');
+      fecha = new Date(anio + '/' + mes + '/' + dia);
+    }
+
     this.datosTitularForm = this.formBuilder.group({
-      curp: [{ value: titular.titularesBeneficiarios[0].curp, disabled: true },
+      curp: [{ value: titular.curp, disabled: true },
       [Validators.required, Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: titular.titularesBeneficiarios[0].rfc, disabled: true },
+      rfc: [{ value: titular.rfc, disabled: true },
       [Validators.required, Validators.pattern(PATRON_RFC)]],
-      matricula: [{ value: titular.titularesBeneficiarios[0].matricula, disabled: false },],
-      nss: [{ value: titular.titularesBeneficiarios[0].nss, disabled: true },
+      matricula: [{ value: titular.matricula, disabled: false },],
+      nss: [{ value: titular.nss, disabled: true },
       [Validators.required]],
-      nombre: [{ value: titular.titularesBeneficiarios[0].nomPersona, disabled: true },
+      nombre: [{ value: titular.nomPersona, disabled: true },
       [Validators.required]],
-      primerApellido: [{ value: titular.titularesBeneficiarios[0].primerApellido, disabled: true },
+      primerApellido: [{ value: titular.primerApellido, disabled: true },
       [Validators.required]],
-      segundoApellido: [{ value: titular.titularesBeneficiarios[0].segundoApellido, disabled: true },
+      segundoApellido: [{ value: titular.segundoApellido, disabled: true },
       [Validators.required]],
-      sexo: [{ value: +titular.titularesBeneficiarios[0].sexo, disabled: true },
+      sexo: [{ value: titular.sexo ? +titular.sexo : null, disabled: true },
       [Validators.required]],
-      otroSexo: [{ value: titular.titularesBeneficiarios[0].otroSexo, disabled: true }],
+      otroSexo: [{ value: titular.otroSexo, disabled: true }],
       fechaNacimiento: [{ value: fecha, disabled: true },
       [Validators.required]],
-      nacionalidad: [{ value: +titular?.titularesBeneficiarios[0].idPais == 119 ? 1 : 2, disabled: true },
+      nacionalidad: [{ value: titular.idPais ? +titular?.idPais == 119 ? 1 : 2 : null, disabled: true },
       [Validators.required]],
-      lugarNacimiento: [{ value: +titular?.titularesBeneficiarios[0].idEstado ?? null, disabled: true },
+      lugarNacimiento: [{ value: titular?.idEstado ? +titular?.idEstado : null, disabled: true },
       [Validators.required]],
-      paisNacimiento: [{ value: +titular?.titularesBeneficiarios[0].idPais ?? null, disabled: true }],
-      telefono: [{ value: titular.titularesBeneficiarios[0].telefono, disabled: false },
+      paisNacimiento: [{ value: titular?.idPais ? +titular?.idPais : null, disabled: true }],
+      telefono: [{ value: titular.telefono, disabled: false },
       [Validators.required]],
-      correoElectronico: [{ value: titular.titularesBeneficiarios[0].correo, disabled: false },
+      telefonoFijo: [{ value: titular.telefonoFijo, disabled: false },
+      [Validators.required]],
+      correoElectronico: [{ value: titular.correo, disabled: false },
       [Validators.required, Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: titular.titularesBeneficiarios[0].cp.codigoPostal, disabled: true },
+      cp: [{ value: titular.cp?.codigoPostal, disabled: true },
       [Validators.required]],
-      calle: [{ value: titular.titularesBeneficiarios[0].cp.desCalle, disabled: false },
+      calle: [{ value: titular.cp?.desCalle, disabled: false },
       [Validators.required]],
-      numeroInterior: [{ value: titular.titularesBeneficiarios[0].cp.numInterior, disabled: false }],
-      numeroExterior: [{ value: titular.titularesBeneficiarios[0].cp.numExterior, disabled: false },
+      numeroInterior: [{ value: titular.cp?.numInterior, disabled: false }],
+      numeroExterior: [{ value: titular.cp?.numExterior, disabled: false },
       [Validators.required]],
-      colonia: [{ value: titular.titularesBeneficiarios[0].cp.desColonia, disabled: true },
+      colonia: [{ value: titular.cp?.desColonia, disabled: true },
       [Validators.required]],
-      municipio: [{ value: titular.titularesBeneficiarios[0].cp.desMunicipio, disabled: true },
+      municipio: [{ value: titular.cp?.desMunicipio, disabled: true },
       [Validators.required]],
-      estado: [{ value: titular.titularesBeneficiarios[0].cp.desEstado, disabled: true },
+      estado: [{ value: titular.cp?.desEstado, disabled: true },
       [Validators.required]],
-      tipoPaquete: [{ value: +titular.idPaquete, disabled: false },
+      tipoPaquete: [{ value: idPaquete, disabled: false },
       [Validators.required]],
-      numeroPago: [{ value: +titular.idTipoPagoMensual, disabled: false },
+      numeroPago: [{ value: idTipoPagoMensual, disabled: false },
       [Validators.required]],
     });
-    this.idNumeroPagoOriginal = +titular.idTipoPagoMensual
+    this.idNumeroPagoOriginal = idTipoPagoMensual;
   }
 
-  inicializarFormDatosTitularSubstituto(titularSubstituto: any): void {
-    const [anio, mes, dia] = titularSubstituto.titularesBeneficiarios[0].fecNacimiento.split('-');
-    let fecha = new Date(anio + '/' + mes + '/' + dia);
-    let objetoContratante: Persona = {
-      persona: null,
-      rfc: titularSubstituto.titularesBeneficiarios[0].rfc,
-      curp: titularSubstituto.titularesBeneficiarios[0].curp,
-      matricula: titularSubstituto.titularesBeneficiarios[0].matricula,
-      nss: titularSubstituto.titularesBeneficiarios[0].nss,
-      nomPersona: titularSubstituto.titularesBeneficiarios[0].nomPersona,
-      primerApellido: titularSubstituto.titularesBeneficiarios[0].primerApellido,
-      segundoApellido: titularSubstituto.titularesBeneficiarios[0].segundoApellido,
-      sexo: +titularSubstituto.titularesBeneficiarios[0].sexo,
-      otroSexo: titularSubstituto.titularesBeneficiarios[0].otroSexo,
-      fecNacimiento: String(fecha),
-      idPais: titularSubstituto.titularesBeneficiarios[0].idPais,
-      idEstado: titularSubstituto.titularesBeneficiarios[0].idEstado,
-      telefono: titularSubstituto.titularesBeneficiarios[0].telefono,
-      telefonoFijo: titularSubstituto?.titularesBeneficiarios[0].telefono,
-      correo: titularSubstituto.titularesBeneficiarios[0].correo,
-      tipoPersona: titularSubstituto.titularesBeneficiarios[0].tipoPersona,
-      ine: titularSubstituto.titularesBeneficiarios[0].ine,
-      cp: {
-        desCalle: titularSubstituto.titularesBeneficiarios[0].cp.desCalle,
-        numExterior: titularSubstituto.titularesBeneficiarios[0].cp.numExterior,
-        numInterior: titularSubstituto.titularesBeneficiarios[0].cp.numInterior,
-        codigoPostal: titularSubstituto.titularesBeneficiarios[0].cp.codigoPostal,
-        desColonia: titularSubstituto.titularesBeneficiarios[0].cp.desColonia,
-        desMunicipio: titularSubstituto.titularesBeneficiarios[0].cp.desMunicipio,
-        desEstado: titularSubstituto.titularesBeneficiarios[0].cp.desEstado,
-      }
-    };
-
-    this.coloniasContratante = [{ label: titularSubstituto.titularesBeneficiarios[0].cp.desColonia, value: titularSubstituto.titularesBeneficiarios[0].cp.desColonia }]
-
-    if (titularSubstituto.titularesBeneficiarios.length > 1) {
-      const [anio, mes, dia] = titularSubstituto.titularesBeneficiarios[1].fecNacimiento.split('-');
+  inicializarFormDatosTitularSubstituto(indTitularSubstituto: number, titularSubstituto: Persona): void {
+    let fecha: Date | null = null;
+    if (titularSubstituto.fecNacimiento) {
+      const [anio, mes, dia] = titularSubstituto.fecNacimiento.split('-');
       fecha = new Date(anio + '/' + mes + '/' + dia);
+    }
 
-      objetoContratante = {
-        persona: null,
-        rfc: titularSubstituto.titularesBeneficiarios[1].rfc,
-        curp: titularSubstituto.titularesBeneficiarios[1].curp,
-        matricula: titularSubstituto.titularesBeneficiarios[1].matricula,
-        nss: titularSubstituto.titularesBeneficiarios[1].nss,
-        nomPersona: titularSubstituto.titularesBeneficiarios[1].nomPersona,
-        primerApellido: titularSubstituto.titularesBeneficiarios[1].primerApellido,
-        segundoApellido: titularSubstituto.titularesBeneficiarios[1].segundoApellido,
-        sexo: +titularSubstituto.titularesBeneficiarios[1].sexo,
-        otroSexo: titularSubstituto.titularesBeneficiarios[1].otroSexo,
-        fecNacimiento: String(fecha),
-        idPais: titularSubstituto.titularesBeneficiarios[1].idPais,
-        idEstado: titularSubstituto.titularesBeneficiarios[1].idEstado,
-        telefono: titularSubstituto.titularesBeneficiarios[1].telefono,
-        telefonoFijo: titularSubstituto?.titularesBeneficiarios[1].telefono,
-        correo: titularSubstituto.titularesBeneficiarios[1].correo,
-        tipoPersona: titularSubstituto.titularesBeneficiarios[1].tipoPersona,
-        ine: titularSubstituto.titularesBeneficiarios[1].ine,
-        cp: {
-          desCalle: titularSubstituto.titularesBeneficiarios[1].cp.desCalle,
-          numExterior: titularSubstituto.titularesBeneficiarios[1].cp.numExterior,
-          numInterior: titularSubstituto.titularesBeneficiarios[1].cp.numInterior,
-          codigoPostal: titularSubstituto.titularesBeneficiarios[1].cp.codigoPostal,
-          desColonia: titularSubstituto.titularesBeneficiarios[1].cp.desColonia,
-          desMunicipio: titularSubstituto.titularesBeneficiarios[1].cp.desMunicipio,
-          desEstado: titularSubstituto.titularesBeneficiarios[1].cp.desEstado,
-        }
-      };
-      this.coloniasContratante = [{ label: titularSubstituto.titularesBeneficiarios[1].cp.desColonia, value: titularSubstituto.titularesBeneficiarios[1].cp.desColonia }]
+    if (titularSubstituto.cp?.desColonia) {
+      this.coloniasContratante = [{ label: titularSubstituto.cp?.desColonia, value: titularSubstituto.cp?.desColonia }]
     }
 
     this.datosTitularSubstitutoForm = this.formBuilder.group({
-      datosIguales: [{ value: false, disabled: false }, [Validators.required]],
-      curp: [{ value: objetoContratante.curp, disabled: false },
+      datosIguales: [{ value: indTitularSubstituto, disabled: false }, [Validators.required]],
+      curp: [{ value: titularSubstituto.curp, disabled: false },
       [Validators.required, Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: objetoContratante.rfc, disabled: false },
+      rfc: [{ value: titularSubstituto.rfc, disabled: false },
       [Validators.required, Validators.pattern(PATRON_RFC)]],
-      matricula: [{ value: objetoContratante.matricula, disabled: false }],
-      nss: [{ value: objetoContratante.nss, disabled: false },
+      matricula: [{ value: titularSubstituto.matricula, disabled: false }],
+      nss: [{ value: titularSubstituto.nss, disabled: false },
       [Validators.required]],
-      nombre: [{ value: objetoContratante.nomPersona, disabled: false },
+      nombre: [{ value: titularSubstituto.nomPersona, disabled: false },
       [Validators.required]],
-      primerApellido: [{ value: objetoContratante.primerApellido, disabled: false },
+      primerApellido: [{ value: titularSubstituto.primerApellido, disabled: false },
       [Validators.required]],
-      segundoApellido: [{ value: objetoContratante.segundoApellido, disabled: false },
+      segundoApellido: [{ value: titularSubstituto.segundoApellido, disabled: false },
       [Validators.required]],
-      sexo: [{ value: objetoContratante.sexo, disabled: false },
+      sexo: [{ value: titularSubstituto.sexo ? +titularSubstituto.sexo : null, disabled: false },
       [Validators.required]],
-      otroSexo: [{ value: objetoContratante.otroSexo, disabled: false }],
-      fechaNacimiento: [{ value: objetoContratante.fecNacimiento, disabled: false }, [Validators.required]],
+      otroSexo: [{ value: titularSubstituto.otroSexo, disabled: false }],
+      fechaNacimiento: [{ value: fecha, disabled: false }, [Validators.required]],
       nacionalidad: [{
-        value: objetoContratante.idPais ? objetoContratante.idPais == 119 ? 1 : 2 : null,
+        value: titularSubstituto.idPais ? titularSubstituto.idPais == 119 ? 1 : 2 : null,
         disabled: false
       },
       [Validators.required]],
-      lugarNacimiento: [{ value: objetoContratante.idEstado, disabled: false },
+      lugarNacimiento: [{ value: titularSubstituto.idEstado, disabled: false },
       [Validators.required]],
-      paisNacimiento: [{ value: objetoContratante.idPais, disabled: false }],
-      telefono: [{ value: objetoContratante.telefono, disabled: false },
+      paisNacimiento: [{ value: titularSubstituto.idPais, disabled: false }],
+      telefono: [{ value: titularSubstituto.telefono, disabled: false },
       [Validators.required]],
-      correoElectronico: [{ value: objetoContratante.correo, disabled: false },
+      correoElectronico: [{ value: titularSubstituto.correo, disabled: false },
       [Validators.required, Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: objetoContratante.cp?.codigoPostal, disabled: false },
+      cp: [{ value: titularSubstituto.cp?.codigoPostal, disabled: false },
       [Validators.required]],
-      calle: [{ value: objetoContratante.cp?.desCalle, disabled: false },
+      calle: [{ value: titularSubstituto.cp?.desCalle, disabled: false },
       [Validators.required]],
-      numeroInterior: [{ value: objetoContratante.cp?.numInterior, disabled: false }],
-      numeroExterior: [{ value: objetoContratante.cp?.numExterior, disabled: false },
+      numeroInterior: [{ value: titularSubstituto.cp?.numInterior, disabled: false }],
+      numeroExterior: [{ value: titularSubstituto.cp?.numExterior, disabled: false },
       [Validators.required]],
-      colonia: [{ value: objetoContratante.cp?.desColonia, disabled: true },
+      colonia: [{ value: titularSubstituto.cp?.desColonia, disabled: true },
       [Validators.required]],
-      municipio: [{ value: objetoContratante.cp?.desMunicipio, disabled: true },
+      municipio: [{ value: titularSubstituto.cp?.desMunicipio, disabled: true },
       [Validators.required]],
-      estado: [{ value: objetoContratante.cp?.desEstado, disabled: false },
+      estado: [{ value: titularSubstituto.cp?.desEstado, disabled: false },
       [Validators.required]],
     });
     this.datosTitularSubstitutoForm.disable();
   }
 
-  inicializarFormDatosBeneficiario1(beneficiario: any): void {
+  inicializarFormDatosBeneficiario1(beneficiario: Persona): void {
     let fecha: Date | null = null;
-    if (beneficiario.titularesBeneficiarios[2]?.fecNacimiento) {
-      const [anio, mes, dia] = beneficiario.titularesBeneficiarios[2]?.fecNacimiento.split('-');
+    if (beneficiario?.fecNacimiento) {
+      const [anio, mes, dia] = beneficiario?.fecNacimiento.split('-');
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
     this.datosBeneficiario1Form = this.formBuilder.group({
-      curp: [{ value: beneficiario.titularesBeneficiarios[2]?.curp, disabled: true }, [Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: beneficiario.titularesBeneficiarios[2]?.rfc, disabled: true }, [Validators.pattern(PATRON_RFC)]],
-      matricula: [{ value: beneficiario.titularesBeneficiarios[2]?.matricula, disabled: false },],
-      nss: [{ value: beneficiario.titularesBeneficiarios[2]?.nss, disabled: true }, []],
-      nombre: [{ value: beneficiario.titularesBeneficiarios[2]?.nomPersona, disabled: true }, []],
-      primerApellido: [{ value: beneficiario.titularesBeneficiarios[2]?.primerApellido, disabled: true }, []],
-      segundoApellido: [{ value: beneficiario.titularesBeneficiarios[2]?.segundoApellido, disabled: true }, []],
-      sexo: [{ value: +beneficiario.titularesBeneficiarios[2]?.sexo, disabled: true }, []],
-      otroSexo: [{ value: beneficiario.titularesBeneficiarios[2]?.otroSexo, disabled: true }],
+      curp: [{ value: beneficiario?.curp, disabled: true }, [Validators.pattern(PATRON_CURP)]],
+      rfc: [{ value: beneficiario?.rfc, disabled: true }, [Validators.pattern(PATRON_RFC)]],
+      matricula: [{ value: beneficiario?.matricula, disabled: false },],
+      nss: [{ value: beneficiario?.nss, disabled: true }, []],
+      nombre: [{ value: beneficiario?.nomPersona, disabled: true }, []],
+      primerApellido: [{ value: beneficiario?.primerApellido, disabled: true }, []],
+      segundoApellido: [{ value: beneficiario?.segundoApellido, disabled: true }, []],
+      sexo: [{ value: beneficiario?.sexo ? +beneficiario?.sexo : null, disabled: true }, []],
+      otroSexo: [{ value: beneficiario?.otroSexo, disabled: true }],
       fechaNacimiento: [{ value: fecha, disabled: true }, []],
-      nacionalidad: [{ value: +beneficiario?.titularesBeneficiarios[2]?.idPais == 119 ? 1 : 2, disabled: true }, []],
-      lugarNacimiento: [{ value: +beneficiario?.titularesBeneficiarios[2]?.idEstado ?? null, disabled: true }, []],
-      paisNacimiento: [{ value: +beneficiario?.titularesBeneficiarios[2]?.idPais ?? null, disabled: true }],
-      telefono: [{ value: beneficiario.titularesBeneficiarios[2]?.telefono, disabled: false }, []],
-      correoElectronico: [{ value: beneficiario.titularesBeneficiarios[2]?.correo, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: beneficiario.titularesBeneficiarios[2]?.cp.codigoPostal, disabled: true }, []],
-      calle: [{ value: beneficiario.titularesBeneficiarios[2]?.cp.desCalle, disabled: false }, []],
-      numeroInterior: [{ value: beneficiario.titularesBeneficiarios[2]?.cp.numInterior, disabled: false }],
-      numeroExterior: [{ value: beneficiario.titularesBeneficiarios[2]?.cp.numExterior, disabled: false }, []],
-      colonia: [{ value: beneficiario.titularesBeneficiarios[2]?.cp.desColonia, disabled: true }, []],
-      municipio: [{ value: beneficiario.titularesBeneficiarios[2]?.cp.desMunicipio, disabled: true }, []],
-      estado: [{ value: beneficiario.titularesBeneficiarios[2]?.cp.desEstado, disabled: true }, []],
-      tipoPaquete: [{ value: +beneficiario.idPaquete, disabled: false }, []],
-      numeroPago: [{ value: +beneficiario.idTipoPagoMensual, disabled: false }, []],
+      nacionalidad: [{ value: beneficiario?.idPais ? +beneficiario?.idPais == 119 ? 1 : 2 : null, disabled: true }, []],
+      lugarNacimiento: [{ value: beneficiario?.idEstado ? +beneficiario?.idEstado : null, disabled: true }, []],
+      paisNacimiento: [{ value: beneficiario?.idPais ? +beneficiario?.idPais : null, disabled: true }],
+      telefono: [{ value: beneficiario?.telefono, disabled: false }, []],
+      correoElectronico: [{ value: beneficiario?.correo, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
+      cp: [{ value: beneficiario?.cp?.codigoPostal, disabled: true }, []],
+      calle: [{ value: beneficiario?.cp?.desCalle, disabled: false }, []],
+      numeroInterior: [{ value: beneficiario?.cp?.numInterior, disabled: false }],
+      numeroExterior: [{ value: beneficiario?.cp?.numExterior, disabled: false }, []],
+      colonia: [{ value: beneficiario?.cp?.desColonia, disabled: true }, []],
+      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: true }, []],
+      estado: [{ value: beneficiario?.cp?.desEstado, disabled: true }, []],
     });
   }
 
-  inicializarFormDatosBeneficiario2(beneficiario: any): void {
+  inicializarFormDatosBeneficiario2(beneficiario: Persona): void {
     let fecha: Date | null = null;
-    if (beneficiario.titularesBeneficiarios[3]?.fecNacimiento) {
-      const [anio, mes, dia] = beneficiario.titularesBeneficiarios[3]?.fecNacimiento.split('-');
+    if (beneficiario?.fecNacimiento) {
+      const [anio, mes, dia] = beneficiario?.fecNacimiento.split('-');
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
     this.datosBeneficiario2Form = this.formBuilder.group({
-      curp: [{ value: beneficiario.titularesBeneficiarios[3]?.curp, disabled: true }, [Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: beneficiario.titularesBeneficiarios[3]?.rfc, disabled: true }, [Validators.pattern(PATRON_RFC)]],
-      matricula: [{ value: beneficiario.titularesBeneficiarios[3]?.matricula, disabled: false },],
-      nss: [{ value: beneficiario.titularesBeneficiarios[3]?.nss, disabled: true }, []],
-      nombre: [{ value: beneficiario.titularesBeneficiarios[3]?.nomPersona, disabled: true }, []],
-      primerApellido: [{ value: beneficiario.titularesBeneficiarios[3]?.primerApellido, disabled: true }, []],
-      segundoApellido: [{ value: beneficiario.titularesBeneficiarios[3]?.segundoApellido, disabled: true }, []],
-      sexo: [{ value: +beneficiario.titularesBeneficiarios[3]?.sexo, disabled: true }, []],
-      otroSexo: [{ value: beneficiario.titularesBeneficiarios[3]?.otroSexo, disabled: true }],
+      curp: [{ value: beneficiario?.curp, disabled: true }, [Validators.pattern(PATRON_CURP)]],
+      rfc: [{ value: beneficiario?.rfc, disabled: true }, [Validators.pattern(PATRON_RFC)]],
+      matricula: [{ value: beneficiario?.matricula, disabled: false },],
+      nss: [{ value: beneficiario?.nss, disabled: true }, []],
+      nombre: [{ value: beneficiario?.nomPersona, disabled: true }, []],
+      primerApellido: [{ value: beneficiario?.primerApellido, disabled: true }, []],
+      segundoApellido: [{ value: beneficiario?.segundoApellido, disabled: true }, []],
+      sexo: [{ value: beneficiario?.sexo ? +beneficiario?.sexo : null, disabled: true }, []],
+      otroSexo: [{ value: beneficiario?.otroSexo, disabled: true }],
       fechaNacimiento: [{ value: fecha, disabled: true }, []],
-      nacionalidad: [{ value: +beneficiario?.titularesBeneficiarios[3]?.idPais == 119 ? 1 : 2, disabled: true }, []],
-      lugarNacimiento: [{ value: +beneficiario?.titularesBeneficiarios[3]?.idEstado ?? null, disabled: true }, []],
-      paisNacimiento: [{ value: +beneficiario?.titularesBeneficiarios[3]?.idPais ?? null, disabled: true }],
-      telefono: [{ value: beneficiario.titularesBeneficiarios[3]?.telefono, disabled: false }, []],
-      correoElectronico: [{ value: beneficiario.titularesBeneficiarios[3]?.correo, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: beneficiario.titularesBeneficiarios[3]?.cp.codigoPostal, disabled: true }, []],
-      calle: [{ value: beneficiario.titularesBeneficiarios[3]?.cp.desCalle, disabled: false }, []],
-      numeroInterior: [{ value: beneficiario.titularesBeneficiarios[3]?.cp.numInterior, disabled: false }],
-      numeroExterior: [{ value: beneficiario.titularesBeneficiarios[3]?.cp.numExterior, disabled: false }, []],
-      colonia: [{ value: beneficiario.titularesBeneficiarios[3]?.cp.desColonia, disabled: true }, []],
-      municipio: [{ value: beneficiario.titularesBeneficiarios[3]?.cp.desMunicipio, disabled: true }, []],
-      estado: [{ value: beneficiario.titularesBeneficiarios[3]?.cp.desEstado, disabled: true }, []],
-      tipoPaquete: [{ value: +beneficiario.idPaquete, disabled: false }, []],
-      numeroPago: [{ value: +beneficiario.idTipoPagoMensual, disabled: false }, []],
+      nacionalidad: [{ value: beneficiario?.idPais ? +beneficiario?.idPais == 119 ? 1 : 2 : null, disabled: true }, []],
+      lugarNacimiento: [{ value: beneficiario?.idEstado ? +beneficiario?.idEstado : null, disabled: true }, []],
+      paisNacimiento: [{ value: beneficiario?.idPais ? +beneficiario?.idPais : null, disabled: true }],
+      telefono: [{ value: beneficiario?.telefono, disabled: false }, []],
+      correoElectronico: [{ value: beneficiario?.correo, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
+      cp: [{ value: beneficiario?.cp?.codigoPostal, disabled: true }, []],
+      calle: [{ value: beneficiario?.cp?.desCalle, disabled: false }, []],
+      numeroInterior: [{ value: beneficiario?.cp?.numInterior, disabled: false }],
+      numeroExterior: [{ value: beneficiario?.cp?.numExterior, disabled: false }, []],
+      colonia: [{ value: beneficiario?.cp?.desColonia, disabled: true }, []],
+      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: true }, []],
+      estado: [{ value: beneficiario?.cp?.desEstado, disabled: true }, []],
     });
   }
 
@@ -399,19 +359,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   convertirMinusculas(posicion: number): void {
     let formularios = [this.fdt.correoElectronico, this.fdts.correoElectronico, this.fdb1.correoElectronico, this.fdb2.correoElectronico];
     formularios[posicion].setValue(formularios[posicion].value.toLowerCase());
-  }
-
-  obtenerPromotores() {
-    this.contratarPSFPAService.obtenerPaises()
-      .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          this.catPromotores = mapearArregloTipoDropdown(respuesta.datos, "promotor", "idPromotor");
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error("ERROR: ", error);
-        }
-      });
   }
 
   consultarCurp(posicion: number): void {
@@ -799,7 +746,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     let objetoGuardar: AgregarPlanSFPA = this.generarObjetoPlanSFPA();
     this.confirmarGuardado = false;
     this.cargadorService.activar();
-    this.serviciosFunerariosService.insertarPlanSFPA(objetoGuardar).pipe(
+    this.serviciosFunerariosService.actualizarPlanSFPA(objetoGuardar).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
@@ -823,7 +770,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   generarObjetoPlanSFPA(): AgregarPlanSFPA {
-    let objetoContratante = {
+    let objetoTitularSubstituto = {
       persona: 'titular substituto', //Si es la misma persona no mandar este objeto
       rfc: this.fdts.rfc.value,
       curp: this.fdts.curp.value,
@@ -851,51 +798,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         desMunicipio: this.fdts.municipio.value,
         desEstado: this.fdts.estado.value,
       }
-    }
-
-    const numPago = this.numeroPago.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? '';
-
-    let objetoPrincipal: AgregarPlanSFPA = {
-      idPlanSfpa: this.idPlanSfpa,
-      idTipoContratacion: 1,
-      idPaquete: this.fdt.tipoPaquete.value,
-      idTipoPagoMensual: this.fdt.numeroPago.value,
-      numPagoMensual: +numPago,
-      indTipoPagoMensual: this.cambioNumeroPagos,
-      indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0,
-      indModificarTitularSubstituto: 1,
-      monPrecio: this.consultarMonPrecio(),
-      titularesBeneficiarios: [
-        {
-          persona: 'titular',
-          rfc: this.fdt.rfc.value,
-          curp: this.fdt.curp.value,
-          matricula: this.fdt.matricula?.value ?? "",
-          nss: this.fdt.nss.value,
-          nomPersona: this.fdt.nombre.value,
-          primerApellido: this.fdt.primerApellido.value,
-          segundoApellido: this.fdt.segundoApellido.value,
-          sexo: this.fdt.sexo.value,
-          otroSexo: this.fdt.otroSexo?.value ?? "",
-          fecNacimiento: moment(this.fdt.fechaNacimiento.value).format('yyyy-MM-DD'),
-          idPais: this.fdt.paisNacimiento?.value ?? 119,
-          idEstado: this.fdt.lugarNacimiento?.value ?? null,
-          telefono: this.fdt.telefono.value,
-          telefonoFijo: this.fdt.telefono.value,
-          correo: this.fdt.correoElectronico.value,
-          tipoPersona: "",
-          ine: null,
-          cp: {
-            desCalle: this.fdt.calle.value,
-            numExterior: this.fdt.numeroExterior.value,
-            numInterior: this.fdt.numeroInterior?.value ?? "",
-            codigoPostal: this.fdt.cp.value,
-            desColonia: this.fdt.colonia.value,
-            desMunicipio: this.fdt.municipio.value,
-            desEstado: this.fdt.estado.value,
-          }
-        }
-      ]
     }
 
     let objetoBeneficiario1 = {
@@ -958,13 +860,61 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       }
     }
 
-    if (objetoPrincipal.indTitularSubstituto == 0) {
-      objetoPrincipal.titularesBeneficiarios.push(objetoContratante)
-    }
-    objetoPrincipal.titularesBeneficiarios.push(objetoBeneficiario1);
-    objetoPrincipal.titularesBeneficiarios.push(objetoBeneficiario2);
+    const numPago = this.numeroPago.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? '';
 
-    return objetoPrincipal;
+    let objetoTitular: AgregarPlanSFPA = {
+      idPlanSfpa: this.idPlanSfpa,
+      numFolioPlanSFPA: this.folioConvenio,
+      idTipoContratacion: 1,
+      idPaquete: this.fdt.tipoPaquete.value,
+      idTipoPagoMensual: this.fdt.numeroPago.value,
+      numPagoMensual: +numPago,
+      indTipoPagoMensual: this.cambioNumeroPagos,
+      indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0,
+      indModificarTitularSubstituto: 1,
+      monPrecio: this.consultarMonPrecio(),
+      indPromotor: this.fp.gestionadoPorPromotor.value  ? 1 : 0,
+      idPromotor: this.fp.promotor.value,
+      titularesBeneficiarios: [
+        {
+          persona: 'titular',
+          rfc: this.fdt.rfc.value,
+          curp: this.fdt.curp.value,
+          matricula: this.fdt.matricula?.value ?? "",
+          nss: this.fdt.nss.value,
+          nomPersona: this.fdt.nombre.value,
+          primerApellido: this.fdt.primerApellido.value,
+          segundoApellido: this.fdt.segundoApellido.value,
+          sexo: this.fdt.sexo.value,
+          otroSexo: this.fdt.otroSexo?.value ?? "",
+          fecNacimiento: moment(this.fdt.fechaNacimiento.value).format('yyyy-MM-DD'),
+          idPais: this.fdt.paisNacimiento?.value ?? 119,
+          idEstado: this.fdt.lugarNacimiento?.value ?? null,
+          telefono: this.fdt.telefono.value,
+          telefonoFijo: this.fdt.telefono.value,
+          correo: this.fdt.correoElectronico.value,
+          tipoPersona: "",
+          ine: null,
+          cp: {
+            desCalle: this.fdt.calle.value,
+            numExterior: this.fdt.numeroExterior.value,
+            numInterior: this.fdt.numeroInterior?.value ?? "",
+            codigoPostal: this.fdt.cp.value,
+            desColonia: this.fdt.colonia.value,
+            desMunicipio: this.fdt.municipio.value,
+            desEstado: this.fdt.estado.value,
+          }
+        }
+      ]
+    }
+
+    if (objetoTitular.indTitularSubstituto == 0) {
+      objetoTitular.titularesBeneficiarios.push(objetoTitularSubstituto)
+    }
+    if (objetoBeneficiario1.curp && objetoBeneficiario1.curp !== '') objetoTitular.titularesBeneficiarios.push(objetoBeneficiario1);
+    if (objetoBeneficiario2.curp && objetoBeneficiario2.curp !== '') objetoTitular.titularesBeneficiarios.push(objetoBeneficiario2);
+
+    return objetoTitular;
   }
 
   consultarMonPrecio(): number {

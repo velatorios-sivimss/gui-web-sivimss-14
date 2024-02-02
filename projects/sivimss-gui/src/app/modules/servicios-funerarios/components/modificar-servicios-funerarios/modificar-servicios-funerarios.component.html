@@ -42,7 +42,7 @@
       </div>
     </ng-template>
     <ng-template pTemplate="content">
-      <form [formGroup]="datosTitularSubstitutoForm">
+      <form [formGroup]="datosTitularForm">
         <div class="row mb-3">
           <div class="col-md-3">
             <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
@@ -160,7 +160,7 @@
             <span class="campo-obligatorio"
                   *ngIf="fdt.telefonoFijo?.errors?.required && (fdt.telefonoFijo?.dirty || fdt.telefonoFijo?.touched)">Este campo es obligatorio *.</span>
           </div>
-          <div class="col-md-9">
+          <div class="col-md-6">
             <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
             <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
                    placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(0)"
@@ -259,7 +259,7 @@
       <form [formGroup]="datosTitularSubstitutoForm">
         <div class="row mb-3">
           <div class="col-md-12">
-            <span class="text-center control-label">¿Desea modificar el titular substituto?:</span>
+            <span class="text-center control-label">¿Son los mismos datos del titular?</span>
             <div class="flex mt-2">
               <div class="flex align-items-center mx-2">
                 <p-radioButton [inputId]="'si'" name="datosIguales" [value]="true"
@@ -433,8 +433,8 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" for="coloniaContratante">Colonia<span class="req">*</span>:</label>
-            <p-dropdown id="coloniaContratante" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
-                        [options]="coloniasContratante" [filter]="true" filterBy="label"></p-dropdown>
+            <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+                   maxlength="45">
             <span class="campo-obligatorio"
                   *ngIf="fdts.colonia?.errors?.required && (fdts.colonia?.dirty || fdts.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -622,8 +622,8 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" for="coloniaContratante">Colonia:</label>
-            <p-dropdown id="coloniaContratante" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
-                        [options]="coloniasContratante" [filter]="true" filterBy="label"></p-dropdown>
+            <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+                   maxlength="45">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.colonia?.errors?.required && (fdb1.colonia?.dirty || fdb1.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -811,8 +811,8 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" for="coloniaContratante">Colonia:</label>
-            <p-dropdown id="coloniaContratante" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
-                        [options]="coloniasContratante" [filter]="true" filterBy="label"></p-dropdown>
+            <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+                        maxlength="45">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.colonia?.errors?.required && (fdb2.colonia?.dirty || fdb2.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -840,7 +840,7 @@
   </p-accordionTab>
 </p-accordion>
 
-<form [formGroup]="promotorForm">
+<form [formGroup]="promotorForm" *ngIf="promotorForm">
   <div class="border-panel mb-5">
     <div class="row">
         <div class="col-md-6">
