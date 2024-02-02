@@ -49,4 +49,9 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   obtenerCatalogoPaquetes(): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(`${this.base}/buscar/paquetes`);
   }
+
+  cambiarEstatusConvenio(idConvenio: number, idFLujo: number): Observable<HttpRespuesta<any>> {
+    const body = { idFLujo, idConvenio };
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/activar-desactivar`, body);
+  }
 }

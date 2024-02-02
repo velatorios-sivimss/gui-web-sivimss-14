@@ -1,10 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DialogService} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {Documentos} from '../../models/documentos.interface';
 import {SeguimientoNuevoConvenio} from '../../models/seguimiento-nuevo-convenio.interface';
@@ -13,6 +11,11 @@ import {PreRegistroPA} from "../../models/preRegistroPA.interface";
 import {ConvenioEmpresa} from "../../models/convenioEmpresa.interface";
 import {BeneficiarioResponse} from "../../models/beneficiarioResponse.interface";
 import {Location} from "@angular/common";
+import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-desactivar-convenio',
@@ -49,17 +52,20 @@ export class DesactivarConvenioComponent implements OnInit {
   mismoSustituto: boolean = false;
   activo: boolean = false;
   folioConvenio: string = '';
+  idConvenio!: number;
 
   constructor(
-    private formBuilder: FormBuilder,
-    private breadcrumbService: BreadcrumbService,
     private alertaService: AlertaService,
     public dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private cargadorService: LoaderService,
   ) {
     this.tipoConvenio = activatedRoute.snapshot.params.tipoConvenio ?? '';
+    this.idConvenio = activatedRoute.snapshot.params.idConvenio ?? 0;
   }
 
   ngOnInit(): void {
@@ -68,22 +74,23 @@ export class DesactivarConvenioComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
-    if (!respuesta[this.POSICION_CONVENIO].datos) this.errorCargarRegistro();
+    const preRegistro = respuesta[this.POSICION_CONVENIO].datos;
+    if (!preRegistro) this.errorCargarRegistro();
     if (this.tipoConvenio === '3') {
-      this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos.detalleConvenioPFModel;
+      this.convenioPersona = preRegistro.detalleConvenioPFModel;
       this.folioConvenio = this.convenioPersona.folioConvenio;
     }
     if (this.tipoConvenio === '2') {
-      this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
+      this.convenioEmpresa = preRegistro.empresa;
       this.folioConvenio = this.convenioEmpresa.folioConvenio;
     }
     if (this.tipoConvenio === '1') {
-      this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
+      this.titularPA = preRegistro.preRegistro;
       this.folioConvenio = this.titularPA.folioConvenio;
-      this.mismoSustituto = !respuesta[this.POSICION_CONVENIO].datos.sustituto;
+      this.mismoSustituto = !preRegistro.sustituto;
       this.obtenerSustitutoDesdeTitular();
       this.activo = this.titularPA.activo === 1;
-      this.beneficiarios = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
+      this.beneficiarios = preRegistro.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
       this.promotor = this.titularPA.gestionPromotor;
       this.obtenerBeneficiarios();
     }
@@ -92,10 +99,6 @@ export class DesactivarConvenioComponent implements OnInit {
   errorCargarRegistro(): void {
     this.alertaService.mostrar(TipoAlerta.Error, 'El registro no pudo ser cargado, Intenta nuevamente mas tarde.');
     this.location.back();
-  }
-
-  regresar() {
-    this.router.navigate(['seguimiento-nuevo-convenio'], {relativeTo: this.activatedRoute});
   }
 
   obtenerBeneficiarios(): void {
@@ -114,9 +117,25 @@ export class DesactivarConvenioComponent implements OnInit {
     this.sustituto = !this.mismoSustituto ? respuesta.sustituto : this.titularPA as unknown as BeneficiarioResponse;
   }
 
-  aceptar() {
-    //agregar Mensaje
+  aceptar(): void {
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.cambiarEstatusConvenio(this.idConvenio, +this.tipoConvenio).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: () => this.manejarRespuestaExitosa(),
+      error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
+    });
+  }
 
+  private manejarRespuestaExitosa(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, `Convenio ${this.folioConvenio} ${this.activo ? 'Desactivado' : 'Activado'}
+    satisfactoriamente`);
+    void this.router.navigate(['./../../../'], {relativeTo: this.activatedRoute});
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar.');
   }
 
 }
