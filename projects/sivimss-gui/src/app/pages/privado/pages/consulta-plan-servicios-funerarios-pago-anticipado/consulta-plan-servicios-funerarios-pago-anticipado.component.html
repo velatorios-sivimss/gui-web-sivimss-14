@@ -3,7 +3,7 @@
         <app-btn-regresar routerLink="../consultar-mis-servicios-en-linea"></app-btn-regresar>
     </app-titulo-principal>
 
-    <p-table styleClass="mt-5 mb-8" [value]="convenios" [paginator]="convenios.length > 0"
+    <p-table styleClass="mt-5 mb-8" [value]="planes" [paginator]="planes.length > 0"
         [rows]="cantElementosPorPagina" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
         [resizableColumns]="true" [columnResizeMode]="'expand'">
         <ng-template pTemplate="header">
@@ -15,15 +15,15 @@
                 <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-convenio>
+        <ng-template pTemplate="body" let-plan>
             <tr>
-                <td>{{convenio.folioConvenio}}</td>
-                <td>{{convenio.curp}}</td>
-                <td>{{convenio.nombreTitularSubstituto}}</td>
-                <td>{{convenio.nombreTitular}}</td>
+                <td>{{plan.numFolioPlanSfpa}}</td>
+                <td>{{plan.curpSubtitular}}</td>
+                <td>{{plan.nombreSubtitular}}</td>
+                <td>{{plan.nombreTitular}}</td>
                 <td style="border-left: 1px solid #b0b0b0;">
                     <div class="contenedor-celda-iconos">
-                        <a routerLink="mi-plan-de-servicios-funerarios-pago-anticipado">
+                        <a (click)="verPlanPreFune(plan)">
                             <i class="pi pi-eye"></i>
                         </a>
                     </div>
@@ -39,7 +39,7 @@
         </ng-template>
         <ng-template pTemplate="paginatorleft">
             <div class="paginator-template">
-                <span class="total-elements">{{convenios.length}} de {{totalElementos}}</span>
+                <span class="total-elements">{{planes.length}} de {{totalElementos}}</span>
             </div>
         </ng-template>
     </p-table>
