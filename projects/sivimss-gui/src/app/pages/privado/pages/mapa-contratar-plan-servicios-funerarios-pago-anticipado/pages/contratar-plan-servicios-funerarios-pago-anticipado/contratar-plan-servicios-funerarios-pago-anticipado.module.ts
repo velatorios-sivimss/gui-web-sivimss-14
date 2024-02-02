@@ -17,6 +17,11 @@ import { TituloPrincipalModule } from 'projects/sivimss-gui/src/app/shared/titul
 import { DialogService } from 'primeng/dynamicdialog';
 import { CeldaStickyModule } from 'projects/sivimss-gui/src/app/shared/celda-sticky/celda-sticky.module';
 import { ContratarPSFPAService } from '../../services/contratar-psfpa.service';
+import { AccordionModule } from 'primeng/accordion';
+import { ValidaRolModule } from 'projects/sivimss-gui/src/app/shared/valida-rol/valida-rol.module';
+import { UtileriaModule } from 'projects/sivimss-gui/src/app/shared/utileria/utileria.module';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { RegistroService } from 'projects/sivimss-gui/src/app/pages/publico/pages/registro/services/registro.service';
 
 @NgModule({
   declarations: [ContratarPlanServiciosFunerariosPagoAnticipadoComponent],
@@ -35,11 +40,16 @@ import { ContratarPSFPAService } from '../../services/contratar-psfpa.service';
     OverlayPanelOpcionesModule,
     OverlayPanelModule,
     DialogModule,
-    CeldaStickyModule
+    CeldaStickyModule,
+    AccordionModule,
+    ValidaRolModule,
+    UtileriaModule,
+    MultiSelectModule
   ],
   providers:[
     DialogService,
     ContratarPSFPAService,
+    RegistroService,
   ]
 })
 export class ContratarPlanServiciosFunerariosPagoAnticipadoModule {}

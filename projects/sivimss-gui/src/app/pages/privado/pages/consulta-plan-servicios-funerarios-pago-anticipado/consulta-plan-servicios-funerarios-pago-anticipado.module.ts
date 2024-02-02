@@ -10,6 +10,7 @@ import { TableModule } from 'primeng/table';
 import { BtnRegresarModule } from 'projects/sivimss-gui/src/app/shared/btn-regresar/btn-regresar.module';
 import { CeldaStickyModule } from 'projects/sivimss-gui/src/app/shared/celda-sticky/celda-sticky.module';
 import { TituloPrincipalModule } from 'projects/sivimss-gui/src/app/shared/titulo-principal/titulo-principal.module';
+import { ContratarPSFPAService } from '../mapa-contratar-plan-servicios-funerarios-pago-anticipado/services/contratar-psfpa.service';
 
 @NgModule({
   declarations: [ConsultaPlanServiciosFunerariosPagoAnticipadoComponent],
@@ -24,6 +25,9 @@ import { TituloPrincipalModule } from 'projects/sivimss-gui/src/app/shared/titul
     CeldaStickyModule,
     DialogModule,
   ],
-  providers: [DialogService],
+  providers: [
+    DialogService,
+    ContratarPSFPAService,
+  ],
 })
-export class ConsultaPlanServiciosFunerariosPagoAnticipadoModule {}
+export class ConsultaPlanServiciosFunerariosPagoAnticipadoModule { }
