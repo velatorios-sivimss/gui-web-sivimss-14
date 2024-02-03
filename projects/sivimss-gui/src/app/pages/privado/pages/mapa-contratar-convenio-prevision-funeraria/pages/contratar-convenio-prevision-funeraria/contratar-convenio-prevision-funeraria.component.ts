@@ -99,6 +99,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   banderaCheckPersona: boolean = true;
   banderaCheckGrupo: boolean = true;
   refBeneficiario!: DynamicDialogRef;
+  confirmacionModalCerrar: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -110,7 +111,9 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private readonly router: Router,
-  ) {}
+  ) {
+    this.cargarScript();
+  }
 
   ngOnInit(): void {
     this.formPersona = this.crearFormPersona();
@@ -149,6 +152,18 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
       this.mostrarPorPersona = true;
       this.mostrarPorContrato = false;
     }
+  }
+
+  cargarScript(): void {
+    const body =  document.body;
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.innerHTML = '';
+    script.src = '../../../../../../assets/js/control-pagos.js';
+    script.id = 'realizar-pago';
+    script.async = true;
+    script.defer = true;
+    body.appendChild(script);
   }
 
   crearFormPersona(): FormGroup {
@@ -1292,7 +1307,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   }
 
   guardarConvenio(): void {
-    console.log("Guardar convenio")
+    this.confirmacionModalCerrar = true;
+    this.mostrarMensajeGuardado = false;
   }
 
   validarFolioConvenioEmpresa(): string{
@@ -1316,6 +1332,11 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     if(this.datosGrupo.rfc?.errors?.pattern){
       this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
     }
+  }
+
+  validaBotonRealizarPago(): boolean {
+    if(this.banderaCheckGrupo == false && this.confirmacionModalCerrar)return false
+    return true
   }
 
   ngOnDestroy(): void {
