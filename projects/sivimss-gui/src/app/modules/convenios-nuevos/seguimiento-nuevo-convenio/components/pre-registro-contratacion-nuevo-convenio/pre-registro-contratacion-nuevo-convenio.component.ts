@@ -14,6 +14,8 @@ import {ConvenioEmpresa} from "../../models/convenioEmpresa.interface";
 import {BeneficiarioResponse} from "../../models/beneficiarioResponse.interface";
 import {PreRegistroPA} from "../../models/preRegistroPA.interface";
 import {Location} from "@angular/common";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {delay} from "rxjs/operators";
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
@@ -57,6 +59,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     private breadcrumbService: BreadcrumbService,
     private alertaService: AlertaService,
     public dialogService: DialogService,
+    private cargadorService: LoaderService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private location: Location
@@ -328,8 +331,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   aceptar() {
-    //agregar Mensaje
-    this.preRegistroSiguiente = true;
+    this.cargadorService.desactivar();
+    delay(3000)
+    this.cargadorService.desactivar();
+    this.alertaService.mostrar(TipoAlerta.Error, 'Error al guardar la información. Intenta nuevamente.')
   }
 
   cancelar() {
