@@ -43,13 +43,21 @@ export class DetallePagoService extends BaseService<HttpRespuesta<any>, any>{
       bitacora)
   }
 
-  generarReporte(objeto:any): Observable<Blob> {
+  reciboParcialidades(objeto:any): Observable<Blob> {
     const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/pago-anticipado-generar-parcialidades/generarDocumento/${objeto.tipoReporte}`,
+      objeto, {headers, responseType: 'blob' as 'json'})
+  }
 
-    return this._http.post<any>(this._base + `${this._funcionalidad}/pago-anticipado-descargar-reporte/generarDocumento/pdf`,
+  reciboPago(objeto:any):Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/pago-anticipado-generar-recibo-pago/generarDocumento/pdf`,
       objeto, {headers, responseType: 'blob' as 'json'})
   }
 

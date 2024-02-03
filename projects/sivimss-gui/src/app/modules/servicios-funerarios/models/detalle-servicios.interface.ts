@@ -14,14 +14,14 @@ export interface PagosRealizados {
   estatusPago: null | string;
   idPagoSFPA: null | string;
   importeAcumulado: null | string;
-  noPagos: null | string;
+  noPagos: any;
   velatorio: null | string;
-  validaPago: null | boolean;
+  validaPago: any;
   idPlanSFPA: null | string;
   fechaParcialidad: null | number;
   importeMensual: null | string;
-  importePagado: null | string;
-  idEstatus: null | string;
+  importePagado: any;
+  idEstatus: any;
   metodoPago: null | string;
   reciboPago: null | string;
   realizarPago: null | string;

@@ -14,7 +14,7 @@
         <label class="control-label" for="noContrato">Número convenio PSF<span
           class="req">*</span>:</label>
         <input id="noContrato" type="text" class="form-control" formControlName="noContrato"
-               placeholder="Ingresa número de contrato" maxlength="10" (blur)="consultarFolioPf($event)"
+               placeholder="Ingresa número de contrato" maxlength="15" (blur)="consultarFolioPf($event)"
                onCloseOnNavigation>
         <span class="campo-obligatorio"
               *ngIf="datosFinado.noContrato?.errors?.required && (datosFinado.noContrato?.dirty || datosFinado.noContrato?.touched)">Este campo es obligatorio *.</span>

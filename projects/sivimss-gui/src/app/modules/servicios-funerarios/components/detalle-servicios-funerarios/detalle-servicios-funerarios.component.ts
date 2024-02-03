@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {Component, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ModalEliminarPagoComponent } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-eliminar-pago/modal-eliminar-pago.component';
@@ -85,7 +85,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService,
     private route: ActivatedRoute,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private renderer: Renderer2,
   ) {}
 
   ngOnInit(): void {
@@ -162,48 +163,33 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       configuracionArchivo.ext = 'xlsx';
     }
     const objetoReporte = this.generarObjetoReporte(extension);
-    this.detallePagoService
-      .generarReporte(objetoReporte)
-      .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe({
-        next: (respuesta: any) => {
-          this.usuario;
-          const file: Blob = new Blob([respuesta], { type: 'application/pdf' });
-          const url: string = window.URL.createObjectURL(file);
-          this.descargaArchivosService
-            .descargarArchivo(of(file), configuracionArchivo)
-            .pipe(finalize(() => this.loaderService.desactivar()))
-            .subscribe({
-              next: (respuestaArchivo) => {
-                if (respuestaArchivo) {
-                  this.mensajeArchivoConfirmacion =
-                    this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-                  this.mostrarModalConfirmacion = true;
-                }
-              },
-              error: (error) => {
-                console.log(error);
-                this.alertaService.mostrar(
-                  TipoAlerta.Error,
-                  this.mensajesSistemaService.obtenerMensajeSistemaPorId(64)
-                );
-              },
-            });
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Error al descargar reporte: ', error.message);
-        },
-      });
+
+    this.detallePagoService.reciboParcialidades(objetoReporte).pipe(
+      finalize(()=>this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        let link = this.renderer.createElement('a');
+        const file = respuesta;
+        const url = window.URL.createObjectURL(file);
+        const extensionArchivo =  configuracionArchivo.ext ? 'documento.xlsx' : 'documento.pdf'
+        link.setAttribute('download', extensionArchivo);
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      error: (error: HttpErrorResponse): void => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    })
   }
 
   generarObjetoReporte(tipoReporte: string): any {
     return {
-      idPlan: +this.route.snapshot.queryParams.idPlanSfpa,
-      correoElectronico: this.datosGenerales.correo,
-      paquete: this.datosGenerales.paquete,
-      estado: this.datosGenerales.estado,
+      folio: this.datosGenerales.folio,
       nombreContratante: this.datosGenerales.nombre,
       tipoReporte: tipoReporte,
+      idPlanSFPA : +this.route.snapshot.queryParams.idPlanSfpa
     };
   }
 
@@ -300,4 +286,39 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     bitacora.fechaPago ? fecha = moment(bitacora.fechaPago).format('YYYY-MM-DD') : fecha = moment(bitacora.fechaValeParitario).format('YYYY-MM-DD')
     return (this.fechaActual === fecha) && (bitacora.idEstatus != '0')
   }
+
+  descargarComprobantePago(): void {
+    this.loaderService.activar();
+    const configuracionArchivo: OpcionesArchivos = {};
+    const objetoReporte = this.generarObjetoReciboPago();
+
+
+    this.detallePagoService.reciboPago(objetoReporte).pipe(
+      finalize(()=>this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        let link = this.renderer.createElement('a');
+        const file = respuesta;
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download', 'documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      error: (error: HttpErrorResponse): void => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    })
+  }
+
+  generarObjetoReciboPago():any {
+    let [parcialidad,total] = this.item.noPagos?.split('/')
+    return {
+      idPagoSfpa:this.item.idPagoSFPA,
+      "parcialidad":`${parcialidad} de ${total}`,
+      "importeRecibo":this.item.importePagado.toString()
+    }
+  }
+
 }
