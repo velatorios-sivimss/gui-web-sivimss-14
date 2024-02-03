@@ -1,29 +1,38 @@
-import { ModificarPersonaComponent } from './components/modificar-persona/modificar-persona.component';
-import { DetalleBeneficiosComponent } from './components/detalle-beneficios/detalle-beneficios.component';
-import { PreRegistroContratacionNuevoConvenioComponent } from './components/pre-registro-contratacion-nuevo-convenio/pre-registro-contratacion-nuevo-convenio.component'
-import { SeguimientoNuevoConvenioResolver } from './services/seguimiento-nuevo-convenio.resolver'
-import { SeguimientoNuevoConvenioComponent } from './components/seguimiento-nuevo-convenio/seguimiento-nuevo-convenio.component'
-import { NgModule } from '@angular/core'
-import { Route, RouterModule } from '@angular/router'
-import { DesactivarConvenioComponent } from './components/desactivar-convenio/desactivar-convenio.component'
+import {ModificarPersonaComponent} from './components/modificar-persona/modificar-persona.component';
+import {DetalleBeneficiosComponent} from './components/detalle-beneficios/detalle-beneficios.component';
+import {
+  PreRegistroContratacionNuevoConvenioComponent
+} from './components/pre-registro-contratacion-nuevo-convenio/pre-registro-contratacion-nuevo-convenio.component'
+import {SeguimientoNuevoConvenioResolver} from './services/seguimiento-nuevo-convenio.resolver'
+import {
+  SeguimientoNuevoConvenioComponent
+} from './components/seguimiento-nuevo-convenio/seguimiento-nuevo-convenio.component'
+import {NgModule} from '@angular/core'
+import {Route, RouterModule} from '@angular/router'
+import {DesactivarConvenioComponent} from './components/desactivar-convenio/desactivar-convenio.component'
+import {DesactivarNuevoConvenioResolver} from "./services/desactivar-nuevo-convenio.resolver";
+import {PreregistroConvenioResolver} from "./services/preregistro-convenio.resolver";
 
 const routes: Route[] = [
   {
     path: '',
     component: SeguimientoNuevoConvenioComponent,
-  },
-  {
-    path: 'pre-registro-nuevo-convenio',
-    component: PreRegistroContratacionNuevoConvenioComponent,
     resolve: {
       respuesta: SeguimientoNuevoConvenioResolver,
     },
   },
   {
-    path: 'desactivar-convenio',
+    path: 'pre-registro-nuevo-convenio/:idConvenio/:tipoConvenio',
+    component: PreRegistroContratacionNuevoConvenioComponent,
+    resolve: {
+      respuesta: PreregistroConvenioResolver,
+    },
+  },
+  {
+    path: 'desactivar-convenio/:idConvenio/:tipoConvenio',
     component: DesactivarConvenioComponent,
     resolve: {
-      respuesta: SeguimientoNuevoConvenioResolver,
+      respuesta: DesactivarNuevoConvenioResolver,
     },
   },
   {
@@ -46,6 +55,8 @@ const routes: Route[] = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [SeguimientoNuevoConvenioResolver],
+  providers: [SeguimientoNuevoConvenioResolver, DesactivarNuevoConvenioResolver,
+    PreregistroConvenioResolver],
 })
-export class SeguimientoNuevoConvenioRoutingModule {}
+export class SeguimientoNuevoConvenioRoutingModule {
+}

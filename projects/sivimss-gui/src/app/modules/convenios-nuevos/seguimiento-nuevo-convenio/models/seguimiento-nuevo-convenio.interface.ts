@@ -3,6 +3,7 @@ export interface SeguimientoNuevoConvenio {
   nivel?: string;
   velatorio?: string;
   folioConvenioPf?: string;
+  idConvenioPlan?: number;
   folioConvenioPsfpa?: string;
   rfcAfiliado?: string;
   tipoContratacion?: string;
@@ -10,12 +11,12 @@ export interface SeguimientoNuevoConvenio {
   nombreAfiliado?: string;
   tipoPaquete?: string;
   estatus?: boolean;
+  tipo?: string;
+}
 
-  }
-
-  export interface ConfirmacionServicio {
-    estatus?: boolean;
-    origen?: string;
-  }
+export interface ConfirmacionServicio {
+  estatus?: boolean;
+  origen?: string;
+}
 
 
