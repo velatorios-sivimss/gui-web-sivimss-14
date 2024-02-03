@@ -35,7 +35,7 @@ import * as moment from "moment";
 
 
 @Component({
-  selector: 'app-detalle-servicios-funerarios',
+  selector: ' app-detalle-servicios-funerarios',
   templateUrl: './detalle-servicios-funerarios.component.html',
   styleUrls: ['./detalle-servicios-funerarios.component.scss'],
   providers: [DialogService, DescargaArchivosService],
@@ -310,6 +310,10 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
     })
+  }
+
+  validarMostrarBotonHamburguesa(item:PagosRealizados): boolean {
+    return item.idEstatus == 8 || item.idEstatus == 5;
   }
 
   generarObjetoReciboPago():any {
