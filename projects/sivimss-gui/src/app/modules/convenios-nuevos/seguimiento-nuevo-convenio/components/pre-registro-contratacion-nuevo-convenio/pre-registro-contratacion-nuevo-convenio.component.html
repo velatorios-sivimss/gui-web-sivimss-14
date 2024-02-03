@@ -1,294 +1,123 @@
-<app-titulo-principal
-  titulo="Pre-registro para la contratación de Convenio de Previsión Funeraria"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="./../../.."></app-btn-regresar>
+  <app-titulo-principal titulo="Pre-registro para la contratación de Convenio de Previsión Funeraria"
+                        class="col"></app-titulo-principal>
+</div>
+<app-convenio-header [tipoContratacion]="'Por persona'" [numeroFolio]="folio"></app-convenio-header>
+<ng-container [ngSwitch]="tipoConvenio">
+  <ng-container *ngSwitchCase="'1'">
+    <form [formGroup]="contratacionNuevoConvenioForm">
+      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+        <p-accordionTab header="Datos del titular">
+          <div formGroupName="titular">
+            <app-datos-titular-beneficiario></app-datos-titular-beneficiario>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+        <p-accordionTab header="Datos del titular sustituto">
+          <div formGroupName="sustituto">
+            <app-datos-sustituto-beneficiario></app-datos-sustituto-beneficiario>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+        <p-accordionTab header="Datos del beneficiario 1">
+          <div formGroupName="beneficiario1" *ngIf="titularPA.beneficiario1 else SinBeneficiarioEspecifico">
+            <app-datos-sustituto-beneficiario></app-datos-sustituto-beneficiario>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+        <p-accordionTab header="Datos del beneficiario 2">
+          <div formGroupName="beneficiario2" *ngIf="titularPA.beneficiario2 else SinBeneficiarioEspecifico">
+            <app-datos-sustituto-beneficiario></app-datos-sustituto-beneficiario>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="'2'">
+    <form [formGroup]="contratacionNuevoConvenioForm">
+      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+        <p-accordionTab header="Grupo o empresa">
+          <div formGroupName="empresa">
+            <app-datos-empresa></app-datos-empresa>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="'3'">
+    <form [formGroup]="contratacionNuevoConvenioForm">
+      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+        <p-accordionTab header="Datos de la persona">
+          <div formGroupName="persona">
+            <app-datos-persona></app-datos-persona>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
 
-<ng-container *ngIf="preRegistroSiguiente == false">
-
-  <div class="row mb-3">
-    <div class="col-md-12">
-      <div class="flex justify-content-between align-items-center">
-        <label class="control-label" for="velatorio">tipo contrato</label><br>
-      </div>
-    </div>
-    <div class="col-md-12">
-      <div class="flex justify-content-between align-items-center">
-        <h2 class="subtitulo sub">por grupo</h2>
-      </div>
-    </div>
-  </div>
-
-  <div class="border-panel mb-3">
-    <app-table-panel class="row mb-5">
-      <ng-template appCustomTemplate="left-header">
-        <div class="table-panel-header-column">
-          <span class="font-bold">Número de folio de convenio (Pre-registro) </span>
-          <span class="font-bold">DOC00000000001 </span>
-        </div>
-      </ng-template>
-      <ng-template appCustomTemplate="right-header">
-        <div class="table-panel-header-column">
-        </div>
-      </ng-template>
-    </app-table-panel>
-    <div class="mb-3">
-      <div class="col-md-12">
-        <div class="flex justify-content-between align-items-center">
-          <h2 class="subtitulo sub">Personas y beneficiarios</h2>
-        </div>
-      </div>
-      <div class="col-md-12 separador">
-      </div>
-
-      <div class="col-md-12">
-        <div class="col-md-1 icono">
-          <img src="../../../../../../assets/icons/fonts/admiracion.svg" alt="">
-        </div>
-        <div class="col-md-11">
-          <p class="mensaje-cancelacion-orden indicaciones align-items-left">Modifica, elimina o agrega Pesonas y hasta
-            3 beneficiarios por
-            cada una</p>
-        </div>
-      </div>
-
-
-      <div class="col-md-12 separador"></div>
-    </div>
-    <app-table-panel>
-      <ng-template appCustomTemplate="left-header">
-        <div class="table-panel-header-column">
-            <span class="font-bold">
-              Hermelinda Huautla Flores
-            </span>
-        </div>
-      </ng-template>
-      <ng-template appCustomTemplate="right-header">
-        <div class="table-panel-header-column">
-          <div class="flex flex-column">
-            <div>
+      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+        <p-accordionTab header="Características del convenio">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span>:</label>
+              <p-dropdown appendTo="body" id="tipoPaquete" class="form-control" formControlName="tipoPaquete"
+                          [options]="paquetes" placeholder="Selecciona el tipo de paquete">
+              </p-dropdown>
             </div>
           </div>
-          <div class="flex flex-column ml-5">
-            <div class="contenedor-celda-iconos">
-              <a (click)="abrir($event)">
-                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-              </a>
-            </div>
-          </div>
-        </div>
-      </ng-template>
-    </app-table-panel>
-    <div class="col-md-12 separador"></div>
-    <div class="mb-3">
-      <div class="col-md-12">
-        <div class="flex justify-content-between align-items-center">
-          <h2 class="subtitulo sub">Adjuntar documentación</h2>
-        </div>
-      </div>
-      <div class=" row col-md-12 separador">
-      </div>
-      <div class="col-md-12">
-        <div class="col-md-1 icono">
-          <img src="../../../../../../assets/icons/fonts/admiracion.svg" alt="">
-        </div>
-        <div class="col-md-11">
-          <p class="mensaje-cancelacion-orden indicaciones align-items-left">Arrastrar y soltar los archivos en la
-            sección "Cargar
-            Archivos"
-            o selecciona la opción “Agregar Archivo</p>
-        </div>
-      </div>
-      <div class="col-md-12 separador"></div>
-    </div>
-    <section class="mt-5">
-      <p-table styleClass="mt-5 mb-8 last-sticky-column" [value]="documentos" [rows]="cantElementosPorPagina"
-               [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-               (onLazyLoad)="paginar($event)">
+        </p-accordionTab>
+      </p-accordion>
 
-        <ng-template pTemplate="header">
-          <tr>
-            <th scope="col">Numero del documento</th>
-            <th scope="col">Tipo del documento</th>
-            <th scope="col">Link del documento</th>
-            <th scope="col"></th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-documento>
-          <tr>
-            <td> {{documento.numeroDocumento}} </td>
-            <td> {{documento.tipoDocumento}} </td>
-            <td> {{documento.linkDocumento}} </td>
-            <td>
-              <div class="contenedor-celda-iconos">
-                <a (click)="overlayPanel.toggle($event)">
-                  <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-                </a>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </section>
-    <div class="row mt-6">
-      <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-default btn-md" (click)="cancelar()" routerLink="../">Regresar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar();">Aceptar</button>
-      </div>
-    </div>
-  </div>
+      <!--      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">-->
+      <!--        <p-accordionTab header="Beneficiarios">-->
+      <!--          <ng-container formArrayName="beneficiarios">-->
+      <!--            <ng-container *ngIf="beneficiarios.length > 0 else SinBeneficiarios">-->
+      <!--              <ng-container *ngFor="let beneficiarioForm of beneficiarios.controls; let i = index">-->
+      <!--                <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">-->
+      <!--                  <p-accordionTab [header]="nombresBeneficiario[i]" [formGroup]="getFormGroup(beneficiarioForm)">-->
+      <!--                    <app-datos-beneficiario></app-datos-beneficiario>-->
+      <!--                  </p-accordionTab>-->
+      <!--                </p-accordion>-->
+      <!--              </ng-container>-->
+      <!--            </ng-container>-->
+      <!--          </ng-container>-->
+      <!--        </p-accordionTab>-->
+      <!--      </p-accordion>-->
+
+      <!--      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">-->
+      <!--        <p-accordionTab header="Documentación requerida">-->
+      <!--          <ng-container *ngIf="beneficiarios.length > 0 else SinBeneficiarios">-->
+      <!--            <app-documentacion-beneficiario></app-documentacion-beneficiario>-->
+      <!--          </ng-container>-->
+      <!--        </p-accordionTab>-->
+      <!--      </p-accordion>-->
+    </form>
+  </ng-container>
 </ng-container>
 
-<div class="section" *ngIf="preRegistroSiguiente == true">
-  <div class="mb-8">
-    <p-accordion styleClass="sivimss-accordion">
-      <p-accordionTab>
-        <ng-template pTemplate="header">
-          <div class="flex justify-content-between align-items-center flex-1">
-            <span>Convenio de previsión funeraria</span>
-            <div class="contenedor-celda-iconos">
-              <div class="estatusAcordion">
-                <span>Estatus </span>
-                <b>Activo</b>
-              </div>
-            </div>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="content">
-          <div class="mb-3">
-            <app-table-panel class="row mb-5">
-              <ng-template appCustomTemplate="left-header">
-                <div class="table-panel-header-column">
-                  <span class="font-bold">Número de folio de convenio (Pre-registro) </span>
-                  <span class="font-bold">DOC00000000001 </span>
-                </div>
-              </ng-template>
-              <ng-template appCustomTemplate="right-header">
-                <div class="table-panel-header-column">
-                </div>
-              </ng-template>
-            </app-table-panel>
-            <div class="mb-3">
-              <div class="col-md-12">
-                <div class="flex justify-content-between align-items-center">
-                  <h2 class="subtitulo sub">Personas y beneficiarios</h2>
-                </div>
-              </div>
-              <div class="col-md-12 separador">
-              </div>
-              <div class="col-md-12">
-                <div class="col-md-1 icono">
-                  <img src="../../../../../../assets/icons/fonts/admiracion.svg" alt="">
-                </div>
-                <div class="col-md-11">
-                  <p class="mensaje-cancelacion-orden indicaciones">Modifica, elimina o agrega Pesonas y hasta 3
-                    beneficiarios por
-                    cada una</p>
-                </div>
-              </div>
-              <div class="col-md-12 separador"></div>
-            </div>
-            <app-table-panel>
-              <ng-template appCustomTemplate="left-header">
-                <div class="table-panel-header-column">
-                    <span class="font-bold">
-                      Hermelinda Huautla Flores
-                    </span>
-                </div>
-              </ng-template>
-              <ng-template appCustomTemplate="right-header">
-                <div class="table-panel-header-column">
-                  <div class="flex flex-column">
-                    <div>
-                    </div>
-                  </div>
-                  <div class="flex flex-column ml-5">
-                    <div class="contenedor-celda-iconos">
-                      <a (click)="($event)">
-                        <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </ng-template>
-            </app-table-panel>
-            <div class="col-md-12 separador"></div>
-            <div class="mb-3">
-              <div class="col-md-12">
-                <div class="flex justify-content-between align-items-center">
-                  <h2 class="subtitulo sub">Adjuntar documentación</h2>
-                </div>
-              </div>
-              <div class=" row col-md-12 separador">
-              </div>
-              <div class="col-md-12">
-                <div class="col-md-1 icono">
-                  <img src="../../../../../../assets/icons/fonts/admiracion.svg" alt="">
-                </div>
-                <div class="col-md-11">
-                  <p class="mensaje-cancelacion-orden indicaciones">Arrastrar y soltar los archivos en la sección
-                    "Cargar
-                    Archivos"
-                    o selecciona la opción “Agregar Archivo</p>
-                </div>
-              </div>
-              <div class="col-md-12 separador"></div>
-            </div>
-            <section class="mt-5">
-              <p-table styleClass="mt-5 mb-8 last-sticky-column" [value]="documentos" [rows]="cantElementosPorPagina"
-                       [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-                       (onLazyLoad)="paginar($event)">
 
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th scope="col">Numero del documento</th>
-                    <th scope="col">Tipo del documento</th>
-                    <th scope="col">Link del documento</th>
-                    <th scope="col"></th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-documento>
-                  <tr>
-                    <td> {{documento.numeroDocumento}} </td>
-                    <td> {{documento.tipoDocumento}} </td>
-                    <td> {{documento.linkDocumento}} </td>
-                    <td>
-                      <div class="contenedor-celda-iconos">
-                        <a>
-                          <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-                        </a>
-                      </div>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </section>
-          </div>
-        </ng-template>
-      </p-accordionTab>
-    </p-accordion>
+<div class="row mt-3 mb-2">
+  <div class="col-md-12 flex justify-content-end mt-6 mb-4">
+    <button type="submit" class="btn btn-default btn-md" routerLink="./../../../">Cancelar</button>
+    <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aprobar Convenio</button>
+  </div>
+</div>
 
-    <div class="border-panel mb-3 laterales">
-      <div class="row mt-3">
-        <div class="row mt-4">
-          <div class="col-md-12">
-            <p class="mensaje-cancelacion-orden">¿Estás seguro que deseas aprovar este convenio?</p>
-          </div>
-        </div>
-
-        <div class="row mt-6">
-          <div class="col-md-12 flex justify-content-end">
-            <button type="submit" class="btn btn-default btn-md" routerLink="../">Regresar</button>
-            <button type="submit" class="btn btn-primary btn-md ml-5" routerLink="../" (click)="aceptar()">Aceptar
-            </button>
-          </div>
-        </div>
-      </div>
+<ng-template pTemplate="content" #SinBeneficiarios>
+  <div class="row table-panel-row" >
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">El convenio no tiene beneficiarios registrados.</p>
     </div>
   </div>
-  <p-overlayPanel #overlayPanel>
-    <ng-template pTemplate="content">
-      <app-overlay-panel-opciones>
-        <app-overlay-panel-opcion titulo="Generar tarjeta identificación"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion titulo="Cancelar orden"></app-overlay-panel-opcion>
-      </app-overlay-panel-opciones>
-    </ng-template>
-  </p-overlayPanel>
+</ng-template>
+
+<ng-template pTemplate="content" #SinBeneficiarioEspecifico>
+  <div class="row table-panel-row" >
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">Información de beneficiario no registrada.</p>
+    </div>
+  </div>
+</ng-template>
