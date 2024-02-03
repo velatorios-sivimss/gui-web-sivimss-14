@@ -79,7 +79,9 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     private readonly loaderService: LoaderService,
     private readonly activatedRoute: ActivatedRoute,
     private mensajesSistemaService: MensajesSistemaService,
-  ) { }
+  ) {
+    this.cargarScript();
+  }
 
   ngOnInit(): void {
     this.idVelatorio = this.activatedRoute.snapshot.queryParams.idVelatorio;
@@ -103,6 +105,18 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     });
 
     this.handleGestionPromotor();
+  }
+
+  cargarScript(): void {
+    const body =  document.body;
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.innerHTML = '';
+    script.src = '../../../../../../assets/js/control-pagos.js';
+    script.id = 'realizar-pago';
+    script.async = true;
+    script.defer = true;
+    body.appendChild(script);
   }
 
   inicializarFormDatosTitular(): void {
