@@ -93,7 +93,7 @@
             <td>{{pagosRealizados.realizarPago}}</td>
             <td>
 
-              <div>
+              <div *ngIf="validarMostrarBotonHamburguesa(pagosRealizados)">
                 <a class="ml-5 cursor-pointer"
                    (click)="abrirPanelNuevoPago(overlayPanelHeader,$event,pagosRealizados)">
                   <img   src="assets/images/imagen-icono-barras-horizontales.svg"
