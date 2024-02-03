@@ -125,7 +125,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
 
   private manejarMensajeError(error: HttpErrorResponse): void {
     console.error(error);
-    this.mensajesSistemaService.mostrarMensajeError(error);
+    this.mensajesSistemaService.mostrarMensajeError(error, 'Error al consultar la información');
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
