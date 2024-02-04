@@ -377,7 +377,7 @@
           <button class="btn ml-4 btn-gold btn-md" type="button" *ngIf="!mostrarBontonGaurdarPersona"
           (click)="mostrarMensajeGuardado = true">Terminar contratación</button>
           <div  [hidden]="validaBotonRealizarPago()">
-            <button  type="button" class="btn ml-4 btn-primary realizar-pago">Realizar pago</button>
+            <button  type="button" class="btn ml-4 btn-primary realizar-pago" (click)="iniciarPago()" onCloseOnNavigation>Realizar pago</button>
           </div>
         </div>
       </div>

@@ -22,6 +22,7 @@ export class OnCloseOnNavigationDirective implements OnInit, OnDestroy {
         dialogs.forEach((dialog: ComponentRef<DynamicDialogComponent>) => {
           dialog.destroy();
         });
+        history.back();
       }
     });
   }
