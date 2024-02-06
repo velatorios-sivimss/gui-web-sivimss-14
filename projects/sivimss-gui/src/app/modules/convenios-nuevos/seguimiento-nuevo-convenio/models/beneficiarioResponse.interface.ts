@@ -23,5 +23,7 @@ export interface BeneficiarioResponse {
   idEstado: string,
   estado: string
   sexo: string
-  pais: string
+  pais: string,
+  edad: number,
+  parentesco: string,
 }

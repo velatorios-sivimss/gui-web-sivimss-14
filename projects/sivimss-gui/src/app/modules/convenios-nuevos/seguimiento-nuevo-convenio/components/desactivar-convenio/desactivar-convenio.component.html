@@ -251,11 +251,11 @@
           <ng-container *ngFor="let beneficiario of beneficiarios">
             <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
               <p-accordionTab
-                [header]="beneficiario.nombre + ' ' + beneficiario.primerApellido + ' ' + beneficiario.segundoApellido">
+                [header]="beneficiario.nombre">
                 <app-resumen-beneficiario
-                  [nombre]="beneficiario.nombre + ' ' + beneficiario.primerApellido + ' ' + beneficiario.segundoApellido"
+                  [nombre]="beneficiario.nombre"
                   [telefono]="beneficiario.telCelular" [curp]="beneficiario.curp" [rfc]="beneficiario.rfc"
-                  [correoElectronico]="beneficiario.correo"></app-resumen-beneficiario>
+                  [correoElectronico]="beneficiario.correo" [edad]="beneficiario.edad" [parentesco]="beneficiario.parentesco"></app-resumen-beneficiario>
               </p-accordionTab>
             </p-accordion>
           </ng-container>

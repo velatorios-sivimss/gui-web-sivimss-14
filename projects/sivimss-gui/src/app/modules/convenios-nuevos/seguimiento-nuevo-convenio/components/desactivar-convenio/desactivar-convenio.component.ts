@@ -79,6 +79,7 @@ export class DesactivarConvenioComponent implements OnInit {
     if (this.tipoConvenio === '3') {
       this.convenioPersona = preRegistro.detalleConvenioPFModel;
       this.folioConvenio = this.convenioPersona.folioConvenio;
+      this.beneficiarios = preRegistro.beneficiarios;
     }
     if (this.tipoConvenio === '2') {
       this.convenioEmpresa = preRegistro.empresa;
