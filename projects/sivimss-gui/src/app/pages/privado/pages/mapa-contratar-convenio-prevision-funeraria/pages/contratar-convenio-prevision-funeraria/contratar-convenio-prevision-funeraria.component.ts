@@ -1388,8 +1388,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   }
 
   validarBotonGuardado(): void {
-    this.confirmacionGuardado = false
-    this.banderaCheckPersona ? this.guardarPersona() : this.guardarEmpresa();
+    this.confirmacionGuardado = false;
+    this.tipoContratacion.includes('grupo') ? this.guardarEmpresa() : this.guardarPersona()
   }
 
   ngOnDestroy(): void {
