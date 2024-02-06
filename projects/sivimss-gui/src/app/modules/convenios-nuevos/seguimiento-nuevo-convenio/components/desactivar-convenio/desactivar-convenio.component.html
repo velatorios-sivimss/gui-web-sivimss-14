@@ -1,4 +1,4 @@
-<app-titulo-principal titulo="Desactivar convenio"></app-titulo-principal>
+<app-titulo-principal [titulo]="activo ? 'Desactivar' : 'Activar'  + ' convenio'"></app-titulo-principal>
 
 <ng-container [ngSwitch]="tipoConvenio">
   <ng-container *ngSwitchCase="'1'">
