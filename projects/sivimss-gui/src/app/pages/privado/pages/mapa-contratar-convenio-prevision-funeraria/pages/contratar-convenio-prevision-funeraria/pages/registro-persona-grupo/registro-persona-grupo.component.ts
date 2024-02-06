@@ -616,7 +616,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if(respuesta.datos === null){
-          const mensajeErr: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
+          const mensajeErr: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(70);
           this.alertaService.mostrar(TipoAlerta.Info, mensajeErr);
         }
       },
