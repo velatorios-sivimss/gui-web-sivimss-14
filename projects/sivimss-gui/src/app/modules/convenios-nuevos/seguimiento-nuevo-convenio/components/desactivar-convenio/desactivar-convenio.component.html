@@ -1,167 +1,312 @@
-<app-titulo-principal titulo="Activar convenio"></app-titulo-principal>
-<div class="mb-8">
-  <div class="row mb-3">
-    <div class="col-md-12">
-      <div class="flex justify-content-between align-items-center">
-        <label class="control-label" for="velatorio">tipo contrato</label><br>
-      </div>
-      </div>
-      <div class="col-md-12">
-        <div class="flex justify-content-between align-items-center">
-        <h2 class="subtitulo sub">por grupo</h2>
-      </div>
-      </div>
+<app-titulo-principal titulo="Desactivar convenio"></app-titulo-principal>
+
+<ng-container [ngSwitch]="tipoConvenio">
+  <ng-container *ngSwitchCase="'1'">
+    <app-convenio-header [tipoContratacion]="'Por persona'"
+                         [numeroFolio]="folioConvenio"></app-convenio-header>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Datos del titular</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <app-resumen-titular-beneficiario [matricula]="titularPA.matricula" [rfc]="titularPA.rfc"
+                                            [curp]="titularPA.curp" [nombre]="titularPA.nombre"
+                                            [nss]="titularPA.nss" [primerApellido]="titularPA.primerApellido"
+                                            [segundoApellido]="titularPA.segundoApellido"
+                                            [calle]="titularPA.calle" [numeroExterior]="titularPA.numExt"
+                                            [numeroInterior]="titularPA.numInt" [codigoPostal]="titularPA.cp"
+                                            [colonia]="titularPA.colonia" [municipio]="titularPA.municipio"
+                                            [estado]="titularPA.estado" [paisNacimiento]="titularPA.pais"
+                                            [lugarNacimiento]="titularPA.lugarNac"
+                                            [fechaNacimiento]="titularPA.fecNacimiento"
+                                            [correoElectronico]="titularPA.correo"
+                                            [telefonoCelular]="titularPA.telCelular" [telefonoFijo]="titularPA.telFijo"
+                                            [tipoPaquete]="titularPA.nomPaquete" [numeroPagos]="titularPA.numPagos"
+                                            [nacionalidad]="+titularPA.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
+          ></app-resumen-titular-beneficiario>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Datos de titular sustituto</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <label class="control-label">Son los mismos que el titular</label>
+          <div class="flex">
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'titularSi'" name="titular" [value]="true"
+                             [(ngModel)]="mismoSustituto" [disabled]="true"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'titularSi'">Sí</label>
+            </div>
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'titularNo'" name="titular" [value]="false"
+                             [(ngModel)]="mismoSustituto" [disabled]="true"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
+            </div>
+          </div>
+          <ng-container>
+            <app-resumen-titular-beneficiario [titular]="'beneficiario'" [matricula]="sustituto.matricula"
+                                              [rfc]="sustituto.rfc"
+                                              [curp]="sustituto.curp" [nombre]="sustituto.nombre"
+                                              [nss]="sustituto.nss" [primerApellido]="sustituto.primerApellido"
+                                              [segundoApellido]="sustituto.segundoApellido"
+                                              [calle]="sustituto.calle" [numeroExterior]="sustituto.numExt"
+                                              [numeroInterior]="sustituto.numInt" [codigoPostal]="sustituto.cp"
+                                              [colonia]="sustituto.colonia" [municipio]="sustituto.municipio"
+                                              [estado]="sustituto.estado" [fechaNacimiento]="sustituto.fecNacimiento"
+                                              [lugarNacimiento]="sustituto.lugarNac" [sexo]="sustituto.sexo"
+                                              [correoElectronico]="sustituto.correo" [paisNacimiento]="sustituto.pais"
+                                              [telefono]="sustituto.telCelular"
+                                              [nacionalidad]="+sustituto.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'">
+
+            </app-resumen-titular-beneficiario>
+          </ng-container>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Datos del beneficiario 1</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <ng-container *ngIf="titularPA.beneficiario1 else SinBeneficiarioEspecifico">
+            <app-resumen-titular-beneficiario [titular]="'beneficiario'" [matricula]="beneficiario1.matricula"
+                                              [rfc]="beneficiario1.rfc"
+                                              [curp]="beneficiario1.curp" [nombre]="beneficiario1.nombre"
+                                              [nss]="beneficiario1.nss" [primerApellido]="beneficiario1.primerApellido"
+                                              [segundoApellido]="beneficiario1.segundoApellido"
+                                              [calle]="beneficiario1.calle" [numeroExterior]="beneficiario1.numExt"
+                                              [numeroInterior]="beneficiario1.numInt" [codigoPostal]="beneficiario1.cp"
+                                              [colonia]="beneficiario1.colonia" [municipio]="beneficiario1.municipio"
+                                              [estado]="beneficiario1.estado"
+                                              [fechaNacimiento]="beneficiario1.fecNacimiento"
+                                              [lugarNacimiento]="beneficiario1.lugarNac" [sexo]="beneficiario1.sexo"
+                                              [correoElectronico]="beneficiario1.correo"
+                                              [paisNacimiento]="beneficiario1.pais"
+                                              [telefono]="beneficiario1.telCelular"
+                                              [nacionalidad]="+beneficiario1.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
+            ></app-resumen-titular-beneficiario>
+          </ng-container>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Datos del beneficiario 2</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <ng-container *ngIf="titularPA.beneficiario2 else SinBeneficiarioEspecifico">
+            <app-resumen-titular-beneficiario [titular]="'beneficiario'" [matricula]="beneficiario2.matricula"
+                                              [rfc]="beneficiario2.rfc"
+                                              [curp]="beneficiario2.curp" [nombre]="beneficiario2.nombre"
+                                              [nss]="beneficiario2.nss" [primerApellido]="beneficiario2.primerApellido"
+                                              [segundoApellido]="beneficiario2.segundoApellido"
+                                              [calle]="beneficiario2.calle" [numeroExterior]="beneficiario2.numExt"
+                                              [numeroInterior]="beneficiario2.numInt" [codigoPostal]="beneficiario2.cp"
+                                              [colonia]="beneficiario2.colonia" [municipio]="beneficiario2.municipio"
+                                              [estado]="beneficiario2.estado"
+                                              [fechaNacimiento]="beneficiario2.fecNacimiento"
+                                              [paisNacimiento]="beneficiario2.pais"
+                                              [lugarNacimiento]="beneficiario2.lugarNac" [sexo]="beneficiario2.sexo"
+                                              [correoElectronico]="beneficiario2.correo"
+                                              [telefono]="beneficiario2.telCelular"
+                                              [nacionalidad]="+beneficiario2.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
+            ></app-resumen-titular-beneficiario>
+          </ng-container>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Promotor</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <label class="control-label">¿El servicio fue gestionado por un promotor? *</label>
+          <div class="flex">
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
+                             [(ngModel)]="promotor" [disabled]="true">>
+              </p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+            </div>
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
+                             [(ngModel)]="promotor" [disabled]="true">>
+              </p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+            </div>
+          </div>
+
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'2'">
+    <app-convenio-header [tipoContratacion]="'Grupo o Empresa'"
+                         [numeroFolio]="folioConvenio"></app-convenio-header>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Grupo o Empresa</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <app-resumen-empresa [nombre]="convenioEmpresa.nombre" [razonSocial]="convenioEmpresa.razonSocial"
+                               [rfc]="convenioEmpresa.rfc" [correoElectronico]="convenioEmpresa.correo"
+                               [codigoPostal]="convenioEmpresa.cp" [pais]="convenioEmpresa.pais"
+                               [estado]="convenioEmpresa.estado" [municipio]="convenioEmpresa.municipio"
+                               [colonia]="convenioEmpresa.colonia"
+                               [numeroInterior]="convenioEmpresa.numInterior"
+                               [numeroExterior]="convenioEmpresa.numExterior"
+                               [calle]="convenioEmpresa.calle"
+                               [telefono]="convenioEmpresa.telefono"></app-resumen-empresa>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Solicitantes del Grupo o Empresa</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <ng-container *ngIf="solicitantes.length > 0 else SinSolicitantes"></ng-container>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'3'">
+    <app-convenio-header [tipoContratacion]="'Por persona'"
+                         [numeroFolio]="folioConvenio"></app-convenio-header>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Datos de la persona</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <app-resumen-persona [matricula]="convenioPersona.matricula" [rfc]="convenioPersona.rfc"
+                               [curp]="convenioPersona.curp" [nombre]="convenioPersona.nombre"
+                               [primerApellido]="convenioPersona.primerApellido"
+                               [segundoApellido]="convenioPersona.segundoApellido" [calle]="convenioPersona.calle"
+                               [numeroExterior]="convenioPersona.numExt"
+                               [numeroInterior]="convenioPersona.numInt" [codigoPostal]="convenioPersona.cp.toString()"
+                               [colonia]="convenioPersona.colonia" [municipio]="convenioPersona.municipio"
+                               [estado]="convenioPersona.estado" [nacionalidad]="''"
+                               [paisNacimiento]="convenioPersona.pais"
+                               [lugarNacimiento]="convenioPersona.lugarNac" [correoElectronico]="convenioPersona.correo"
+                               [telefono]="convenioPersona.telFijo" [enfermedad]="''"
+          ></app-resumen-persona>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Características del convenio</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <div class="row table-panel-row">
+            <div class="col-md-4">
+              <div class="table-panel-column">
+                <label>Tipo de paquete</label>
+                <span>{{ convenioPersona.tipoPaquete }}</span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Beneficiarios</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content" *ngIf="beneficiarios.length > 0 else SinBeneficiarios">
+          <ng-container *ngFor="let beneficiario of beneficiarios">
+            <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+              <p-accordionTab
+                [header]="beneficiario.nombre + ' ' + beneficiario.primerApellido + ' ' + beneficiario.segundoApellido">
+                <app-resumen-beneficiario
+                  [nombre]="beneficiario.nombre + ' ' + beneficiario.primerApellido + ' ' + beneficiario.segundoApellido"
+                  [telefono]="beneficiario.telCelular" [curp]="beneficiario.curp" [rfc]="beneficiario.rfc"
+                  [correoElectronico]="beneficiario.correo"></app-resumen-beneficiario>
+              </p-accordionTab>
+            </p-accordion>
+          </ng-container>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
+            <span>Documentación requerida</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content" *ngIf="beneficiarios.length > 0 else SinBeneficiarios">
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+  </ng-container>
+</ng-container>
+
+<div class="row mt-3 mb-2">
+  <div class="col-md-12 mt-4">
+    <p class="mensaje-cancelacion-orden">¿Está seguro de {{ activo ? 'desactivar' : 'activar' }} el registro
+      seleccionado {{ folioConvenio.padStart(6, '0') }}?</p>
   </div>
-  <p-accordion styleClass="sivimss-accordion">
-    <p-accordionTab>
-      <ng-template pTemplate="header">
-        <div class="flex justify-content-between align-items-center flex-1">
-          <span>Convenio de previsión funeraria</span>
-          <div class="contenedor-celda-iconos">
-              <div class="estatusAcordion">
-                <span>Estatus </span>
-                <b>Activo</b>
-              </div>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template pTemplate="content">
-        <div class="mb-3">
-          <app-table-panel class="row mb-5">
-            <ng-template appCustomTemplate="left-header">
-              <div class="table-panel-header-column">
-                <span class="font-bold">Número de folio de convenio (Pre-registro) </span>
-                <span class="font-bold">DOC00000000001 </span>
-              </div>
-            </ng-template>
-            <ng-template appCustomTemplate="right-header">
-              <div class="table-panel-header-column">
-              </div>
-            </ng-template>
-          </app-table-panel>
-          <div class="mb-3">
-            <div class="col-md-12">
-              <div class="flex justify-content-between align-items-center">
-                <h2 class="subtitulo sub">Personas y beneficiarios</h2>
-              </div>
-            </div>
-            <div class="col-md-12 separador">
-            </div>
-            <div class="col-md-12">
-              <div class="col-md-1 icono">
-                <img src="../../../../../../assets/icons/fonts/admiracion.svg" alt="Alerta">
-              </div>
-              <div class="col-md-11">
-                <p class="mensaje-cancelacion-orden indicaciones">Modifica, elimina o agrega Pesonas y hasta 3 beneficiarios por
-                  cada una</p>
-              </div>
-            </div>
-            <div class="col-md-12 separador"></div>
-          </div>
-          <app-table-panel>
-            <ng-template appCustomTemplate="left-header">
-              <div class="table-panel-header-column">
-                <span class="font-bold">
-                  Hermelinda Huautla Flores
-                </span>
-              </div>
-            </ng-template>
-            <ng-template appCustomTemplate="right-header">
-              <div class="table-panel-header-column">
-                <div class="flex flex-column">
-                  <div>
-                  </div>
-                </div>
-                <div class="flex flex-column ml-5">
-                  <div class="contenedor-celda-iconos">
-                    <a (click)="($event)">
-                      <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </ng-template>
-          </app-table-panel>
-          <div class="col-md-12 separador"></div>
-          <div class="mb-3">
-            <div class="col-md-12">
-              <div class="flex justify-content-between align-items-center">
-                <h2 class="subtitulo sub">Adjuntar documentación</h2>
-              </div>
-            </div>
-            <div class=" row col-md-12 separador">
-            </div>
-            <div class="col-md-12">
-              <div class="col-md-1 icono">
-                <img src="../../../../../../assets/icons/fonts/admiracion.svg" alt="Alerta">
-              </div>
-              <div class="col-md-11">
-                <p class="mensaje-cancelacion-orden indicaciones">Arrastrar y soltar los archivos en la sección "Cargar
-                  Archivos"
-                  o selecciona la opción “Agregar Archivo</p>
-              </div>
-            </div>
-            <div class="col-md-12 separador"></div>
-          </div>
-          <section class="mt-5">
-            <p-table styleClass="mt-5 mb-8 last-sticky-column" [value]="documentos" [rows]="cantElementosPorPagina"
-              [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-              (onLazyLoad)="paginar($event)">
-
-              <ng-template pTemplate="header">
-                <tr>
-                  <th scope="col">Numero del documento</th>
-                  <th scope="col">Tipo del documento</th>
-                  <th scope="col">Link del documento</th>
-                  <th scope="col"></th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-documento>
-                <tr>
-                  <td> {{documento.numeroDocumento}} </td>
-                  <td> {{documento.tipoDocumento}} </td>
-                  <td> {{documento.linkDocumento}} </td>
-                  <td>
-                    <div class="contenedor-celda-iconos">
-                      <a>
-                        <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </section>
-        </div>
-      </ng-template>
-    </p-accordionTab>
-  </p-accordion>
-
-  <div class="border-panel mb-3 laterales">
-    <div class="row mt-3">
-    <div class="row mt-4">
-      <div class="col-md-12">
-        <p class="mensaje-cancelacion-orden">¿Estás seguro que deseas activar este convenio?</p>
-      </div>
-    </div>
-
-    <div class="row mt-6">
-      <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-default btn-md" routerLink="../">Regresar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" routerLink="../" (click)="aceptar()">Aceptar</button>
-      </div>
-    </div>
+  <div class="col-md-12 flex justify-content-end mt-6 mb-4">
+    <button type="submit" class="btn btn-default btn-md" routerLink="./../../../">Cancelar</button>
+    <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
   </div>
 </div>
 
-<p-overlayPanel #overlayPanel>
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Generar tarjeta identificación"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar"
-        routerLink="../modificar-orden-de-servicio"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Cancelar orden"
-        routerLink="../cancelar-orden-de-servicio"></app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
-  </ng-template>
-</p-overlayPanel>
+<ng-template pTemplate="content" #SinBeneficiarios>
+  <div class="row table-panel-row">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">El convenio no tiene beneficiarios registrados.</p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template pTemplate="content" #SinBeneficiarioEspecifico>
+  <div class="row table-panel-row">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">Información de beneficiario no registrada.</p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template pTemplate="content" #SinSolicitantes>
+  <div class="row table-panel-row">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">El convenio no tiene solicitantes registrados.</p>
+    </div>
+  </div>
+</ng-template>

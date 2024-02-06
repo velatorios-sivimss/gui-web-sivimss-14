@@ -93,7 +93,7 @@
             <td>{{pagosRealizados.realizarPago}}</td>
             <td>
 
-              <div *ngIf="pagosRealizados.validaPago > 0">
+              <div *ngIf="validarMostrarBotonHamburguesa(pagosRealizados)">
                 <a class="ml-5 cursor-pointer"
                    (click)="abrirPanelNuevoPago(overlayPanelHeader,$event,pagosRealizados)">
                   <img   src="assets/images/imagen-icono-barras-horizontales.svg"
@@ -193,8 +193,10 @@
 <p-overlayPanel #overlayPanelHeader>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion onCloseOnNavigation titulo="Realizar pago"
+      <app-overlay-panel-opcion *ngIf="item.validaPago > 0" onCloseOnNavigation titulo="Realizar pago"
                                 (click)="abrirModalRealizarPago()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion onCloseOnNavigation *ngIf="item.idEstatus == 5" titulo="Descargar recibo de pago"
+                                (click)="descargarComprobantePago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

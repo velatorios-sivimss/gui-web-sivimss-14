@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnInit, Renderer2, ViewChild} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DialogService } from 'primeng/dynamicdialog';
 import { OverlayPanel } from 'primeng/overlaypanel';
@@ -79,11 +79,12 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     private readonly loaderService: LoaderService,
     private readonly activatedRoute: ActivatedRoute,
     private mensajesSistemaService: MensajesSistemaService,
+    private renderer: Renderer2,
   ) {
-    this.cargarScript();
   }
 
   ngOnInit(): void {
+    this.cargarScript(() => {});
     this.idVelatorio = this.activatedRoute.snapshot.queryParams.idVelatorio;
     this.velatorio = this.activatedRoute.snapshot.queryParams.velatorio;
     this.inicializarFormPromotor();
@@ -107,16 +108,27 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     this.handleGestionPromotor();
   }
 
-  cargarScript(): void {
-    const body =  document.body;
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.innerHTML = '';
-    script.src = '../../../../../../assets/js/control-pagos.js';
-    script.id = 'realizar-pago';
-    script.async = true;
-    script.defer = true;
-    body.appendChild(script);
+  cargarScript(callback: () => void): void {
+    const elementoId: string = 'realizar-pago';
+    if (!document.getElementById(elementoId)) {
+      const body: HTMLElement = document.body;
+      const elemento_ref = this.renderer.createElement('script');
+      elemento_ref.type = 'text/javascript';
+      elemento_ref.src = '../../../../../../assets/js/control-pagos.js';
+      elemento_ref.id = elementoId;
+      elemento_ref.async = true;
+      elemento_ref.defer = true;
+      this.renderer.appendChild(body, elemento_ref);
+      elemento_ref.onload = callback;
+    } else {
+      callback();
+    }
+  }
+
+  iniciarPago(): void {
+    const elemento_ref = document.querySelector('.realizar-pago');
+    if (!elemento_ref) return;
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: 1 }));
   }
 
   inicializarFormDatosTitular(): void {
@@ -914,7 +926,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     }
 
     const numPago = this.catNumPagos.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? '';
-    
+
     let objetoTitular: ContratarPlanSFPA = {
       idVelatorio: this.idVelatorio ? +this.idVelatorio : null,
       idTipoContratacion: 1,
