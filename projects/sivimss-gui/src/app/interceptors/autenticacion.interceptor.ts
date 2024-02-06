@@ -11,7 +11,6 @@ export class AutenticacionInterceptor implements HttpInterceptor {
     if (pathname.includes('/externo-privado')) {
       token = localStorage.getItem(SIVIMSS_TOKEN_ONLINE);
     }
-    // const token = localStorage.getItem(SIVIMSS_TOKEN);
     if (token) {
       request = request.clone({
         setHeaders: {
