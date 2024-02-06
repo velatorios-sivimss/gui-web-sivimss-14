@@ -136,22 +136,21 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     // Escucha el evento personalizado
     document.addEventListener('datosRecibidos', (event) => {
       const data = (event as CustomEvent).detail;
-      if (data.transaction) {
-        this.exitoRealizarPago();
+      if (data.error && !data) {
+        this.alertaService.mostrar(TipoAlerta.Error, 'Error en la realización del pago en línea.');
+        return;
+      }
+      if (data.transaction && data.transaction.status_detail === 3) {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
+      }
+      if (data.transaction && [9, 11, 12].includes(data.transaction.status_detail)) {
+        this.alertaService.mostrar(TipoAlerta.Error, 'Pago rechazado.');
       }
     });
   }
 
   errorConectarPago(): void {
     this.alertaService.mostrar(TipoAlerta.Error, 'Error en el envío de la información para realizar el pago.');
-  }
-
-  errorRealizarPago(): void {
-    this.alertaService.mostrar(TipoAlerta.Error, 'Error en la realización del pago en línea.');
-  }
-
-  exitoRealizarPago(): void {
-    this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
   }
 
   inicializarFormDatosTitular(): void {
