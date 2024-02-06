@@ -1,7 +1,6 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DialogService} from 'primeng/dynamicdialog';
-import {OverlayPanel} from 'primeng/overlaypanel';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {Documentos} from '../../models/documentos.interface';
@@ -25,13 +24,9 @@ import {finalize} from "rxjs/operators";
 })
 export class DesactivarConvenioComponent implements OnInit {
 
-  @ViewChild(OverlayPanel)
-  overlayPanel!: OverlayPanel;
-
   readonly POSICION_CONVENIO: number = 0;
   readonly POSICION_BENEFICIARIO: number = 1;
 
-  overlayPanelPersona!: OverlayPanel;
   convenios: SeguimientoNuevoConvenio[] = [];
   convenioSeleccionado: SeguimientoNuevoConvenio = {};
   documentos: Documentos[] = [];

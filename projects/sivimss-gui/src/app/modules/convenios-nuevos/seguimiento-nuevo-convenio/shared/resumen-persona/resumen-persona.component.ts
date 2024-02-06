@@ -25,6 +25,7 @@ export class ResumenPersonaComponent implements OnInit {
   @Input() correoElectronico: string = 'Sin Información';
   @Input() telefono: string = 'Sin Información';
   @Input() enfermedad: string = 'Sin Información';
+  @Input() mostrarEnfermedad: boolean = true;
 
   constructor() { }
 

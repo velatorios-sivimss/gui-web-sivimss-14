@@ -216,7 +216,7 @@
                                [estado]="convenioPersona.estado" [nacionalidad]="''"
                                [paisNacimiento]="convenioPersona.pais"
                                [lugarNacimiento]="convenioPersona.lugarNac" [correoElectronico]="convenioPersona.correo"
-                               [telefono]="convenioPersona.telFijo" [enfermedad]="''"
+                               [telefono]="convenioPersona.telFijo" [mostrarEnfermedad]="false"
           ></app-resumen-persona>
         </ng-template>
       </p-accordionTab>
@@ -254,7 +254,7 @@
                 [header]="beneficiario.nombre">
                 <app-resumen-beneficiario
                   [nombre]="beneficiario.nombre"
-                  [telefono]="beneficiario.telCelular" [curp]="beneficiario.curp" [rfc]="beneficiario.rfc"
+                  [telefono]="beneficiario.telefono" [curp]="beneficiario.curp" [rfc]="beneficiario.rfc"
                   [correoElectronico]="beneficiario.correo" [edad]="beneficiario.edad" [parentesco]="beneficiario.parentesco"></app-resumen-beneficiario>
               </p-accordionTab>
             </p-accordion>
