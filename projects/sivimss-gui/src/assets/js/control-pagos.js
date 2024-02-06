@@ -3,13 +3,12 @@ let paymentCheckout = new PaymentCheckout.modal({
   client_app_key: '3zLfJvt653sSiLdcW9RMdS05yLCOHH', // Application Key de las credenciales CLIENT
   locale: 'es', // Idioma preferido del usuario (es, en, pt). El inglés se usará por defecto
   env_mode: 'stg', // `prod`, `stg`, `local` para cambiar de ambiente. Por defecto es `stg`
-  onOpen: function () {
-    console.log('Modal abierto');
-  },
-  onClose: function () {
-    console.log('Modal cerrado');
-  },
+  onOpen: function () {},
+  onClose: function () {},
   onResponse: function (response) { // Funcionalidad a invocar cuando se completa el proceso de pago
+    console.log(response)
+    const evento = new CustomEvent('datosRecibidos', { detail: response });
+    document.dispatchEvent(evento);
 
     /*
       En caso de error, esta será la respuesta.
@@ -31,7 +30,6 @@ let paymentCheckout = new PaymentCheckout.modal({
       }
     */
     console.log('Respuesta de modal');
-    console.log(JSON.stringify(response));
     // document.getElementById('response').innerHTML = JSON.stringify(response);
   }
 });
