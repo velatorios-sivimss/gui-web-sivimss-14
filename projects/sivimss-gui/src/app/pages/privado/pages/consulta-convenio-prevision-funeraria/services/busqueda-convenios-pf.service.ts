@@ -133,4 +133,7 @@ export class BusquedaConveniosPFServic extends BaseService<
   consultarConvenioEmpresa(idConvenio: number): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(this._base + `convenio-pf/empresa-convenio/${idConvenio}`)
   }
+  consultarMatriculaSIAP(matricula:string): Observable<HttpRespuesta<any>>{
+    return this._http.get<HttpRespuesta<any>>(this._base + `consultar/matricula/${matricula}`)
+  }
 }
