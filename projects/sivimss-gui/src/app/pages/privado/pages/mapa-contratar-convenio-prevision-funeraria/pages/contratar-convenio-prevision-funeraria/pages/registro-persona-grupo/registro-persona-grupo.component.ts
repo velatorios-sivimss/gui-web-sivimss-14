@@ -95,6 +95,8 @@ export class RegistroPersonaGrupoComponent implements OnInit {
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
 
   queryParams: any = {};
+  mensajeGenerico: string = '';
+  mostrarMensajeGenerico: boolean = false;
   constructor(
     private readonly formBuilder: FormBuilder,
     public readonly dialogService: DialogService,
@@ -511,9 +513,16 @@ export class RegistroPersonaGrupoComponent implements OnInit {
   }
 
   addAttachment(fileInput: any): void {
+    const extensionesPermitidas = ['pdf','gif','jpeg','jpg'];
     const maxSize = 5000000;
     const fileReaded = fileInput.target.files[0];
     const tipoArchivo = fileReaded.type.split('/');
+    if(!extensionesPermitidas.includes(tipoArchivo[1])){
+      this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(97));
+      return
+    }
+
+    this.mensajeGenerico = this.mensajesSistemaService.obtenerMensajeSistemaPorId(98)
 
     if (fileReaded.size > maxSize) {
       const tamanioEnMb = maxSize / 1000000;
@@ -559,6 +568,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
         this.archivoRfc = data;
       }
     });
+    this.mostrarMensajeGenerico= true;
   }
 
   validarRFC(): void {
@@ -596,6 +606,24 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     }
     if (!this.datosPersonales.curp.value) return;
     this.buscarCurpRFC(this.datosPersonales.curp.value, '');
+  }
+
+  consultarMatriculaSIAP(): void {
+    if (!this.datosPersonales.matricula.value) return;
+    this.loaderService.activar();
+    this.consultaConveniosService.consultarMatriculaSIAP(this.datosPersonales.matricula.value).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if(respuesta.datos === null){
+          const mensajeErr: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(70);
+          this.alertaService.mostrar(TipoAlerta.Info, mensajeErr);
+        }
+      },
+      error: (erro: HttpErrorResponse) => {
+        this.mostrarMensaje(0);
+      }
+    });
   }
 
   convertirAMayusculas(posicionFormulario: number): void {
@@ -644,12 +672,15 @@ export class RegistroPersonaGrupoComponent implements OnInit {
                 ' ' +
                 valores.segundoApellido;
               this.datosPersonales.lugarNacimiento.setValue(valores.idEstado)
+              this.datosPersonales.sexo.setValue(+valores.sexo)
+              if(typeof valores.sexo == 'string'){
+                if(+valores.sexo == 1)this.datosPersonales.sexo.setValue(2)
+                if(+valores.sexo == 2)this.datosPersonales.sexo.setValue(1)
+              }
             }
-
           }
         },
         error: (error: HttpErrorResponse) => {
-          console.error(error);
           this.mostrarMensaje(0);
         },
       });
@@ -725,13 +756,11 @@ export class RegistroPersonaGrupoComponent implements OnInit {
             this.mostrarBotonAgregarBeneficiario = true;
             this.deshabilitarTipo = true;
           } else {
-            console.log(respuesta);
-            this.mostrarMensaje(Number(respuesta.mensaje));
+            this.mostrarMensaje(5);
           }
         },
         error: (error: HttpErrorResponse) => {
-          console.error(error);
-          this.mostrarMensaje(0);
+          this.mostrarMensaje(5);
         },
       });
   }

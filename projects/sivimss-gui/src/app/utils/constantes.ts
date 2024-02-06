@@ -1,5 +1,7 @@
 export const SIVIMSS_TOKEN: string = "sivimss_token";
 
+export const SIVIMSS_TOKEN_ONLINE: string = "sivimss_token_online";
+
 export const DIEZ_ELEMENTOS_POR_PAGINA: number = 10;
 
 export enum Accion {

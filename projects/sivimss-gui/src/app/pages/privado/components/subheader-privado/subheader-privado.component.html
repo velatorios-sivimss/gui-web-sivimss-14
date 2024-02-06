@@ -6,7 +6,9 @@
                 <img src="assets/images/imagen-icono-usuario.svg" alt="">
                 <span class="usuario__nombre">{{usuarioEnSesion?.cveUsuario}}</span>
             </div>
-            <a class="btn-cerrar-sesion" routerLink="/externo-publico"><img class="icon-cerrar-sesion"
+            <!-- <a class="btn-cerrar-sesion" routerLink="/externo-publico"><img class="icon-cerrar-sesion"
+                    src="assets/images/imagen-icono-cerrar-sesion.svg" alt="icono cerrar sesion">Cerrar sesión</a> -->
+            <a class="btn-cerrar-sesion" (click)="cerrarSesion()"><img class="icon-cerrar-sesion"
                     src="assets/images/imagen-icono-cerrar-sesion.svg" alt="icono cerrar sesion">Cerrar sesión</a>
         </div>
     </div>

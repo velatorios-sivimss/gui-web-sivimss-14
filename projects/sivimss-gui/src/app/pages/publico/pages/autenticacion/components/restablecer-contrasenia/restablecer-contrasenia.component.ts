@@ -5,11 +5,11 @@ import { finalize } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { confirmacionContraseniadValidator } from '../actualizar-contrasenia/actualizar-contrasenia.component';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-// import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
+import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { PATRON_CONTRASENIA } from 'projects/sivimss-gui/src/app/utils/regex';
-import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
+// import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
 
 @Component({
   selector: 'app-restablecer-contrasenia',
@@ -22,7 +22,7 @@ export class RestablecerContraseniaComponent implements OnInit {
   usuario: string = '';
 
   constructor(
-    public autenticacionContratanteService: AutenticacionService,
+    public autenticacionContratanteService: AutenticacionContratanteService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     private readonly alertaService: AlertaService,
