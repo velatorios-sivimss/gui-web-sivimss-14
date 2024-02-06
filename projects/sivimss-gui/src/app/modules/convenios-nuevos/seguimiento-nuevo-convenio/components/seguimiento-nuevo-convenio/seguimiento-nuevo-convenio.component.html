@@ -78,7 +78,7 @@
               <span class="activo" *ngIf="convenio.indActivo">Activo</span>
               <span class="inactivo" *ngIf="!convenio.indActivo">Inactivo</span>
             </div>
-            <a (click)="abrirPanel($event,convenio)" *ngIf="!convenio.estatus else emptyDiv">
+            <a (click)="abrirPanel($event,convenio)" *ngIf="convenio.indActivo else emptyDiv">
               <img
                 src="assets/images/imagen-icono-barras-horizontales.svg"
                 alt="icono barras horizontales">
