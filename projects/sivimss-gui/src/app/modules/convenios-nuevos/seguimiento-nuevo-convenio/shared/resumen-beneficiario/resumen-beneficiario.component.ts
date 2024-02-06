@@ -7,7 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class ResumenBeneficiarioComponent implements OnInit {
   @Input() nombre: string = 'Sin Información';
-  @Input() edad: string = 'Sin Información';
+  @Input() edad: number = 0;
   @Input() parentesco: string = 'Sin Información';
   @Input() curp: string = 'Sin Información';
   @Input() rfc: string = 'Sin Información';
