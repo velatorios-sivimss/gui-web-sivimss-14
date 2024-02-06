@@ -9,8 +9,8 @@ import { HttpRespuesta } from "projects/sivimss-gui/src/app/models/http-respuest
 import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
 import { MensajesRespuestaCodigo } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-codigo.enum";
-// import { AutenticacionContratanteService } from "projects/sivimss-gui/src/app/services/autenticacion-contratante.service";
-import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import { AutenticacionContratanteService } from "projects/sivimss-gui/src/app/services/autenticacion-contratante.service";
+// import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
 
 
 @Component({
@@ -34,7 +34,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
-    private readonly autenticacionContratanteService: AutenticacionService,
+    private readonly autenticacionContratanteService: AutenticacionContratanteService,
     private readonly alertaService: AlertaService,
     private readonly loaderService: LoaderService,
     private readonly activatedRoute: ActivatedRoute,

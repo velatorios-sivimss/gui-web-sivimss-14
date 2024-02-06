@@ -1,12 +1,17 @@
 import {HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
 import {Injectable} from "@angular/core";
-import {SIVIMSS_TOKEN} from "projects/sivimss-gui/src/app/utils/constantes";
+import {SIVIMSS_TOKEN, SIVIMSS_TOKEN_ONLINE} from "projects/sivimss-gui/src/app/utils/constantes";
 
 @Injectable()
 export class AutenticacionInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): any {
-    const token = localStorage.getItem(SIVIMSS_TOKEN);
+    let token = localStorage.getItem(SIVIMSS_TOKEN);
+    const pathname = window.location.pathname;
+    if (pathname.includes('/externo-privado')) {
+      token = localStorage.getItem(SIVIMSS_TOKEN_ONLINE);
+    }
+    // const token = localStorage.getItem(SIVIMSS_TOKEN);
     if (token) {
       request = request.clone({
         setHeaders: {
