@@ -660,32 +660,32 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
             this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
             return
           }
-          const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
+          const [dia, mes, anio] = respuesta.datos[0].fecNacimiento.split('/');
           const fecha = new Date(anio + '/' + mes + '/' + dia);
-          formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
+          formularioEnUso[posicion].nombre.setValue(respuesta.datos[0].nombre);
           formularioEnUso[posicion].primerApellido.setValue(
-            respuesta.datos.apellido1
+            respuesta.datos[0].apellido1
           );
           formularioEnUso[posicion].segundoApellido.setValue(
-            respuesta.datos.apellido2
+            respuesta.datos[0].apellido2
           );
           formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-          if (respuesta.datos.sexo.includes('HOMBRE')) {
+          if (respuesta.datos[0].sexo.includes('HOMBRE')) {
             formularioEnUso[posicion].sexo.setValue(2);
           }
-          if (respuesta.datos.sexo.includes('MUJER')) {
+          if (respuesta.datos[0].sexo.includes('MUJER')) {
             formularioEnUso[posicion].sexo.setValue(1);
           }
           if (
-            respuesta.datos.nacionalidad?.includes('MEXICO') ||
-            respuesta.datos.nacionalidad?.includes('MEX')
+            respuesta.datos[0].nacionalidad?.includes('MEXICO') ||
+            respuesta.datos[0].nacionalidad?.includes('MEX')
           ) {
             formularioEnUso[posicion].nacionalidad.setValue(1);
           } else {
             formularioEnUso[posicion].nacionalidad.setValue(2);
           }
-          if (respuesta.datos?.desEntidadNac) {
-            this.consultarLugarNacimiento(respuesta.datos.desEntidadNac, posicion);
+          if (respuesta.datos[0]?.desEntidadNac) {
+            this.consultarLugarNacimiento(respuesta.datos[0].desEntidadNac, posicion);
           }
         },
         error: (error: HttpErrorResponse) => {

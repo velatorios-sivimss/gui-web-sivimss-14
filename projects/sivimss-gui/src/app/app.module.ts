@@ -32,6 +32,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { BadgeModule } from 'primeng/badge';
 import { OverlayModule } from 'primeng/overlay';
+import { AutenticacionContratanteService } from './services/autenticacion-contratante.service';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json');
@@ -74,6 +75,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
   ],
   providers: [
     AutenticacionService,
+    AutenticacionContratanteService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AutenticacionInterceptor,

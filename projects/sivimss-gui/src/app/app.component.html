@@ -1,6 +1,9 @@
 <ng-container *ngIf="paginaCargada"
               [ngTemplateOutlet]="(existeUnaSesion$ | async) ? paginaPrivada:paginaPublica"></ng-container>
 
+<ng-container *ngIf="paginaCargadaOnline"
+              [ngTemplateOutlet]="(existeUnaSesionOnline$ | async) ? paginaPrivadaOnline:paginaPublica"></ng-container>
+
 <ng-template #paginaPublica>
   <app-header-imss-publico></app-header-imss-publico>
   <router-outlet></router-outlet>
@@ -9,11 +12,18 @@
 <ng-template #paginaPrivada>
   <ng-container>
     <app-header-imss-publico></app-header-imss-publico>
-    <app-sub-header-privado *ngIf="!serviciosEnLinea"></app-sub-header-privado>
+    <app-sub-header-privado></app-sub-header-privado>
     <app-template-with-sidebar>
       <app-breadcrumb></app-breadcrumb>
       <router-outlet></router-outlet>
     </app-template-with-sidebar>
+  </ng-container>
+</ng-template>
+
+<ng-template #paginaPrivadaOnline>
+  <ng-container>
+    <app-header-imss-publico></app-header-imss-publico>
+    <router-outlet></router-outlet>
   </ng-container>
 </ng-template>
 

@@ -4,13 +4,15 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { AlertaService } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import { AutenticacionContratanteService } from "../services/autenticacion-contratante.service";
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
   constructor(
     private alertaService: AlertaService,
-    private autententicacionService: AutenticacionService
+    private autententicacionService: AutenticacionService,
+    private autenticacionContratanteService: AutenticacionContratanteService,
   ) {
   }
 
@@ -63,7 +65,12 @@ export class ErrorInterceptor implements HttpInterceptor {
   }
 
   private cerrarSesionConRedireccion() {
-    this.autententicacionService.cerrarSesion();
+    const pathname = window.location.pathname;
+    if (pathname.includes('/externo-privado') || pathname.includes('/externo-public')) {
+      this.autenticacionContratanteService.cerrarSesion();
+    } else {
+      this.autententicacionService.cerrarSesion();
+    }
   }
 
 }

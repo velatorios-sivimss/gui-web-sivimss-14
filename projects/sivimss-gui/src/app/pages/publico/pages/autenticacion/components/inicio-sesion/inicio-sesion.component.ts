@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from "primeng/dynamicdialog";
 import { finalize } from "rxjs/operators";
 import { ModalRestablecerContraseniaComponent } from "../modal-restablecer-contrasenia/modal-restablecer-contrasenia.component";
-// import { AutenticacionContratanteService } from "projects/sivimss-gui/src/app/services/autenticacion-contratante.service";
+import { AutenticacionContratanteService } from "projects/sivimss-gui/src/app/services/autenticacion-contratante.service";
 import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
 import { MensajesRespuestaAutenticacion } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
@@ -40,7 +40,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly loaderService: LoaderService,
-    private readonly autenticacionContratanteService: AutenticacionService,
+    private readonly autenticacionContratanteService: AutenticacionContratanteService,
     private readonly router: Router,
     private readonly alertaService: AlertaService,
     private readonly activatedRoute: ActivatedRoute,
