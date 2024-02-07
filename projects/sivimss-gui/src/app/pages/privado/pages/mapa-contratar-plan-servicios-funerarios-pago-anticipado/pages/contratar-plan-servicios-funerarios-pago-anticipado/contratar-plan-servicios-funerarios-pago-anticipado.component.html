@@ -1,22 +1,7 @@
-<!-- <div class="grid">
-    <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['../']"></app-btn-regresar>
-    <app-titulo-principal titulo="CONTRATAR PLAN DE SERVICIOS FUNERARIOS PAGO ANTICIPADO"
-        class="col"></app-titulo-principal>
-</div> -->
-
-<div class="py-5">
+<div class="container-sivimss px-5 registro-en-linea my-5">
     <app-titulo-principal titulo="CONTRATAR PLAN DE SERVICIOS FUNERARIOS PAGO ANTICIPADO">
         <app-btn-regresar routerLink="../"></app-btn-regresar>
     </app-titulo-principal>
-
-
-    <!-- <div class="row mb-3">
-    <div class="col-md-3">
-        <label class="control-label" for="tipoContratacion">Tipo de contratación<span class="req">*</span>:</label>
-        <p-dropdown #dd id="tipoContratacion" class="form-control" placeholder="Selecciona el estatus"
-            [options]="[{id:1,label:'Por persona'}]" [optionValue]="'1'" [disabled]="true"></p-dropdown>
-    </div>
-</div> -->
 
     <div class="row mb-5">
         <div class="col-md-6">
@@ -30,7 +15,7 @@
             </div>
         </div>
         <div class="col-md-6 flex justify-content-end align-items-center">
-            <button class="btn btn-primary realizar-pago" (click)="iniciarPago()" onCloseOnNavigation>Realizar pago</button>
+            <button class="btn btn-primary realizar-pago" *ngIf="mostrarRealizarPago" (click)="iniciarPago()" onCloseOnNavigation>Realizar pago</button>
         </div>
     </div>
 
@@ -127,9 +112,9 @@
                                 obligatorio *.</span>
                         </div>
                         <div class="col-md-3" *ngIf="fdt.sexo.value == 3">
-                            <label class="control-label" for="otroSexoAfiliado">Otro<span class="req">*</span>:</label>
+                            <label class="control-label" for="otroSexoAfiliado">Otro:</label>
                             <input id="otroSexoAfiliado" class="form-control" formControlName="otroSexo"
-                                placeholder="Ingresa otro sexo" maxlength="45">
+                                placeholder="Ingresa otro sexo" maxlength="10">
                             <span class="campo-obligatorio"
                                 *ngIf="fdt.otroSexo?.errors?.required && (fdt.otroSexo?.dirty || fdt.otroSexo?.touched)">Este
                                 campo es obligatorio *.</span>
@@ -982,7 +967,7 @@
         <div class="border-panel mb-5">
             <div class="row">
                 <div class="col-md-6">
-                    <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
+                    <label class="control-label">¿El servicio fue gestionado por un promotor?<span class="req">*</span></label>
                     <div class="flex">
                         <div class="flex align-items-center mx-2">
                             <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
@@ -999,7 +984,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label class="control-label" for="promotor">Promotor:</label>
+                    <label class="control-label" for="promotor">Promotor:<span class="req" *ngIf="fp.gestionadoPorPromotor.value">*</span></label>
                     <p-dropdown id="promotor" class="form-control" formControlName="promotor"
                         placeholder="Selecciona promotor" [options]="catPromotores" [filter]="true"
                         filterBy="label"></p-dropdown>
@@ -1013,9 +998,9 @@
     </div>
     <div class="row">
         <div class="col-md-12 flex justify-content-end align-items-center" *ngIf="!ocultarBtnGuardar">
-            <button class="btn btn-gold btn-md">Cancelar</button>
-            <button class="btn btn-primary btn-md ml-4" (click)="guardar();"
-                [disabled]="fp.invalid || fdt.invalid">Guardar</button>
+            <button class="btn btn-gold btn-md" (click)="cancelar();">Cancelar</button>
+            <button type="button" class="btn btn-primary btn-md ml-4" (click)="guardar();"
+                [disabled]="promotorForm.invalid || datosTitularForm.invalid ||  datosTitularSubstitutoForm.invalid">Guardar</button>
         </div>
     </div>
 </div>
