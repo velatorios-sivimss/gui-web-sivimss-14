@@ -222,5 +222,13 @@ export const idsModulos: DatoModulo = {
   '100': {
     ruta: '/pagos/facturacion',
     icono: 'default-icon.svg'
-  }
+  },
+  '177': {
+    ruta: '',
+    icono: 'default-icon.svg'
+  },
+  '277': {
+    ruta: 'seguimiento-nuevo-convenio',
+    icono: 'default-icon.svg'
+  },
 };

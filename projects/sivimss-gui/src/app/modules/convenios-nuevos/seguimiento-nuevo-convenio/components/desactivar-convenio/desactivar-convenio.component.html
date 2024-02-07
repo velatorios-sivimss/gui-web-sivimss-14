@@ -1,4 +1,4 @@
-<app-titulo-principal titulo="Desactivar convenio"></app-titulo-principal>
+<app-titulo-principal [titulo]="activo ? 'Desactivar' : 'Activar'  + ' convenio'"></app-titulo-principal>
 
 <ng-container [ngSwitch]="tipoConvenio">
   <ng-container *ngSwitchCase="'1'">
@@ -216,7 +216,7 @@
                                [estado]="convenioPersona.estado" [nacionalidad]="''"
                                [paisNacimiento]="convenioPersona.pais"
                                [lugarNacimiento]="convenioPersona.lugarNac" [correoElectronico]="convenioPersona.correo"
-                               [telefono]="convenioPersona.telFijo" [enfermedad]="''"
+                               [telefono]="convenioPersona.telFijo" [mostrarEnfermedad]="false"
           ></app-resumen-persona>
         </ng-template>
       </p-accordionTab>
@@ -251,11 +251,11 @@
           <ng-container *ngFor="let beneficiario of beneficiarios">
             <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
               <p-accordionTab
-                [header]="beneficiario.nombre + ' ' + beneficiario.primerApellido + ' ' + beneficiario.segundoApellido">
+                [header]="beneficiario.nombre">
                 <app-resumen-beneficiario
-                  [nombre]="beneficiario.nombre + ' ' + beneficiario.primerApellido + ' ' + beneficiario.segundoApellido"
-                  [telefono]="beneficiario.telCelular" [curp]="beneficiario.curp" [rfc]="beneficiario.rfc"
-                  [correoElectronico]="beneficiario.correo"></app-resumen-beneficiario>
+                  [nombre]="beneficiario.nombre"
+                  [telefono]="beneficiario.telefono" [curp]="beneficiario.curp" [rfc]="beneficiario.rfc"
+                  [correoElectronico]="beneficiario.correo" [edad]="beneficiario.edad" [parentesco]="beneficiario.parentesco"></app-resumen-beneficiario>
               </p-accordionTab>
             </p-accordion>
           </ng-container>

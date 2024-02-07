@@ -113,6 +113,11 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   banderaCheckGrupo: boolean = true;
   refBeneficiario!: DynamicDialogRef;
   confirmacionModalCerrar: boolean = false;
+  mensajeGenerico: string = '';
+  mostrarMensajeGenerico: boolean = false;
+
+  confirmacionGuardado: boolean = false;
+  mensajeConfirmacionGuardar: string = '';
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -148,6 +153,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     setTimeout(() => {
       this.buscarParentesco();
       this.mensajeConfirmacionGuardado = this.mensajesSistemaService.obtenerMensajeSistemaPorId(160)
+      this.mensajeConfirmacionGuardar = this.mensajesSistemaService.obtenerMensajeSistemaPorId(195)
     }, 900);
 
     this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
@@ -423,14 +429,16 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
           value: null,
           disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.nullValidator,
+        Validators.required],
       ],
       promotor: [
         {
           value: null,
           disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.nullValidator,
+        Validators.required],
       ],
     });
   }
@@ -538,14 +546,16 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
           value: null,
           disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.nullValidator,
+        Validators.required],
       ],
       promotor: [
         {
           value: null,
           disabled: false,
         },
-        [Validators.nullValidator],
+        [Validators.nullValidator,
+        Validators.required],
       ],
     });
   }
@@ -755,9 +765,16 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   }
 
   addAttachment(fileInput: any): void {
+    const extensionesPermitidas = ['pdf','gif','jpeg','jpg'];
     const maxSize = 5000000;
     const fileReaded = fileInput.target.files[0];
     const tipoArchivo = fileReaded.type.split('/');
+    if(!extensionesPermitidas.includes(tipoArchivo[1])){
+      this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(97));
+      return
+    }
+
+    this.mensajeGenerico = this.mensajesSistemaService.obtenerMensajeSistemaPorId(98)
 
     if (fileReaded.size > maxSize) {
       const tamanioEnMb = maxSize / 1000000;
@@ -803,6 +820,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
         this.archivoRfc = data;
       }
     });
+    this.mostrarMensajeGenerico= true;
   }
 
   guardarEmpresa(): void {
@@ -856,12 +874,12 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
             this.deshabilitarTipo = true;
           } else {
             console.log(respuesta);
-            this.mostrarMensaje(Number(respuesta.mensaje));
+            this.mostrarMensaje(5);
           }
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
-          this.mostrarMensaje(0);
+          this.mostrarMensaje(5);
         },
       });
   }
@@ -929,13 +947,12 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
             this.mostrarBotonAgregarBeneficiario = true;
             this.deshabilitarTipo = true;
           } else {
-            console.log(respuesta);
-            this.mostrarMensaje(Number(respuesta.mensaje));
+            this.mostrarMensaje(5);
           }
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
-          this.mostrarMensaje(0);
+          this.mostrarMensaje(5);
         },
       });
   }
@@ -1178,13 +1195,18 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   }
 
   clickSeleccionaPromotor(proviene: string): void {
+    this.formPersona.controls['promotor'].clearValidators();
+    this.formEmpresa.controls['promotor'].clearValidators();
+    this.formPersona.controls['promotor'].updateValueAndValidity();
+    this.formEmpresa.controls['promotor'].updateValueAndValidity();
     if (proviene == 'persona') {
       this.seleccionarPromotor = !this.formPersona.value.gestionadoPorPromotor;
+      if(!this.seleccionarPromotor)this.formPersona.controls['promotor'].setValidators(Validators.required);
       this.formPersona.controls['promotor'].setValue(null);
     } else {
       if (this.formEmpresa.disabled) return;
-      this.seleccionarPromotorEmpresa =
-        !this.formEmpresa.value.gestionadoPorPromotor;
+      this.seleccionarPromotorEmpresa = !this.formEmpresa.value.gestionadoPorPromotor;
+      if(!this.seleccionarPromotorEmpresa)this.formEmpresa.controls['promotor'].setValidators(Validators.required);
       this.formEmpresa.controls['promotor'].setValue(null);
     }
   }
@@ -1363,6 +1385,11 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   validaBotonRealizarPago(): boolean {
     if (this.banderaCheckGrupo == false && this.confirmacionModalCerrar) return false
     return true
+  }
+
+  validarBotonGuardado(): void {
+    this.confirmacionGuardado = false;
+    this.tipoContratacion.includes('grupo') ? this.guardarEmpresa() : this.guardarPersona()
   }
 
   ngOnDestroy(): void {

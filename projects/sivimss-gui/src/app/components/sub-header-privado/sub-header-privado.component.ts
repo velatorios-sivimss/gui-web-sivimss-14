@@ -92,7 +92,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
         }
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error)
+        console.log(error, 'Servicio de notificaciones no disponible.')
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
     });
