@@ -115,8 +115,8 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
                   ? this.detalleServicioFunerario?.titularesBeneficiarios[2]
                   : this.detalleServicioFunerario?.titularesBeneficiarios[3];
 
-              this.beneficiarios.push(beneficiario1);
-              this.beneficiarios.push(beneficiario2);
+              if (beneficiario1) this.beneficiarios.push(beneficiario1);
+              if (beneficiario2) this.beneficiarios.push(beneficiario2);
             } catch (error) {
               console.error(error);
             }
