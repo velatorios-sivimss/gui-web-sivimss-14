@@ -837,7 +837,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   }
 
   cancelar(): void {
-    void this.router.navigate(["../../../"]);
+    void this.router.navigate(["./externo-privado/consultar-mis-servicios-en-linea"]);
   }
 
   guardar(): void {
