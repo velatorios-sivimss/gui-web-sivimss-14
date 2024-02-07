@@ -42,4 +42,8 @@ export class ContratarPSFPAService extends BaseService<HttpRespuesta<any>, any> 
   obtenerPromotores(): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(`${this._base}/linea-plan-sfpa/consulta-promotores`);
   }
+
+  verContrato(idPlanSfpa: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}/linea-plan-sfpa/reporte-contrato`, {idPlanSfpa});
+  }
 }

@@ -5,7 +5,7 @@ import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/a
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { ContratarPSFPAService } from '../mapa-contratar-plan-servicios-funerarios-pago-anticipado/services/contratar-psfpa.service';
-import { finalize } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { ListadoPlanes } from './models/consulta-plan-sfpa.interface';
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
@@ -18,9 +18,11 @@ import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/se
   styleUrls: [
     './consulta-plan-servicios-funerarios-pago-anticipado.component.scss',
   ],
+  providers: [AutenticacionContratanteService]
 })
 export class ConsultaPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   usuarioEnSesion!: UsuarioEnSesion | null;
+  subs!: Subscription;
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   planes: ListadoPlanes[] = [];
@@ -38,13 +40,18 @@ export class ConsultaPlanServiciosFunerariosPagoAnticipadoComponent implements O
   ) { }
 
   ngOnInit(): void {
-    debugger
-    this.autenticacionContratanteService.usuarioEnSesion$.subscribe(
+    this.subs = this.autenticacionContratanteService.usuarioEnSesion$.subscribe(
       (usuarioEnSesion: UsuarioEnSesion | null) => {
         this.usuarioEnSesion = usuarioEnSesion;
         this.buscarPlanes();
       }
     );
+  }
+
+  ngOnDestroy(): void {
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
   }
 
   buscarPlanes(): void {
