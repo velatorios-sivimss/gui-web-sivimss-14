@@ -18,7 +18,7 @@ export class RegistroService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   consutaCP(cp: string): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`http://serviciosdigitalesinterno-stage.imss.gob.mx/serviciosDigitales-rest/v1/domicilios/asentamientos/codigoPostal/` + cp);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}/catalogos/consulta/cp/` + cp);
   }
 
   obtenerPaises(): Observable<HttpRespuesta<any>> {
