@@ -19,7 +19,7 @@ import { LoaderService } from "../../../../shared/loader/services/loader.service
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
 import { HttpErrorResponse } from "@angular/common/http";
 import { CatalogoPaquetes } from "../../models/catalogos.interface";
-import { AgregarPlanSFPA } from "../../models/servicios-funerarios.interface";
+import { AgregarPlanSFPA, NSS } from "../../models/servicios-funerarios.interface";
 import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
 import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface";
 import { CURP } from 'projects/sivimss-gui/src/app/utils/regex';
@@ -383,7 +383,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   validarUsuarioTitular(curp: string, rfc: string, nss: string, posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts];
     this.cargadorService.activar();
     this.existeDatoRegistrado = false;
 
@@ -455,17 +454,30 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   consultarNSS(posicion: number): void {
-    let formularios = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    if (!formularios[posicion].nss.value) return;
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
+    if (!formularioEnUso[posicion].nss.value) return;
     this.cargadorService.activar();
-    this.serviciosFunerariosService.consultarNSS(formularios[posicion].nss.value).pipe(
+    this.serviciosFunerariosService.consultarNSS(formularioEnUso[posicion].nss.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos === null) {
+      next: (respuesta: HttpRespuesta<NSS>) => {
+        if (!respuesta.datos) {
           this.alertaService.mostrar(
-            TipoAlerta.Precaucion,
-            "El Número de Seguridad Social no existe." || this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
+            TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
+        } else {
+          let fecha: Date | null = null;
+          if (respuesta.datos.fechaNacimiento) {
+            fecha = new Date(respuesta.datos.fechaNacimiento);
+          }
+          formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
+          formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
+          formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+          formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
+          formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
+          formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
+          formularioEnUso[posicion].sexo.setValue(respuesta.datos.sexo?.idSexo);
+          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
+          formularioEnUso[posicion].nacionalidad.setValue(1);
         }
       },
       error: (error: HttpErrorResponse) => {
