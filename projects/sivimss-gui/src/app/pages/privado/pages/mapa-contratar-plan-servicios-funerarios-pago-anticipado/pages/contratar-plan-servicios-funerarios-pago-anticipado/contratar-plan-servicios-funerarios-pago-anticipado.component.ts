@@ -22,6 +22,7 @@ import { ContratarPlanSFPA, Paquete } from '../../models/servicios-funerarios.in
 import { RegistroService } from 'projects/sivimss-gui/src/app/pages/publico/pages/registro/services/registro.service';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { ServiciosFunerariosService } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/services/servicios-funerarios.service';
 
 @Component({
   selector: 'app-contratar-plan-servicios-funerarios-pago-anticipado',
@@ -30,7 +31,7 @@ import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-a
   styleUrls: [
     './contratar-plan-servicios-funerarios-pago-anticipado.component.scss',
   ],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, ServiciosFunerariosService]
 })
 export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   @ViewChild('overlayPanel')
@@ -84,6 +85,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     private renderer: Renderer2,
     private readonly router: Router,
     private descargaArchivosService: DescargaArchivosService,
+    private serviciosFunerariosService: ServiciosFunerariosService,
   ) {
   }
 
@@ -353,6 +355,39 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     if (formularios[posicion]?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
     }
+  }
+
+  consultarNSS(posicion: number): void {
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
+    if (!formularioEnUso[posicion].nss.value) return;
+    this.loaderService.activar();
+    this.serviciosFunerariosService.consultarNSS(formularioEnUso[posicion].nss.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (!respuesta.datos) {
+          this.alertaService.mostrar(
+            TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
+        } else {
+          let fecha: Date | null = null;
+          if (respuesta.datos.fechaNacimiento) {
+            fecha = new Date(respuesta.datos.fechaNacimiento);
+          }
+          formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
+          formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
+          formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+          formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
+          formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
+          formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
+          formularioEnUso[posicion].sexo.setValue(respuesta.datos.sexo?.idSexo);
+          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
+          formularioEnUso[posicion].nacionalidad.setValue(1);
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
+      }
+    });
   }
 
   sinEspacioDoble(posicion: number): void {
@@ -980,7 +1015,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       idPaquete: this.fdt.paquete.value,
       monPrecio: this.paqueteSeleccionado.monPrecio,
       idTipoPagoMensual: this.fdt.numeroPago.value,
-      numPagoMensual:  +numPago,
+      numPagoMensual: +numPago,
       indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0, //Cuando te vas a contratante SI 1 no 0
       indPromotor: this.fp.gestionadoPorPromotor.value ? 1 : 0,// si = 1, No = 0
       idPromotor: this.fp.promotor.value,
