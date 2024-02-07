@@ -1,3 +1,5 @@
+import {BeneficiarioResponse} from "./beneficiarioResponse.interface";
+
 export interface PreRegistroPA {
   idPersona: number,
   idContratante: number,
@@ -34,5 +36,10 @@ export interface PreRegistroPA {
   beneficiario1: number,
   beneficiario2: number,
   gestionPromotor: boolean,
-  activo: number
+  activo: number,
+  tipoPaquete: string,
+  beneficiarios?: BeneficiarioResponse[],
+  telefono: string,
+  numExterior: string,
+  numInterior: string,
 }
