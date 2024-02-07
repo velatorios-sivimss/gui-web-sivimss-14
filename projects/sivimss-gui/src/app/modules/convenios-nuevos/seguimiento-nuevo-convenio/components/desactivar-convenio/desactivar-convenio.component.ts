@@ -35,7 +35,7 @@ export class DesactivarConvenioComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   beneficiarios: BeneficiarioResponse[] = [];
-  solicitantes: any[] = [];
+  solicitantes: PreRegistroPA[] = [];
   beneficiario1!: BeneficiarioResponse;
   beneficiario2!: BeneficiarioResponse;
   sustituto!: BeneficiarioResponse;
@@ -79,6 +79,7 @@ export class DesactivarConvenioComponent implements OnInit {
     if (this.tipoConvenio === '2') {
       this.convenioEmpresa = preRegistro.empresa;
       this.folioConvenio = this.convenioEmpresa.folioConvenio;
+      this.solicitantes = preRegistro.solicitantes;
     }
     if (this.tipoConvenio === '1') {
       this.titularPA = preRegistro.preRegistro;
