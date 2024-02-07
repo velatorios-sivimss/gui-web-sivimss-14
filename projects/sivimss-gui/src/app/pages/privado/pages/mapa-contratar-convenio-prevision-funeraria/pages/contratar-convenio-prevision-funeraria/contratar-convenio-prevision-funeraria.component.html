@@ -183,7 +183,7 @@
             <div class="col-md-3">
               <label class="control-label" for="enfermedadPrexistente">Enfermedad prexistente:</label>
               <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente"
-                appendTo="body" placeholder="Selecciona promotor" (onChange)="cambioEnfermedadPrexistente()"
+                appendTo="body" placeholder="Selecciona enfermedad prexistente" (onChange)="cambioEnfermedadPrexistente()"
                 [options]="enfermedadPrexistenteArray" [filter]="true" filterBy="label"></p-dropdown>
             </div>
             <div class="col-md-3" *ngIf="muestraOtraEnfermedad">
@@ -294,6 +294,9 @@
             <p-dropdown id="promotorPersona" class="form-control" formControlName="promotor" appendTo="body"
               placeholder="Selecciona promotor" [options]="promotores" [filter]="true" filterBy="label"
               [readonly]="seleccionarPromotor"></p-dropdown>
+            <span class="campo-obligatorio"
+                  *ngIf="f.promotor?.errors?.required && (f.promotor?.dirty || f.promotor?.touched)">Este
+              campo es obligatorio *.</span>
           </div>
         </div>
       </div>
@@ -564,6 +567,9 @@
             <p-dropdown id="promotor" class="form-control" formControlName="promotor" appendTo="body"
                         placeholder="Selecciona promotor" [options]="promotores" [filter]="true" filterBy="label"
                         [readonly]="seleccionarPromotorEmpresa"></p-dropdown>
+            <span class="campo-obligatorio"
+                  *ngIf="formEm.promotor?.errors?.required && (formEm.promotor?.dirty || formEm.promotor?.touched)">Este
+              campo es obligatorio *.</span>
           </div>
         </div>
       </div>
@@ -670,7 +676,7 @@
 
 
 <p-dialog [(visible)]="mostrarMensajeGenerico" [modal]="true"
-          [style]="{maxWidth:'544px',width: '100%'}" [closable]="false" [draggable]="false" [resizable]="false"
+          [style]="{maxWidth:'544px',width: '100%'}" [closable]="true" [draggable]="false" [resizable]="false"
           header=" " [showHeader]="true">
   <ng-template pTemplate="content">
     <div>
