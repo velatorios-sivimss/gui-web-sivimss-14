@@ -272,65 +272,65 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
 
   inicializarFormDatosBeneficiario1(beneficiario: Persona): void {
     let fecha: Date | null = null;
-    if (beneficiario?.fecNacimiento) {
-      const [anio, mes, dia] = beneficiario?.fecNacimiento.split('-');
+    if (beneficiario?.fecNacimiento && beneficiario?.fecNacimiento !== undefined) {
+      const [anio, mes, dia] = beneficiario.fecNacimiento.split('-');
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
     this.datosBeneficiario1Form = this.formBuilder.group({
-      curp: [{ value: beneficiario?.curp, disabled: true }, [Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: beneficiario?.rfc, disabled: true }, [Validators.pattern(PATRON_RFC)]],
+      curp: [{ value: beneficiario?.curp, disabled: false }, [Validators.pattern(PATRON_CURP)]],
+      rfc: [{ value: beneficiario?.rfc, disabled: false }, [Validators.pattern(PATRON_RFC)]],
       matricula: [{ value: beneficiario?.matricula, disabled: false },],
-      nss: [{ value: beneficiario?.nss, disabled: true }, []],
-      nombre: [{ value: beneficiario?.nomPersona, disabled: true }, []],
-      primerApellido: [{ value: beneficiario?.primerApellido, disabled: true }, []],
-      segundoApellido: [{ value: beneficiario?.segundoApellido, disabled: true }, []],
-      sexo: [{ value: beneficiario?.sexo ? +beneficiario?.sexo : null, disabled: true }, []],
-      otroSexo: [{ value: beneficiario?.otroSexo, disabled: true }],
-      fechaNacimiento: [{ value: fecha, disabled: true }, []],
-      nacionalidad: [{ value: beneficiario?.idPais ? +beneficiario?.idPais == 119 ? 1 : 2 : null, disabled: true }, []],
-      lugarNacimiento: [{ value: beneficiario?.idEstado ? +beneficiario?.idEstado : null, disabled: true }, []],
-      paisNacimiento: [{ value: beneficiario?.idPais ? +beneficiario?.idPais : null, disabled: true }],
+      nss: [{ value: beneficiario?.nss, disabled: false }, []],
+      nombre: [{ value: beneficiario?.nomPersona, disabled: false }, []],
+      primerApellido: [{ value: beneficiario?.primerApellido, disabled: false }, []],
+      segundoApellido: [{ value: beneficiario?.segundoApellido, disabled: false }, []],
+      sexo: [{ value: beneficiario?.sexo ? +beneficiario?.sexo : null, disabled: false }, []],
+      otroSexo: [{ value: beneficiario?.otroSexo, disabled: false }],
+      fechaNacimiento: [{ value: fecha, disabled: false }, []],
+      nacionalidad: [{ value: beneficiario?.idPais == 119 ? 1 : 2, disabled: false }, []],
+      lugarNacimiento: [{ value: beneficiario?.idEstado ? +beneficiario?.idEstado : null, disabled: false }, []],
+      paisNacimiento: [{ value: beneficiario?.idPais ? +beneficiario?.idPais : null, disabled: false }],
       telefono: [{ value: beneficiario?.telefono, disabled: false }, []],
       correoElectronico: [{ value: beneficiario?.correo, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: beneficiario?.cp?.codigoPostal, disabled: true }, []],
+      cp: [{ value: beneficiario?.cp?.codigoPostal, disabled: false }, []],
       calle: [{ value: beneficiario?.cp?.desCalle, disabled: false }, []],
       numeroInterior: [{ value: beneficiario?.cp?.numInterior, disabled: false }],
       numeroExterior: [{ value: beneficiario?.cp?.numExterior, disabled: false }, []],
-      colonia: [{ value: beneficiario?.cp?.desColonia, disabled: true }, []],
-      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: true }, []],
-      estado: [{ value: beneficiario?.cp?.desEstado, disabled: true }, []],
+      colonia: [{ value: beneficiario?.cp?.desColonia, disabled: false }, []],
+      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: false }, []],
+      estado: [{ value: beneficiario?.cp?.desEstado, disabled: false }, []],
     });
   }
 
   inicializarFormDatosBeneficiario2(beneficiario: Persona): void {
     let fecha: Date | null = null;
-    if (beneficiario?.fecNacimiento) {
-      const [anio, mes, dia] = beneficiario?.fecNacimiento.split('-');
+    if (beneficiario?.fecNacimiento && beneficiario?.fecNacimiento !== undefined) {
+      const [anio, mes, dia] = beneficiario.fecNacimiento.split('-');
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
     this.datosBeneficiario2Form = this.formBuilder.group({
-      curp: [{ value: beneficiario?.curp, disabled: true }, [Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: beneficiario?.rfc, disabled: true }, [Validators.pattern(PATRON_RFC)]],
+      curp: [{ value: beneficiario?.curp, disabled: false }, [Validators.pattern(PATRON_CURP)]],
+      rfc: [{ value: beneficiario?.rfc, disabled: false }, [Validators.pattern(PATRON_RFC)]],
       matricula: [{ value: beneficiario?.matricula, disabled: false },],
-      nss: [{ value: beneficiario?.nss, disabled: true }, []],
-      nombre: [{ value: beneficiario?.nomPersona, disabled: true }, []],
-      primerApellido: [{ value: beneficiario?.primerApellido, disabled: true }, []],
-      segundoApellido: [{ value: beneficiario?.segundoApellido, disabled: true }, []],
-      sexo: [{ value: beneficiario?.sexo ? +beneficiario?.sexo : null, disabled: true }, []],
-      otroSexo: [{ value: beneficiario?.otroSexo, disabled: true }],
-      fechaNacimiento: [{ value: fecha, disabled: true }, []],
-      nacionalidad: [{ value: beneficiario?.idPais ? +beneficiario?.idPais == 119 ? 1 : 2 : null, disabled: true }, []],
-      lugarNacimiento: [{ value: beneficiario?.idEstado ? +beneficiario?.idEstado : null, disabled: true }, []],
-      paisNacimiento: [{ value: beneficiario?.idPais ? +beneficiario?.idPais : null, disabled: true }],
+      nss: [{ value: beneficiario?.nss, disabled: false }, []],
+      nombre: [{ value: beneficiario?.nomPersona, disabled: false }, []],
+      primerApellido: [{ value: beneficiario?.primerApellido, disabled: false }, []],
+      segundoApellido: [{ value: beneficiario?.segundoApellido, disabled: false }, []],
+      sexo: [{ value: beneficiario?.sexo ? +beneficiario?.sexo : null, disabled: false }, []],
+      otroSexo: [{ value: beneficiario?.otroSexo, disabled: false }],
+      fechaNacimiento: [{ value: fecha, disabled: false }, []],
+      nacionalidad: [{ value: beneficiario?.idPais == 119 ? 1 : 2, disabled: false }, []],
+      lugarNacimiento: [{ value: beneficiario?.idEstado ? +beneficiario?.idEstado : null, disabled: false }, []],
+      paisNacimiento: [{ value: beneficiario?.idPais ? +beneficiario?.idPais : null, disabled: false }],
       telefono: [{ value: beneficiario?.telefono, disabled: false }, []],
       correoElectronico: [{ value: beneficiario?.correo, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: beneficiario?.cp?.codigoPostal, disabled: true }, []],
+      cp: [{ value: beneficiario?.cp?.codigoPostal, disabled: false }, []],
       calle: [{ value: beneficiario?.cp?.desCalle, disabled: false }, []],
       numeroInterior: [{ value: beneficiario?.cp?.numInterior, disabled: false }],
       numeroExterior: [{ value: beneficiario?.cp?.numExterior, disabled: false }, []],
-      colonia: [{ value: beneficiario?.cp?.desColonia, disabled: true }, []],
-      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: true }, []],
-      estado: [{ value: beneficiario?.cp?.desEstado, disabled: true }, []],
+      colonia: [{ value: beneficiario?.cp?.desColonia, disabled: false }, []],
+      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: false }, []],
+      estado: [{ value: beneficiario?.cp?.desEstado, disabled: false }, []],
     });
   }
 
@@ -538,17 +538,30 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   consultarNSS(posicion: number): void {
-    let formularios = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    if (!formularios[posicion].nss.value) return;
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
+    if (!formularioEnUso[posicion].nss.value) return;
     this.cargadorService.activar();
-    this.serviciosFunerariosService.consultarNSS(formularios[posicion].nss.value).pipe(
+    this.serviciosFunerariosService.consultarNSS(formularioEnUso[posicion].nss.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos === null) {
+        if (!respuesta.datos) {
           this.alertaService.mostrar(
-            TipoAlerta.Precaucion,
-            "El Número de Seguridad Social no existe." || this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
+            TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
+        } else {
+          let fecha: Date | null = null;
+          if (respuesta.datos.fechaNacimiento) {
+            fecha = new Date(respuesta.datos.fechaNacimiento);
+          }
+          formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
+          formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
+          formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+          formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
+          formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
+          formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
+          formularioEnUso[posicion].sexo.setValue(respuesta.datos.sexo?.idSexo);
+          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
+          formularioEnUso[posicion].nacionalidad.setValue(1);
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -873,7 +886,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0,
       indModificarTitularSubstituto: 1,
       monPrecio: this.consultarMonPrecio(),
-      indPromotor: this.fp.gestionadoPorPromotor.value  ? 1 : 0,
+      indPromotor: this.fp.gestionadoPorPromotor.value ? 1 : 0,
       idPromotor: this.fp.promotor.value,
       titularesBeneficiarios: [
         {

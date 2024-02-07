@@ -40,43 +40,43 @@ export interface DetallePago {
 }
 
 export interface ConsultaPaginado {
-                   ESTADO: string | null,
-        ESTATUS_PLAN_SFPA: string | null,
-             ID_PLAN_SFPA: number | null,
-                  TITULAR: string | null,
-      NUM_FOLIO_PLAN_SFPA: string | null,
-              NUMERO_PAGO: string | null,
-                  PAQUETE: string | null,
-       CORREO_ELECTRONICO: string | null,
+  ESTADO: string | null,
+  ESTATUS_PLAN_SFPA: string | null,
+  ID_PLAN_SFPA: number | null,
+  TITULAR: string | null,
+  NUM_FOLIO_PLAN_SFPA: string | null,
+  NUMERO_PAGO: string | null,
+  PAQUETE: string | null,
+  CORREO_ELECTRONICO: string | null,
   ESTATUS_PAGO_ANTICIPADO: string | null,
 }
 
-export interface GenerarReporte{
-        idVelatorio: string | null,
-   numFolioPlanSfpa: string | null,
-                rfc: string | null,
-               curp: string | null,
-     nombreAfiliado: string | null,
+export interface GenerarReporte {
+  idVelatorio: string | null,
+  numFolioPlanSfpa: string | null,
+  rfc: string | null,
+  curp: string | null,
+  nombreAfiliado: string | null,
   idEstatusPlanSfpa: string | null,
-        fechaInicio: string | null,
-           fechaFin: string | null,
-        tipoReporte: string | null,
+  fechaInicio: string | null,
+  fechaFin: string | null,
+  tipoReporte: string | null,
 }
 
 export interface AgregarPlanSFPA {
-                    idPlanSfpa?: number | null,
-            indTipoPagoMensual?: boolean | null,
-             idTipoContratacion: number | null,
-                      idPaquete: number | null,
-                      monPrecio: number | null,
-                    indPromotor?: number | null,
-                     idPromotor?: number | null,
-               numFolioPlanSFPA?: string | null,
-             idTipoPagoMensual : number | null,
-           indTitularSubstituto: number | null,
-                 numPagoMensual: number | null,
+  idPlanSfpa?: number | null,
+  indTipoPagoMensual?: boolean | null,
+  idTipoContratacion: number | null,
+  idPaquete: number | null,
+  monPrecio: number | null,
+  indPromotor?: number | null,
+  idPromotor?: number | null,
+  numFolioPlanSFPA?: string | null,
+  idTipoPagoMensual: number | null,
+  indTitularSubstituto: number | null,
+  numPagoMensual: number | null,
   indModificarTitularSubstituto: number | null,
-        titularesBeneficiarios : Persona[],
+  titularesBeneficiarios: Persona[],
 }
 
 export interface Persona {
@@ -109,4 +109,34 @@ export interface CodigoPostal {
   desColonia: string | null
   desMunicipio: string | null
   desEstado: string | null
+}
+
+export interface NSS {
+  curp?: string,
+  cveIdPersona?: number,
+  datosPersonaRenapo?: string,
+  estadoCivil?: string,
+  fechaDefuncion?: string,
+  fechaNacimiento?: string,
+  lugarNacimiento?: LugarNacimiento,
+  nombre?: string,
+  nss?: string,
+  pais?: number | null,
+  primerApellido?: string,
+  rfc?: number | null,
+  segundoApellido?: string,
+  sexo?: Sexo,
+}
+
+export interface LugarNacimiento {
+  clave?: string;
+  claveRenapo?: string;
+  idRenapo?: string;
+  nombre?: string;
+}
+
+export interface Sexo {
+  descripcion?: string;
+  genero?: number;
+  idSexo?: number;
 }
