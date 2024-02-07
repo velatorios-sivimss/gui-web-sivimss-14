@@ -38,7 +38,6 @@ export class ConsultaPlanServiciosFunerariosPagoAnticipadoComponent implements O
   ) { }
 
   ngOnInit(): void {
-    debugger
     this.autenticacionContratanteService.usuarioEnSesion$.subscribe(
       (usuarioEnSesion: UsuarioEnSesion | null) => {
         this.usuarioEnSesion = usuarioEnSesion;
