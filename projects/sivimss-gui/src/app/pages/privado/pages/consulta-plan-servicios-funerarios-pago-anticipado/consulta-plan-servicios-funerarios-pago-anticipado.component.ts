@@ -9,7 +9,7 @@ import { finalize } from 'rxjs';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { ListadoPlanes } from './models/consulta-plan-sfpa.interface';
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
+import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
 
 @Component({
   selector: 'app-consulta-plan-servicios-funerarios-pago-anticipado',
@@ -33,12 +33,13 @@ export class ConsultaPlanServiciosFunerariosPagoAnticipadoComponent implements O
     private contratarPSFPAService: ContratarPSFPAService,
     private alertaService: AlertaService,
     private loaderService: LoaderService,
-    private readonly autenticacionService: AutenticacionService,
+    private readonly autenticacionContratanteService: AutenticacionContratanteService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.autenticacionService.usuarioEnSesion$.subscribe(
+    debugger
+    this.autenticacionContratanteService.usuarioEnSesion$.subscribe(
       (usuarioEnSesion: UsuarioEnSesion | null) => {
         this.usuarioEnSesion = usuarioEnSesion;
         this.buscarPlanes();

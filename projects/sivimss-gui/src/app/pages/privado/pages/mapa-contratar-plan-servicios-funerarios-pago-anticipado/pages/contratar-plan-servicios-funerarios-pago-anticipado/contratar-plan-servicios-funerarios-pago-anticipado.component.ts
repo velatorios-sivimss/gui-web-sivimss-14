@@ -14,7 +14,7 @@ import { CATALOGO_NACIONALIDAD, CATALOGO_SEXO } from "projects/sivimss-gui/src/a
 import { finalize } from 'rxjs/operators';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { PATRON_CORREO, PATRON_CURP, PATRON_RFC } from 'projects/sivimss-gui/src/app/utils/constantes';
@@ -47,6 +47,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   mostrarModalTipoArchivoIncorrecto: boolean = false;
   mostrarModalConfirmacionInformacionCapturada: boolean = false;
   ocultarBtnGuardar: boolean = false;
+  mostrarRealizarPago: boolean = false;
   mostrarModalValidacionRegistro: boolean = false;
   mostrarModalDesactivarBeneficiarioGrupo: boolean = false;
   TIPO_CONTRATACION_PERSONA: string = 'persona';
@@ -80,6 +81,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     private readonly activatedRoute: ActivatedRoute,
     private mensajesSistemaService: MensajesSistemaService,
     private renderer: Renderer2,
+    private readonly router: Router,
   ) {
   }
 
@@ -263,10 +265,14 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   handleGestionPromotor() {
     if (this.fp.gestionadoPorPromotor.value) {
       this.fp.promotor.enable();
+      this.fp.promotor.setValidators(Validators.required);
+      this.fp.promotor.markAsTouched();
     } else {
       this.fp.promotor.setValue(null);
       this.fp.promotor.disable();
+      this.fp.promotor.clearValidators();
     }
+    this.fp.promotor.updateValueAndValidity();
   }
 
   // validarUsuarioTitular(curp: string, rfc: string, nss: string, posicion: number): void {
@@ -805,6 +811,10 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     }
   }
 
+  cancelar(): void {
+    void this.router.navigate(["../../../"]);
+  }
+
   guardar(): void {
     if (this.fp.valid && this.fdt.fp.valid && this.fdts.fp.valid && this.fdb1.fp.valid && this.fdb2.fp.valid) {
       this.mostrarModalConfirmacionInformacionCapturada = true;
@@ -819,6 +829,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+        this.mostrarRealizarPago = true;
         this.promotorForm.disable();
         this.datosTitularForm.disable();
         this.datosTitularSubstitutoForm.disable();
