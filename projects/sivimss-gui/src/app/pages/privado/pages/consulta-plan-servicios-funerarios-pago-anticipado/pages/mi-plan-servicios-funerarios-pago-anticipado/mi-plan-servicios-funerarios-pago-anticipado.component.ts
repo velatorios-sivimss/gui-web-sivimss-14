@@ -99,11 +99,24 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
             try {
               this.detalleServicioFunerario = respuesta.datos || {};
               this.titular = this.detalleServicioFunerario.titularesBeneficiarios[0];
-              this.titularSubstituto = this.detalleServicioFunerario.titularesBeneficiarios[1];
-              if (this.detalleServicioFunerario.titularesBeneficiarios.length > 2)
-                this.beneficiarios.push(this.detalleServicioFunerario.titularesBeneficiarios[2]);
-              if (this.detalleServicioFunerario.titularesBeneficiarios.length > 3)
-                this.beneficiarios.push(this.detalleServicioFunerario.titularesBeneficiarios[3]);
+
+              this.titularSubstituto =
+                this.detalleServicioFunerario.indTitularSubstituto === 1
+                  ? this.titular
+                  : this.detalleServicioFunerario.titularesBeneficiarios[1];
+
+              let beneficiario1 =
+                this.detalleServicioFunerario.indTitularSubstituto === 1
+                  ? this.detalleServicioFunerario?.titularesBeneficiarios[1]
+                  : this.detalleServicioFunerario?.titularesBeneficiarios[2];
+
+              let beneficiario2 =
+                this.detalleServicioFunerario.indTitularSubstituto === 1
+                  ? this.detalleServicioFunerario?.titularesBeneficiarios[2]
+                  : this.detalleServicioFunerario?.titularesBeneficiarios[3];
+
+              if (beneficiario1) this.beneficiarios.push(beneficiario1);
+              if (beneficiario2) this.beneficiarios.push(beneficiario2);
             } catch (error) {
               console.error(error);
             }

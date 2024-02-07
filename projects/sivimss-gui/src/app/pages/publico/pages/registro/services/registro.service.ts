@@ -31,7 +31,6 @@ export class RegistroService extends BaseService<HttpRespuesta<any>, any> {
 
   validarCurpRfc(datos: ValidarRfcCurp): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${environment.api.loginContratante}/catalogos/consulta/rfc-curp`, datos);
-    // return this._http.post<HttpRespuesta<any>>(`${this._base}/catalogos/consulta/rfc-curp`, datos);
   }
 
 }
