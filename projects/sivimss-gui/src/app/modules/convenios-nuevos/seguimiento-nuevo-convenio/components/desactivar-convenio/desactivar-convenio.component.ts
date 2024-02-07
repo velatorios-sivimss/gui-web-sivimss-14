@@ -72,16 +72,19 @@ export class DesactivarConvenioComponent implements OnInit {
     const preRegistro = respuesta[this.POSICION_CONVENIO].datos;
     if (!preRegistro) this.errorCargarRegistro();
     if (this.tipoConvenio === '3') {
+      if (!preRegistro.detalleConvenioPFModel) this.errorCargarRegistro();
       this.convenioPersona = preRegistro.detalleConvenioPFModel;
       this.folioConvenio = this.convenioPersona.folioConvenio;
       this.beneficiarios = preRegistro.beneficiarios;
     }
     if (this.tipoConvenio === '2') {
+      if (!preRegistro.empresa) this.errorCargarRegistro();
       this.convenioEmpresa = preRegistro.empresa;
       this.folioConvenio = this.convenioEmpresa.folioConvenio;
       this.solicitantes = preRegistro.solicitantes;
     }
     if (this.tipoConvenio === '1') {
+      if (!preRegistro.preRegistro) this.errorCargarRegistro();
       this.titularPA = preRegistro.preRegistro;
       this.folioConvenio = this.titularPA.folioConvenio;
       this.mismoSustituto = !preRegistro.sustituto;
