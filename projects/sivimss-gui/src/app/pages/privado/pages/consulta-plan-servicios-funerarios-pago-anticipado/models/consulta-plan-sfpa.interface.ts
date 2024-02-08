@@ -43,7 +43,9 @@ export interface TitularesBeneficiarios {
   otroSexo?: string;
   fecNacimiento?: string;
   nacionalidad?: number | null,
+  lugarNac?: string;
   idPais?: number;
+  pais?: string;
   idEstado?: number;
   telefono?: string;
   telefonoFijo?: string;
