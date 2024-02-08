@@ -53,7 +53,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   beneficiariosPA: BeneficiarioResponse[] = [];
   beneficiario1!: BeneficiarioResponse;
   beneficiario2!: BeneficiarioResponse;
+  sustituto!: BeneficiarioResponse;
   titularPA!: PreRegistroPA;
+  mismoSustituto: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -93,10 +95,17 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     }
     if (this.tipoConvenio === '1') {
       this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
+      this.mismoSustituto = !respuesta[this.POSICION_CONVENIO].datos.sustituto;
+      this.obtenerSustitutoDesdeTitular();
       this.beneficiariosPA = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
       this.folio = this.titularPA.folioConvenio;
       this.obtenerBeneficiarios()
     }
+  }
+
+  obtenerSustitutoDesdeTitular(): void {
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"][this.POSICION_CONVENIO].datos
+    this.sustituto = !this.mismoSustituto ? respuesta.sustituto : this.titularPA as unknown as BeneficiarioResponse;
   }
 
   cargarCatalogosGenerales(): void {
@@ -210,27 +219,27 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         numeroPagos: [{value: this.titularPA.numPagos, disabled: false}, [Validators.required]],
       }),
       sustituto: this.formBuilder.group({
-        curp: [{value: null, disabled: false}, [Validators.required]],
-        rfc: [{value: null, disabled: false}, [Validators.required]],
-        matricula: [{value: null, disabled: false}, [Validators.required]],
-        nss: [{value: null, disabled: false}, [Validators.required]],
-        nombre: [{value: null, disabled: false}, [Validators.required]],
-        primerApellido: [{value: null, disabled: false}, [Validators.required]],
-        segundoApellido: [{value: null, disabled: false}, [Validators.required]],
-        sexo: [{value: null, disabled: false}, [Validators.required]],
-        fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
+        curp: [{value: this.sustituto?.curp ?? null, disabled: false}, [Validators.required]],
+        rfc: [{value: this.sustituto?.rfc ?? null, disabled: false}, [Validators.required]],
+        matricula: [{value: this.sustituto?.matricula ?? null, disabled: false}, [Validators.required]],
+        nss: [{value: this.sustituto?.nss ?? null, disabled: false}, [Validators.required]],
+        nombre: [{value: this.sustituto?.nombre ?? null, disabled: false}, [Validators.required]],
+        primerApellido: [{value: this.sustituto?.primerApellido ?? null, disabled: false}, [Validators.required]],
+        segundoApellido: [{value: this.sustituto?.segundoApellido ?? null, disabled: false}, [Validators.required]],
+        sexo: [{value: +this.sustituto?.idSexo ?? null, disabled: false}, [Validators.required]],
+        fechaNacimiento: [{value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento), disabled: false}, [Validators.required]],
         nacionalidad: [{value: null, disabled: false}, [Validators.required]],
         paisNacimiento: [{value: null, disabled: false}, [Validators.required]],
         lugarNacimiento: [{value: null, disabled: false}, [Validators.required]],
-        telefono: [{value: null, disabled: false}, [Validators.required]],
-        correoElectronico: [{value: null, disabled: false}, [Validators.required]],
-        calle: [{value: null, disabled: false}, [Validators.required]],
-        numeroExterior: [{value: null, disabled: false}, [Validators.required]],
-        numeroInterior: [{value: null, disabled: false}, [Validators.required]],
-        cp: [{value: null, disabled: false}, [Validators.required]],
-        colonia: [{value: null, disabled: false}, [Validators.required]],
-        municipio: [{value: null, disabled: false}, [Validators.required]],
-        estado: [{value: null, disabled: false}, [Validators.required]],
+        telefono: [{value: this.sustituto?.telFijo ?? null, disabled: false}, [Validators.required]],
+        correoElectronico: [{value: this.sustituto?.correo ?? null, disabled: false}, [Validators.required]],
+        calle: [{value: this.sustituto?.calle ?? null, disabled: false}, [Validators.required]],
+        numeroExterior: [{value: this.sustituto?.numExt ?? null, disabled: false}, [Validators.required]],
+        numeroInterior: [{value: this.sustituto?.numInt ?? null, disabled: false}, [Validators.required]],
+        cp: [{value: this.sustituto?.cp ?? null, disabled: false}, [Validators.required]],
+        colonia: [{value: this.sustituto?.colonia ?? null, disabled: false}, [Validators.required]],
+        municipio: [{value: this.sustituto?.municipio ?? null, disabled: false}, [Validators.required]],
+        estado: [{value: this.sustituto?.estado ?? null, disabled: false}, [Validators.required]],
       }),
       beneficiario1: this.formBuilder.group({
         curp: [{value: this.beneficiario1?.curp ?? null, disabled: true}],

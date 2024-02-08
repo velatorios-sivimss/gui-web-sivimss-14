@@ -16,7 +16,20 @@
       </p-accordion>
       <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
         <p-accordionTab header="Datos del titular sustituto">
-          <div formGroupName="sustituto">
+          <label class="control-label">Son los mismos que el titular</label>
+          <div class="flex">
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'titularSi'" name="titular" [value]="true"
+                             [(ngModel)]="mismoSustituto"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'titularSi'">Sí</label>
+            </div>
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'titularNo'" name="titular" [value]="false"
+                             [(ngModel)]="mismoSustituto"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
+            </div>
+          </div>
+          <div formGroupName="sustituto" class="mt-3">
             <app-datos-sustituto-beneficiario></app-datos-sustituto-beneficiario>
           </div>
         </p-accordionTab>
