@@ -82,17 +82,17 @@
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">País de nacimiento</span>
-                <span class="texto-base font-normal" *ngIf="titular?.idPais">{{titular.idPais}}</span>
+                <span class="texto-base font-normal" *ngIf="titular?.pais">{{titular.pais}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Lugar de nacimiento</span>
-                <span class="texto-base font-normal" *ngIf="titular?.idPais">{{titular.idPais}}</span>
+                <span class="texto-base font-normal" *ngIf="titular?.lugarNac">{{titular.lugarNac}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Teléfono</span>
                 <span class="texto-base font-normal" *ngIf="titular?.telefono">{{titular.telefono}}</span>
             </div>
-            <div class="col-md-2 flex flex-column">
+            <div class="col-md-4 flex flex-column">
                 <span class="etiqueta-base font-bold">Correo electrónico</span>
                 <span class="texto-base font-normal" *ngIf="titular?.correo">{{titular.correo}}</span>
             </div>
@@ -190,19 +190,19 @@
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">País de nacimiento</span>
                 <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.idPais">{{titularSubstituto.idPais}}</span>
+                    *ngIf="titularSubstituto?.pais">{{titularSubstituto.pais}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Lugar de nacimiento</span>
                 <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.idPais">{{titularSubstituto.idPais}}</span>
+                    *ngIf="titularSubstituto?.lugarNac">{{titularSubstituto.lugarNac}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Teléfono</span>
                 <span class="texto-base font-normal"
                     *ngIf="titularSubstituto?.telefono">{{titularSubstituto.telefono}}</span>
             </div>
-            <div class="col-md-2 flex flex-column">
+            <div class="col-md-4 flex flex-column">
                 <span class="etiqueta-base font-bold">Correo electrónico</span>
                 <span class="texto-base font-normal"
                     *ngIf="titularSubstituto?.correo">{{titularSubstituto.correo}}</span>

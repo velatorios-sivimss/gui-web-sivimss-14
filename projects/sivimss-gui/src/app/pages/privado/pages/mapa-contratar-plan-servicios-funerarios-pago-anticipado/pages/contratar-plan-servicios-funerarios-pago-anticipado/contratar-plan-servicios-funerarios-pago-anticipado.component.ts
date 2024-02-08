@@ -357,6 +357,24 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     }
   }
 
+  consultarMatricula(posicion: number): void {
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
+    if (!formularioEnUso[posicion].matricula.value) return;
+    this.loaderService.activar();
+    this.serviciosFunerariosService.consultarMatriculaSiap(formularioEnUso[posicion].matricula.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (!respuesta.datos) {
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(70));
+        }
+      },
+      error: (error: HttpErrorResponse): void => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
+      }
+    });
+  }
+
   consultarNSS(posicion: number): void {
     let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].nss.value) return;
@@ -370,8 +388,9 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
             TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
         } else {
           let fecha: Date | null = null;
-          if (respuesta.datos.fechaNacimiento) {
-            fecha = new Date(respuesta.datos.fechaNacimiento);
+          if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined ) {
+            let [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
+            fecha = new Date(+anio, +mes - 1, +dia);
           }
           let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
           formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
@@ -682,10 +701,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
       return;
     }
-
-    if (posicion === 0 || posicion === 1) {
       this.limpiarFormulario(posicion);
-      // this.validarUsuarioTitular(formularioEnUso[posicion].curp.value, "", "", posicion);
       this.loaderService.activar();
       this.registroService.validarCurpRfc({
         rfc: formularioEnUso[posicion].curp.value,
@@ -764,7 +780,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
         }
       })
-    }
   }
 
   accentsTidy(s: string): string {
