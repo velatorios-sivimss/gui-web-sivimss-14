@@ -731,7 +731,10 @@ export class DatosContratanteSFComponent implements OnInit {
           }
         },
         error: (error: HttpErrorResponse) => {
-          console.log(error);
+          this.alertaService.mostrar(
+            TipoAlerta.Error,
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(187)
+          );
         }
       });
   }
