@@ -38,7 +38,7 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   }
 
   buscarConvenioPorPersona(idConvenio: number, idFLujo: number): Observable<HttpRespuesta<any>> {
-    const body = {idFLujo, idConvenio}
+    const body = +idFLujo === 2 ? {idFLujo, idConvenio, seccion: 1} : {idFLujo, idConvenio};
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/buscar-detalle-preregistros`, body);
   }
 
@@ -51,7 +51,7 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   }
 
   cambiarEstatusConvenio(idConvenio: number, idFLujo: number): Observable<HttpRespuesta<any>> {
-    const body = { idFLujo, idConvenio };
+    const body = {idFLujo, idConvenio};
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/activar-desactivar`, body);
   }
 }

@@ -44,6 +44,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   documentos: Documentos[] = [];
   documentoSeleccionado: Documentos = {};
+  solicitantes: PreRegistroPA[] = [];
 
   preRegistroSiguiente: boolean = false;
   folio: string = '';
@@ -175,10 +176,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     });
   }
 
+  calcularFechaNacimiento(fecha: string): Date | null {
+    if(!fecha) return null;
+    return new Date(diferenciaUTC(this.titularPA.fecNacimiento));
+  }
+
   inicializarFormularioPA(): void {
-    const fecNacimiento: Date = new Date(diferenciaUTC(this.titularPA.fecNacimiento));
-    const fecNacimientoBen1: Date = new Date(diferenciaUTC(this.beneficiario1.fecNacimiento));
-    const fecNacimientoBen2: Date = new Date(diferenciaUTC(this.beneficiario2.fecNacimiento));
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
@@ -189,7 +192,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         primerApellido: [{value: this.titularPA.primerApellido, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.titularPA.segundoApellido, disabled: false}, [Validators.required]],
         sexo: [{value: this.titularPA.idSexo, disabled: false}, [Validators.required]],
-        fechaNacimiento: [{value: fecNacimiento, disabled: false}, [Validators.required]],
+        fechaNacimiento: [{value: this.calcularFechaNacimiento(this.titularPA.fecNacimiento), disabled: false}, [Validators.required]],
         nacionalidad: [{value: null, disabled: false}, [Validators.required]],
         paisNacimiento: [{value: +this.titularPA.idPais, disabled: false}],
         lugarNacimiento: [{value: null, disabled: false}],
@@ -238,11 +241,11 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         primerApellido: [{value: this.beneficiario1?.primerApellido ?? null, disabled: true}],
         segundoApellido: [{value: this.beneficiario1?.segundoApellido ?? null, disabled: true}],
         sexo: [{value: +this.beneficiario1?.idSexo ?? null, disabled: true}],
-        fechaNacimiento: [{value: fecNacimientoBen1 ?? null, disabled: true}],
+        fechaNacimiento: [{value: this.calcularFechaNacimiento(this.beneficiario1?.fecNacimiento), disabled: true}],
         nacionalidad: [{value: null, disabled: true}],
         paisNacimiento: [{value: null, disabled: true}],
         lugarNacimiento: [{value: null, disabled: true}],
-        telefono: [{value: this.beneficiario1.telFijo, disabled: true}],
+        telefono: [{value: this.beneficiario1?.telFijo ?? null, disabled: true}],
         correoElectronico: [{value: this.beneficiario1?.correo ?? null, disabled: true}],
         calle: [{value: this.beneficiario1?.calle ?? null, disabled: true}],
         numeroExterior: [{value: this.beneficiario1?.numExt ?? null, disabled: true}],
@@ -261,7 +264,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         primerApellido: [{value: this.beneficiario2?.primerApellido ?? null, disabled: true}],
         segundoApellido: [{value: this.beneficiario2?.segundoApellido ?? null, disabled: true}],
         sexo: [{value: +this.beneficiario2?.idSexo ?? null, disabled: true}],
-        fechaNacimiento: [{value: fecNacimientoBen2 ?? null, disabled: true}],
+        fechaNacimiento: [{value: this.calcularFechaNacimiento(this.beneficiario2?.fecNacimiento), disabled: true}],
         nacionalidad: [{value: null, disabled: true}],
         paisNacimiento: [{value: null, disabled: true}],
         lugarNacimiento: [{value: null, disabled: true}],
