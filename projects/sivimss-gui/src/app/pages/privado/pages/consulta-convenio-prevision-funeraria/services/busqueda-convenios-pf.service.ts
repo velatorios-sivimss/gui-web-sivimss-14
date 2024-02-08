@@ -141,6 +141,6 @@ export class BusquedaConveniosPFServic extends BaseService<
   }
 
   guardarDatosPago(body: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._basePagos + `pago/online/crear`, body);
+    return this._http.post<HttpRespuesta<any>>(this._basePagos + `/pago/online/crear`, body);
   }
 }
