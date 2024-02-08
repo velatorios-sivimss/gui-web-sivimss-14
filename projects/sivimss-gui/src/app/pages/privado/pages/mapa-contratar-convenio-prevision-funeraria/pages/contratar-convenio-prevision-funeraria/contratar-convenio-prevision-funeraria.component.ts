@@ -37,6 +37,8 @@ import {
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {Beneficiarios} from '../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
+import {SolicitudPagos} from "../../../../models/solicitud-pagos.interface";
+import {TransaccionPago} from "../../../../models/transaccion-pago.interface";
 
 @Component({
   selector: 'app-contratar-convenio-prevision-funeraria',
@@ -134,7 +136,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   }
 
   ngOnInit(): void {
-    this.cargarScript(() => {});
+    this.cargarScript(() => {
+    });
     this.subscripcionMotorPagos()
     this.formPersona = this.crearFormPersona();
     this.formEmpresa = this.crearFormularioEmpresa();
@@ -165,6 +168,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
         this.rutaActiva.snapshot.queryParams.idConvenio
       );
   }
+
   subscripcionMotorPagos(): void {
     // Escucha el evento personalizado
     document.addEventListener('datosRecibidos', (event) => {
@@ -174,12 +178,51 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
         return;
       }
       if (data.transaction && data.transaction.status_detail === 3) {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
+        this.guardarPagoEnLinea(data);
       }
       if (data.transaction && [9, 11, 12].includes(data.transaction.status_detail)) {
         this.alertaService.mostrar(TipoAlerta.Error, 'Pago rechazado.');
       }
     });
+  }
+
+  guardarPagoEnLinea(transaccion: TransaccionPago): void {
+    this.loaderService.activar();
+    const solicitud = this.generarSolicitudPagosLinea(transaccion);
+    this.consultaConveniosService.guardarDatosPago(solicitud).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta): void => {
+        console.log(respuesta);
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+      }
+    })
+  }
+
+  generarSolicitudPagosLinea(pago: TransaccionPago): SolicitudPagos {
+    let idMetodoPago: number = 4;
+    if (+pago.transaction.payment_method_type === 0) idMetodoPago = 4;
+    if (+pago.transaction.payment_method_type === 7) idMetodoPago = 3;
+    return {
+      fecTransaccion: pago.transaction.payment_date, // pagos linea
+      folio: this.folioConvenio,
+      folioPago: "TEST-1", // pagos linea
+      idCliente: 433, //pagos linea (local storage)
+      idFlujoPagos: 2,
+      idMetodoPago, // debito o credito payment_method_type
+      idRegistro: this.idConvenioPf, // idConvenio
+      idVelatorio: this.idVelatorio,
+      importe: 1,
+      nomContratante: this.nombreCompleto,
+      nomTitular: "Mario Dominguez Serrano", // pagos
+      numAprobacion: pago.transaction.authorization_code, // pagos
+      numTarjeta: pago.card.number, // pagos number
+      referencia: pago.transaction.id // pagos transaction_reference
+
+    }
   }
 
   clickContratacion(tipoContratacion: string): void {
@@ -212,7 +255,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
     //TODO Validar referencia a mandar
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: 1 }));
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({referencia: 'NPF', monto: 1}));
   }
 
   crearFormPersona(): FormGroup {
@@ -448,7 +491,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
           disabled: false,
         },
         [Validators.nullValidator,
-        Validators.required],
+          Validators.required],
       ],
       promotor: [
         {
@@ -456,7 +499,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
           disabled: false,
         },
         [Validators.nullValidator,
-        Validators.required],
+          Validators.required],
       ],
     });
   }
@@ -565,7 +608,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
           disabled: false,
         },
         [Validators.nullValidator,
-        Validators.required],
+          Validators.required],
       ],
       promotor: [
         {
@@ -573,7 +616,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
           disabled: false,
         },
         [Validators.nullValidator,
-        Validators.required],
+          Validators.required],
       ],
     });
   }
@@ -723,6 +766,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   get f() {
     return this.formPersona.controls;
   }
+
   get formEm() {
     return this.formEmpresa.controls;
   }
@@ -786,11 +830,11 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   }
 
   addAttachment(fileInput: any): void {
-    const extensionesPermitidas = ['pdf','gif','jpeg','jpg'];
+    const extensionesPermitidas = ['pdf', 'gif', 'jpeg', 'jpg'];
     const maxSize = 5000000;
     const fileReaded = fileInput.target.files[0];
     const tipoArchivo = fileReaded.type.split('/');
-    if(!extensionesPermitidas.includes(tipoArchivo[1])){
+    if (!extensionesPermitidas.includes(tipoArchivo[1])) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(97));
       return
     }
@@ -841,7 +885,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
         this.archivoRfc = data;
       }
     });
-    this.mostrarMensajeGenerico= true;
+    this.mostrarMensajeGenerico = true;
   }
 
   guardarEmpresa(): void {
@@ -1222,12 +1266,12 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     this.formEmpresa.controls['promotor'].updateValueAndValidity();
     if (proviene == 'persona') {
       this.seleccionarPromotor = !this.formPersona.value.gestionadoPorPromotor;
-      if(!this.seleccionarPromotor)this.formPersona.controls['promotor'].setValidators(Validators.required);
+      if (!this.seleccionarPromotor) this.formPersona.controls['promotor'].setValidators(Validators.required);
       this.formPersona.controls['promotor'].setValue(null);
     } else {
       if (this.formEmpresa.disabled) return;
       this.seleccionarPromotorEmpresa = !this.formEmpresa.value.gestionadoPorPromotor;
-      if(!this.seleccionarPromotorEmpresa)this.formEmpresa.controls['promotor'].setValidators(Validators.required);
+      if (!this.seleccionarPromotorEmpresa) this.formEmpresa.controls['promotor'].setValidators(Validators.required);
       this.formEmpresa.controls['promotor'].setValue(null);
     }
   }

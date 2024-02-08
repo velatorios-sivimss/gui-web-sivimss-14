@@ -19,6 +19,8 @@ export class BusquedaConveniosPFServic extends BaseService<
     super(_http, `${environment.api.conveniosPF}`, '', '', '', '', '');
   }
 
+  readonly  _basePagos: string = environment.api.conveniosPSF;
+
   consultarConvenios(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base + `convenio-pf/mis-convenios`,
@@ -133,7 +135,12 @@ export class BusquedaConveniosPFServic extends BaseService<
   consultarConvenioEmpresa(idConvenio: number): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(this._base + `convenio-pf/empresa-convenio/${idConvenio}`)
   }
+
   consultarMatriculaSIAP(matricula:string): Observable<HttpRespuesta<any>>{
     return this._http.get<HttpRespuesta<any>>(this._base + `consultar/matricula/${matricula}`)
+  }
+
+  guardarDatosPago(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._basePagos + `pago/online/crear`, body);
   }
 }
