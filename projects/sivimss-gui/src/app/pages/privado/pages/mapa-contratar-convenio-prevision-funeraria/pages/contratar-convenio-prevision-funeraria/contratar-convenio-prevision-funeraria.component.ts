@@ -99,7 +99,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   archivoIne: string | null = null;
   archivoCurp: string | null = null;
   archivoRfc: string | null = null;
-  seleccionarPromotor: boolean = true;
+  seleccionarPromotor: boolean = false;
   idPaquete: string | null = null;
   tipoContratacion: string = 'persona';
   idConvenioPf: number | null = null;
@@ -135,6 +135,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
 
   ngOnInit(): void {
     this.cargarScript(() => {});
+    this.subscripcionMotorPagos()
     this.formPersona = this.crearFormPersona();
     this.formEmpresa = this.crearFormularioEmpresa();
     setTimeout(() => {
@@ -163,6 +164,22 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
       this.buscarConvenioEmpresa(
         this.rutaActiva.snapshot.queryParams.idConvenio
       );
+  }
+  subscripcionMotorPagos(): void {
+    // Escucha el evento personalizado
+    document.addEventListener('datosRecibidos', (event) => {
+      const data = (event as CustomEvent).detail;
+      if (data.error && !data) {
+        this.alertaService.mostrar(TipoAlerta.Error, 'Error en la realización del pago en línea.');
+        return;
+      }
+      if (data.transaction && data.transaction.status_detail === 3) {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
+      }
+      if (data.transaction && [9, 11, 12].includes(data.transaction.status_detail)) {
+        this.alertaService.mostrar(TipoAlerta.Error, 'Pago rechazado.');
+      }
+    });
   }
 
   clickContratacion(tipoContratacion: string): void {
@@ -194,7 +211,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   iniciarPago(): void {
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'NPF', monto: 1 }));
+    //TODO Validar referencia a mandar
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: 1 }));
   }
 
   crearFormPersona(): FormGroup {
@@ -426,7 +444,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
 
       gestionadoPorPromotor: [
         {
-          value: null,
+          value: true,
           disabled: false,
         },
         [Validators.nullValidator,
@@ -543,7 +561,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
       }),
       gestionadoPorPromotor: [
         {
-          value: null,
+          value: true,
           disabled: false,
         },
         [Validators.nullValidator,
@@ -704,6 +722,9 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
 
   get f() {
     return this.formPersona.controls;
+  }
+  get formEm() {
+    return this.formEmpresa.controls;
   }
 
   get datosPersonales() {
