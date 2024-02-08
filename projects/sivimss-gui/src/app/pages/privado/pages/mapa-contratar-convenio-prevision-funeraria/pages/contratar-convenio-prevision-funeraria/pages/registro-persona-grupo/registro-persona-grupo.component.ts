@@ -29,6 +29,7 @@ import {
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { Beneficiarios } from '../../../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
 import {MensajesSistemaService} from "../../../../../../../../services/mensajes-sistema.service";
+import * as moment from "moment/moment";
 
 @Component({
   selector: 'app-registro-persona-grupo',
@@ -724,11 +725,11 @@ export class RegistroPersonaGrupoComponent implements OnInit {
       nombre: this.datosPersonales.nombre.value,
       primerApellido: this.datosPersonales.primerApellido.value,
       segundoApellido: this.datosPersonales.segundoApellido.value,
-      fechaNacimiento: this.datosPersonales.lugarNacimiento.value, //'1991-04-27'
+      fechaNacimiento: moment(this.datosPersonales.fechaNacimiento.value).format('YYYY-MM-DD'), //'1991-04-27'
       idPais: this.datosPersonales.lugarNacimiento.value,
       telefono: this.domicilio.telefono.value,
       correo: this.domicilio.correoElectronico.value,
-      idConvenioPF: this.idConvenioPF,
+      idConvenioPF: +this.idConvenioPF,
       idSexo: this.datosPersonales.sexo.value,
       otroSexo:this.datosPersonales.otroSexo.value,
     };
