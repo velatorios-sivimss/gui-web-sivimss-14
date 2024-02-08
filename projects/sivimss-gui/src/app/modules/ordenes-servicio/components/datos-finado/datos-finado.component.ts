@@ -1003,7 +1003,11 @@ export class DatosFinadoComponent implements OnInit, OnDestroy{
           }
         },
         error: (error: HttpErrorResponse): void => {
-          console.log(error);
+          console.log(error)
+          this.alertaService.mostrar(
+            TipoAlerta.Error,
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(187)
+          );
         }
       });
   }
