@@ -40,7 +40,7 @@ export class RestablecerContraseniaComponent implements OnInit {
   inicializarForm(): void {
     this.form = this.formBuilder.group(
       {
-        usuario: [{ value: this.autenticacionContratanteService.usuario ?? this.usuario, disabled: true }, [Validators.required]],
+        usuario: [{ value: this.usuario ?? this.autenticacionContratanteService.usuario, disabled: true }, [Validators.required]],
         contraseniaAnterior: [{ value: this.autenticacionContratanteService.contrasenia, disabled: true }],
         contraseniaNueva: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
         contraseniaConfirmacion: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
@@ -50,7 +50,30 @@ export class RestablecerContraseniaComponent implements OnInit {
   }
 
   restablecerContrasenia(): void {
-    if (this.form.invalid) return;
+    if (this.f.contraseniaNueva.value == null ||
+      this.f.contraseniaNueva.value.trim() == '' ||
+      this.f.contraseniaConfirmacion.value == null ||
+      this.f.contraseniaConfirmacion.value.trim() == ''){
+      this.alertaService.mostrar(TipoAlerta.Error, 'Las contraseñas no pueden ir vacías.');
+      this.f.contraseniaNueva.patchValue(null);
+      this.f.contraseniaConfirmacion.patchValue(null);
+      return;
+    }
+    if(
+      this.form.errors?.contraseniasDiferentes &&
+      this.f.contraseniaNueva.value !== null &&
+      this.f.contraseniaNueva.value !== '' &&
+      this.f.contraseniaConfirmacion.value !== null &&
+      this.f.contraseniaConfirmacion.value !== ''
+    ){
+      this.alertaService.mostrar(TipoAlerta.Error, 'Las contraseñas ingresadas no coinciden.');
+      this.f.contraseniaNueva.patchValue(null);
+      this.f.contraseniaConfirmacion.patchValue(null);
+      return;
+    }
+
+
+
     const form = this.form.getRawValue();
     this.loaderService.activar();
     this.autenticacionContratanteService
@@ -70,7 +93,7 @@ export class RestablecerContraseniaComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error');
+          this.alertaService.mostrar(TipoAlerta.Error, 'Error al guardar la información. Intenta nuevamente.');
         },
       });
   }
