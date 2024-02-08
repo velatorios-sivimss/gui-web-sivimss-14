@@ -469,13 +469,14 @@ export class AltaServiciosFunerariosComponent implements OnInit {
           if (respuesta.datos.fechaNacimiento) {
             fecha = new Date(respuesta.datos.fechaNacimiento);
           }
+          let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
           formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
           formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
           formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
           formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
           formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
           formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
-          formularioEnUso[posicion].sexo.setValue(respuesta.datos.sexo?.idSexo);
+          formularioEnUso[posicion].sexo.setValue(sexo);
           formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
           formularioEnUso[posicion].nacionalidad.setValue(1);
         }
