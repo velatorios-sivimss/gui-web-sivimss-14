@@ -1,7 +1,7 @@
 export interface SolicitudPagos {
-  idRegistro: number,
+  idRegistro: number | null,
   idFlujoPagos: number,
-  idVelatorio: number,
+  idVelatorio: number | null,
   idCliente: number,
   folio: string,
   importe: number,

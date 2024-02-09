@@ -16,7 +16,20 @@
       </p-accordion>
       <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
         <p-accordionTab header="Datos del titular sustituto">
-          <div formGroupName="sustituto">
+          <label class="control-label">Son los mismos que el titular</label>
+          <div class="flex">
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'titularSi'" name="titular" [value]="true"
+                             [(ngModel)]="mismoSustituto" [ngModelOptions]="{standalone: true}"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'titularSi'">Sí</label>
+            </div>
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'titularNo'" name="titular" [value]="false"
+                             [(ngModel)]="mismoSustituto" [ngModelOptions]="{standalone: true}"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
+            </div>
+          </div>
+          <div formGroupName="sustituto" class="mt-3">
             <app-datos-sustituto-beneficiario></app-datos-sustituto-beneficiario>
           </div>
         </p-accordionTab>
@@ -44,6 +57,26 @@
           <div formGroupName="empresa">
             <app-datos-empresa></app-datos-empresa>
           </div>
+        </p-accordionTab>
+      </p-accordion>
+      <p-accordion styleClass="sivimss-accordion mt-3">
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="flex justify-content-between align-items-center flex-1">
+              <span>Solicitantes del Grupo o Empresa</span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <ng-container *ngIf="solicitantes.length > 0 else SinSolicitantes">
+              <!--              <ng-container *ngFor="let beneficiarioForm of beneficiarios.controls; let i = index">-->
+              <!--                <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">-->
+              <!--                  <p-accordionTab [header]="nombresBeneficiario[i]" [formGroup]="getFormGroup(beneficiarioForm)">-->
+              <!--                    <app-datos-beneficiario></app-datos-beneficiario>-->
+              <!--                  </p-accordionTab>-->
+              <!--                </p-accordion>-->
+              <!--              </ng-container>-->
+            </ng-container>
+          </ng-template>
         </p-accordionTab>
       </p-accordion>
     </form>
@@ -107,7 +140,7 @@
 </div>
 
 <ng-template pTemplate="content" #SinBeneficiarios>
-  <div class="row table-panel-row" >
+  <div class="row table-panel-row">
     <div class="col-md-12 mt-4">
       <p class="mensaje-cancelacion-orden font-14">El convenio no tiene beneficiarios registrados.</p>
     </div>
@@ -115,9 +148,25 @@
 </ng-template>
 
 <ng-template pTemplate="content" #SinBeneficiarioEspecifico>
-  <div class="row table-panel-row" >
+  <div class="row table-panel-row">
     <div class="col-md-12 mt-4">
       <p class="mensaje-cancelacion-orden font-14">Información de beneficiario no registrada.</p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template pTemplate="content" #SinSolicitantes>
+  <div class="row table-panel-row">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">El convenio no tiene solicitantes registrados.</p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template pTemplate="content" #SolicitanteSinBeneficiarios>
+  <div class="row table-panel-row">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">El solicitante no tiene beneficiarios registrados.</p>
     </div>
   </div>
 </ng-template>
