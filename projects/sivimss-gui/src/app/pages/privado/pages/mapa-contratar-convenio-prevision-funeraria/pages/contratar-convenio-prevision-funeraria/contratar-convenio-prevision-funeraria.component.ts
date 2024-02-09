@@ -188,13 +188,14 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
 
   guardarPagoEnLinea(transaccion: TransaccionPago): void {
     this.loaderService.activar();
-    const solicitud = this.generarSolicitudPagosLinea(transaccion);
+    const solicitud: SolicitudPagos = this.generarSolicitudPagosLinea(transaccion);
     this.consultaConveniosService.guardarDatosPago(solicitud).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next: (respuesta): void => {
-        console.log(respuesta);
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const id = respuesta.datos.idPagoLinea;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
+        void this.router.navigate(['recibo-de-pago', id], {relativeTo: this.rutaActiva});
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);

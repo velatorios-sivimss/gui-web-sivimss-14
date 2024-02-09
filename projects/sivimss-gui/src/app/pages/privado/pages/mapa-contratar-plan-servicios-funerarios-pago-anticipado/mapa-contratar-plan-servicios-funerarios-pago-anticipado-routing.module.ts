@@ -13,7 +13,7 @@ const routes: Routes = [
       import(
         './pages/contratar-plan-servicios-funerarios-pago-anticipado/contratar-plan-servicios-funerarios-pago-anticipado.module'
       ).then((m) => m.ContratarPlanServiciosFunerariosPagoAnticipadoModule),
-  },
+  }
 ];
 
 @NgModule({

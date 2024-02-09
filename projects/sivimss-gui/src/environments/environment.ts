@@ -13,14 +13,14 @@ export const environment = {
     // notificaciones: 'mssivimss-notificaciones/v1/notificaciones/avisos',
     // conveniosPF: 'mssivimss-ods-prefune-on/v1/',
 
-                      mssivimss: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ctrol-permisos/v1/sivimss/service/',
-                          login: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1',
-               loginContratante: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth-online/v1',
-             servicios_externos: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/catalogos/externos/',
+    mssivimss: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ctrol-permisos/v1/sivimss/service/',
+    login: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1',
+    loginContratante: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth-online/v1',
+    servicios_externos: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/catalogos/externos/',
     servicios_externos_reportes: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/reportes/',
-                 notificaciones: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-notificaciones/v1/notificaciones/avisos',
-                    conveniosPF: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ods-prefune-on/v1/',       
-                   conveniosPSF: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-cpsf/v1',
+    notificaciones: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-notificaciones/v1/notificaciones/avisos',
+    conveniosPF: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ods-prefune-on/v1/', // convenios creación / renovacion
+    conveniosPSF: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-cpsf/v1', // pagos anticipados - mensualidades cu102
   }
 };
 
