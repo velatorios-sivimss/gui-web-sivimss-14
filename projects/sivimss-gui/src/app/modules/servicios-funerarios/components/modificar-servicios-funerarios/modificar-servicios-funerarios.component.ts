@@ -46,8 +46,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   paises: TipoDropdown[] = [];
   tipoPaquete: TipoDropdown[] = [];
   numeroPago: TipoDropdown[] = [];
-  colonias: TipoDropdown[] = [];
-  coloniasContratante: TipoDropdown[] = [];
+  colonias: TipoDropdown[][] = [[], [], [], []];
   paqueteBackUp!: CatalogoPaquetes[];
   catPromotores: TipoDropdown[] = [];
 
@@ -133,6 +132,9 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         this.inicializarFormDatosBeneficiario1(objetoBeneficiario1);
         this.inicializarFormDatosBeneficiario2(objetoBeneficiario2);
 
+        this.consultarCodigoPostal(2);
+        this.consultarCodigoPostal(3);
+
         if (respuesta.datos.numPago > 0) {
           this.fdt.tipoPaquete.disable();
           this.fdt.numeroPago.disable();
@@ -217,11 +219,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       const [anio, mes, dia] = titularSubstituto.fecNacimiento.split('-');
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
-
-    if (titularSubstituto.cp?.desColonia) {
-      this.coloniasContratante = [{ label: titularSubstituto.cp?.desColonia, value: titularSubstituto.cp?.desColonia }]
-    }
-
     this.datosTitularSubstitutoForm = this.formBuilder.group({
       datosIguales: [{ value: indTitularSubstituto === 1, disabled: false }, [Validators.required]],
       curp: [{ value: titularSubstituto.curp, disabled: false },
@@ -639,11 +636,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-            if (posicion == 0) {
-              this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
-            } else {
-              this.coloniasContratante = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
-            }
+            this.colonias[posicion] = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
             formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
             formularios[posicion].municipio.setValue(
               respuesta.datos[0].municipio.nombre
