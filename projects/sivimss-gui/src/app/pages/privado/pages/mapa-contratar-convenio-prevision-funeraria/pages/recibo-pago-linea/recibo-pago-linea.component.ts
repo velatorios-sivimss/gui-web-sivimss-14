@@ -11,6 +11,7 @@ import {MensajesSistemaService} from "../../../../../../services/mensajes-sistem
 import {
   BusquedaConveniosPFServic
 } from "../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service";
+import {PDFDocumentProxy} from 'ng2-pdf-viewer';
 
 interface RegistroRecibo {
   idPagoLinea: number,
@@ -42,6 +43,8 @@ export class ReciboPagoLineaComponent implements OnInit {
   recibo!: RegistroRecibo;
   mostrarModalDescargaExitosa: boolean = false;
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
+  private pdf!: PDFDocumentProxy;
+  isPdfLoaded = false;
 
   constructor(private readonly activatedRoute: ActivatedRoute,
               private cargadorService: LoaderService,
@@ -57,7 +60,6 @@ export class ReciboPagoLineaComponent implements OnInit {
   }
 
   guardarPDF(): void {
-
     this.cargadorService.activar();
     const opciones: OpcionesArchivos = {nombreArchivo: `Comprobante pago ${obtenerFechaYHoraActual()}`};
     const folio = 1;
@@ -69,6 +71,15 @@ export class ReciboPagoLineaComponent implements OnInit {
     });
   }
 
+  imprimir(): void {
+    this.cargadorService.activar();
+    const folio = 1;
+    this.consultaConveniosService.descargar(folio).subscribe({
+      next: (respuesta) => this.print(respuesta),
+      error: (error: HttpErrorResponse) => console.log(error)
+    })
+  }
+
   private manejarMensajeErrorDescarga(error: HttpErrorResponse): void {
     const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
     this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento. Intenta nuevamente.');
@@ -77,5 +88,20 @@ export class ReciboPagoLineaComponent implements OnInit {
   private manejarMensajeDescargaExitosa(respuesta: boolean): void {
     if (!respuesta) return;
     this.mostrarModalDescargaExitosa = !this.mostrarModalDescargaExitosa;
+  }
+
+  onLoaded(pdf: PDFDocumentProxy) {
+    this.pdf = pdf;
+    this.isPdfLoaded = true;
+  }
+
+  print(blob: Blob): void {
+    const blobUrl = window.URL.createObjectURL((blob));
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = blobUrl;
+    document.body.appendChild(iframe);
+    if (!iframe.contentWindow) return;
+    iframe.contentWindow.print();
   }
 }
