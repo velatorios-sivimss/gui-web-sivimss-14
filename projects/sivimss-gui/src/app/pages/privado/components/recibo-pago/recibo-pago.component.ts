@@ -17,6 +17,8 @@ export class ReciboPagoComponent implements OnInit {
   @Input() emisor: string = 'Sin Información';
   @Input() delegacion: string = 'Sin Información';
   @Input() velatorio: string = 'Sin Información';
+  @Input() fecTransaccion: string = 'Sin Información';
+  @Input() folioPago: string = 'Sin Información';
 
   constructor() { }
 

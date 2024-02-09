@@ -27,7 +27,7 @@ interface RegistroRecibo {
 })
 export class ReciboPagoLineaComponent implements OnInit {
 
-  recibo!: RegistroRecibo
+  recibo!: RegistroRecibo;
 
   constructor(private readonly activatedRoute: ActivatedRoute,) {
   }
