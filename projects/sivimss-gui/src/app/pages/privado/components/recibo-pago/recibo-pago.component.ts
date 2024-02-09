@@ -11,7 +11,7 @@ export class ReciboPagoComponent implements OnInit {
   @Input() numeroConvenio: string = 'Sin Información';
   @Input() conceptoPago: string = 'Sin Información';
   @Input() idPago: string = 'Sin Información';
-  @Input() importe: string = 'Sin Información';
+  @Input() importe: number = 0;
   @Input() numAprobacion: string = 'Sin Información';
   @Input() digitos: string = 'Sin Información';
   @Input() emisor: string = 'Sin Información';
