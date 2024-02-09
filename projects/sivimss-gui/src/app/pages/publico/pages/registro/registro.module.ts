@@ -11,6 +11,8 @@ import { ContratantesService } from 'projects/sivimss-gui/src/app/modules/contra
 import { UtileriaModule } from 'projects/sivimss-gui/src/app/shared/utileria/utileria.module';
 import { UsuarioService } from 'projects/sivimss-gui/src/app/modules/usuarios/services/usuario.service';
 import { RegistroService } from './services/registro.service';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [RegistroComponent],
@@ -23,10 +25,12 @@ import { RegistroService } from './services/registro.service';
     CalendarModule,
     DropdownModule,
     UtileriaModule,
+    DialogModule,
+    ConfirmDialogModule
   ],
-  providers:[
+  providers: [
     RegistroService,
     UsuarioService,
   ],
 })
-export class RegistroModule {}
+export class RegistroModule { }

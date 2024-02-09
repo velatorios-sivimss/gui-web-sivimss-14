@@ -608,7 +608,16 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.mensaje === 'USUARIO REGISTRADO') {
+        if (respuesta.mensaje === 'EXITO') {
+          const datosUsuario = respuesta.datos;
+          const [dia, mes, anio] = datosUsuario.fechNac.split('-');
+          const fecha = new Date(anio + '/' + mes + '/' + dia);
+          formularioEnUso[posicion].nombre.setValue(datosUsuario.nombre)
+          formularioEnUso[posicion].primerApellido.setValue(datosUsuario.apellido1)
+          formularioEnUso[posicion].segundoApellido.setValue(datosUsuario.apellido2)
+          formularioEnUso[posicion].sexo.setValue(datosUsuario.sexo === "MUJER" ? 1 : 2)
+          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);         
+        } else if (respuesta.mensaje === 'USUARIO REGISTRADO') {
           const datosUsuario = respuesta.datos[0];
           const [dia, mes, anio] = datosUsuario.fecNacimiento.split('/');
           const fecha = new Date(anio + '/' + mes + '/' + dia);
