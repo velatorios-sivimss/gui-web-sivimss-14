@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, ParamMap} from "@angular/router";
 import {OpcionesArchivos} from "../../../../../../models/opciones-archivos.interface";
 import {obtenerFechaYHoraActual} from "../../../../../../utils/funciones";
 import {finalize} from "rxjs/operators";
@@ -43,8 +43,7 @@ export class ReciboPagoLineaComponent implements OnInit {
   recibo!: RegistroRecibo;
   mostrarModalDescargaExitosa: boolean = false;
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
-  private pdf!: PDFDocumentProxy;
-  isPdfLoaded = false;
+  idFolio!: number;
 
   constructor(private readonly activatedRoute: ActivatedRoute,
               private cargadorService: LoaderService,
@@ -56,14 +55,22 @@ export class ReciboPagoLineaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargarCatalogos();
+  }
+
+  cargarCatalogos(): void {
     this.recibo = this.activatedRoute.snapshot.data["respuesta"].datos;
+    this.activatedRoute.paramMap.subscribe({
+      next: (params: ParamMap): void => {
+        this.idFolio = params.get('idFolio') as unknown as number
+      }
+    });
   }
 
   guardarPDF(): void {
     this.cargadorService.activar();
     const opciones: OpcionesArchivos = {nombreArchivo: `Comprobante pago ${obtenerFechaYHoraActual()}`};
-    const folio = 1;
-    this.descargaArchivosService.descargarArchivo(this.consultaConveniosService.descargar(folio), opciones).pipe(
+    this.descargaArchivosService.descargarArchivo(this.consultaConveniosService.descargar(this.idFolio), opciones).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => this.manejarMensajeDescargaExitosa(respuesta),
@@ -73,9 +80,10 @@ export class ReciboPagoLineaComponent implements OnInit {
 
   imprimir(): void {
     this.cargadorService.activar();
-    const folio = 1;
-    this.consultaConveniosService.descargar(folio).subscribe({
-      next: (respuesta) => this.print(respuesta),
+    this.consultaConveniosService.descargar(this.idFolio).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: Blob) => this.print(respuesta),
       error: (error: HttpErrorResponse) => console.log(error)
     })
   }
@@ -88,11 +96,6 @@ export class ReciboPagoLineaComponent implements OnInit {
   private manejarMensajeDescargaExitosa(respuesta: boolean): void {
     if (!respuesta) return;
     this.mostrarModalDescargaExitosa = !this.mostrarModalDescargaExitosa;
-  }
-
-  onLoaded(pdf: PDFDocumentProxy) {
-    this.pdf = pdf;
-    this.isPdfLoaded = true;
   }
 
   print(blob: Blob): void {
