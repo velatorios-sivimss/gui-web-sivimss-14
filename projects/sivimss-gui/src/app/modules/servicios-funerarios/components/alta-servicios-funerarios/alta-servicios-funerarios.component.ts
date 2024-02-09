@@ -57,8 +57,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   tipoPaquete: TipoDropdown[] = [];
   numeroPago: TipoDropdown[] = [];
   paqueteBackUp!: CatalogoPaquetes[];
-  colonias: TipoDropdown[] = [];
-  coloniasContratante: TipoDropdown[] = [];
+  colonias: TipoDropdown[][] = [[], [], [], []];
   catPromotores: TipoDropdown[] = [];
   confirmarGuardado: boolean = false;
   confirmarAceptarPaquete: boolean = false;
@@ -640,11 +639,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-            if (posicion == 0) {
-              this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
-            } else {
-              this.coloniasContratante = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
-            }
+            this.colonias[posicion] = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
             formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
             formularios[posicion].municipio.setValue(
               respuesta.datos[0].municipio.nombre
@@ -675,7 +670,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       this.fdts.datosIguales.setValue(false);
       return
     }
-    this.coloniasContratante = [{ label: this.fdt.colonia.value, value: this.fdt.colonia.value }]
     this.cajaValidacionDatosExistentes[2] = this.cajaValidacionDatosExistentes[0];
     this.cajaValidacionDatosExistentes[3] = this.cajaValidacionDatosExistentes[1];
     this.datosTitularSubstitutoForm.disable();

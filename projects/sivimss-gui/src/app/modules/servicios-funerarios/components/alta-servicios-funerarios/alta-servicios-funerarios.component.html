@@ -182,7 +182,7 @@
           <div class="col-md-4">
             <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
             <p-dropdown id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
-                        [options]="colonias" [filter]="true" filterBy="label"></p-dropdown>
+                        [options]="colonias[0]" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fdt.colonia?.errors?.required && (fdt.colonia?.dirty || fdt.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -419,7 +419,7 @@
           <div class="col-md-4">
             <label class="control-label" for="coloniaContratante">Colonia<span class="req">*</span>:</label>
             <p-dropdown id="coloniaContratante" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
-                        [options]="coloniasContratante" [filter]="true" filterBy="label"></p-dropdown>
+                        [options]="colonias[1]" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fdts.colonia?.errors?.required && (fdts.colonia?.dirty || fdts.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -613,7 +613,7 @@
           <div class="col-md-4">
             <label class="control-label" for="coloniaContratante">Colonia:</label>
             <p-dropdown id="coloniaContratante" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
-                        [options]="coloniasContratante" [filter]="true" filterBy="label"></p-dropdown>
+                        [options]="colonias[2]" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fdb1.colonia?.errors?.required && (fdb1.colonia?.dirty || fdb1.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -807,7 +807,7 @@
           <div class="col-md-4">
             <label class="control-label" for="coloniaContratante">Colonia:</label>
             <p-dropdown id="coloniaContratante" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
-                        [options]="coloniasContratante" [filter]="true" filterBy="label"></p-dropdown>
+                        [options]="colonias[3]" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fdb2.colonia?.errors?.required && (fdb2.colonia?.dirty || fdb2.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
