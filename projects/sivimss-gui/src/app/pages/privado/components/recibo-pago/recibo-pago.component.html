@@ -1,22 +1,32 @@
 <ng-container>
   <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+        <span class="font-bold">Folio del Pago</span>
+      </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+      <div class="table-panel-header-column">
+        <span class="font-bold">Fecha y Hora de transacción</span>
+      </div>
+    </ng-template>
     <div class="row table-panel-row">
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Clave del cliente (SIVIMSS)</label>
-          <span>{{cveCliente}}</span>
+          <span>{{ cveCliente }}</span>
         </div>
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Nombre del usuario (SIVIMSSS)</label>
-          <span>{{nombreUsuario}}</span>
+          <span>{{ nombreUsuario }}</span>
         </div>
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Número de convenio PF / Renovación de PF / Plan SFPA (SIVIMSS)</label>
-          <span>{{numeroConvenio}}</span>
+          <span>{{ numeroConvenio }}</span>
         </div>
       </div>
     </div>
@@ -24,25 +34,25 @@
       <div class="col-md-3">
         <div class="table-panel-column">
           <label>Concepto de pago</label>
-          <span>{{conceptoPago}}</span>
+          <span>{{ conceptoPago }}</span>
         </div>
       </div>
       <div class="col-md-3">
         <div class="table-panel-column">
           <label>Identificador de pago (SIVIMSS)</label>
-          <span>{{idPago}}</span>
+          <span>{{ idPago }}</span>
         </div>
       </div>
       <div class="col-md-3">
         <div class="table-panel-column">
           <label>Importe pagado (SIVIMSS)</label>
-          <span>{{importe}}</span>
+          <span>{{ importe }}</span>
         </div>
       </div>
       <div class="col-md-3">
         <div class="table-panel-column">
           <label>Número de Aprobación</label>
-          <span>{{numAprobacion}}</span>
+          <span>{{ numAprobacion }}</span>
         </div>
       </div>
     </div>
@@ -50,13 +60,13 @@
       <div class="col-md-6">
         <div class="table-panel-column">
           <label>Últimos 4 dígitos del número de tarjeta</label>
-          <span>{{digitos}}</span>
+          <span>{{ digitos }}</span>
         </div>
       </div>
       <div class="col-md-6">
         <div class="table-panel-column">
           <label>Emisor de tarjeta (Débito o Crédito)</label>
-          <span>{{emisor}}</span>
+          <span>{{ emisor }}</span>
         </div>
       </div>
     </div>
@@ -64,15 +74,22 @@
       <div class="col-md-6">
         <div class="table-panel-column">
           <label>Delegación</label>
-          <span>{{delegacion}}</span>
+          <span>{{ delegacion }}</span>
         </div>
       </div>
       <div class="col-md-6">
         <div class="table-panel-column">
           <label>Velatorio</label>
-          <span>{{velatorio}}</span>
+          <span>{{ velatorio }}</span>
         </div>
       </div>
     </div>
   </app-table-panel>
 </ng-container>
+<div class="row mb-3 mt-5">
+  <div class="col-md-12 flex justify-content-end">
+    <button type="button" class="btn btn-primary btn-md" >Guardar</button>
+    <button type="submit" class="btn btn-primary btn-md ml-5" >Imprimir
+    </button>
+  </div>
+</div>

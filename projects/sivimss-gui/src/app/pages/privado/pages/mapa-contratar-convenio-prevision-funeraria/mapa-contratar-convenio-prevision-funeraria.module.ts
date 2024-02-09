@@ -8,16 +8,19 @@ import { MapaContratarConvenioPrevisionFunerariaRoutingModule } from './mapa-con
 import { MapaContratarConvenioPrevisionFunerariaComponent } from './mapa-contratar-convenio-prevision-funeraria.component';
 import {FormsModule} from "@angular/forms";
 import {MapaContratatarConvenioPfService} from "./services/mapa-contratatar-convenio-pf.service";
+import { ReciboPagoLineaComponent } from './pages/recibo-pago-linea/recibo-pago-linea.component';
+import {PrivadoModule} from "../../privado.module";
 
 @NgModule({
-  declarations: [MapaContratarConvenioPrevisionFunerariaComponent],
-  imports: [
-    CommonModule,
-    MapaContratarConvenioPrevisionFunerariaRoutingModule,
-    TituloPrincipalModule,
-    BtnRegresarModule,
-    FormsModule,
-  ],
+  declarations: [MapaContratarConvenioPrevisionFunerariaComponent, ReciboPagoLineaComponent],
+    imports: [
+        CommonModule,
+        MapaContratarConvenioPrevisionFunerariaRoutingModule,
+        TituloPrincipalModule,
+        BtnRegresarModule,
+        FormsModule,
+        PrivadoModule,
+    ],
   providers: [
     MapaContratatarConvenioPfService
   ]

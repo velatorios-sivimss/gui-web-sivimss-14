@@ -9,11 +9,14 @@ import {TablePanelModule} from "../../shared/table-panel/table-panel.module";
 
 
 @NgModule({
-  declarations: [
-    PrivadoComponent,
-    SubheaderPrivadoComponent,
-    ReciboPagoComponent
-  ],
+    declarations: [
+        PrivadoComponent,
+        SubheaderPrivadoComponent,
+        ReciboPagoComponent
+    ],
+    exports: [
+        ReciboPagoComponent
+    ],
     imports: [
         CommonModule,
         PrivadoRoutingModule,
