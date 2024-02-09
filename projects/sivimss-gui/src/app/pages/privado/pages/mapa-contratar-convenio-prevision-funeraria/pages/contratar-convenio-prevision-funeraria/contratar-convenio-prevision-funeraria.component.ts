@@ -211,7 +211,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
       fecTransaccion: pago.transaction.payment_date, // pagos linea
       folio: this.folioConvenio,
       folioPago: "TEST-1", // pagos linea
-      idCliente: 433, //pagos linea (local storage)
       idFlujoPagos: 2,
       idMetodoPago, // debito o credito payment_method_type
       idRegistro: this.idConvenioPf, // idConvenio
@@ -255,7 +254,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   iniciarPago(): void {
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
-    //TODO Validar referencia a mandar
     elemento_ref.setAttribute('data-objeto', JSON.stringify({referencia: 'NPF', monto: 1}));
   }
 
