@@ -91,7 +91,7 @@
                   *ngIf="fdt.sexo?.errors?.required && (fdt.sexo?.dirty || fdt.sexo?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3" *ngIf="fdt.sexo.value == 3">
-            <label class="control-label" for="otroSexoAfiliado">Otro<span class="req">*</span>:</label>
+            <label class="control-label" for="otroSexoAfiliado">Otro:</label>
             <input id="otroSexoAfiliado" class="form-control" formControlName="otroSexo"
                    placeholder="Ingresa otro sexo" maxlength="45">
             <span class="campo-obligatorio"
@@ -331,7 +331,7 @@
                   *ngIf="fdts.sexo?.errors?.required && (fdts.sexo?.dirty || fdts.sexo?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3" *ngIf="fdts.sexo.value == 3">
-            <label class="control-label" for="otroSexoContratante">Otro<span class="req">*</span>:</label>
+            <label class="control-label" for="otroSexoContratante">Otro:</label>
             <input id="otroSexoContratante" class="form-control" formControlName="otroSexo"
                    placeholder="Ingresa otro sexo" maxlength="45">
             <span class="campo-obligatorio"
@@ -839,7 +839,7 @@
   <div class="border-panel mb-5">
     <div class="row">
         <div class="col-md-6">
-            <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
+            <label class="control-label">¿El servicio fue gestionado por un promotor?<span class="req">*</span></label>
             <div class="flex">
                 <div class="flex align-items-center mx-2">
                     <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
@@ -856,7 +856,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <label class="control-label" for="promotor">Promotor:</label>
+            <label class="control-label" for="promotor">Promotor:<span class="req" *ngIf="fp.gestionadoPorPromotor.value">*</span></label>
             <p-dropdown id="promotor" class="form-control" formControlName="promotor"
                 placeholder="Selecciona promotor" [options]="catPromotores" [filter]="true"
                 filterBy="label"></p-dropdown>
