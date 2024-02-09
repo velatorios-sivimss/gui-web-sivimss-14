@@ -23,6 +23,9 @@ import { RegistroService } from 'projects/sivimss-gui/src/app/pages/publico/page
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { ServiciosFunerariosService } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/services/servicios-funerarios.service';
+import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-contratar-plan-servicios-funerarios-pago-anticipado',
@@ -31,7 +34,7 @@ import { ServiciosFunerariosService } from 'projects/sivimss-gui/src/app/modules
   styleUrls: [
     './contratar-plan-servicios-funerarios-pago-anticipado.component.scss',
   ],
-  providers: [DescargaArchivosService, ServiciosFunerariosService]
+  providers: [DescargaArchivosService, ServiciosFunerariosService, AutenticacionContratanteService]
 })
 export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   @ViewChild('overlayPanel')
@@ -73,6 +76,8 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   existeDatoRegistrado: boolean = false;
   tipoPersona: boolean = true;
   cajaValidacionDatosExistentes: any[] = [false, false, false, false];
+  usuarioEnSesion!: UsuarioEnSesion | null;
+  subs!: Subscription;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -86,26 +91,38 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     private readonly router: Router,
     private descargaArchivosService: DescargaArchivosService,
     private serviciosFunerariosService: ServiciosFunerariosService,
+    private readonly autenticacionContratanteService: AutenticacionContratanteService,
   ) {
   }
 
   ngOnInit(): void {
-    this.cargarScript(() => {
-    });
-    this.subscripcionMotorPagos()
-    this.idVelatorio = this.activatedRoute.snapshot.queryParams.idVelatorio;
-    this.velatorio = this.activatedRoute.snapshot.queryParams.velatorio;
-    this.inicializarFormPromotor();
-    this.inicializarFormDatosTitular();
-    this.inicializarFormDatosTitularSubstituto();
-    this.inicializarFormDatosBeneficiario1();
-    this.inicializarFormDatosBeneficiario2();
-    if (validarUsuarioLogueadoOnline()) return;
-    this.obtenerPaises();
-    this.obtenerEstados();
-    this.obtenerPromotores();
-    this.obtenerPaquete();
-    this.handleGestionPromotor();
+    this.subs = this.autenticacionContratanteService.usuarioEnSesion$.subscribe(
+      (usuarioEnSesion: UsuarioEnSesion | null) => {
+        this.usuarioEnSesion = usuarioEnSesion;
+        this.cargarScript(() => {
+        });
+        this.subscripcionMotorPagos()
+        this.idVelatorio = this.activatedRoute.snapshot.queryParams.idVelatorio;
+        this.velatorio = this.activatedRoute.snapshot.queryParams.velatorio;
+        this.inicializarFormPromotor();
+        this.inicializarFormDatosTitular();
+        this.inicializarFormDatosTitularSubstituto();
+        this.inicializarFormDatosBeneficiario1();
+        this.inicializarFormDatosBeneficiario2();
+        if (validarUsuarioLogueadoOnline()) return;
+        this.obtenerPaises();
+        this.obtenerEstados();
+        this.obtenerPromotores();
+        this.obtenerPaquete();
+        this.handleGestionPromotor();
+        this.consultarCurp(0);
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
   }
 
   inicializarFormPromotor(): void {
@@ -163,19 +180,19 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
 
   inicializarFormDatosTitular(): void {
     this.datosTitularForm = this.formBuilder.group({
-      curp: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_RFC)]],
-      matricula: [{ value: null, disabled: false }],
-      nss: [{ value: null, disabled: false }, [Validators.required]],
-      nombre: [{ value: null, disabled: false }, [Validators.required]],
-      primerApellido: [{ value: null, disabled: false }, [Validators.required]],
-      segundoApellido: [{ value: null, disabled: false }, [Validators.required]],
-      sexo: [{ value: null, disabled: false }, [Validators.required]],
-      otroSexo: [{ value: null, disabled: false }],
-      fechaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
-      nacionalidad: [{ value: null, disabled: false }],
-      lugarNacimiento: [{ value: null, disabled: false }, [Validators.required]],
-      paisNacimiento: [{ value: null, disabled: false }],
+      curp: [{ value: this.usuarioEnSesion?.curp, disabled: true }, [Validators.required, Validators.pattern(PATRON_CURP)]],
+      rfc: [{ value: null, disabled: true }, [Validators.required, Validators.pattern(PATRON_RFC)]],
+      matricula: [{ value: null, disabled: true }],
+      nss: [{ value: null, disabled: true }, [Validators.required]],
+      nombre: [{ value: null, disabled: true }, [Validators.required]],
+      primerApellido: [{ value: null, disabled: true }, [Validators.required]],
+      segundoApellido: [{ value: null, disabled: true }, [Validators.required]],
+      sexo: [{ value: null, disabled: true }, [Validators.required]],
+      otroSexo: [{ value: null, disabled: true }],
+      fechaNacimiento: [{ value: null, disabled: true }, [Validators.required]],
+      nacionalidad: [{ value: null, disabled: true }],
+      lugarNacimiento: [{ value: null, disabled: true }, [Validators.required]],
+      paisNacimiento: [{ value: null, disabled: true }],
       telefono: [{ value: null, disabled: false }, [Validators.required]],
       telefonoFijo: [{ value: null, disabled: false }, [Validators.required]],
       correoElectronico: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CORREO)]],
@@ -303,52 +320,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     this.fp.promotor.updateValueAndValidity();
   }
 
-  // validarUsuarioTitular(curp: string, rfc: string, nss: string, posicion: number): void {
-  //   let formularioEnUso = [this.fdt, this.fdts];
-  //   this.loaderService.activar();
-  //   this.existeDatoRegistrado = false;
-
-  //   if (posicion == 0) {
-  //     if (curp === "") {
-  //       this.cajaValidacionDatosExistentes[1] = false;
-  //     } else if (rfc === "") {
-  //       this.cajaValidacionDatosExistentes[0] = false;
-  //     }
-  //   } else if (curp === "") {
-  //     this.cajaValidacionDatosExistentes[3] = false;
-  //   } else if (rfc === "") {
-  //     this.cajaValidacionDatosExistentes[2] = false;
-  //   }
-
-  //   this.serviciosFunerariosService.validarTitular(curp, rfc, nss).pipe(
-  //     finalize(() => this.loaderService.desactivar())
-  //   ).subscribe({
-  //     next: (respuesta: HttpRespuesta<any>) => {
-  //       if (respuesta.datos.length > 0) {
-  //         this.idPlanSfpaExistente = respuesta.datos[0].ID_PLAN_SFPA;
-  //         if (posicion == 0) {
-  //           if (curp === "") {
-  //             this.cajaValidacionDatosExistentes[1] = true;
-  //           } else if (rfc === "") {
-  //             this.cajaValidacionDatosExistentes[0] = true;
-  //           }
-  //         } else if (curp === "") {
-  //           this.cajaValidacionDatosExistentes[3] = true;
-  //         } else if (rfc === "") {
-  //           this.cajaValidacionDatosExistentes[2] = true;
-  //         }
-
-  //         this.existeDatoRegistrado = true;
-  //         this.confirmacionDatosExistentes = true;
-  //         this.mensajeDatosExistentes = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje)
-  //       }
-  //     },
-  //     error: (error: HttpErrorResponse) => {
-  //       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
-  //     }
-  //   });
-  // }
-
   consultarCorreo(posicion: number): void {
     let formularios = [this.fdt.correoElectronico, this.fdts.correoElectronico, this.fdb1.correoElectronico, this.fdb2.correoElectronico];
     if (!formularios[posicion].value) return;
@@ -388,7 +359,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
             TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
         } else {
           let fecha: Date | null = null;
-          if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined ) {
+          if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined) {
             let [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
             fecha = new Date(+anio, +mes - 1, +dia);
           }
@@ -542,54 +513,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     this.overlayPanel.toggle(event);
   }
 
-  // obtenerCP(formGroupName?: any, catalogo?: string): void {
-  //   if (!formGroupName.codigoPostal.value || formGroupName.codigoPostal.invalid) {
-  //     this.setearCatalogoColonias(catalogo ?? '', []);
-  //     formGroupName.estado.setValue(null);
-  //     formGroupName.municipio.setValue(null);
-  //     formGroupName.asentamientoColonia.markAsTouched();
-  //     return
-  //   }
-  //   this.loaderService.activar();
-  //   this.contratarPSFPAService.consutaCP(formGroupName.codigoPostal.value).pipe(
-  //     finalize(() => this.loaderService.desactivar())
-  //   ).subscribe({
-  //     next: (respuesta: any) => {
-  //       if (respuesta && respuesta.datos.length > 0) {
-  //         this.setearCatalogoColonias(catalogo ?? '', mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre'));
-  //         formGroupName.estado.setValue(respuesta.datos[0].municipio.entidadFederativa.nombre);
-  //         formGroupName.municipio.setValue(respuesta.datos[0].municipio.nombre);
-  //         formGroupName.asentamientoColonia.markAsTouched();
-  //       } else {
-  //         this.setearCatalogoColonias(catalogo ?? '', []);
-  //         formGroupName.estado.setValue(null);
-  //         formGroupName.municipio.setValue(null);
-  //         formGroupName.asentamientoColonia.markAsTouched();
-  //       }
-  //     },
-  //     error: (error: HttpErrorResponse) => {
-  //       console.error("ERROR: ", error);
-  //     }
-  //   });
-  // }
-
-  // setearCatalogoColonias(catalogo: string, datos: TipoDropdown[]): any {
-  //   switch (catalogo) {
-  //     case 'catColoniasTitular':
-  //       this.catColoniasTitular = datos;
-  //       break;
-  //     case 'catColoniasSubstituto':
-  //       this.catColoniasSubstituto = datos;
-  //       break;
-  //     case 'catColoniasBeneficiario1':
-  //       this.catColoniasBeneficiario1 = datos;
-  //       break;
-  //     case 'catColoniasBeneficiario2':
-  //       this.catColoniasBeneficiario2 = datos;
-  //       break;
-  //   }
-  // }
-
   consultarCodigoPostal(posicion: number): void {
     let formularios = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularios[posicion].cp.value) {
@@ -669,31 +592,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     }
   }
 
-  // validarCurp(formGroupName?: any) {
-  //   if (formGroupName.curp.invalid) {
-  //     if (formGroupName.curp.value !== '') {
-  //       this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP no es válido.');
-  //     }
-  //   } else {
-  //     this.contratarPSFPAService.validarCurpRfc({ rfc: null, curp: formGroupName.curp.value }).subscribe({
-  //       next: (respuesta: HttpRespuesta<any>) => {
-  //         formGroupName.curp.setErrors({ 'incorrect': true });
-  //         if (respuesta.mensaje === 'USUARIO REGISTRADO') {
-  //           this.alertaService.mostrar(TipoAlerta.Precaucion, 'CURP ya se encuentra registrado.');
-  //           formGroupName.curp.patchValue(null);
-  //         } else if (respuesta.mensaje === 'NO EXISTE CURP') {
-  //           this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
-  //         } else {
-  //           formGroupName.curp.setErrors(null);
-  //         }
-  //       },
-  //       error: (error: HttpErrorResponse) => {
-  //         console.error("ERROR: ", error);
-  //       }
-  //     });
-  //   }
-  // }
-
   consultarCurp(posicion: number): void {
     let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].curp.value) return;
@@ -701,85 +599,50 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
       return;
     }
-      this.limpiarFormulario(posicion);
-      this.loaderService.activar();
-      this.registroService.validarCurpRfc({
-        rfc: formularioEnUso[posicion].curp.value,
-        curp: formularioEnUso[posicion].curp.value
-      }).pipe(
-        finalize(() => this.loaderService.desactivar())
-      ).subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.mensaje.includes('interno')) {
-            const [anio, mes, dia] = respuesta.datos[0].fechaNacimiento.split('-');
-            const fecha = new Date(anio + '/' + mes + '/' + dia);
-            formularioEnUso[posicion].nombre.setValue(respuesta.datos[0].nomPersona)
-            formularioEnUso[posicion].primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno)
-            formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno)
-            formularioEnUso[posicion].sexo.setValue(respuesta.datos[0].numSexo)
-            formularioEnUso[posicion].otroSexo.setValue(respuesta.datos[0]?.desOtroSexo)
-            formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-            formularioEnUso[posicion].telefono.setValue(respuesta.datos[0].desTelefono)
-            formularioEnUso[posicion].correoElectronico.setValue(respuesta.datos[0].desCorreo)
-            formularioEnUso[posicion].cp.setValue(respuesta.datos[0].DesCodigoPostal)
-            formularioEnUso[posicion].calle.setValue(respuesta.datos[0].desCalle)
-            formularioEnUso[posicion].numeroInterior.setValue(respuesta.datos[0].numInterior)
-            formularioEnUso[posicion].numeroExterior.setValue(respuesta.datos[0].numExterior)
-            formularioEnUso[posicion].colonia.setValue(respuesta.datos[0].desColonia)
-            if (+respuesta.datos[0].idPais == 119 || !+respuesta.datos[0].idPais) {
-              formularioEnUso[posicion].nacionalidad.setValue(1);
-              formularioEnUso[posicion].lugarNacimiento.setValue(respuesta.datos[0].idEstado)
-            } else {
-              formularioEnUso[posicion].nacionalidad.setValue(2);
-              formularioEnUso[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
-            }
-            respuesta.datos[0].rfc ? formularioEnUso[posicion].rfc.setValue(respuesta.datos[0].rfc) :
-              formularioEnUso[posicion].rfc.setValue(formularioEnUso[posicion].rfc.value);
-            respuesta.datos[0].nss ? formularioEnUso[posicion].nss.setValue(respuesta.datos[0].nss) :
-              formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
-            this.consultarCodigoPostal(posicion);
-            this.cambiarNacionalidad(posicion);
-            this.cambiarNacionalidad2(posicion);
-            return;
-          }
-
-          if (respuesta.datos?.message?.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
-            this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
-            return
-          }
-          const [dia, mes, anio] = respuesta.datos[0].fecNacimiento.split('/');
+    this.limpiarFormulario(posicion);
+    this.loaderService.activar();
+    this.registroService.validarCurpRfc({
+      rfc: null,
+      curp: formularioEnUso[posicion].curp.value
+    }).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.mensaje === 'USUARIO REGISTRADO') {
+          const datosUsuario = respuesta.datos[0];
+          const [dia, mes, anio] = datosUsuario.fecNacimiento.split('/');
           const fecha = new Date(anio + '/' + mes + '/' + dia);
-          formularioEnUso[posicion].nombre.setValue(respuesta.datos[0].nombre);
-          formularioEnUso[posicion].primerApellido.setValue(
-            respuesta.datos[0].apellido1
-          );
-          formularioEnUso[posicion].segundoApellido.setValue(
-            respuesta.datos[0].apellido2
-          );
+          formularioEnUso[posicion].nombre.setValue(datosUsuario.nomPersona)
+          formularioEnUso[posicion].primerApellido.setValue(datosUsuario.paterno)
+          formularioEnUso[posicion].segundoApellido.setValue(datosUsuario.materno)
+          formularioEnUso[posicion].sexo.setValue(datosUsuario.idSexo)
+          formularioEnUso[posicion].otroSexo.setValue(datosUsuario.otroSexo)
           formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-          if (respuesta.datos[0].sexo.includes('HOMBRE')) {
-            formularioEnUso[posicion].sexo.setValue(2);
-          }
-          if (respuesta.datos[0].sexo.includes('MUJER')) {
-            formularioEnUso[posicion].sexo.setValue(1);
-          }
-          if (
-            respuesta.datos[0].nacionalidad?.includes('MEXICO') ||
-            respuesta.datos[0].nacionalidad?.includes('MEX')
-          ) {
+          if (+datosUsuario.idPais == 119 || !+datosUsuario.idPais) {
             formularioEnUso[posicion].nacionalidad.setValue(1);
+            formularioEnUso[posicion].lugarNacimiento.setValue(datosUsuario.idLugarNac)
           } else {
             formularioEnUso[posicion].nacionalidad.setValue(2);
+            formularioEnUso[posicion].paisNacimiento.setValue(datosUsuario.idPais)
           }
-          if (respuesta.datos[0]?.desEntidadNac) {
-            this.consultarLugarNacimiento(respuesta.datos[0].desEntidadNac, posicion);
-          }
-        },
-        error: (error: HttpErrorResponse) => {
-          this.alertaService.mostrar(TipoAlerta.Error,
-            this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
+          datosUsuario.rfc ? formularioEnUso[posicion].rfc.setValue(datosUsuario.rfc) :
+            formularioEnUso[posicion].rfc.setValue(formularioEnUso[posicion].rfc.value);
+          datosUsuario.nss ? formularioEnUso[posicion].nss.setValue(datosUsuario.nss) :
+            formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+          this.consultarCodigoPostal(posicion);
+          this.cambiarNacionalidad(posicion);
+          this.cambiarNacionalidad2(posicion);
+        } else if (respuesta.mensaje === 'NO EXISTE CURP') {
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
         }
-      })
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error,
+          this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
+      }
+    })
   }
 
   accentsTidy(s: string): string {
@@ -866,7 +729,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   }
 
   limpiarFormulario(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts]
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     formularioEnUso[posicion].nombre.patchValue(null);
     formularioEnUso[posicion].primerApellido.patchValue(null);
     formularioEnUso[posicion].segundoApellido.patchValue(null);
