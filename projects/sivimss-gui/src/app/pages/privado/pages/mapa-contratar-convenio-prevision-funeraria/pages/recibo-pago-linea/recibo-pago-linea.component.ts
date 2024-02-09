@@ -41,6 +41,7 @@ export class ReciboPagoLineaComponent implements OnInit {
 
   recibo!: RegistroRecibo;
   mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
   constructor(private readonly activatedRoute: ActivatedRoute,
               private cargadorService: LoaderService,

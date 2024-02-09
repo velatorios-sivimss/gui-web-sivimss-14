@@ -10,17 +10,21 @@ import {FormsModule} from "@angular/forms";
 import {MapaContratatarConvenioPfService} from "./services/mapa-contratatar-convenio-pf.service";
 import { ReciboPagoLineaComponent } from './pages/recibo-pago-linea/recibo-pago-linea.component';
 import {PrivadoModule} from "../../privado.module";
+import {DialogModule} from "primeng/dialog";
+import {SharedModule} from "primeng/api";
 
 @NgModule({
   declarations: [MapaContratarConvenioPrevisionFunerariaComponent, ReciboPagoLineaComponent],
-    imports: [
-        CommonModule,
-        MapaContratarConvenioPrevisionFunerariaRoutingModule,
-        TituloPrincipalModule,
-        BtnRegresarModule,
-        FormsModule,
-        PrivadoModule,
-    ],
+  imports: [
+    CommonModule,
+    MapaContratarConvenioPrevisionFunerariaRoutingModule,
+    TituloPrincipalModule,
+    BtnRegresarModule,
+    FormsModule,
+    PrivadoModule,
+    DialogModule,
+    SharedModule,
+  ],
   providers: [
     MapaContratatarConvenioPfService
   ]
