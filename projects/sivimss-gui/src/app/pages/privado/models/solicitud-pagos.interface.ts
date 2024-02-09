@@ -2,7 +2,6 @@ export interface SolicitudPagos {
   idRegistro: number | null,
   idFlujoPagos: number,
   idVelatorio: number | null,
-  idCliente: number,
   folio: string,
   importe: number,
   nomTitular: string,
