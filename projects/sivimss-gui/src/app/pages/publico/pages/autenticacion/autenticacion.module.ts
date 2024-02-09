@@ -27,6 +27,7 @@ import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/se
     ReactiveFormsModule,
     DialogModule,
   ],
-  providers: [DialogService, AutenticacionContratanteService],
+  providers: [DialogService, //AutenticacionContratanteService
+],
 })
 export class AutenticacionModule { }

@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-subheader-privado',
   templateUrl: './subheader-privado.component.html',
   styleUrls: ['./subheader-privado.component.scss'],
-  providers: [AutenticacionContratanteService]
+  //providers: [AutenticacionContratanteService]
 })
 export class SubheaderPrivadoComponent implements OnInit, OnDestroy {
   usuarioEnSesion!: UsuarioEnSesion | null;

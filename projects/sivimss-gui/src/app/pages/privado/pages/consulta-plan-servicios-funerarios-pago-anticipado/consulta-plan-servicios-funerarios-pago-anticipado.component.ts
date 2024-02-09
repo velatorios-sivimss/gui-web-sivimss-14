@@ -18,7 +18,7 @@ import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/se
   styleUrls: [
     './consulta-plan-servicios-funerarios-pago-anticipado.component.scss',
   ],
-  providers: [AutenticacionContratanteService]
+  //providers: [AutenticacionContratanteService]
 })
 export class ConsultaPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   usuarioEnSesion!: UsuarioEnSesion | null;
