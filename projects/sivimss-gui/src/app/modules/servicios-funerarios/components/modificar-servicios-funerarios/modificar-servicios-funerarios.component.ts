@@ -937,6 +937,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       this.fp.promotor.setValue(null);
       this.fp.promotor.disable();
     }
+    this.fp.promotor.updateValueAndValidity();
   }
 
   regresar(): void {
