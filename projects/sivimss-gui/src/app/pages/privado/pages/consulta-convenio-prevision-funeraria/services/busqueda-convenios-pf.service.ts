@@ -143,4 +143,16 @@ export class BusquedaConveniosPFServic extends BaseService<
   guardarDatosPago(body: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._basePagos + `/pago/online/crear`, body);
   }
+
+  detalleReciboPago(folio:number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._basePagos + `/pago/online/obtener/${folio}`)
+  }
+
+  descargar(folio:number): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.get<any>(this._basePagos + `/pago/online/reporte/${folio}`, {headers, responseType: 'blob' as 'json'});
+  }
 }
