@@ -85,7 +85,7 @@
             </td>
             <td>{{pagosRealizados.velatorio}}</td>
             <td>{{pagosRealizados.noPagos}}</td>
-            <td>{{pagosRealizados.fechaParcialidad}}</td>
+            <td>{{pagosRealizados.fechaParcialidad | date:'dd/MM/YYYY'}}</td>
             <td>{{pagosRealizados.importeMensual | currency:"USD":"symbol"}}</td>
             <td>{{pagosRealizados.metodoPago}}</td>
             <td>{{pagosRealizados.estatusPago}}</td>

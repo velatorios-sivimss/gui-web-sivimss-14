@@ -124,7 +124,6 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     setTimeout(() => {
       this.buscarEstado();
     }, 1600);
-
     this.idVelatorio = this.rutaActiva.snapshot.queryParams.idVelatorio;
     this.velatorio = this.rutaActiva.snapshot.queryParams.velatorio;
     this.idConvenioPF = this.rutaActiva.snapshot.queryParams.idConvenio;
@@ -908,31 +907,23 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     this.domicilio.municipio.setValue(null);
   }
 
-  detalleConvenio() {
-    let idPlan = this.idConvenioPf + '';
-    this.consultaConveniosService
-      .detalleConvenio(idPlan)
-      .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
-            console.log(respuesta.mensaje);
-            this.mostrarMensaje(Number(respuesta.mensaje));
-            return;
-          }
 
-          if (respuesta.mensaje === 'Exito') {
-            this.beneficiarios = respuesta.datos.beneficiarios || [];
-          } else {
-            this.beneficiarios = [];
-            this.mostrarMensaje(Number(respuesta.mensaje));
-          }
+  detalleBeneficiarios(): void {
+    this.loaderService.activar()
+    let obj = {idConvenio:this.idConvenioPF, idContratante: this.idContratante}
+    this.consultaConveniosService.consultarBeneficiariosPorPersona(obj).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      {
+        next: (respuesta: HttpRespuesta<any>) => {
+          this.beneficiarios = respuesta.datos.beneficiarios || [];
         },
-        error: (error: HttpErrorResponse) => {
+        error:(error: HttpErrorResponse) => {
           console.error(error);
           this.mostrarMensaje(0);
-        },
-      });
+        }
+      }
+    )
   }
 
   seleccionaPaquete(idPaquete: string): void {
@@ -958,7 +949,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
           TipoAlerta.Exito,
           'Beneficiario actualizado correctamente'
         );
-        this.detalleConvenio();
+        this.detalleBeneficiarios();
       }
     });
   }
@@ -974,7 +965,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     });
     ref.onClose.subscribe((respuesta: any) => {
       if (respuesta === 'exito') {
-        this.detalleConvenio();
+        this.detalleBeneficiarios();
       }
     });
   }
@@ -990,7 +981,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     });
     ref.onClose.subscribe((respuesta: any) => {
       if (respuesta === 'exito') {
-        this.detalleConvenio();
+        this.detalleBeneficiarios();
       }
     });
   }
