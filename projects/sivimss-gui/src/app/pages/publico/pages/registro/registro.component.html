@@ -4,7 +4,7 @@
         <span>¿Tienes cuenta?</span>
         <button class="btn btn-primary btn-sm ml-5" routerLink="../autenticacion/inicio-sesion">Iniciar sesión</button>
     </div>
-    <!-- Tomar los ejemplos de datos-contratante para generar formulario :) -->
+
     <form [formGroup]="form">
         <div class="border-panel mb-5">
             <ng-container formGroupName="datosGenerales">
@@ -96,7 +96,7 @@
                             filterBy="label"></p-dropdown>
                     </div>
                     <div class="col-md-3" *ngIf="datosGenerales.nacionalidad.value === 1">
-                        <label class="control-label" for="lugarNacimiento">Lugar de nacimiento:</label>
+                        <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
                         <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
                             placeholder="Selecciona lugar de nacimiento" [options]="catalogoEstados" [filter]="true"
                             filterBy="label"></p-dropdown>
@@ -215,3 +215,18 @@
         </div>
     </form>
 </div>
+
+<p-dialog [(visible)]="mostrarMensajeError" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" [showHeader]="true" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeError}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarMensajeError = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

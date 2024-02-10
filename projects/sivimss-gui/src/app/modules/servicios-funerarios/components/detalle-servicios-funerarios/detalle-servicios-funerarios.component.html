@@ -18,7 +18,7 @@
         <div class="col-md-3">
           <div class="flex flex-column">
             <div class="col-md">
-              <span>Nombre(s) titular subtituto</span>
+              <span>Nombre(s) titular substituto</span>
             </div>
             <div class="col-md" *ngIf="datosGenerales?.nombre">
               <span class="font-bold"> {{datosGenerales.nombre}} </span>
@@ -74,7 +74,6 @@
             <th scope="col">Estatus</th>
             <th scope="col">No. Recibo de pago</th>
             <th scope="col">Realizar pago</th>
-            <th scope="col"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-pagosRealizados>
@@ -90,7 +89,6 @@
             <td>{{pagosRealizados.metodoPago}}</td>
             <td>{{pagosRealizados.estatusPago}}</td>
             <td>{{pagosRealizados.reciboPago}}</td>
-            <td>{{pagosRealizados.realizarPago}}</td>
             <td>
 
               <div *ngIf="validarMostrarBotonHamburguesa(pagosRealizados)">

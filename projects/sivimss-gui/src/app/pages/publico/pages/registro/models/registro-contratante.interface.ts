@@ -53,4 +53,8 @@ export interface IContratanteRegistrado {
     numInt?: string;
     numExt?: string;
     curp?: string;
+    fechNac: string;
+    nombre?: string;
+    apellido1?: string;
+    apellido2?: string;
 }
