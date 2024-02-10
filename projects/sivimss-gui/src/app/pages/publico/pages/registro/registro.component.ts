@@ -28,10 +28,8 @@ export class RegistroComponent implements OnInit {
 
   fechaActual = new Date();
 
-  dummyDropdown: { label: string; value: number }[] = [
-    { label: 'Opción 1', value: 1 },
-    { label: 'Opción 2', value: 2 },
-  ];
+  mostrarMensajeError: boolean = false;
+  mensajeError: string = '';
   idUsuario?: number | null;
   idContratante?: number | null;
   idPersona?: number | null;
@@ -143,7 +141,7 @@ export class RegistroComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.nullValidator],
+          [Validators.required],
         ],
         telefono: [
           {
@@ -301,15 +299,29 @@ export class RegistroComponent implements OnInit {
 
   validarCurp() {
     if (this.datosGenerales.curp.invalid) {
+      this.ajustarForm();
       if (this.datosGenerales.curp.value !== '' && this.datosGenerales.curp.value !== null) {
-        this.ajustarForm();
         this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
       }
     } else {
       this.registroService.validarCurpRfc({ rfc: null, curp: this.datosGenerales.curp.value }).subscribe({
-        next: (respuesta: HttpRespuesta<IContratanteRegistrado[]>) => {
+        next: (respuesta: HttpRespuesta<IContratanteRegistrado[] | any>) => {
           this.datosGenerales.curp.setErrors({ 'incorrect': true });
-          if (respuesta.mensaje === 'USUARIO REGISTRADO') {
+          if (respuesta.mensaje === 'EXITO') {
+            this.datosGenerales.curp.setErrors(null);
+            const datosUsuario = respuesta.datos;
+            const [dia, mes, anio] = datosUsuario.fechNac.split('-');
+            const fecha = new Date(anio + '/' + mes + '/' + dia);
+            this.datosGenerales.nombre.setValue(datosUsuario.nombre)
+            this.datosGenerales.primerApellido.setValue(datosUsuario.apellido1)
+            this.datosGenerales.segundoApellido.setValue(datosUsuario.apellido2)
+            this.datosGenerales.sexo.setValue(datosUsuario.sexo === "MUJER" ? 1 : 2)
+            this.datosGenerales.fechaNacimiento.setValue(fecha);
+            this.idUsuario = null;
+            this.idContratante = null;
+            this.idPersona = null;
+          } else if (respuesta.mensaje === 'USUARIO REGISTRADO') {
+            this.datosGenerales.curp.setErrors(null);
             const datosUsuario = respuesta.datos[0];
             // Si idUsuario es null solo falta crear el usuario - Se debe pre-llenar formulario
             this.datosGenerales.curp.setValue(datosUsuario.curp);
@@ -407,7 +419,8 @@ export class RegistroComponent implements OnInit {
           this.alertaService.mostrar(TipoAlerta.Exito, "Se registró exitosamente tu cuenta.\n" + "Hemos enviado tu usuario y contraseña al correo.\n");
           void this.router.navigate(["../autenticacion/inicio-sesion"], { relativeTo: this.activatedRoute });
         } else {
-          this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
+          this.mostrarMensajeError = true;
+          this.mensajeError = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -427,11 +440,10 @@ export class RegistroComponent implements OnInit {
       curp: this.datosGenerales.curp.value,
       numSexo: this.datosGenerales.sexo.value,
       otroSexo: this.datosGenerales.otro.value,
-      fecNacimiento: this.datosGenerales.fechaNacimiento.value ?
-        typeof this.datosGenerales.fechaNacimiento.value === 'object' ?
+      nss: this.datosGenerales.nss.value,
+      fecNacimiento: typeof this.datosGenerales.fechaNacimiento.value === 'object' ?
           moment(this.datosGenerales.fechaNacimiento.value).format('DD-MM-YYYY') :
-          moment(this.datosGenerales.fechaNacimiento.value, 'DD/MM/YYYY').format('DD-MM-YYYY')
-        : null,
+          moment(this.datosGenerales.fechaNacimiento.value, 'DD/MM/YYYY').format('DD-MM-YYYY'),
       idPais: this.datosGenerales.paisNacimiento.value,
       idLugarNac: this.datosGenerales.lugarNacimiento.value,
       tel: this.datosGenerales.telefono.value,

@@ -11,5 +11,6 @@ export interface SolicitudPagos {
   folioPago: string,
   fecTransaccion: string,
   nomContratante: string,
-  idMetodoPago: number
+  idMetodoPago: number,
+  idCliente: number
 }

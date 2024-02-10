@@ -12,6 +12,8 @@ export interface DetalleServicioFunerario {
   numFolioPlanSFPA?: string;
   idTipoContratacion?: number;
   idPaquete?: number;
+  desPaquete?: string;
+  nomPaquete?: string;
   idTipoPagoMensual?: number;
   desTipoPagoMensual?: number;
   indTitularSubstituto?: number;

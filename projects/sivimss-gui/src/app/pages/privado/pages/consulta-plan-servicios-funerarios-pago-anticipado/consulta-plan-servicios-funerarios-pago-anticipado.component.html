@@ -19,7 +19,7 @@
             <tr>
                 <td>{{plan.numFolioPlanSfpa}}</td>
                 <td>{{plan.curpTitular}}</td>
-                <td>{{plan.nombreSubtitular}}</td>
+                <td>{{plan.nombreSubtitular !== '' ? plan.nombreSubtitular : plan.nombreTitular}}</td>
                 <td>{{plan.nombreTitular}}</td>
                 <td style="border-left: 1px solid #b0b0b0;">
                     <div class="contenedor-celda-iconos">
