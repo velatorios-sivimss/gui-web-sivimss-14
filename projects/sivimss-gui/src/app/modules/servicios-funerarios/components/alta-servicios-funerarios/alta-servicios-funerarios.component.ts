@@ -130,7 +130,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       otroSexo: [{ value: null, disabled: false }],
       fechaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
       nacionalidad: [{ value: null, disabled: false }],
-      lugarNacimiento: [{ value: null, disabled: false }, [Validators.required]],
+      lugarNacimiento: [{ value: null, disabled: false }, []],
       paisNacimiento: [{ value: null, disabled: false }],
       telefono: [{ value: null, disabled: false }, [Validators.required]],
       telefonoFijo: [{ value: null, disabled: false }, [Validators.required]],
@@ -161,7 +161,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       otroSexo: [{ value: null, disabled: false }],
       fechaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
       nacionalidad: [{ value: null, disabled: false }],
-      lugarNacimiento: [{ value: null, disabled: false }, [Validators.required]],
+      lugarNacimiento: [{ value: null, disabled: false }, []],
       paisNacimiento: [{ value: null, disabled: false }],
       telefono: [{ value: null, disabled: false }, [Validators.required]],
       telefonoFijo: [{ value: null, disabled: false }, []],
@@ -290,7 +290,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
             return;
           }
 
-          if (respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
+          if (respuesta.datos?.message?.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
             this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
             return
           }
