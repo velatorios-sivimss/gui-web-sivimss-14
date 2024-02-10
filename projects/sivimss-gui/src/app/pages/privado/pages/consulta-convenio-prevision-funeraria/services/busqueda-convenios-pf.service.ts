@@ -34,6 +34,12 @@ export class BusquedaConveniosPFServic extends BaseService<
     );
   }
 
+  consultarBeneficiariosPorPersona(objeto:any): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      this._base + `convenio-pf/empresa-persona-detalle-convenio/${objeto.idConvenio}/${objeto.idContratante}`
+    );
+  }
+
   descargarConvenio(parametros: any): Observable<Blob> {
     return this._http.post<Blob>(
       this._base + `convenio-pf/generarDocumentoNuevoPlan`,
