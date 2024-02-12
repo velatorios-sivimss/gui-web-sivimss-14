@@ -854,12 +854,16 @@
                     <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
                 </div>
             </div>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.gestionadoPorPromotor?.errors?.required && (fp.gestionadoPorPromotor?.dirty || fp.gestionadoPorPromotor?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
             <label class="control-label" for="promotor">Promotor:<span class="req" *ngIf="fp.gestionadoPorPromotor.value">*</span></label>
             <p-dropdown id="promotor" class="form-control" formControlName="promotor"
                 placeholder="Selecciona promotor" [options]="catPromotores" [filter]="true"
                 filterBy="label"></p-dropdown>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.promotor?.errors?.required && (fp.promotor?.dirty || fp.promotor?.touched)">Este campo es obligatorio *.</span>
         </div>
     </div>
   </div>

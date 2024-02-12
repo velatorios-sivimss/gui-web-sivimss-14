@@ -148,8 +148,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
 
   inicializarFormPromotor(indPromotor: number, idPromotor: number): void {
     this.promotorForm = this.formBuilder.group({
-      gestionadoPorPromotor: [{ value: indPromotor === 1, disabled: false }, [Validators.nullValidator]],
-      promotor: [{ value: idPromotor, disabled: false }, [Validators.nullValidator]],
+      gestionadoPorPromotor: [{ value: indPromotor === 1, disabled: false }, [Validators.required]],
+      promotor: [{ value: idPromotor, disabled: false }, [Validators.required]],
     });
 
     this.handleGestionPromotor();
@@ -545,7 +545,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
             TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
         } else {
           let fecha: Date | null = null;
-          if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined ) {
+          if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined) {
             let [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
             fecha = new Date(+anio, +mes - 1, +dia);
           }
@@ -729,10 +729,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   validarBotonGuardar(): boolean {
-    if (this.datosTitularSubstitutoForm) {
-      if (this.datosTitularSubstitutoForm.invalid || this.datosTitularSubstitutoForm.invalid) {
-        return true;
-      }
+    if (this.datosTitularForm.invalid || this.datosTitularSubstitutoForm.invalid || this.promotorForm.invalid) {
+      return true;
     }
     return false;
   }
@@ -933,9 +931,12 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   handleGestionPromotor() {
     if (this.fp.gestionadoPorPromotor.value) {
       this.fp.promotor.enable();
+      this.fp.promotor.setValidators(Validators.required);
+      this.promotorForm.markAllAsTouched();
     } else {
       this.fp.promotor.setValue(null);
       this.fp.promotor.disable();
+      this.fp.promotor.clearValidators();
     }
     this.fp.promotor.updateValueAndValidity();
   }
