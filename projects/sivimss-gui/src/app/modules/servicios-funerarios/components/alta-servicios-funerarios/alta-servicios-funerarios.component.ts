@@ -110,8 +110,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   inicializarFormPromotor(): void {
     this.promotorForm = this.formBuilder.group({
-      gestionadoPorPromotor: [{ value: false, disabled: false }, [Validators.nullValidator]],
-      promotor: [{ value: null, disabled: false }, [Validators.nullValidator]],
+      gestionadoPorPromotor: [{ value: false, disabled: false }, [Validators.required]],
+      promotor: [{ value: null, disabled: false }, [Validators.required]],
     });
 
     this.handleGestionPromotor();
@@ -459,9 +459,12 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   handleGestionPromotor() {
     if (this.fp.gestionadoPorPromotor.value) {
       this.fp.promotor.enable();
+      this.fp.promotor.setValidators(Validators.required);
+      this.promotorForm.markAllAsTouched();
     } else {
       this.fp.promotor.setValue(null);
       this.fp.promotor.disable();
+      this.fp.promotor.clearValidators();
     }
     this.fp.promotor.updateValueAndValidity();
   }
@@ -548,6 +551,16 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         if (!respuesta.datos) {
           this.alertaService.mostrar(
             TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
+          formularioEnUso[posicion].nss.setErrors({ 'incorrect': true });
+          formularioEnUso[posicion].curp.setValue(null);
+          formularioEnUso[posicion].rfc.setValue(null);
+          formularioEnUso[posicion].nss.setValue(null);
+          formularioEnUso[posicion].nombre.setValue(null);
+          formularioEnUso[posicion].primerApellido.setValue(null);
+          formularioEnUso[posicion].segundoApellido.setValue(null);
+          formularioEnUso[posicion].sexo.setValue(null);
+          formularioEnUso[posicion].fechaNacimiento.setValue(null);
+          formularioEnUso[posicion].nacionalidad.setValue(null);
         } else {
           let fecha: Date | null = null;
           if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined) {
@@ -555,9 +568,10 @@ export class AltaServiciosFunerariosComponent implements OnInit {
             fecha = new Date(+anio, +mes - 1, +dia);
           }
           let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
+          formularioEnUso[posicion].nss.setErrors(null);
           formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
           formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
-          formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+          formularioEnUso[posicion].nss.setValue(respuesta.datos.nss);
           formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
           formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
           formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
@@ -662,6 +676,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   datosIguales(esIgual: boolean): void {
     if (!esIgual) {
+      this.colonias[1] = [];
       this.datosTitularSubstitutoForm.enable();
       this.fdts.municipio.disable();
       this.fdts.estado.disable()
@@ -671,6 +686,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       this.fdts.datosIguales.setValue(false);
       return
     }
+    this.colonias[1] = this.colonias[0];
     this.cajaValidacionDatosExistentes[2] = this.cajaValidacionDatosExistentes[0];
     this.cajaValidacionDatosExistentes[3] = this.cajaValidacionDatosExistentes[1];
     this.datosTitularSubstitutoForm.disable();
@@ -950,7 +966,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   validarBotonGuardar(): boolean {
-    if (this.datosTitularForm.invalid || this.datosTitularSubstitutoForm.invalid ||
+    if (this.datosTitularForm.invalid || this.datosTitularSubstitutoForm.invalid || this.promotorForm.invalid ||
       this.cajaValidacionDatosExistentes.includes(true)) {
       return true;
     }

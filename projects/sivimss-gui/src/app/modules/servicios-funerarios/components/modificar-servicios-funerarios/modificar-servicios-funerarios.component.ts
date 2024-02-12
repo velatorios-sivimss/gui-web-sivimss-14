@@ -148,8 +148,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
 
   inicializarFormPromotor(indPromotor: number, idPromotor: number): void {
     this.promotorForm = this.formBuilder.group({
-      gestionadoPorPromotor: [{ value: indPromotor === 1, disabled: false }, [Validators.nullValidator]],
-      promotor: [{ value: idPromotor, disabled: false }, [Validators.nullValidator]],
+      gestionadoPorPromotor: [{ value: indPromotor === 1, disabled: false }, [Validators.required]],
+      promotor: [{ value: idPromotor, disabled: false }, [Validators.required]],
     });
 
     this.handleGestionPromotor();
@@ -543,16 +543,27 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         if (!respuesta.datos) {
           this.alertaService.mostrar(
             TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
+          formularioEnUso[posicion].nss.setErrors({ 'incorrect': true });
+          formularioEnUso[posicion].curp.setValue(null);
+          formularioEnUso[posicion].rfc.setValue(null);
+          formularioEnUso[posicion].nss.setValue(null);
+          formularioEnUso[posicion].nombre.setValue(null);
+          formularioEnUso[posicion].primerApellido.setValue(null);
+          formularioEnUso[posicion].segundoApellido.setValue(null);
+          formularioEnUso[posicion].sexo.setValue(null);
+          formularioEnUso[posicion].fechaNacimiento.setValue(null);
+          formularioEnUso[posicion].nacionalidad.setValue(null);
         } else {
           let fecha: Date | null = null;
-          if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined ) {
+          if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined) {
             let [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
             fecha = new Date(+anio, +mes - 1, +dia);
           }
           let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
+          formularioEnUso[posicion].nss.setErrors(null);
           formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
           formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
-          formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+          formularioEnUso[posicion].nss.setValue(respuesta.datos.nss);
           formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
           formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
           formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
@@ -729,10 +740,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   validarBotonGuardar(): boolean {
-    if (this.datosTitularSubstitutoForm) {
-      if (this.datosTitularSubstitutoForm.invalid || this.datosTitularSubstitutoForm.invalid) {
-        return true;
-      }
+    if (this.datosTitularForm.invalid || this.datosTitularSubstitutoForm.invalid || this.promotorForm.invalid) {
+      return true;
     }
     return false;
   }
@@ -933,9 +942,12 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   handleGestionPromotor() {
     if (this.fp.gestionadoPorPromotor.value) {
       this.fp.promotor.enable();
+      this.fp.promotor.setValidators(Validators.required);
+      this.promotorForm.markAllAsTouched();
     } else {
       this.fp.promotor.setValue(null);
       this.fp.promotor.disable();
+      this.fp.promotor.clearValidators();
     }
     this.fp.promotor.updateValueAndValidity();
   }
