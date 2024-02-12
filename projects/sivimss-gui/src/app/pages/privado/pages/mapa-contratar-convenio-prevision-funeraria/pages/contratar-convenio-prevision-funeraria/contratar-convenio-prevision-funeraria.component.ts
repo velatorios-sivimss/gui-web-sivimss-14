@@ -211,7 +211,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
       fecTransaccion: pago.transaction.payment_date, // pagos linea
       folio: this.folioConvenio,
       folioPago: "TEST-1", // pagos linea
-      idCliente: 433, //pagos linea (local storage)
       idFlujoPagos: 2,
       idMetodoPago, // debito o credito payment_method_type
       idRegistro: this.idConvenioPf, // idConvenio
