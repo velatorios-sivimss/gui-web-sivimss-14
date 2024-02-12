@@ -78,24 +78,28 @@
 <div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
-    <input id="nacionalidad" class="form-control" formControlName="nacionalidad"
-           placeholder="Inserta la nacionalidad">
+    <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
+                (onChange)="cambioNacionalidad($event)"
+                placeholder="Selecciona nacionalidad" [options]="nacionalidad" [filter]="true"
+                filterBy="label"></p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.nacionalidad?.errors?.required  && (parentFormGroup.nacionalidad?.dirty || parentFormGroup.nacionalidad?.touched)">
       Este campo es obligatorio *.</span>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4" *ngIf="parentFormGroup.nacionalidad.value === 2">
     <label class="control-label" for="paisNacimiento">Pais de Nacimiento<span class="req">*</span>:</label>
-    <input id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
-           placeholder="Inserta el pais de nacimiento">
+    <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento" [options]="paises"
+                placeholder="Seleccionar el pais de nacimiento" [filter]="true" filterBy="label">
+    </p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.paisNacimiento?.errors?.required  && (parentFormGroup.paisNacimiento?.dirty || parentFormGroup.paisNacimiento?.touched)">
       Este campo es obligatorio *.</span>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4" *ngIf="parentFormGroup.nacionalidad.value === 1">
     <label class="control-label" for="lugarNacimiento">Lugar de Nacimiento<span class="req">*</span>:</label>
-    <input id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
-           placeholder="Inserta el lugar de nacimiento">
+    <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento" [filter]="true"
+                filterBy="label" [options]="estados" placeholder="Selecciona el lugar de nacimiento">
+    </p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.lugarNacimiento?.errors?.required  && (parentFormGroup.lugarNacimiento?.dirty || parentFormGroup.lugarNacimiento?.touched)">
       Este campo es obligatorio *.</span>

@@ -29,6 +29,7 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
   parentContainer: ControlContainer =  inject(ControlContainer)
 
   paises: TipoDropdown[] = [];
+  estados: TipoDropdown[] = [];
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   fechaActual: Date = new Date();
@@ -43,6 +44,8 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
   cargarCatalogosLocalStorage(): void {
     const catalogoPais = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_pais');
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
+    const catalogoEstado = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_estados');
+    this.estados = mapearArregloTipoDropdown(catalogoEstado, 'desc', 'id');
   }
 
 

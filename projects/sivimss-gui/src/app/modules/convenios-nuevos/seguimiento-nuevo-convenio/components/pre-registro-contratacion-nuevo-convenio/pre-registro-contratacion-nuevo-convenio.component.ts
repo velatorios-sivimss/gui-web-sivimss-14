@@ -197,7 +197,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   inicializarFormularioPA(): void {
-    const nacionalidad = this.titularPA.idPais === 119 ? 1 : 2
+    const nacionalidad: number = this.titularPA.idPais === 119 ? 1 : 2
+    const nacionalidadSustituto: number = +this.sustituto.idPais === 119 ? 1 : 2
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
@@ -241,14 +242,14 @@ export class PreRegistroContratacionNuevoConvenioComponent {
           value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento),
           disabled: false
         }, [Validators.required]],
-        nacionalidad: [{value: null, disabled: false}, [Validators.required]],
-        paisNacimiento: [{value: null, disabled: false}, [Validators.required]],
+        nacionalidad: [{value: nacionalidadSustituto, disabled: false}, [Validators.required]],
+        paisNacimiento: [{value: +this.sustituto?.idPais ?? null, disabled: false}, [Validators.required]],
         lugarNacimiento: [{value: null, disabled: false}, [Validators.required]],
         telefono: [{value: this.sustituto?.telFijo ?? null, disabled: false}, [Validators.required]],
         correoElectronico: [{value: this.sustituto?.correo ?? null, disabled: false}, [Validators.required]],
         calle: [{value: this.sustituto?.calle ?? null, disabled: false}, [Validators.required]],
         numeroExterior: [{value: this.sustituto?.numExt ?? null, disabled: false}, [Validators.required]],
-        numeroInterior: [{value: this.sustituto?.numInt ?? null, disabled: false}, [Validators.required]],
+        numeroInterior: [{value: this.sustituto?.numInt ?? null, disabled: false}],
         cp: [{value: this.sustituto?.cp ?? null, disabled: false}, [Validators.required]],
         colonia: [{value: this.sustituto?.colonia ?? null, disabled: false}, [Validators.required]],
         municipio: [{value: this.sustituto?.municipio ?? null, disabled: false}, [Validators.required]],
