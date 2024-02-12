@@ -277,8 +277,7 @@
           <div class="col-md-3">
             <label class="control-label" for="nssContratante">NSS<span class="req">*</span>:</label>
             <input id="nssContratante" class="form-control" formControlName="nss" placeholder="Ingresa el NSS"
-                   minlength="11" maxlength="11"
-                   (blur)="consultarNSS(1)">
+                   minlength="11" maxlength="11" (blur)="consultarNSS(1)">
             <span class="campo-obligatorio"
                   *ngIf="fdts.nss?.errors?.required && (fdts.nss?.dirty || fdts.nss?.touched)">Este campo es obligatorio *.</span>
           </div>

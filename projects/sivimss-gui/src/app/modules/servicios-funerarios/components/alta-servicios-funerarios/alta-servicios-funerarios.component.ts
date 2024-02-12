@@ -551,6 +551,16 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         if (!respuesta.datos) {
           this.alertaService.mostrar(
             TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
+          formularioEnUso[posicion].nss.setErrors({ 'incorrect': true });
+          formularioEnUso[posicion].curp.setValue(null);
+          formularioEnUso[posicion].rfc.setValue(null);
+          formularioEnUso[posicion].nss.setValue(null);
+          formularioEnUso[posicion].nombre.setValue(null);
+          formularioEnUso[posicion].primerApellido.setValue(null);
+          formularioEnUso[posicion].segundoApellido.setValue(null);
+          formularioEnUso[posicion].sexo.setValue(null);
+          formularioEnUso[posicion].fechaNacimiento.setValue(null);
+          formularioEnUso[posicion].nacionalidad.setValue(null);
         } else {
           let fecha: Date | null = null;
           if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined) {
@@ -558,9 +568,10 @@ export class AltaServiciosFunerariosComponent implements OnInit {
             fecha = new Date(+anio, +mes - 1, +dia);
           }
           let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
+          formularioEnUso[posicion].nss.setErrors(null);
           formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
           formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
-          formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+          formularioEnUso[posicion].nss.setValue(respuesta.datos.nss);
           formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
           formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
           formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
