@@ -1,6 +1,8 @@
 <div class="grid">
   <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="./../../.."></app-btn-regresar>
-  <app-titulo-principal titulo="Pre-registro para la contratación de Convenio de Previsión Funeraria"
+  <app-titulo-principal *ngIf="tipoConvenio !== '1'" titulo="Pre-registro para la contratación de Convenio de Previsión Funeraria"
+                        class="col"></app-titulo-principal>
+  <app-titulo-principal *ngIf="tipoConvenio === '1'" titulo="Pre-registro para la contratación de Plan de Servicios Funerarios"
                         class="col"></app-titulo-principal>
 </div>
 <app-convenio-header [tipoContratacion]="'Por persona'" [numeroFolio]="folio"></app-convenio-header>

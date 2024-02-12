@@ -83,17 +83,21 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
-    if (!respuesta[this.POSICION_CONVENIO].datos) this.errorCargarRegistro();
+    const preRegistro = respuesta[this.POSICION_CONVENIO].datos;
+    if (!preRegistro) this.errorCargarRegistro();
     this.cargarCatalogosGenerales();
     if (this.tipoConvenio === '3') {
+      if (!preRegistro.detalleConvenioPFModel) this.errorCargarRegistro();
       this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
       this.folio = this.convenioPersona.folioConvenio
     }
     if (this.tipoConvenio === '2') {
+      if (!preRegistro.empresa) this.errorCargarRegistro();
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
       this.folio = this.convenioEmpresa.folioConvenio;
     }
     if (this.tipoConvenio === '1') {
+      if (!preRegistro.preRegistro) this.errorCargarRegistro();
       this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
       this.mismoSustituto = !respuesta[this.POSICION_CONVENIO].datos.sustituto;
       this.obtenerSustitutoDesdeTitular();
