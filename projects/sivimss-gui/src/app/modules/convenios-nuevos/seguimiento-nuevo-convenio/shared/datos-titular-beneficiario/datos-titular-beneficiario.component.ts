@@ -26,9 +26,10 @@ import {CalendarModule} from "primeng/calendar";
 })
 export class DatosTitularBeneficiarioComponent implements OnInit {
 
-  parentContainer: ControlContainer =  inject(ControlContainer)
+  parentContainer: ControlContainer = inject(ControlContainer)
 
   paises: TipoDropdown[] = [];
+  estados: TipoDropdown[] = [];
   numeroPagos: TipoDropdown[] = CATALOGO_NUMERO_PAGOS;
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
@@ -44,6 +45,8 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   cargarCatalogosLocalStorage(): void {
     const catalogoPais = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_pais');
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
+    const catalogoEstado = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_estados');
+    this.estados = mapearArregloTipoDropdown(catalogoEstado, 'desc', 'id');
   }
 
   validarCurp($event: any): void {

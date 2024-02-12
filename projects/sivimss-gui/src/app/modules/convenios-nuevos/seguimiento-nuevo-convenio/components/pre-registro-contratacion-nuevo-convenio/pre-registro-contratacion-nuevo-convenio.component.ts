@@ -197,6 +197,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   inicializarFormularioPA(): void {
+    const nacionalidad = this.titularPA.idPais === 119 ? 1 : 2
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
@@ -211,7 +212,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
           value: this.calcularFechaNacimiento(this.titularPA.fecNacimiento),
           disabled: false
         }, [Validators.required]],
-        nacionalidad: [{value: null, disabled: false}, [Validators.required]],
+        nacionalidad: [{value: nacionalidad, disabled: false}, [Validators.required]],
         paisNacimiento: [{value: +this.titularPA.idPais, disabled: false}],
         lugarNacimiento: [{value: null, disabled: false}],
         telefonoCelular: [{value: this.titularPA.telCelular, disabled: false}, [Validators.required]],
