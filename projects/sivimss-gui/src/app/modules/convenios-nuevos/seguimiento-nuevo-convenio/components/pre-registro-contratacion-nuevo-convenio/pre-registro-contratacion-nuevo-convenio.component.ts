@@ -49,7 +49,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   preRegistroSiguiente: boolean = false;
   folio: string = '';
   nombresBeneficiario: string[] = [];
-  tipoConvenio: string = '';
+  tipoConvenio: string = ''
+  beneficiariosPF: BeneficiarioResponse[] = [];
   beneficiariosPA: BeneficiarioResponse[] = [];
   beneficiario1!: BeneficiarioResponse;
   beneficiario2!: BeneficiarioResponse;
@@ -88,8 +89,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     this.cargarCatalogosGenerales();
     if (this.tipoConvenio === '3') {
       if (!preRegistro.detalleConvenioPFModel) this.errorCargarRegistro();
-      this.convenioPersona = respuesta[this.POSICION_CONVENIO].datos;
-      this.folio = this.convenioPersona.folioConvenio
+      this.convenioPersona = preRegistro.detalleConvenioPFModel;
+      this.folio = this.convenioPersona.folioConvenio;
+      this.beneficiariosPF = preRegistro.beneficiarios;
     }
     if (this.tipoConvenio === '2') {
       if (!preRegistro.empresa) this.errorCargarRegistro();
@@ -145,27 +147,27 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormulario(): void {
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       persona: this.formBuilder.group({
-        matricula: [{value: this.convenioPersona.matricula, disabled: false}],
-        rfc: [{value: this.convenioPersona.rfc, disabled: false}],
-        curp: [{value: this.convenioPersona.curp, disabled: false}],
-        nombres: [{value: this.convenioPersona.nombre, disabled: false}],
-        primerApellido: [{value: this.convenioPersona.primerApellido, disabled: false}],
-        segundoApellido: [{value: this.convenioPersona.segundoApellido, disabled: false}],
-        calle: [{value: this.convenioPersona.calle, disabled: false}],
-        numeroExterior: [{value: this.convenioPersona.numExt, disabled: false}],
+        matricula: [{value: this.convenioPersona.matricula, disabled: false}, [Validators.required]],
+        rfc: [{value: this.convenioPersona.rfc, disabled: false}, [Validators.required]],
+        curp: [{value: this.convenioPersona.curp, disabled: false}, [Validators.required]],
+        nombres: [{value: this.convenioPersona.nombre, disabled: false}, [Validators.required]],
+        primerApellido: [{value: this.convenioPersona.primerApellido, disabled: false}, [Validators.required]],
+        segundoApellido: [{value: this.convenioPersona.segundoApellido, disabled: false}, [Validators.required]],
+        calle: [{value: this.convenioPersona.calle, disabled: false}, [Validators.required]],
+        numeroExterior: [{value: this.convenioPersona.numExt, disabled: false}, [Validators.required]],
         numeroInterior: [{value: this.convenioPersona.numInt, disabled: false}],
-        codigoPostal: [{value: this.convenioPersona.cp, disabled: false}],
-        colonia: [{value: this.convenioPersona.colonia, disabled: false}],
-        municipio: [{value: this.convenioPersona.municipio, disabled: false}],
-        estado: [{value: this.convenioPersona.estado, disabled: false}],
-        nacionalidad: [{value: null, disabled: false}],
-        paisNacimiento: [{value: parseInt(this.convenioPersona.pais), disabled: false}],
-        lugarNacimiento: [{value: this.convenioPersona.lugarNac, disabled: false}],
-        correoElectronico: [{value: this.convenioPersona.correo, disabled: false}],
-        telefono: [{value: this.convenioPersona.telFijo, disabled: false}],
-        enfermedadPreExistente: [{value: null, disabled: false}],
+        codigoPostal: [{value: this.convenioPersona.cp, disabled: false}, [Validators.required]],
+        colonia: [{value: this.convenioPersona.colonia, disabled: false}, [Validators.required]],
+        municipio: [{value: this.convenioPersona.municipio, disabled: false}, [Validators.required]],
+        estado: [{value: this.convenioPersona.estado, disabled: false}, [Validators.required]],
+        nacionalidad: [{value: null, disabled: false}, [Validators.required]],
+        paisNacimiento: [{value: parseInt(this.convenioPersona.pais), disabled: false}, [Validators.required]],
+        lugarNacimiento: [{value: this.convenioPersona.lugarNac, disabled: false}, [Validators.required]],
+        correoElectronico: [{value: this.convenioPersona.correo, disabled: false}, [Validators.required]],
+        telefono: [{value: this.convenioPersona.telFijo, disabled: false}, [Validators.required]],
+        enfermedadPreExistente: [{value: null, disabled: false}, [Validators.required]],
       }),
-      tipoPaquete: [{value: this.convenioPersona.idPaquete, disabled: false}],
+      tipoPaquete: [{value: this.convenioPersona.idPaquete, disabled: false}, [Validators.required]],
       beneficiarios: this.formBuilder.array([])
     });
   }
@@ -190,7 +192,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   calcularFechaNacimiento(fecha: string): Date | null {
-    if(!fecha) return null;
+    if (!fecha) return null;
     return new Date(diferenciaUTC(this.titularPA.fecNacimiento));
   }
 
@@ -205,7 +207,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         primerApellido: [{value: this.titularPA.primerApellido, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.titularPA.segundoApellido, disabled: false}, [Validators.required]],
         sexo: [{value: this.titularPA.idSexo, disabled: false}, [Validators.required]],
-        fechaNacimiento: [{value: this.calcularFechaNacimiento(this.titularPA.fecNacimiento), disabled: false}, [Validators.required]],
+        fechaNacimiento: [{
+          value: this.calcularFechaNacimiento(this.titularPA.fecNacimiento),
+          disabled: false
+        }, [Validators.required]],
         nacionalidad: [{value: null, disabled: false}, [Validators.required]],
         paisNacimiento: [{value: +this.titularPA.idPais, disabled: false}],
         lugarNacimiento: [{value: null, disabled: false}],
@@ -231,7 +236,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         primerApellido: [{value: this.sustituto?.primerApellido ?? null, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.sustituto?.segundoApellido ?? null, disabled: false}, [Validators.required]],
         sexo: [{value: +this.sustituto?.idSexo ?? null, disabled: false}, [Validators.required]],
-        fechaNacimiento: [{value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento), disabled: false}, [Validators.required]],
+        fechaNacimiento: [{
+          value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento),
+          disabled: false
+        }, [Validators.required]],
         nacionalidad: [{value: null, disabled: false}, [Validators.required]],
         paisNacimiento: [{value: null, disabled: false}, [Validators.required]],
         lugarNacimiento: [{value: null, disabled: false}, [Validators.required]],
