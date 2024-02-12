@@ -214,7 +214,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         correoElectronico: [{value: this.titularPA.correo, disabled: false}, [Validators.required]],
         calle: [{value: this.titularPA.calle, disabled: false}, [Validators.required]],
         numeroExterior: [{value: this.titularPA.numExt, disabled: false}, [Validators.required]],
-        numeroInterior: [{value: this.titularPA.numInt, disabled: false}, [Validators.required]],
+        numeroInterior: [{value: this.titularPA.numInt, disabled: false}],
         cp: [{value: this.titularPA.cp, disabled: false}, [Validators.required]],
         colonia: [{value: this.titularPA.colonia, disabled: false}, [Validators.required]],
         municipio: [{value: this.titularPA.municipio, disabled: false}, [Validators.required]],
