@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
 import {CommonModule} from "@angular/common";
@@ -7,7 +7,6 @@ import {CalendarModule} from "primeng/calendar";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
-import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo";
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
 
 @Component({
@@ -36,6 +35,16 @@ export class DatosPersonaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargarValidacionesIniciales();
+  }
+
+  cargarValidacionesIniciales(): void {
+    const nacionalidad = this.parentContainer.control?.get('nacionalidad')?.value;
+    if (nacionalidad === 1) {
+      this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+    } else {
+      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
+    }
   }
 
   cargarCatalogosLocalStorage(): void {
@@ -49,7 +58,16 @@ export class DatosPersonaComponent implements OnInit {
     return (this.parentContainer.control as FormGroup).controls
   }
 
-  cambioNacionalidad() {
-
+  cambioNacionalidad(): void {
+    const nacionalidadPersona = this.parentContainer.control?.get('nacionalidad')?.value;
+    this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
+    if (nacionalidadPersona === 1) {
+      this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+      this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
+    } else {
+      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
+      this.parentContainer.control?.get('lugarNacimiento')?.clearValidators();
+    }
   }
 }
