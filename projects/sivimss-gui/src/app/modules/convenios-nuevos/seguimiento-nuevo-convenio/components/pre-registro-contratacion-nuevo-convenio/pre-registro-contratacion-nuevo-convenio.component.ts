@@ -146,6 +146,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   inicializarFormulario(): void {
+    const nacionalidad: number = this.convenioPersona.idPais === 119 ? 1 : 2;
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       persona: this.formBuilder.group({
         matricula: [{value: this.convenioPersona.matricula, disabled: false}],
@@ -161,12 +162,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         colonia: [{value: this.convenioPersona.colonia, disabled: false}, [Validators.required]],
         municipio: [{value: this.convenioPersona.municipio, disabled: false}, [Validators.required]],
         estado: [{value: this.convenioPersona.estado, disabled: false}, [Validators.required]],
-        nacionalidad: [{value: null, disabled: false}, [Validators.required]],
-        paisNacimiento: [{value: parseInt(this.convenioPersona.pais), disabled: false}, [Validators.required]],
-        lugarNacimiento: [{value: this.convenioPersona.lugarNac, disabled: false}, [Validators.required]],
+        nacionalidad: [{value: nacionalidad, disabled: false}, [Validators.required]],
+        paisNacimiento: [{value: this.convenioPersona.idPais, disabled: false}, [Validators.required]],
+        lugarNacimiento: [{value: this.convenioPersona.idLugarNac, disabled: false}, [Validators.required]],
         correoElectronico: [{value: this.convenioPersona.correo, disabled: false}, [Validators.required]],
         telefono: [{value: this.convenioPersona.telFijo, disabled: false}, [Validators.required]],
-        enfermedadPreExistente: [{value: null, disabled: false}, [Validators.required]],
+        enfermedadPreExistente: [{value: +this.convenioPersona.enfermedadPre, disabled: false}, [Validators.required]],
       }),
       tipoPaquete: [{value: this.convenioPersona.idPaquete, disabled: false}, [Validators.required]],
       beneficiarios: this.formBuilder.array([])
