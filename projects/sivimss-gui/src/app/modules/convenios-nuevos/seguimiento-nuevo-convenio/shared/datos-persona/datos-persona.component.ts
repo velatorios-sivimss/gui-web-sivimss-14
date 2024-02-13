@@ -26,7 +26,7 @@ import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogo
 export class DatosPersonaComponent implements OnInit {
 
   paises: TipoDropdown[] = [];
-  tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
+  estados: TipoDropdown[] = [];
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
 
   parentContainer: ControlContainer = inject(ControlContainer)
@@ -41,10 +41,15 @@ export class DatosPersonaComponent implements OnInit {
   cargarCatalogosLocalStorage(): void {
     const catalogoPais = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_pais');
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
+    const catalogoEstado = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_estados');
+    this.estados = mapearArregloTipoDropdown(catalogoEstado, 'desc', 'id');
   }
 
   get parentFormGroup() {
     return (this.parentContainer.control as FormGroup).controls
   }
 
+  cambioNacionalidad() {
+
+  }
 }
