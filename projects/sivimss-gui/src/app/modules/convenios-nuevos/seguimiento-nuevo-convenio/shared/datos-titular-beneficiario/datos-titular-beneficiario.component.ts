@@ -10,6 +10,7 @@ import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo"
 import {CATALOGO_NUMERO_PAGOS} from "../../constants/catalogos";
 import {CommonModule} from "@angular/common";
 import {CalendarModule} from "primeng/calendar";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-datos-titular-beneficiario',
@@ -36,7 +37,9 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   fechaActual: Date = new Date();
 
-  constructor(private autenticacionService: AutenticacionService) {
+  constructor(private autenticacionService: AutenticacionService,
+              private activatedRoute: ActivatedRoute,
+  ) {
     this.cargarCatalogosLocalStorage();
   }
 
@@ -62,6 +65,10 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
     const catalogoEstado = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_estados');
     this.estados = mapearArregloTipoDropdown(catalogoEstado, 'desc', 'id');
+    const POSICION_PAQUETES: number = 1;
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    const paquetes = respuesta[POSICION_PAQUETES].datos;
+    this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
   }
 
   validarCurp($event: any): void {

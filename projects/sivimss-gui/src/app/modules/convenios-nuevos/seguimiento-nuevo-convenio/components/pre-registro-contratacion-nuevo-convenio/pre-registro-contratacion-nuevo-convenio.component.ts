@@ -225,7 +225,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         colonia: [{value: this.titularPA.colonia, disabled: false}, [Validators.required]],
         municipio: [{value: this.titularPA.municipio, disabled: false}, [Validators.required]],
         estado: [{value: this.titularPA.estado, disabled: false}, [Validators.required]],
-        tipoPaquete: [{value: null, disabled: false}, [Validators.required]],
+        tipoPaquete: [{value: this.titularPA.idPaquete, disabled: false}, [Validators.required]],
         numeroPagos: [{value: this.titularPA.numPagos, disabled: false}, [Validators.required]],
       }),
       sustituto: this.formBuilder.group({
