@@ -252,7 +252,7 @@
               <div class="paquete" *ngFor="let item of paquetes;">
                 <div class="paquete-titulo">
                   <p-radioButton [inputId]="'item.idPaquete'" name="paquete" [value]="item.idPaquete"  formControlName="paquete"
-                                 (click)="seleccionaPaquete(item.idPaquete)"></p-radioButton>
+                                 (click)="seleccionaPaquete(item)"></p-radioButton>
                   <span>{{item.nomPaquete}}</span>
                 </div>
                 <div>
