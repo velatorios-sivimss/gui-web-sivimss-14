@@ -103,6 +103,9 @@
               <p-dropdown appendTo="body" id="tipoPaquete" class="form-control" formControlName="tipoPaquete"
                           [options]="paquetes" placeholder="Selecciona el tipo de paquete">
               </p-dropdown>
+              <span class="campo-obligatorio"
+                    *ngIf="convenioFormGroup?.tipoPaquete?.errors?.required  && (convenioFormGroup?.tipoPaquete?.dirty || convenioFormGroup?.tipoPaquete?.touched)">
+      Este campo es obligatorio *.</span>
             </div>
           </div>
         </p-accordionTab>

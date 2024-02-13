@@ -1,6 +1,6 @@
 <div class="row mb-3">
   <div class="col-md-4">
-    <label class="control-label" for="matricula">Matricula<span class="req">*</span>:</label>
+    <label class="control-label" for="matricula">Matricula:</label>
     <input id="matricula" class="form-control" formControlName="matricula" placeholder="Inserta la Matricula" [maxlength]="10">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.matricula?.errors?.required  && (parentFormGroup.matricula?.dirty || parentFormGroup.matricula?.touched)">

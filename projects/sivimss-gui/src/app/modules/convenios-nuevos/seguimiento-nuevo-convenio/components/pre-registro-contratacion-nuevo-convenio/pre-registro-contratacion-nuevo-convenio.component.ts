@@ -115,7 +115,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   cargarCatalogosGenerales(): void {
+    const POSICION_PAQUETES: number = 1;
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    const paquetes = respuesta[POSICION_PAQUETES].datos;
+    this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
   }
 
   obtenerBeneficiarios(): void {
@@ -145,7 +148,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormulario(): void {
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       persona: this.formBuilder.group({
-        matricula: [{value: this.convenioPersona.matricula, disabled: false}, [Validators.required]],
+        matricula: [{value: this.convenioPersona.matricula, disabled: false}],
         rfc: [{value: this.convenioPersona.rfc, disabled: false}, [Validators.required]],
         curp: [{value: this.convenioPersona.curp, disabled: false}, [Validators.required]],
         nombres: [{value: this.convenioPersona.nombre, disabled: false}, [Validators.required]],
@@ -372,8 +375,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     return this.contratacionNuevoConvenioForm.controls["beneficiarios"] as FormArray;
   }
 
-  getFormGroup(control: AbstractControl) {
-    return control as FormGroup;
+  get convenioFormGroup() {
+    return this.contratacionNuevoConvenioForm.controls
   }
 
 }
