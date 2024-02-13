@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
@@ -30,6 +30,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
 
   paises: TipoDropdown[] = [];
   estados: TipoDropdown[] = [];
+  paquetes: TipoDropdown[] = [];
   numeroPagos: TipoDropdown[] = CATALOGO_NUMERO_PAGOS;
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
@@ -57,8 +58,14 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
 
   }
 
-  cambioTipoSexo($event: any): void {
-
+  cambioTipoSexo(): void {
+    const idSexo = this.parentContainer.control?.get('sexo')?.value;
+    this.parentContainer.control?.get('otroSexo')?.setValue(null);
+    if (idSexo === 3) {
+      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
+    } else {
+      this.parentContainer.control?.get('otroSexo')?.clearValidators();
+    }
   }
 
   cambioNacionalidad($event: any): void {

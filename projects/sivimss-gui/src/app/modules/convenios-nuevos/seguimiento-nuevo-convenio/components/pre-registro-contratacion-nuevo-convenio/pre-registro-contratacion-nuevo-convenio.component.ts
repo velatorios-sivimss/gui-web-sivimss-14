@@ -116,8 +116,6 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   cargarCatalogosGenerales(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
-    const paquetes = respuesta[this.POSICION_PAQUETES].datos;
-    this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
   }
 
   obtenerBeneficiarios(): void {
@@ -209,6 +207,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         primerApellido: [{value: this.titularPA.primerApellido, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.titularPA.segundoApellido, disabled: false}, [Validators.required]],
         sexo: [{value: this.titularPA.idSexo, disabled: false}, [Validators.required]],
+        sexoOtro: [{value: null, disabled: false}, [Validators.required]],
         fechaNacimiento: [{
           value: this.calcularFechaNacimiento(this.titularPA.fecNacimiento),
           disabled: false

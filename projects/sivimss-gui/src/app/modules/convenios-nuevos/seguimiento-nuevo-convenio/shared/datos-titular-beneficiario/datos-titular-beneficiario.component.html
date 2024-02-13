@@ -64,10 +64,17 @@
   <div class="col-md-4 mb-3">
     <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
     <p-dropdown id="sexo" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
-                (onChange)="cambioTipoSexo($event)" [options]="tipoSexo" [filter]="true"
+                (onChange)="cambioTipoSexo()" [options]="tipoSexo" [filter]="true"
                 filterBy="label"></p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.sexo?.errors?.required  && (parentFormGroup.sexo?.dirty || parentFormGroup.sexo?.touched)">
+      Este campo es obligatorio *.</span>
+  </div>
+  <div class="col-md-4 mb-3" *ngIf="parentFormGroup.sexo.value === 3">
+    <label class="control-label" for="sexoOtro">Sexo<span class="req">*</span>:</label>
+    <input id="sexoOtro" class="form-control" formControlName="sexoOtro" placeholder="Ingresa el sexo correspondiente">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.sexoOtro?.errors?.required  && (parentFormGroup.sexoOtro?.dirty || parentFormGroup.sexoOtro?.touched)">
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4 mb-3">
@@ -80,8 +87,6 @@
           *ngIf="parentFormGroup.fechaNacimiento?.errors?.required  && (parentFormGroup.fechaNacimiento?.dirty || parentFormGroup.fechaNacimiento?.touched)">
       Este campo es obligatorio *.</span>
   </div>
-</div>
-<div class="row">
   <div class="col-md-4 mb-3">
     <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
     <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
@@ -192,8 +197,9 @@
   </div>
   <div class="col-md-4 mb-3">
     <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span>:</label>
-    <input id="tipoPaquete" class="form-control" formControlName="tipoPaquete"
-           placeholder="Inserta el tipo de paquete">
+    <p-dropdown id="tipoPaquete" class="form-control" formControlName="tipoPaquete"
+                placeholder="Selecciona el tipo de paquete" [options]="paquetes" [filter]="true"
+                filterBy="label"></p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.tipoPaquete?.errors?.required  && (parentFormGroup.tipoPaquete?.dirty || parentFormGroup.tipoPaquete?.touched)">
       Este campo es obligatorio *.</span>
