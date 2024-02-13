@@ -167,7 +167,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         lugarNacimiento: [{value: this.convenioPersona.idLugarNac, disabled: false}, [Validators.required]],
         correoElectronico: [{value: this.convenioPersona.correo, disabled: false}, [Validators.required]],
         telefono: [{value: this.convenioPersona.telFijo, disabled: false}, [Validators.required]],
-        enfermedadPreExistente: [{value: null, disabled: false}, [Validators.required]],
+        enfermedadPreExistente: [{value: +this.convenioPersona.enfermedadPre, disabled: false}, [Validators.required]],
       }),
       tipoPaquete: [{value: this.convenioPersona.idPaquete, disabled: false}, [Validators.required]],
       beneficiarios: this.formBuilder.array([])

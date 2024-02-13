@@ -8,6 +8,7 @@ import {AutenticacionService} from "../../../../../services/autenticacion.servic
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
+import {CATALOGO_ENFERMEDAD_PREEXISTENTE} from "../../../../convenios-prevision-funeraria/constants/catalogos-funcion";
 
 @Component({
   selector: 'app-datos-persona',
@@ -26,6 +27,7 @@ export class DatosPersonaComponent implements OnInit {
 
   paises: TipoDropdown[] = [];
   estados: TipoDropdown[] = [];
+  enfermedades: TipoDropdown[] = CATALOGO_ENFERMEDAD_PREEXISTENTE;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
 
   parentContainer: ControlContainer = inject(ControlContainer)
