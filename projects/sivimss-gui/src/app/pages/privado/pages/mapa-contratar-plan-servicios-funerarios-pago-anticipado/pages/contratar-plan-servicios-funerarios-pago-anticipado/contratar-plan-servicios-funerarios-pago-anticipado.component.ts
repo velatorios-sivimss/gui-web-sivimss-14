@@ -23,9 +23,9 @@ import { RegistroService } from 'projects/sivimss-gui/src/app/pages/publico/page
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { ServiciosFunerariosService } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/services/servicios-funerarios.service';
-import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import { Subscription } from 'rxjs';
+import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
 
 @Component({
   selector: 'app-contratar-plan-servicios-funerarios-pago-anticipado',
@@ -34,7 +34,7 @@ import { Subscription } from 'rxjs';
   styleUrls: [
     './contratar-plan-servicios-funerarios-pago-anticipado.component.scss',
   ],
-  providers: [DescargaArchivosService, ServiciosFunerariosService, AutenticacionContratanteService]
+  providers: [DescargaArchivosService, ServiciosFunerariosService]
 })
 export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   @ViewChild('overlayPanel')
@@ -621,6 +621,9 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
           const datosUsuario = respuesta.datos[0];
           const [dia, mes, anio] = datosUsuario.fecNacimiento.split('/');
           const fecha = new Date(anio + '/' + mes + '/' + dia);
+          if (datosUsuario.otroSexo && datosUsuario.otroSexo !== '') {
+            datosUsuario.idSexo = 3;
+          }
           formularioEnUso[posicion].nombre.setValue(datosUsuario.nomPersona)
           formularioEnUso[posicion].primerApellido.setValue(datosUsuario.paterno)
           formularioEnUso[posicion].segundoApellido.setValue(datosUsuario.materno)
