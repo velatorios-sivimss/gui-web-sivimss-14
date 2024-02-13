@@ -203,8 +203,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
         rfc: [{value: this.titularPA.rfc, disabled: false}, [Validators.required]],
-        matricula: [{value: this.titularPA.matricula, disabled: false}, [Validators.required]],
-        nss: [{value: this.titularPA.nss, disabled: false}, [Validators.required]],
+        matricula: [{value: this.titularPA.matricula, disabled: false}],
+        nss: [{value: this.titularPA.nss, disabled: false}],
         nombre: [{value: this.titularPA.nombre, disabled: false}, [Validators.required]],
         primerApellido: [{value: this.titularPA.primerApellido, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.titularPA.segundoApellido, disabled: false}, [Validators.required]],
@@ -232,8 +232,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       sustituto: this.formBuilder.group({
         curp: [{value: this.sustituto?.curp ?? null, disabled: false}, [Validators.required]],
         rfc: [{value: this.sustituto?.rfc ?? null, disabled: false}, [Validators.required]],
-        matricula: [{value: this.sustituto?.matricula ?? null, disabled: false}, [Validators.required]],
-        nss: [{value: this.sustituto?.nss ?? null, disabled: false}, [Validators.required]],
+        matricula: [{value: this.sustituto?.matricula ?? null, disabled: false}],
+        nss: [{value: this.sustituto?.nss ?? null, disabled: false}],
         nombre: [{value: this.sustituto?.nombre ?? null, disabled: false}, [Validators.required]],
         primerApellido: [{value: this.sustituto?.primerApellido ?? null, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.sustituto?.segundoApellido ?? null, disabled: false}, [Validators.required]],

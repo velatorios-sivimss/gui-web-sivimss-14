@@ -14,7 +14,7 @@
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
-    <label class="control-label" for="matricula">Matricula<span class="req">*</span>:</label>
+    <label class="control-label" for="matricula">Matricula:</label>
     <input id="matricula" class="form-control" formControlName="matricula" placeholder="Inserta la matricula">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.matricula?.errors?.required  && (parentFormGroup.matricula?.dirty || parentFormGroup.matricula?.touched)">
@@ -23,7 +23,7 @@
 </div>
 <div class="row mb-3">
   <div class="col-md-4">
-    <label class="control-label" for="nss">NSS<span class="req">*</span>:</label>
+    <label class="control-label" for="nss">NSS:</label>
     <input id="nss" class="form-control" formControlName="nss" placeholder="Inserta el NSS" [maxlength]="11"
            numbersOnly>
     <span class="campo-obligatorio"
