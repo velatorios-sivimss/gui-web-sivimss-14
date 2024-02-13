@@ -41,6 +41,20 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargarValidacionesIniciales();
+  }
+
+  cargarValidacionesIniciales(): void {
+    const idSexo = this.parentContainer.control?.get('sexo')?.value;
+    const nacionalidad = this.parentContainer.control?.get('nacionalidad')?.value;
+    if (idSexo === 3) {
+      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
+    }
+    if (nacionalidad === 1) {
+      this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+    } else {
+      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
+    }
   }
 
   cargarCatalogosLocalStorage(): void {

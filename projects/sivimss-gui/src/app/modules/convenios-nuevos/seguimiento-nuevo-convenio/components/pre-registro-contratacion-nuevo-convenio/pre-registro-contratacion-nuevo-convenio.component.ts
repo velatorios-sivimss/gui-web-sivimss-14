@@ -207,7 +207,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         primerApellido: [{value: this.titularPA.primerApellido, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.titularPA.segundoApellido, disabled: false}, [Validators.required]],
         sexo: [{value: this.titularPA.idSexo, disabled: false}, [Validators.required]],
-        sexoOtro: [{value: null, disabled: false}, [Validators.required]],
+        sexoOtro: [{value: null, disabled: false}],
         fechaNacimiento: [{
           value: this.calcularFechaNacimiento(this.titularPA.fecNacimiento),
           disabled: false
