@@ -68,8 +68,17 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     }
   }
 
-  cambioNacionalidad($event: any): void {
-
+  cambioNacionalidad(): void {
+    const nacionalidad = this.parentContainer.control?.get('nacionalidad')?.value;
+    this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
+    if (nacionalidad === 1) {
+      this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+      this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
+    } else {
+      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
+      this.parentContainer.control?.get('lugarNacimiento')?.clearValidators();
+    }
   }
 
   get parentFormGroup() {
