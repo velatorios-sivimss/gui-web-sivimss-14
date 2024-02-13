@@ -4,7 +4,7 @@ import {DialogService} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {DIEZ_ELEMENTOS_POR_PAGINA, PATRON_CORREO} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {Documentos} from '../../models/documentos.interface';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
@@ -201,6 +201,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormularioPA(): void {
     const nacionalidad: number = this.titularPA.idPais === '119' ? 1 : 2;
     const nacionalidadSustituto: number = this.sustituto.idPais === '119' ? 1 : 2;
+    const sexo: number = this.titularPA.otroSexo === '' ? this.titularPA.idSexo : 3;
+    const sexoSustituto: number = this.sustituto.otroSexo === '' ? +this.sustituto.idSexo : 3;
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
@@ -210,18 +212,17 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         nombre: [{value: this.titularPA.nombre, disabled: false}, [Validators.required]],
         primerApellido: [{value: this.titularPA.primerApellido, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.titularPA.segundoApellido, disabled: false}, [Validators.required]],
-        sexo: [{value: this.titularPA.idSexo, disabled: false}, [Validators.required]],
-        sexoOtro: [{value: null, disabled: false}],
-        fechaNacimiento: [{
-          value: this.calcularFechaNacimiento(this.titularPA.fecNacimiento),
-          disabled: false
-        }, [Validators.required]],
+        sexo: [{value: sexo, disabled: false}, [Validators.required]],
+        otroSexo: [{value: this.titularPA.otroSexo, disabled: false}],
+        fechaNacimiento: [{value: this.calcularFechaNacimiento(this.titularPA.fecNacimiento), disabled: false},
+          [Validators.required]],
         nacionalidad: [{value: nacionalidad, disabled: false}, [Validators.required]],
         paisNacimiento: [{value: +this.titularPA.idPais, disabled: false}],
         lugarNacimiento: [{value: +this.titularPA.idLugarNac, disabled: false}],
         telefonoCelular: [{value: this.titularPA.telCelular, disabled: false}, [Validators.required]],
         telefonoFijo: [{value: this.titularPA.telFijo, disabled: false}, [Validators.required]],
-        correoElectronico: [{value: this.titularPA.correo, disabled: false}, [Validators.required]],
+        correoElectronico: [{value: this.titularPA.correo, disabled: false},
+          [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
         calle: [{value: this.titularPA.calle, disabled: false}, [Validators.required]],
         numeroExterior: [{value: this.titularPA.numExt, disabled: false}, [Validators.required]],
         numeroInterior: [{value: this.titularPA.numInt, disabled: false}],
@@ -240,17 +241,16 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         nombre: [{value: this.sustituto?.nombre ?? null, disabled: false}, [Validators.required]],
         primerApellido: [{value: this.sustituto?.primerApellido ?? null, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.sustituto?.segundoApellido ?? null, disabled: false}, [Validators.required]],
-        sexo: [{value: +this.sustituto?.idSexo ?? null, disabled: false}, [Validators.required]],
-        sexoOtro: [{value: null, disabled: false}],
-        fechaNacimiento: [{
-          value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento),
-          disabled: false
-        }, [Validators.required]],
+        sexo: [{value: sexoSustituto ?? null, disabled: false}, [Validators.required]],
+        otroSexo: [{value: this.sustituto.otroSexo, disabled: false}],
+        fechaNacimiento: [{value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento), disabled: false},
+          [Validators.required]],
         nacionalidad: [{value: nacionalidadSustituto, disabled: false}, [Validators.required]],
         paisNacimiento: [{value: +this.sustituto?.idPais ?? null, disabled: false}, [Validators.required]],
         lugarNacimiento: [{value: +this.sustituto?.idLugarNac ?? null, disabled: false}, [Validators.required]],
         telefono: [{value: this.sustituto?.telFijo ?? null, disabled: false}, [Validators.required]],
-        correoElectronico: [{value: this.sustituto?.correo ?? null, disabled: false}, [Validators.required]],
+        correoElectronico: [{value: this.sustituto?.correo ?? null, disabled: false},
+          [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
         calle: [{value: this.sustituto?.calle ?? null, disabled: false}, [Validators.required]],
         numeroExterior: [{value: this.sustituto?.numExt ?? null, disabled: false}, [Validators.required]],
         numeroInterior: [{value: this.sustituto?.numInt ?? null, disabled: false}],

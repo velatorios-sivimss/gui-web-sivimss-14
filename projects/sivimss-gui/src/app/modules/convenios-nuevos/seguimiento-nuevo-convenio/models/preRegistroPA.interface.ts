@@ -42,5 +42,6 @@ export interface PreRegistroPA {
   telefono: string,
   numExterior: string,
   numInterior: string,
-  sexo: string
+  sexo: string,
+  otroSexo: string
 }
