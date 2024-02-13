@@ -1,11 +1,10 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
 import {CommonModule} from "@angular/common";
 import {CalendarModule} from "primeng/calendar";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
-import {CATALOGO_NUMERO_PAGOS} from "../../constants/catalogos";
 import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo";
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
@@ -33,6 +32,7 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   fechaActual: Date = new Date();
+  @Input() ID: string= 'sustituto';
 
   constructor(private autenticacionService: AutenticacionService) {
     this.cargarCatalogosLocalStorage();
