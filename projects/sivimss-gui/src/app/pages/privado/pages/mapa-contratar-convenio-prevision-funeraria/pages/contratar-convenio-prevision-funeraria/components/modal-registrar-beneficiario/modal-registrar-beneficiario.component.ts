@@ -366,6 +366,7 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
               this.f.primerApellido.setValue(valores.primerApellido);
               this.f.segundoApellido.setValue(valores.segundoApellido);
               this.f.fecha.setValue(fechaNacimiento);
+              this.f.fechaNacimiento.setValue(moment(fechaNacimiento).format('YYYY-MM-DD'));
               this.f.telefono.setValue(valores.telefono);
               this.f.correo.setValue(valores.correo);
               this.f.correo.setValue(valores.correo);
