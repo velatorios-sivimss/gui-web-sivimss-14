@@ -371,6 +371,10 @@ export class RegistroComponent implements OnInit {
       this.datosGenerales.rfc.setErrors(null);
       this.datosGenerales.rfc.clearValidators();
       this.datosGenerales.rfc.updateValueAndValidity();
+      this.form.reset();
+      this.form.enable();
+      this.domicilio.municipio.disable();
+      this.domicilio.estado.disable();
     } else {
       this.datosGenerales.rfc.setValidators(Validators.maxLength(13));
       this.datosGenerales.rfc.updateValueAndValidity();
@@ -385,8 +389,35 @@ export class RegistroComponent implements OnInit {
           next: (respuesta: HttpRespuesta<any>) => {
             this.datosGenerales.rfc.setErrors({ 'incorrect': true });
             if (respuesta.mensaje === 'USUARIO REGISTRADO') {
-              this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C ya se encuentra registrado.');
-              this.datosGenerales.rfc.patchValue(null);
+              const datosUsuario = respuesta.datos[0];
+              // Si idUsuario es null solo falta crear el usuario - Se debe pre-llenar formulario
+              this.datosGenerales.curp.setValue(datosUsuario.curp);
+              this.datosGenerales.nss.setValue(datosUsuario.nss);
+              this.datosGenerales.rfc.setValue(datosUsuario.rfc);
+              this.datosGenerales.nombre.setValue(datosUsuario.nomPersona);
+              this.datosGenerales.primerApellido.setValue(datosUsuario.paterno);
+              this.datosGenerales.segundoApellido.setValue(datosUsuario.materno);
+              this.datosGenerales.fechaNacimiento.setValue(datosUsuario.fecNacimiento);
+              this.datosGenerales.sexo.setValue(datosUsuario.idSexo);
+              this.datosGenerales.otro.setValue(datosUsuario.otroSexo);
+              this.datosGenerales.nacionalidad.setValue(datosUsuario.idPais === 119 ? 1 : 2);
+              this.datosGenerales.paisNacimiento.setValue(datosUsuario.idPais);
+              this.datosGenerales.lugarNacimiento.setValue(datosUsuario.idLugarNac);
+              this.datosGenerales.telefono.setValue(datosUsuario.tel);
+              this.datosGenerales.correo.setValue(datosUsuario.correo);
+              this.datosGenerales.correoConfirmacion.setValue(datosUsuario.correo);
+
+              this.domicilio.calle.setValue(datosUsuario.calle);
+              this.domicilio.numeroInterior.setValue(datosUsuario.numInt);
+              this.domicilio.numeroExterior.setValue(datosUsuario.numExt);
+              this.domicilio.codigoPostal.setValue(datosUsuario.cp);
+              this.obtenerCP(datosUsuario.colonia);
+              this.idUsuario = datosUsuario?.idUsuario ?? null;
+              this.idContratante = datosUsuario?.idContratante;
+              this.idPersona = datosUsuario?.idPersona;
+
+              this.form.disable();
+              this.datosGenerales.rfc.enable();
             } else {
               this.datosGenerales.rfc.setErrors(null);
             }
@@ -442,8 +473,8 @@ export class RegistroComponent implements OnInit {
       otroSexo: this.datosGenerales.otro.value,
       nss: this.datosGenerales.nss.value,
       fecNacimiento: typeof this.datosGenerales.fechaNacimiento.value === 'object' ?
-          moment(this.datosGenerales.fechaNacimiento.value).format('DD-MM-YYYY') :
-          moment(this.datosGenerales.fechaNacimiento.value, 'DD/MM/YYYY').format('DD-MM-YYYY'),
+        moment(this.datosGenerales.fechaNacimiento.value).format('DD-MM-YYYY') :
+        moment(this.datosGenerales.fechaNacimiento.value, 'DD/MM/YYYY').format('DD-MM-YYYY'),
       idPais: this.datosGenerales.paisNacimiento.value,
       idLugarNac: this.datosGenerales.lugarNacimiento.value,
       tel: this.datosGenerales.telefono.value,
