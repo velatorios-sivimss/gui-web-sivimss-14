@@ -8,4 +8,6 @@ export interface BusquedaPrevision {
   tipoPrevision: number;
   ciudadExpedicion: string;
   fechaExpedicion: string;
+  idVelatorio: number;
+  precioPaquete: number;
 }

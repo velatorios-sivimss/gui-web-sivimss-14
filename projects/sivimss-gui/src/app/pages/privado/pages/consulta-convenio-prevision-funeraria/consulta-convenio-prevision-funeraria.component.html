@@ -5,7 +5,7 @@
 
     <p-table styleClass="mt-5 mb-8" [value]="convenios" [paginator]="convenios.length > 0"
         [rows]="cantElementosPorPagina" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-        [resizableColumns]="true" [columnResizeMode]="'expand'">
+        [resizableColumns]="true" [lazy]="true" [columnResizeMode]="'expand'" (onLazyLoad)="paginar($event)">
         <ng-template pTemplate="header">
             <tr>
                 <th scope="col">Folio</th>
@@ -43,6 +43,8 @@
                 <span class="total-elements">{{convenios.length}} de {{totalElementos}}</span>
             </div>
         </ng-template>
+      <ng-template pTemplate="paginatorright">
+      </ng-template>
     </p-table>
 
 </div>
@@ -57,7 +59,8 @@ si esta preorden habilitar pago y deshabilitar la descarga de documento-->
                 (click)="verPlanPreFune()"></app-overlay-panel-opcion>
             <app-overlay-panel-opcion titulo="Descargar convenio"
                 (click)="descargarDocumento()"></app-overlay-panel-opcion>
-            <app-overlay-panel-opcion titulo="Realizar pago" *ngIf="realizarPago"></app-overlay-panel-opcion>
+            <app-overlay-panel-opcion (click)="iniciarPago($event)" class="realizar-pago" titulo="Realizar pago" *ngIf="realizarPago">
+            </app-overlay-panel-opcion>
         </app-overlay-panel-opciones>
     </ng-template>
 </p-overlayPanel>

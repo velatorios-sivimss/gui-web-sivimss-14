@@ -120,6 +120,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
 
   confirmacionGuardado: boolean = false;
   mensajeConfirmacionGuardar: string = '';
+  importe: number = 0;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -136,9 +137,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   }
 
   ngOnInit(): void {
-    this.cargarScript(() => {
-    });
-    this.subscripcionMotorPagos()
     this.formPersona = this.crearFormPersona();
     this.formEmpresa = this.crearFormularioEmpresa();
     setTimeout(() => {
@@ -215,7 +213,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
       idMetodoPago, // debito o credito payment_method_type
       idRegistro: this.idConvenioPf, // idConvenio
       idVelatorio: this.idVelatorio,
-      importe: 1,
+      importe: this.importe,
       nomContratante: this.nombreCompleto,
       nomTitular: "Mario Dominguez Serrano", // pagos
       numAprobacion: pago.transaction.authorization_code, // pagos
@@ -254,7 +252,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   iniciarPago(): void {
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({referencia: 'NPF', monto: 1}));
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({referencia: 'NPF', monto: this.importe}));
   }
 
   crearFormPersona(): FormGroup {
@@ -1254,8 +1252,9 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
       });
   }
 
-  seleccionaPaquete(idPaquete: string): void {
-    this.idPaquete = idPaquete;
+  seleccionaPaquete(paquete: any): void {
+    this.importe = +paquete.costoPaquete;
+    this.idPaquete = paquete.idPaquete;
   }
 
   clickSeleccionaPromotor(proviene: string): void {
@@ -1421,6 +1420,9 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   guardarConvenio(): void {
     this.confirmacionModalCerrar = true;
     this.mostrarMensajeGuardado = false;
+    this.cargarScript(() => {
+    });
+    this.subscripcionMotorPagos()
   }
 
   validarFolioConvenioEmpresa(): string {
