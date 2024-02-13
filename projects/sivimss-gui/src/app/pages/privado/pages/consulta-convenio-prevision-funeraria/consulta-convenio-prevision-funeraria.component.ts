@@ -91,7 +91,6 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   paginar(event: LazyLoadEvent): void {
-    debugger;
     // if (!validarAlMenosUnCampoConValor(valores)) return;
     if (event?.first !== undefined && event.rows !== undefined) {
       this.numPaginaActual = Math.floor(event.first / event.rows);
@@ -204,9 +203,10 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
     }
   }
 
-  iniciarPago(): void {
+  iniciarPago(event: MouseEvent): void {
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
+    this.overlayPanel.hide();
     elemento_ref.setAttribute('data-objeto', JSON.stringify({referencia: 'NPF', monto: this.importe}));
   }
 
@@ -230,7 +230,6 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
         this.subscripcionMotorPagos()
       },300)
     }
-
     this.overlayPanel.toggle(event);
   }
 
