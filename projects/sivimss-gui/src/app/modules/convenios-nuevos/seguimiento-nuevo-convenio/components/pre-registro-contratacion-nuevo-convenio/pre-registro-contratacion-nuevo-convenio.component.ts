@@ -237,6 +237,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         primerApellido: [{value: this.sustituto?.primerApellido ?? null, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.sustituto?.segundoApellido ?? null, disabled: false}, [Validators.required]],
         sexo: [{value: +this.sustituto?.idSexo ?? null, disabled: false}, [Validators.required]],
+        sexoOtro: [{value: null, disabled: false}],
         fechaNacimiento: [{
           value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento),
           disabled: false

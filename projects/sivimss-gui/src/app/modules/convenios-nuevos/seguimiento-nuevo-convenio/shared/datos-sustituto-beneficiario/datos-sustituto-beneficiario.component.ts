@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
 import {CommonModule} from "@angular/common";
@@ -39,6 +39,20 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargarValidacionesIniciales();
+  }
+
+  cargarValidacionesIniciales(): void {
+    const idSexoSust = this.parentContainer.control?.get('sexo')?.value;
+    const nacionalidad = this.parentContainer.control?.get('nacionalidad')?.value;
+    if (idSexoSust === 3) {
+      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
+    }
+    if (nacionalidad === 1) {
+      this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+    } else {
+      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
+    }
   }
 
   cargarCatalogosLocalStorage(): void {
@@ -57,12 +71,27 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
 
   }
 
-  cambioTipoSexo($event: any): void {
-
+  cambioTipoSexo(): void {
+    const idSexoSust = this.parentContainer.control?.get('sexo')?.value;
+    this.parentContainer.control?.get('otroSexo')?.setValue(null);
+    if (idSexoSust === 3) {
+      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
+    } else {
+      this.parentContainer.control?.get('otroSexo')?.clearValidators();
+    }
   }
 
-  cambioNacionalidad($event: any): void {
-
+  cambioNacionalidad(): void {
+    const nacionalidadSust = this.parentContainer.control?.get('nacionalidad')?.value;
+    this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
+    if (nacionalidadSust === 1) {
+      this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+      this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
+    } else {
+      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
+      this.parentContainer.control?.get('lugarNacimiento')?.clearValidators();
+    }
   }
 
   get parentFormGroup() {
