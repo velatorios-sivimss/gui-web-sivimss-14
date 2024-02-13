@@ -16,8 +16,8 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
       77, "", "", "");
   }
 
-  base: string = 'http://localhost:8001/mssivimss-pre-reg-conven/v1/sivimss';
   _filtros: string = 'buscar-preregistros';
+  _paquetes: string = 'buscar-paquetes';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -43,11 +43,11 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   }
 
   buscarBeneficiarioPorPersona(id: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${this.base}/buscar/beneficiarios/${id}`);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}/buscar/beneficiarios/${id}`);
   }
 
   obtenerCatalogoPaquetes(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${this.base}/buscar/paquetes`);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paquetes}`, {});
   }
 
   cambiarEstatusConvenio(idConvenio: number, idFLujo: number): Observable<HttpRespuesta<any>> {

@@ -48,13 +48,13 @@
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Sexo:</label>
-      <span>{{ sexo }}</span>
+      <span>{{ sexo | uppercase }}</span>
     </div>
   </div>
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Fecha de nacimiento:</label>
-      <span>{{ fechaNacimiento }}</span>
+      <span>{{ fechaNacimiento | date:'dd-MM-YYYY' }}</span>
     </div>
   </div>
 </div>
@@ -65,22 +65,20 @@
       <span>{{ nacionalidad }}</span>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4" *ngIf="paisNacimiento">
     <div class="table-panel-column">
       <label>País de nacimiento:</label>
       <span>{{ paisNacimiento }}</span>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4" *ngIf="lugarNacimiento">
     <div class="table-panel-column">
       <label>Lugar de nacimiento:</label>
       <span>{{ lugarNacimiento }}</span>
     </div>
   </div>
-</div>
-<ng-container [ngSwitch]="titular">
-  <ng-container *ngSwitchCase="'titular'">
-    <div class="row table-panel-row">
+  <ng-container [ngSwitch]="titular">
+    <ng-container *ngSwitchCase="'titular'">
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Teléfono celular:</label>
@@ -99,8 +97,6 @@
           <span>{{ correoElectronico }}</span>
         </div>
       </div>
-    </div>
-    <div class="row table-panel-row">
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Calle:</label>
@@ -116,11 +112,10 @@
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Número interior:</label>
-          <span>{{ numeroInterior }}</span>
+          <span *ngIf="numeroInterior">{{ numeroInterior }}</span>
+          <span *ngIf="!numeroInterior">Sin Información</span>
         </div>
       </div>
-    </div>
-    <div class="row table-panel-row">
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Código postal:</label>
@@ -130,7 +125,7 @@
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Colonia:</label>
-          <span>{{ colonia }}</span>
+          <span>{{ colonia | uppercase }}</span>
         </div>
       </div>
       <div class="col-md-4">
@@ -139,8 +134,6 @@
           <span>{{ municipio }}</span>
         </div>
       </div>
-    </div>
-    <div class="row table-panel-row">
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Estado:</label>
@@ -159,10 +152,8 @@
           <span>{{ numeroPagos }}</span>
         </div>
       </div>
-    </div>
-  </ng-container>
-  <ng-container *ngSwitchCase="'beneficiario'">
-    <div class="row table-panel-row">
+    </ng-container>
+    <ng-container *ngSwitchCase="'beneficiario'">
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Teléfono:</label>
@@ -181,8 +172,6 @@
           <span>{{ calle }}</span>
         </div>
       </div>
-    </div>
-    <div class="row table-panel-row">
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Número exterior:</label>
@@ -201,8 +190,6 @@
           <span>{{ codigoPostal }}</span>
         </div>
       </div>
-    </div>
-    <div class="row table-panel-row">
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Colonia:</label>
@@ -221,6 +208,6 @@
           <span>{{ estado }}</span>
         </div>
       </div>
-    </div>
+    </ng-container>
   </ng-container>
-</ng-container>
+</div>

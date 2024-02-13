@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
@@ -10,6 +10,7 @@ import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo"
 import {CATALOGO_NUMERO_PAGOS} from "../../constants/catalogos";
 import {CommonModule} from "@angular/common";
 import {CalendarModule} from "primeng/calendar";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-datos-titular-beneficiario',
@@ -26,24 +27,48 @@ import {CalendarModule} from "primeng/calendar";
 })
 export class DatosTitularBeneficiarioComponent implements OnInit {
 
-  parentContainer: ControlContainer =  inject(ControlContainer)
+  parentContainer: ControlContainer = inject(ControlContainer)
 
   paises: TipoDropdown[] = [];
+  estados: TipoDropdown[] = [];
+  paquetes: TipoDropdown[] = [];
   numeroPagos: TipoDropdown[] = CATALOGO_NUMERO_PAGOS;
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   fechaActual: Date = new Date();
 
-  constructor(private autenticacionService: AutenticacionService) {
+  constructor(private autenticacionService: AutenticacionService,
+              private activatedRoute: ActivatedRoute,
+  ) {
     this.cargarCatalogosLocalStorage();
   }
 
   ngOnInit(): void {
+    this.cargarValidacionesIniciales();
+  }
+
+  cargarValidacionesIniciales(): void {
+    const idSexo = this.parentContainer.control?.get('sexo')?.value;
+    const nacionalidad = this.parentContainer.control?.get('nacionalidad')?.value;
+    if (idSexo === 3) {
+      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
+    }
+    if (nacionalidad === 1) {
+      this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+    } else {
+      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
+    }
   }
 
   cargarCatalogosLocalStorage(): void {
     const catalogoPais = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_pais');
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
+    const catalogoEstado = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_estados');
+    this.estados = mapearArregloTipoDropdown(catalogoEstado, 'desc', 'id');
+    const POSICION_PAQUETES: number = 1;
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    const paquetes = respuesta[POSICION_PAQUETES].datos;
+    this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
   }
 
   validarCurp($event: any): void {
@@ -54,12 +79,27 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
 
   }
 
-  cambioTipoSexo($event: any): void {
-
+  cambioTipoSexo(): void {
+    const idSexo = this.parentContainer.control?.get('sexo')?.value;
+    this.parentContainer.control?.get('otroSexo')?.setValue(null);
+    if (idSexo === 3) {
+      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
+    } else {
+      this.parentContainer.control?.get('otroSexo')?.clearValidators();
+    }
   }
 
-  cambioNacionalidad($event: any): void {
-
+  cambioNacionalidad(): void {
+    const nacionalidad = this.parentContainer.control?.get('nacionalidad')?.value;
+    this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
+    if (nacionalidad === 1) {
+      this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+      this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
+    } else {
+      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
+      this.parentContainer.control?.get('lugarNacimiento')?.clearValidators();
+    }
   }
 
   get parentFormGroup() {
