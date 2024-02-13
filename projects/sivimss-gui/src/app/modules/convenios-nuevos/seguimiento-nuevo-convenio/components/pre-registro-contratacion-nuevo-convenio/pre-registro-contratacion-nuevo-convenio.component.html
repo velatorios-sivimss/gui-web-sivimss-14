@@ -7,7 +7,8 @@
                         titulo="Pre-registro para la contratación de Plan de Servicios Funerarios"
                         class="col"></app-titulo-principal>
 </div>
-<app-convenio-header [tipoContratacion]="'Por persona'" [numeroFolio]="folio"></app-convenio-header>
+<app-convenio-header [tipoContratacion]="tipoConvenio === '2' ? 'Por empresa' :  'Por Persona'"
+                     [numeroFolio]="folio"></app-convenio-header>
 <ng-container [ngSwitch]="tipoConvenio">
   <ng-container *ngSwitchCase="'1'">
     <form [formGroup]="contratacionNuevoConvenioForm">
