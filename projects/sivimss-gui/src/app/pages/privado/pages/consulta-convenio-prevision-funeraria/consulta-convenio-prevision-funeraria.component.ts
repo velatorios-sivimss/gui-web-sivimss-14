@@ -5,7 +5,7 @@ import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-
+import { LazyLoadEvent } from "primeng/api";
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -16,18 +16,20 @@ import { finalize } from 'rxjs';
 import { BusquedaPrevision } from './models/BusquedaPrevision.interface';
 import {TransaccionPago} from "../../models/transaccion-pago.interface";
 import {SolicitudPagos} from "../../models/solicitud-pagos.interface";
+import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 @Component({
   selector: 'app-consulta-convenio-prevision-funeraria',
   templateUrl: './consulta-convenio-prevision-funeraria.component.html',
   styleUrls: ['./consulta-convenio-prevision-funeraria.component.scss'],
 })
 export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
-  numPaginaActual: number = 1;
+  numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   convenios: BusquedaPrevision[] = [];
   itemConvenio!: BusquedaPrevision;
 
   totalElementos: number = this.convenios.length;
+  totalConveniosMostrados: number = 0;
   mostrarModalFaltaConvenio: boolean = false;
   mostrarModalNoPuedeRenovar: boolean = false;
   mostrarModalNoSeEncuentraEnPeriodo: boolean = false;
@@ -52,7 +54,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
     private renderer: Renderer2,
   ) {}
   ngOnInit(): void {
-    this.busqueda();
+    // this.busqueda();
   }
 
   busqueda(): void {
@@ -66,7 +68,6 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           console.log(respuesta);
-
           if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
             console.log(respuesta.mensaje);
             this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
@@ -78,8 +79,48 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
             return;
           }
 
-          this.convenios = respuesta.datos.content || [];
+          this.convenios = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements || 0;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+
+          this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
+        },
+      });
+  }
+
+  paginar(event: LazyLoadEvent): void {
+    debugger;
+    // if (!validarAlMenosUnCampoConValor(valores)) return;
+    if (event?.first !== undefined && event.rows !== undefined) {
+      this.numPaginaActual = Math.floor(event.first / event.rows);
+    } else {
+      this.numPaginaActual = 0;
+    }
+    const valores = {
+      pagina: this.numPaginaActual,
+      tamanio: this.cantElementosPorPagina,
+    };
+    this.consultaConveniosService
+      .consultarConvenios(valores)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            console.log(respuesta.mensaje);
+            this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
+            return;
+          }
+          let total = respuesta.datos.content.length;
+          if (total === 0 || respuesta.datos === null) {
+            this.mostrarModalFaltaConvenio = true;
+            return;
+          }
+
+          this.convenios = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);

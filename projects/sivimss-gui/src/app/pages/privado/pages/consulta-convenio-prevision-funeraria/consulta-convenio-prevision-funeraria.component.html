@@ -5,7 +5,7 @@
 
     <p-table styleClass="mt-5 mb-8" [value]="convenios" [paginator]="convenios.length > 0"
         [rows]="cantElementosPorPagina" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-        [resizableColumns]="true" [columnResizeMode]="'expand'">
+        [resizableColumns]="true" [lazy]="true" [columnResizeMode]="'expand'" (onLazyLoad)="paginar($event)">
         <ng-template pTemplate="header">
             <tr>
                 <th scope="col">Folio</th>
