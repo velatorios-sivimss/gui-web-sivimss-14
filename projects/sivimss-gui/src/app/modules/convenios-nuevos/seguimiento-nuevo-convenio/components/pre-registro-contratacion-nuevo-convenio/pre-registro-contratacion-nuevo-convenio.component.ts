@@ -201,6 +201,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormularioPA(): void {
     const nacionalidad: number = this.titularPA.idPais === '119' ? 1 : 2;
     const nacionalidadSustituto: number = this.sustituto.idPais === '119' ? 1 : 2;
+    const sexo: number = this.titularPA.otroSexo !== '' ? this.titularPA.idSexo : 3;
+    const sexoSustituto: number = this.sustituto.otroSexo !== '' ? +this.sustituto.idSexo : 3;
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
@@ -210,8 +212,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         nombre: [{value: this.titularPA.nombre, disabled: false}, [Validators.required]],
         primerApellido: [{value: this.titularPA.primerApellido, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.titularPA.segundoApellido, disabled: false}, [Validators.required]],
-        sexo: [{value: this.titularPA.idSexo, disabled: false}, [Validators.required]],
-        sexoOtro: [{value: null, disabled: false}],
+        sexo: [{value: sexo, disabled: false}, [Validators.required]],
+        otroSexo: [{value: this.titularPA.otroSexo, disabled: false}],
         fechaNacimiento: [{value: this.calcularFechaNacimiento(this.titularPA.fecNacimiento), disabled: false},
           [Validators.required]],
         nacionalidad: [{value: nacionalidad, disabled: false}, [Validators.required]],
@@ -239,8 +241,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         nombre: [{value: this.sustituto?.nombre ?? null, disabled: false}, [Validators.required]],
         primerApellido: [{value: this.sustituto?.primerApellido ?? null, disabled: false}, [Validators.required]],
         segundoApellido: [{value: this.sustituto?.segundoApellido ?? null, disabled: false}, [Validators.required]],
-        sexo: [{value: +this.sustituto?.idSexo ?? null, disabled: false}, [Validators.required]],
-        sexoOtro: [{value: null, disabled: false}],
+        sexo: [{value: sexoSustituto ?? null, disabled: false}, [Validators.required]],
+        otroSexo: [{value: this.sustituto.otroSexo, disabled: false}],
         fechaNacimiento: [{value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento), disabled: false},
           [Validators.required]],
         nacionalidad: [{value: nacionalidadSustituto, disabled: false}, [Validators.required]],
