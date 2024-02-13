@@ -195,8 +195,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   inicializarFormularioPA(): void {
-    const nacionalidad: number = this.titularPA.idPais === 119 ? 1 : 2
-    const nacionalidadSustituto: number = +this.sustituto.idPais === 119 ? 1 : 2
+    const nacionalidad: number = this.titularPA.idPais === '119' ? 1 : 2;
+    const nacionalidadSustituto: number = this.sustituto.idPais === '119' ? 1 : 2;
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
@@ -214,7 +214,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         }, [Validators.required]],
         nacionalidad: [{value: nacionalidad, disabled: false}, [Validators.required]],
         paisNacimiento: [{value: +this.titularPA.idPais, disabled: false}],
-        lugarNacimiento: [{value: null, disabled: false}],
+        lugarNacimiento: [{value: +this.titularPA.idLugarNac, disabled: false}],
         telefonoCelular: [{value: this.titularPA.telCelular, disabled: false}, [Validators.required]],
         telefonoFijo: [{value: this.titularPA.telFijo, disabled: false}, [Validators.required]],
         correoElectronico: [{value: this.titularPA.correo, disabled: false}, [Validators.required]],
@@ -244,7 +244,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         }, [Validators.required]],
         nacionalidad: [{value: nacionalidadSustituto, disabled: false}, [Validators.required]],
         paisNacimiento: [{value: +this.sustituto?.idPais ?? null, disabled: false}, [Validators.required]],
-        lugarNacimiento: [{value: null, disabled: false}, [Validators.required]],
+        lugarNacimiento: [{value: +this.sustituto?.idLugarNac ?? null, disabled: false}, [Validators.required]],
         telefono: [{value: this.sustituto?.telFijo ?? null, disabled: false}, [Validators.required]],
         correoElectronico: [{value: this.sustituto?.correo ?? null, disabled: false}, [Validators.required]],
         calle: [{value: this.sustituto?.calle ?? null, disabled: false}, [Validators.required]],

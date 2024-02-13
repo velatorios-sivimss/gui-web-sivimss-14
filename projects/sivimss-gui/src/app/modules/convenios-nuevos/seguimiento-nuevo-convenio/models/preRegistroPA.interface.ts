@@ -15,7 +15,7 @@ export interface PreRegistroPA {
   idSexo: number,
   fecNacimiento: string,
   pais: string,
-  idPais: number,
+  idPais: string,
   lugarNac: string,
   idLugarNac: number,
   telCelular: string,
