@@ -201,8 +201,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormularioPA(): void {
     const nacionalidad: number = this.titularPA.idPais === '119' ? 1 : 2;
     const nacionalidadSustituto: number = this.sustituto.idPais === '119' ? 1 : 2;
-    const sexo: number = this.titularPA.otroSexo !== '' ? this.titularPA.idSexo : 3;
-    const sexoSustituto: number = this.sustituto.otroSexo !== '' ? +this.sustituto.idSexo : 3;
+    const sexo: number = this.titularPA.otroSexo === '' ? this.titularPA.idSexo : 3;
+    const sexoSustituto: number = this.sustituto.otroSexo === '' ? +this.sustituto.idSexo : 3;
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
