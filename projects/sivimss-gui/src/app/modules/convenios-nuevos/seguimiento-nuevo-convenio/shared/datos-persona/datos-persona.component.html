@@ -1,7 +1,8 @@
-<div class="row mb-3">
+<div class="row mb-3 grid">
   <div class="col-md-4">
     <label class="control-label" for="matricula">Matricula:</label>
-    <input id="matricula" class="form-control" formControlName="matricula" placeholder="Inserta la Matricula" [maxlength]="10">
+    <input id="matricula" class="form-control" formControlName="matricula" placeholder="Inserta la Matricula"
+           [maxlength]="10">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.matricula?.errors?.required  && (parentFormGroup.matricula?.dirty || parentFormGroup.matricula?.touched)">
       Este campo es obligatorio *.</span>
@@ -21,7 +22,7 @@
       Este campo es obligatorio *.</span>
   </div>
 </div>
-<div class="row mb-3">
+<div class="row mb-3 grid">
   <div class="col-md-4">
     <label class="control-label" for="nombres">Nombre(s)<span class="req">*</span>:</label>
     <input id="nombres" class="form-control" formControlName="nombres" placeholder="Inserta el nombre" [maxlength]="30">
@@ -46,7 +47,7 @@
       Este campo es obligatorio *.</span>
   </div>
 </div>
-<div class="row mb-3">
+<div class="row mb-3 grid">
   <div class="col-md-4">
     <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
     <input id="calle" class="form-control" formControlName="calle" placeholder="Inserta la calle" [maxlength]="30">
@@ -71,10 +72,11 @@
       Este campo es obligatorio *.</span>
   </div>
 </div>
-<div class="row mb-3">
+<div class="row mb-3 grid">
   <div class="col-md-4">
     <label class="control-label" for="codigoPostal">Código postal<span class="req">*</span>:</label>
-    <input id="codigoPostal" class="form-control" formControlName="codigoPostal" placeholder="Inserta el codigo postal" [maxlength]="5">
+    <input id="codigoPostal" class="form-control" formControlName="codigoPostal" placeholder="Inserta el codigo postal"
+           [maxlength]="5">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.cp?.errors?.required  && (parentFormGroup.cp?.dirty || parentFormGroup.cp?.touched)">
       Este campo es obligatorio *.</span>
@@ -94,39 +96,42 @@
       Este campo es obligatorio *.</span>
   </div>
 </div>
-<div class="row mb-3">
-  <div class="col-md-4">
+<div class="row grid">
+  <div class="col-md-4 mb-3">
     <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
     <input id="estado" class="form-control" formControlName="estado" placeholder="Inserta el estado">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.estado?.errors?.required  && (parentFormGroup.estado?.dirty || parentFormGroup.estado?.touched)">
       Este campo es obligatorio *.</span>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
-    <input id="nacionalidad" class="form-control" formControlName="nacionalidad" placeholder="Inserta la nacionalidad">
+    <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
+                (onChange)="cambioNacionalidad()" placeholder="Selecciona nacionalidad" [options]="nacionalidad"
+                [filter]="true" filterBy="label"></p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.nacionalidad?.errors?.required  && (parentFormGroup.nacionalidad?.dirty || parentFormGroup.nacionalidad?.touched)">
       Este campo es obligatorio *.</span>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3" *ngIf="parentFormGroup.nacionalidad.value === 2">
     <label class="control-label" for="paisNacimiento">País de nacimientro<span class="req">*</span>:</label>
-    <input id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
-           placeholder="Inserta el pais de nacimiento">
+    <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento" [options]="paises"
+                placeholder="Seleccionar el pais de nacimiento" [filter]="true" filterBy="label">
+    </p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.paisNacimiento?.errors?.required  && (parentFormGroup.paisNacimiento?.dirty || parentFormGroup.paisNacimiento?.touched)">
       Este campo es obligatorio *.</span>
   </div>
-</div>
-<div class="row mb-3">
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3" *ngIf="parentFormGroup.nacionalidad.value === 1">
     <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
-    <input id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento" placeholder="Inserta el estado">
+    <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento" [filter]="true"
+                filterBy="label" [options]="estados" placeholder="Selecciona el lugar de nacimiento">
+    </p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.lugarNacimiento?.errors?.required  && (parentFormGroup.lugarNacimiento?.dirty || parentFormGroup.lugarNacimiento?.touched)">
       Este campo es obligatorio *.</span>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
     <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
            placeholder="Inserta la nacionalidad">
@@ -134,19 +139,20 @@
           *ngIf="parentFormGroup.correoElectronico?.errors?.required  && (parentFormGroup.correoElectronico?.dirty || parentFormGroup.correoElectronico?.touched)">
       Este campo es obligatorio *.</span>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
     <input id="telefono" class="form-control" formControlName="telefono" placeholder="Inserta el telefono">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.telefono?.errors?.required  && (parentFormGroup.telefono?.dirty || parentFormGroup.telefono?.touched)">
       Este campo es obligatorio *.</span>
   </div>
-</div>
-<div class="row mb-3">
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <label class="control-label" for="enfermedadPreExistente">Enfermedad prexistente<span
       class="req">*</span>:</label>
-    <input id="enfermedadPreExistente" class="form-control" placeholder="Inserta la enfermedad pre existente" formControlName="enfermedadPreExistente">
+    <p-dropdown id="enfermedadPreExistente" class="form-control" formControlName="enfermedadPreExistente"
+                [filter]="true" filterBy="label" [options]="enfermedades"
+                placeholder="Selecciona la enfermedad pre existente">
+    </p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.enfermedadPreExistente?.errors?.required  && (parentFormGroup.enfermedadPreExistente?.dirty || parentFormGroup.enfermedadPreExistente?.touched)">
       Este campo es obligatorio *.</span>

@@ -13,7 +13,8 @@ export interface DetallePago {
   valeP: number,
   nss: string,
   generarPagare: number,
-  idFinado: number
+  idFinado: number,
+  idPlataforma: string
 }
 
 export interface MetodoPago {

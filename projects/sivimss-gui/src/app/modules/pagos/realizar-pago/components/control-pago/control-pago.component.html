@@ -41,7 +41,8 @@
     <div class="col-md-6"
          *ngIf="registroPago.estatusPago === 'Pendiente' && +registroPago.generarPagare !== 1 || registroPago.estatusPago !== 'Pendiente'">
       <div class="flex mb-4 justify-content-end">
-        <button class="ml-6 mt-6 btn btn-primary btn-md" [disabled]="pagoForm.pristine" (click)="seleccionarPago()" onCloseOnNavigation>
+        <button class="ml-6 mt-6 btn btn-primary btn-md" [disabled]="pagoForm.pristine" (click)="seleccionarPago()"
+                onCloseOnNavigation>
           Registrar
         </button>
       </div>
@@ -92,9 +93,11 @@
                 <b>{{ pago.importe | currency }}</b>
               </div>
               <div class="ml-2"
-                   *ngIf="['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)"></div>
+                   *ngIf="['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)
+                   || registroPago.idPlataforma === '2'"></div>
               <a class="cursor-pointer" (click)="mostrarOverlay($event, pago)" onCloseOnNavigation
-                 *ngIf="!['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)">
+                 *ngIf="!['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago) &&
+                  registroPago.idPlataforma === '1'">
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
             </div>
