@@ -44,6 +44,8 @@ export class ModalRealizarPagoComponent implements OnInit {
     importeValeParitaria: false,
   };
 
+  tituloBanco: string = '';
+
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -86,6 +88,7 @@ export class ModalRealizarPagoComponent implements OnInit {
   }
 
   cambioMetodoPago(dd: Dropdown): void {
+    this.tituloBanco = "Banco:"
     this.formulario.numeroAutorizacion.patchValue(null);
     this.formulario.nombreBanco.patchValue(null);
     this.formulario.importe.patchValue(null);
@@ -99,6 +102,7 @@ export class ModalRealizarPagoComponent implements OnInit {
 
     this.tipoDePago = dd.selectedOption.label;
     if (this.tipoDePago.toUpperCase().includes('TARJETA CRÉDITO')) {
+      this.tituloBanco = "Nombre banco:"
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = true;
       this.validacion.importe = true;
@@ -109,6 +113,7 @@ export class ModalRealizarPagoComponent implements OnInit {
       this.validacion.importeValeParitaria = false;
     }
     if (this.tipoDePago.toUpperCase().includes('TARJETA DÉBITO')) {
+      this.tituloBanco = "Nombre banco:"
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = true;
       this.validacion.importe = true;

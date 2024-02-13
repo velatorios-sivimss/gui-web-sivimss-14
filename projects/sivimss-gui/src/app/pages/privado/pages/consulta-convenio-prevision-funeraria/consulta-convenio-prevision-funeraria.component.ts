@@ -1,19 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnInit, Renderer2, ViewChild} from '@angular/core';
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { BusquedaConveniosPFServic } from './services/busqueda-convenios-pf.service';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-
+import { LazyLoadEvent } from "primeng/api";
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { BusquedaPrevision } from './models/BusquedaPrevision.interface';
+import {TransaccionPago} from "../../models/transaccion-pago.interface";
+import {SolicitudPagos} from "../../models/solicitud-pagos.interface";
+import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 @Component({
   selector: 'app-consulta-convenio-prevision-funeraria',
   templateUrl: './consulta-convenio-prevision-funeraria.component.html',
@@ -26,6 +29,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   itemConvenio!: BusquedaPrevision;
 
   totalElementos: number = this.convenios.length;
+  totalConveniosMostrados: number = 0;
   mostrarModalFaltaConvenio: boolean = false;
   mostrarModalNoPuedeRenovar: boolean = false;
   mostrarModalNoSeEncuentraEnPeriodo: boolean = false;
@@ -36,14 +40,21 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   errorSolicitud: string =
     'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
 
+  folioConvenio: string = '';
+  idConvenioPf: number | null = null;
+  idVelatorio: number | null = null;
+  nombreCompleto: string = '';
+  importe:number = 0;
   constructor(
     private consultaConveniosService: BusquedaConveniosPFServic,
     private alertaService: AlertaService,
     private loaderService: LoaderService,
-    private router: Router
+    private router: Router,
+  private rutaActiva: ActivatedRoute,
+    private renderer: Renderer2,
   ) {}
   ngOnInit(): void {
-    this.busqueda();
+    // this.busqueda();
   }
 
   busqueda(): void {
@@ -57,7 +68,6 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           console.log(respuesta);
-
           if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
             console.log(respuesta.mensaje);
             this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
@@ -69,7 +79,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
             return;
           }
 
-          this.convenios = respuesta.datos.content || [];
+          this.convenios = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements || 0;
         },
         error: (error: HttpErrorResponse) => {
@@ -80,15 +90,146 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       });
   }
 
+  paginar(event: LazyLoadEvent): void {
+    debugger;
+    // if (!validarAlMenosUnCampoConValor(valores)) return;
+    if (event?.first !== undefined && event.rows !== undefined) {
+      this.numPaginaActual = Math.floor(event.first / event.rows);
+    } else {
+      this.numPaginaActual = 0;
+    }
+    const valores = {
+      pagina: this.numPaginaActual,
+      tamanio: this.cantElementosPorPagina,
+    };
+    this.consultaConveniosService
+      .consultarConvenios(valores)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            console.log(respuesta.mensaje);
+            this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
+            return;
+          }
+          let total = respuesta.datos.content.length;
+          if (total === 0 || respuesta.datos === null) {
+            this.mostrarModalFaltaConvenio = true;
+            return;
+          }
+
+          this.convenios = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+
+          this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
+        },
+      });
+  }
+
+
+  cargarScript(callback: () => void): void {
+    const elementoId: string = 'realizar-pago';
+    if (!document.getElementById(elementoId)) {
+      const body: HTMLElement = document.body;
+      const elemento_ref = this.renderer.createElement('script');
+      elemento_ref.type = 'text/javascript';
+      elemento_ref.src = '../../../../assets/js/control-pagos.js';
+      elemento_ref.id = elementoId;
+      elemento_ref.async = true;
+      elemento_ref.defer = true;
+      this.renderer.appendChild(body, elemento_ref);
+      elemento_ref.onload = callback;
+    } else {
+      callback();
+    }
+  }
+
+  subscripcionMotorPagos(): void {
+    // Escucha el evento personalizado
+    document.addEventListener('datosRecibidos', (event) => {
+      const data = (event as CustomEvent).detail;
+      if (data.error && !data) {
+        this.alertaService.mostrar(TipoAlerta.Error, 'Error en la realización del pago en línea.');
+        return;
+      }
+      if (data.transaction && data.transaction.status_detail === 3) {
+        this.guardarPagoEnLinea(data);
+      }
+      if (data.transaction && [9, 11, 12].includes(data.transaction.status_detail)) {
+        this.alertaService.mostrar(TipoAlerta.Error, 'Pago rechazado.');
+      }
+    });
+  }
+
+  guardarPagoEnLinea(transaccion: TransaccionPago): void {
+    this.loaderService.activar();
+    const solicitud: SolicitudPagos = this.generarSolicitudPagosLinea(transaccion);
+    this.consultaConveniosService.guardarDatosPago(solicitud).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const id = respuesta.datos.idPagoLinea;
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
+        void this.router.navigate(['recibo-de-pago', id], {relativeTo: this.rutaActiva});
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+      }
+    })
+  }
+
+  generarSolicitudPagosLinea(pago: TransaccionPago): SolicitudPagos {
+    let idMetodoPago: number = 4;
+    if (+pago.transaction.payment_method_type === 0) idMetodoPago = 4;
+    if (+pago.transaction.payment_method_type === 7) idMetodoPago = 3;
+    return {
+      fecTransaccion: pago.transaction.payment_date, // pagos linea
+      folio: this.folioConvenio,
+      folioPago: "TEST-1", // pagos linea
+      idFlujoPagos: 2,
+      idMetodoPago, // debito o credito payment_method_type
+      idRegistro: this.idConvenioPf, // idConvenio
+      idVelatorio: this.idVelatorio,
+      importe: this.importe,
+      nomContratante: this.nombreCompleto,
+      nomTitular: "Mario Dominguez Serrano", // pagos
+      numAprobacion: pago.transaction.authorization_code, // pagos
+      numTarjeta: pago.card.number, // pagos number
+      referencia: pago.transaction.id // pagos transaction_reference
+
+    }
+  }
+
+  iniciarPago(): void {
+    const elemento_ref = document.querySelector('.realizar-pago');
+    if (!elemento_ref) return;
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({referencia: 'NPF', monto: this.importe}));
+  }
+
   abrirPanel(event: MouseEvent, itemConvenio: BusquedaPrevision): void {
     this.itemConvenio = itemConvenio;
     let idEstatus = itemConvenio.idEstatus;
+    this.idConvenioPf = itemConvenio.idConvenio;
+    this.idVelatorio = itemConvenio.idVelatorio;
+    this.nombreCompleto = itemConvenio.nombreAfiliado;
+    this.folioConvenio = itemConvenio.folioConvenio;
+    this.importe = itemConvenio.precioPaquete;
     this.descargarConvenio = false;
     this.realizarPago = false;
     if (idEstatus == 2 || idEstatus == 4) {
       this.descargarConvenio = true;
     }
-    if (idEstatus == 1) this.realizarPago = true;
+    if (idEstatus == 5){
+      this.realizarPago = true;
+      setTimeout(()=> {
+        this.cargarScript(() => {});
+        this.subscripcionMotorPagos()
+      },300)
+    }
 
     this.overlayPanel.toggle(event);
   }
