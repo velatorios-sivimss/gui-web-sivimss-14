@@ -64,8 +64,14 @@ export class DetalleOrdenServicioComponent implements OnInit {
             return;
           }
           this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-          this.descargarEntradaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-          this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+
+
+          if(this.altaODS.idEstatus != 1){
+            if(localStorage.getItem("ataudDonado") == 'S' as string){
+              this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+            }
+            localStorage.removeItem('ataudDonado');
+          }
 
           const ExitoMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(

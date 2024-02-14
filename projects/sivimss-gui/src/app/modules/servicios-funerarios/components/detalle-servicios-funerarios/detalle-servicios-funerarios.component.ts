@@ -283,7 +283,13 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
 
   validarMenuBitacora(bitacora: any): boolean {
     let fecha;
-    bitacora.fechaPago ? fecha = moment(bitacora.fechaPago).format('YYYY-MM-DD') : fecha = moment(bitacora.fechaValeParitario).format('YYYY-MM-DD')
+    if(bitacora.fechaPago){
+      let [dia,mes,anio] = bitacora.fechaPago.split('/');
+      fecha = anio + '-' + mes + '-' + dia
+    }else{
+      let [dia,mes,anio] = bitacora.fechaValeParitario.split('/');
+      fecha = anio + '-' + mes + '-' + dia
+    }
     return (this.fechaActual === fecha) && (bitacora.idEstatus != '0')
   }
 

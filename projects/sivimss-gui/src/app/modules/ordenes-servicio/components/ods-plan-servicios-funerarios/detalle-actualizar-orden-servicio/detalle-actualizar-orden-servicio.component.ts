@@ -152,12 +152,13 @@ export class DetalleActualizarOrdenServicioComponent implements OnInit {
 
               return;
             }
-            this.descargarEntradaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-            this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-            this.descargarOrdenServicio(
-              respuesta.datos.idOrdenServicio,
-              respuesta.datos.idEstatus
-            );
+            if(this.altaODS.idEstatus != 1){
+              if(localStorage.getItem("ataudDonado") == 'S' as string){
+                this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+              }
+              localStorage.removeItem('ataudDonado');
+            }
+            this.descargarOrdenServicio(respuesta.datos.idOrdenServicio,respuesta.datos.idEstatus);
 
 
             if (this.altaODS.idEstatus == 2) {
