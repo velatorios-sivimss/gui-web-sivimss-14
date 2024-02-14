@@ -25,7 +25,7 @@
   <div class="col-md-4">
     <label class="control-label" for="pais">País<span class="req">*</span>:</label>
     <p-dropdown id="pais" class="form-control" formControlName="pais" [options]="paises"
-                placeholder="Seleccionar el pais " [filter]="true" filterBy="label">
+                placeholder="Seleccionar el país " [filter]="true" filterBy="label">
     </p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.pais?.errors?.required  && (parentFormGroup.pais?.dirty || parentFormGroup.pais?.touched)">
@@ -97,7 +97,7 @@
 <div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" for="correo">Correo electrónico<span class="req">*</span>:</label>
-    <input id="correo" class="form-control" formControlName="correo" placeholder="Ingresa el correo electronico">
+    <input id="correo" class="form-control" formControlName="correo" placeholder="Ingresa el correo electrónico">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.correo?.errors?.required  && (parentFormGroup.correo?.dirty || parentFormGroup.correo?.touched)">
       Este campo es obligatorio *.</span>
