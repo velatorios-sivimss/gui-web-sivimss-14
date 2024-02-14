@@ -101,5 +101,8 @@
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.correo?.errors?.required  && (parentFormGroup.correo?.dirty || parentFormGroup.correo?.touched)">
       Este campo es obligatorio *.</span>
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup?.correo?.errors?.pattern && (parentFormGroup?.correo?.dirty || parentFormGroup?.correo?.touched)">
+      El correo electrónico no es válido.</span>
   </div>
 </div>

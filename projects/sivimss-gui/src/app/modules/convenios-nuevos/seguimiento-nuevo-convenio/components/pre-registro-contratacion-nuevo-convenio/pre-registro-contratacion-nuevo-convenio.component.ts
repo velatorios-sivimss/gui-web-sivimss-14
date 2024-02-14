@@ -188,7 +188,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         calle: [{value: this.convenioEmpresa.calle, disabled: false}, [Validators.required]],
         numeroExterior: [{value: this.convenioEmpresa.numExterior, disabled: false}, [Validators.required]],
         numeroInterior: [{value: this.convenioEmpresa.numInterior, disabled: false}, [Validators.required]],
-        correo: [{value: this.convenioEmpresa.correo, disabled: false}, [Validators.required]],
+        correo: [{value: this.convenioEmpresa.correo, disabled: false},
+          [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
       })
     });
   }
