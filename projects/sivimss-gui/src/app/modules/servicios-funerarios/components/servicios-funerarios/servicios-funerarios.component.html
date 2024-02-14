@@ -103,7 +103,7 @@
         <td> {{servicioFunerario.NUM_FOLIO_PLAN_SFPA}} </td>
         <td> {{servicioFunerario.TITULAR}}</td>
         <td> {{servicioFunerario.ESTADO}} </td>
-        <td> {{servicioFunerario.CORREO_ELECTRONICO.includes('null') ? null : servicioFunerario.CORREO_ELECTRONICO}} </td>
+        <td> {{servicioFunerario.CORREO_ELECTRONICO ? servicioFunerario.CORREO_ELECTRONICO : null}} </td>
         <td> {{servicioFunerario.PAQUETE}} </td>
         <td> {{servicioFunerario.NUMERO_PAGO}} </td>
         <td> {{servicioFunerario.ESTATUS_PLAN_SFPA}} </td>
