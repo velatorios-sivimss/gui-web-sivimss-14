@@ -1,4 +1,7 @@
-<app-titulo-principal [titulo]="activo ? 'Desactivar' : 'Activar'  + ' convenio'"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="./../../.."></app-btn-regresar>
+  <app-titulo-principal [titulo]="activo ? 'Desactivar' : 'Activar'  + ' convenio'" class="col"></app-titulo-principal>
+</div>
 
 <ng-container [ngSwitch]="tipoConvenio">
   <ng-container *ngSwitchCase="'1'">
@@ -44,13 +47,13 @@
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'titularSi'" name="titular" [value]="true"
                              [(ngModel)]="mismoSustituto" [disabled]="true"
-                            ></p-radioButton>
+              ></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'titularSi'">Sí</label>
             </div>
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'titularNo'" name="titular" [value]="false"
                              [(ngModel)]="mismoSustituto" [disabled]="true"
-                             ></p-radioButton>
+              ></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
             </div>
           </div>
