@@ -32,6 +32,7 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   fechaActual: Date = new Date();
+  @Input() tipo: 'sustituto' | 'beneficiario' = 'sustituto';
   @Input() ID: string= 'sustituto';
 
   constructor(private autenticacionService: AutenticacionService) {

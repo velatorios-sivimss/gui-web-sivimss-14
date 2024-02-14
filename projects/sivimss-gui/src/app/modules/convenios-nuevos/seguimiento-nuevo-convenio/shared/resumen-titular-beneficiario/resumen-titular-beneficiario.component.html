@@ -1,4 +1,4 @@
-<div class="row table-panel-row">
+<div class="row table-panel-row grid">
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>C.U.R.P.:</label>
@@ -18,7 +18,7 @@
     </div>
   </div>
 </div>
-<div class="row table-panel-row">
+<div class="row table-panel-row grid">
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>NSS:</label>
@@ -38,7 +38,7 @@
     </div>
   </div>
 </div>
-<div class="row table-panel-row">
+<div class="row table-panel-row grid">
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Segundo apellido:</label>
@@ -48,17 +48,22 @@
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Sexo:</label>
-      <span>{{ sexo | uppercase }}</span>
+      <span *ngIf="sexo">{{ sexo | uppercase }}</span>
+      <span *ngIf="!sexo">{{ 'Otro' | uppercase }}</span>
+    </div>
+  </div>
+  <div class="col-md-4" *ngIf="!sexo">
+    <div class="table-panel-column">
+      <label>Sexo:</label>
+      <span >{{ otroSexo | uppercase }}</span>
     </div>
   </div>
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Fecha de nacimiento:</label>
-      <span>{{ fechaNacimiento | date:'dd-MM-YYYY' }}</span>
+      <span>{{ fechaNacimiento }}</span>
     </div>
   </div>
-</div>
-<div class="row table-panel-row">
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Nacionalidad:</label>
