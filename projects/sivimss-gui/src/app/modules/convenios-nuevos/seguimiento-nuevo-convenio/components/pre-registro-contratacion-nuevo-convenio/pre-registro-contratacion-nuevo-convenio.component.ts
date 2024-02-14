@@ -177,18 +177,18 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormularioEmpresa(): void {
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       empresa: this.formBuilder.group({
-        nombre: [{value: this.convenioEmpresa.nombre, disabled: false}],
-        razonSocial: [{value: this.convenioEmpresa.razonSocial, disabled: false}],
-        rfc: [{value: this.convenioEmpresa.rfc, disabled: false}],
-        pais: [{value: this.convenioEmpresa.idPais, disabled: false}],
-        cp: [{value: this.convenioEmpresa.cp, disabled: false}],
-        colonia: [{value: this.convenioEmpresa.colonia, disabled: false}],
-        estado: [{value: this.convenioEmpresa.estado, disabled: false}],
-        municipio: [{value: this.convenioEmpresa.municipio, disabled: false}],
-        calle: [{value: this.convenioEmpresa.calle, disabled: false}],
-        numeroExterior: [{value: this.convenioEmpresa.numExterior, disabled: false}],
-        numeroInterior: [{value: this.convenioEmpresa.numInterior, disabled: false}],
-        correo: [{value: this.convenioEmpresa.correo, disabled: false}],
+        nombre: [{value: this.convenioEmpresa.nombre, disabled: false}, [Validators.required]],
+        razonSocial: [{value: this.convenioEmpresa.razonSocial, disabled: false}, [Validators.required]],
+        rfc: [{value: this.convenioEmpresa.rfc, disabled: false}, [Validators.required]],
+        pais: [{value: this.convenioEmpresa.idPais, disabled: false}, [Validators.required]],
+        cp: [{value: this.convenioEmpresa.cp, disabled: false}, [Validators.required]],
+        colonia: [{value: this.convenioEmpresa.colonia, disabled: false}, [Validators.required]],
+        estado: [{value: this.convenioEmpresa.estado, disabled: false}, [Validators.required]],
+        municipio: [{value: this.convenioEmpresa.municipio, disabled: false}, [Validators.required]],
+        calle: [{value: this.convenioEmpresa.calle, disabled: false}, [Validators.required]],
+        numeroExterior: [{value: this.convenioEmpresa.numExterior, disabled: false}, [Validators.required]],
+        numeroInterior: [{value: this.convenioEmpresa.numInterior, disabled: false}, [Validators.required]],
+        correo: [{value: this.convenioEmpresa.correo, disabled: false}, [Validators.required]],
       })
     });
   }
@@ -239,15 +239,30 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         matricula: [{value: this.sustituto?.matricula ?? null, disabled: this.mismoSustituto}],
         nss: [{value: this.sustituto?.nss ?? null, disabled: this.mismoSustituto}],
         nombre: [{value: this.sustituto?.nombre ?? null, disabled: this.mismoSustituto}, [Validators.required]],
-        primerApellido: [{value: this.sustituto?.primerApellido ?? null, disabled: this.mismoSustituto}, [Validators.required]],
-        segundoApellido: [{value: this.sustituto?.segundoApellido ?? null, disabled: this.mismoSustituto}, [Validators.required]],
+        primerApellido: [{
+          value: this.sustituto?.primerApellido ?? null,
+          disabled: this.mismoSustituto
+        }, [Validators.required]],
+        segundoApellido: [{
+          value: this.sustituto?.segundoApellido ?? null,
+          disabled: this.mismoSustituto
+        }, [Validators.required]],
         sexo: [{value: sexoSustituto ?? null, disabled: this.mismoSustituto}, [Validators.required]],
         otroSexo: [{value: this.sustituto.otroSexo, disabled: this.mismoSustituto}],
-        fechaNacimiento: [{value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento), disabled: this.mismoSustituto},
+        fechaNacimiento: [{
+          value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento),
+          disabled: this.mismoSustituto
+        },
           [Validators.required]],
         nacionalidad: [{value: nacionalidadSustituto, disabled: this.mismoSustituto}, [Validators.required]],
-        paisNacimiento: [{value: +this.sustituto?.idPais ?? null, disabled: this.mismoSustituto}, [Validators.required]],
-        lugarNacimiento: [{value: +this.sustituto?.idLugarNac ?? null, disabled: this.mismoSustituto}, [Validators.required]],
+        paisNacimiento: [{
+          value: +this.sustituto?.idPais ?? null,
+          disabled: this.mismoSustituto
+        }, [Validators.required]],
+        lugarNacimiento: [{
+          value: +this.sustituto?.idLugarNac ?? null,
+          disabled: this.mismoSustituto
+        }, [Validators.required]],
         telefono: [{value: this.sustituto?.telFijo ?? null, disabled: this.mismoSustituto}, [Validators.required]],
         correoElectronico: [{value: this.sustituto?.correo ?? null, disabled: this.mismoSustituto},
           [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
