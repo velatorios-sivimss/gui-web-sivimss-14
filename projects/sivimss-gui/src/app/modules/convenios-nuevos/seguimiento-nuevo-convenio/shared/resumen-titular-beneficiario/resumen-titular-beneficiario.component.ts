@@ -12,6 +12,7 @@ export class ResumenTitularBeneficiarioComponent implements OnInit {
   @Input() nombre: string = 'Sin Información';
   @Input() nss: string = 'Sin Información';
   @Input() sexo: string = 'Sin Información';
+  @Input() otroSexo: string = 'Sin Información';
   @Input() fechaNacimiento: string = 'Sin Información';
   @Input() primerApellido: string = 'Sin Información';
   @Input() segundoApellido: string = 'Sin Información';

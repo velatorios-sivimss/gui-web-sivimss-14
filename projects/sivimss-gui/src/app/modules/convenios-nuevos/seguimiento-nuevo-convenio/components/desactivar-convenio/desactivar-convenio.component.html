@@ -26,10 +26,11 @@
                                             [lugarNacimiento]="titularPA.lugarNac"
                                             [fechaNacimiento]="titularPA.fecNacimiento"
                                             [correoElectronico]="titularPA.correo"
-                                            [telefonoCelular]="titularPA.telCelular" [telefonoFijo]="titularPA.telFijo"
+                                            [telefonoCelular]="titularPA.telCelular"
+                                            [telefonoFijo]="titularPA.telFijo"
                                             [tipoPaquete]="titularPA.nomPaquete" [numeroPagos]="titularPA.numPagos"
                                             [nacionalidad]="+titularPA.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
-                                            [sexo]="titularPA.sexo"
+                                            [sexo]="titularPA.sexo" [otroSexo]="titularPA.otroSexo"
           ></app-resumen-titular-beneficiario>
         </ng-template>
       </p-accordionTab>
@@ -69,9 +70,8 @@
                                               [estado]="sustituto.estado" [fechaNacimiento]="sustituto.fecNacimiento"
                                               [lugarNacimiento]="sustituto.lugarNac" [sexo]="sustituto.sexo"
                                               [correoElectronico]="sustituto.correo" [paisNacimiento]="sustituto.pais"
-                                              [telefono]="sustituto.telCelular"
+                                              [telefono]="sustituto.telCelular" [otroSexo]="sustituto.otroSexo"
                                               [nacionalidad]="+sustituto.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'">
-
             </app-resumen-titular-beneficiario>
           </ng-container>
         </ng-template>
@@ -99,7 +99,7 @@
                                               [lugarNacimiento]="beneficiario1.lugarNac" [sexo]="beneficiario1.sexo"
                                               [correoElectronico]="beneficiario1.correo"
                                               [paisNacimiento]="beneficiario1.pais"
-                                              [telefono]="beneficiario1.telCelular"
+                                              [telefono]="beneficiario1.telCelular" [otroSexo]="beneficiario1.otroSexo"
                                               [nacionalidad]="+beneficiario1.idPais === 119 ? 'MEXICANA' : 'EXTRANJERA'"
             ></app-resumen-titular-beneficiario>
           </ng-container>
@@ -116,7 +116,7 @@
         <ng-template pTemplate="content">
           <ng-container *ngIf="titularPA.beneficiario2 else SinBeneficiarioEspecifico">
             <app-resumen-titular-beneficiario [titular]="'beneficiario'" [matricula]="beneficiario2.matricula"
-                                              [rfc]="beneficiario2.rfc"
+                                              [rfc]="beneficiario2.rfc" [otroSexo]="beneficiario2.otroSexo"
                                               [curp]="beneficiario2.curp" [nombre]="beneficiario2.nombre"
                                               [nss]="beneficiario2.nss" [primerApellido]="beneficiario2.primerApellido"
                                               [segundoApellido]="beneficiario2.segundoApellido"
