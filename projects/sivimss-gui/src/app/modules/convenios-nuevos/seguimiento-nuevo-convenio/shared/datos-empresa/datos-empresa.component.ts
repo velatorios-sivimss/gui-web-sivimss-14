@@ -4,6 +4,9 @@ import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
 import {CommonModule} from "@angular/common";
 import {CalendarModule} from "primeng/calendar";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-datos-empresa',
@@ -20,9 +23,17 @@ import {CalendarModule} from "primeng/calendar";
 })
 export class DatosEmpresaComponent implements OnInit {
 
+  paises: TipoDropdown[] = [];
+
   parentContainer: ControlContainer = inject(ControlContainer)
 
-  constructor() {
+  constructor(private autenticacionService: AutenticacionService) {
+    this.cargarCatalogosLocalStorage();
+  }
+
+  cargarCatalogosLocalStorage(): void {
+    const catalogoPais = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_pais');
+    this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
   }
 
   ngOnInit(): void {
