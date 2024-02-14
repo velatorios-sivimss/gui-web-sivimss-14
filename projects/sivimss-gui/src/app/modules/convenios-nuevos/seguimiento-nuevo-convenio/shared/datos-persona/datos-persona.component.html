@@ -116,7 +116,7 @@
   <div class="col-md-4 mb-3" *ngIf="parentFormGroup.nacionalidad.value === 2">
     <label class="control-label" for="paisNacimiento">País de nacimientro<span class="req">*</span>:</label>
     <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento" [options]="paises"
-                placeholder="Seleccionar el pais de nacimiento" [filter]="true" filterBy="label">
+                placeholder="Seleccionar el país de nacimiento" [filter]="true" filterBy="label">
     </p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.paisNacimiento?.errors?.required  && (parentFormGroup.paisNacimiento?.dirty || parentFormGroup.paisNacimiento?.touched)">
@@ -134,17 +134,21 @@
   <div class="col-md-4 mb-3">
     <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
     <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
-           placeholder="Inserta la nacionalidad">
+           placeholder="Inserta el correo electrónico">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.correoElectronico?.errors?.required  && (parentFormGroup.correoElectronico?.dirty || parentFormGroup.correoElectronico?.touched)">
       Este campo es obligatorio *.</span>
+
   </div>
   <div class="col-md-4 mb-3">
     <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
-    <input id="telefono" class="form-control" formControlName="telefono" placeholder="Inserta el telefono">
+    <input id="telefono" class="form-control" formControlName="telefono" placeholder="Inserta el teléfono">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.telefono?.errors?.required  && (parentFormGroup.telefono?.dirty || parentFormGroup.telefono?.touched)">
       Este campo es obligatorio *.</span>
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup?.correoElectronico?.errors?.pattern && (parentFormGroup?.correoElectronico?.dirty || parentFormGroup?.correoElectronico?.touched)">
+      El correo electrónico no es válido.</span>
   </div>
   <div class="col-md-4 mb-3">
     <label class="control-label" for="enfermedadPreExistente">Enfermedad prexistente<span
