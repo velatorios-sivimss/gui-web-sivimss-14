@@ -205,6 +205,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     const nacionalidadSustituto: number = this.sustituto.idPais === '119' ? 1 : 2;
     const sexo: number = this.titularPA.otroSexo === '' ? this.titularPA.idSexo : 3;
     const sexoSustituto: number = this.sustituto.otroSexo === '' ? +this.sustituto.idSexo : 3;
+    const fecNacimientoSust = this.calcularFechaNacimiento(this.sustituto?.fecNacimiento);
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       titular: this.formBuilder.group({
         curp: [{value: this.titularPA.curp, disabled: false}, [Validators.required]],
@@ -241,30 +242,19 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         matricula: [{value: this.sustituto?.matricula ?? null, disabled: this.mismoSustituto}],
         nss: [{value: this.sustituto?.nss ?? null, disabled: this.mismoSustituto}],
         nombre: [{value: this.sustituto?.nombre ?? null, disabled: this.mismoSustituto}, [Validators.required]],
-        primerApellido: [{
-          value: this.sustituto?.primerApellido ?? null,
-          disabled: this.mismoSustituto
-        }, [Validators.required]],
-        segundoApellido: [{
-          value: this.sustituto?.segundoApellido ?? null,
-          disabled: this.mismoSustituto
-        }, [Validators.required]],
+        primerApellido: [{value: this.sustituto?.primerApellido ?? null, disabled: this.mismoSustituto},
+          [Validators.required]],
+        segundoApellido: [{value: this.sustituto?.segundoApellido ?? null, disabled: this.mismoSustituto},
+          [Validators.required]],
         sexo: [{value: sexoSustituto ?? null, disabled: this.mismoSustituto}, [Validators.required]],
         otroSexo: [{value: this.sustituto.otroSexo, disabled: this.mismoSustituto}],
-        fechaNacimiento: [{
-          value: this.calcularFechaNacimiento(this.sustituto?.fecNacimiento),
-          disabled: this.mismoSustituto
-        },
+        fechaNacimiento: [{value: fecNacimientoSust, disabled: this.mismoSustituto},
           [Validators.required]],
         nacionalidad: [{value: nacionalidadSustituto, disabled: this.mismoSustituto}, [Validators.required]],
-        paisNacimiento: [{
-          value: +this.sustituto?.idPais ?? null,
-          disabled: this.mismoSustituto
-        }, [Validators.required]],
-        lugarNacimiento: [{
-          value: +this.sustituto?.idLugarNac ?? null,
-          disabled: this.mismoSustituto
-        }, [Validators.required]],
+        paisNacimiento: [{value: +this.sustituto?.idPais ?? null, disabled: this.mismoSustituto},
+          [Validators.required]],
+        lugarNacimiento: [{value: +this.sustituto?.idLugarNac ?? null, disabled: this.mismoSustituto},
+          [Validators.required]],
         telefono: [{value: this.sustituto?.telFijo ?? null, disabled: this.mismoSustituto}, [Validators.required]],
         correoElectronico: [{value: this.sustituto?.correo ?? null, disabled: this.mismoSustituto},
           [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
@@ -387,6 +377,109 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   cancelar() {
     //agregar Mensaje
     this.preRegistroSiguiente = false;
+  }
+
+  modificarSustituto(): void {
+    if (this.mismoSustituto) {
+      this.asignarMismoTitular();
+    } else {
+      this.limpiarSustituto();
+    }
+  }
+
+  limpiarSustituto(): void {
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('curp')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('curp')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('rfc')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('rfc')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('matricula')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('matricula')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nss')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nss')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nombre')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nombre')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('primerApellido')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('primerApellido')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('segundoApellido')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('segundoApellido')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('sexo')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('sexo')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('otroSexo')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('otroSexo')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('fechaNacimiento')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('fechaNacimiento')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nacionalidad')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nacionalidad')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('paisNacimiento')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('paisNacimiento')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('lugarNacimiento')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('lugarNacimiento')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('telefono')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('telefono')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('correoElectronico')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('correoElectronico')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('calle')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('calle')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('numeroExterior')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('numeroExterior')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('numeroInterior')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('numeroInterior')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('cp')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('cp')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('colonia')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('colonia')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('municipio')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('municipio')?.enable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('estado')?.setValue(null);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('estado')?.enable();
+  }
+
+  asignarMismoTitular(): void {
+    const nacionalidad: number = this.titularPA.idPais === '119' ? 1 : 2;
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('curp')?.setValue(this.titularPA.curp);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('curp')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('rfc')?.setValue(this.titularPA.rfc);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('rfc')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('matricula')?.setValue(this.titularPA.matricula);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('matricula')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nss')?.setValue(this.titularPA.nss);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nss')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nombre')?.setValue(this.titularPA.nombre);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nombre')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('primerApellido')?.setValue(this.titularPA.primerApellido);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('primerApellido')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('segundoApellido')?.setValue(this.titularPA.segundoApellido);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('segundoApellido')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('sexo')?.setValue(this.titularPA.idSexo);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('sexo')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('otroSexo')?.setValue(this.titularPA.otroSexo);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('otroSexo')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('fechaNacimiento')?.setValue(this.calcularFechaNacimiento(this.titularPA.fecNacimiento));
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('fechaNacimiento')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nacionalidad')?.setValue(nacionalidad);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('nacionalidad')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('paisNacimiento')?.setValue(+this.titularPA.idPais);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('paisNacimiento')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('lugarNacimiento')?.setValue(+this.titularPA.idLugarNac);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('lugarNacimiento')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('telefono')?.setValue(this.titularPA.telFijo);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('telefono')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('correoElectronico')?.setValue(this.titularPA.correo);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('correoElectronico')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('calle')?.setValue(this.titularPA.calle);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('calle')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('numeroExterior')?.setValue(this.titularPA.numExt);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('numeroExterior')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('numeroInterior')?.setValue(this.titularPA.numInt);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('numeroInterior')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('cp')?.setValue(this.titularPA.cp);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('cp')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('colonia')?.setValue(this.titularPA.colonia);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('colonia')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('municipio')?.setValue(this.titularPA.municipio);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('municipio')?.disable();
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('estado')?.setValue(this.titularPA.estado);
+    this.contratacionNuevoConvenioForm.controls["sustituto"].get('estado')?.disable();
   }
 
   get beneficiarios() {
