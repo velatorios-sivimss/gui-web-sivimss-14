@@ -95,6 +95,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     }
     if (this.tipoConvenio === '2') {
       if (!preRegistro.empresa) this.errorCargarRegistro();
+      if (preRegistro.empresa.idConvenio === 0) this.errorCargarRegistro();
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
       this.folio = this.convenioEmpresa.folioConvenio;
     }
