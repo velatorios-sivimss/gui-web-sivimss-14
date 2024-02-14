@@ -79,6 +79,7 @@ export class DesactivarConvenioComponent implements OnInit {
     }
     if (this.tipoConvenio === '2') {
       if (!preRegistro.empresa) this.errorCargarRegistro();
+      if (preRegistro.empresa.idConvenio === 0) this.errorCargarRegistro();
       this.convenioEmpresa = preRegistro.empresa;
       this.folioConvenio = this.convenioEmpresa.folioConvenio;
       this.solicitantes = preRegistro.solicitantes;
