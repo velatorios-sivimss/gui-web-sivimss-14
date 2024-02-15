@@ -368,8 +368,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       primerApellido: [{value: solicitante.primerApellido, disabled: false}, [Validators.required]],
       segundoApellido: [{value: solicitante.segundoApellido, disabled: false}, [Validators.required]],
       calle: [{value: solicitante.calle, disabled: false}, [Validators.required]],
-      numeroExterior: [{value: solicitante.numExt, disabled: false}, [Validators.required]],
-      numeroInterior: [{value: solicitante.numInt, disabled: false}],
+      numeroExterior: [{value: solicitante.numExterior, disabled: false}, [Validators.required]],
+      numeroInterior: [{value: solicitante.numInterior, disabled: false}],
       codigoPostal: [{value: solicitante.cp, disabled: false}, [Validators.required]],
       colonia: [{value: solicitante.colonia, disabled: false}, [Validators.required]],
       municipio: [{value: solicitante.municipio, disabled: false}, [Validators.required]],
@@ -378,7 +378,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       paisNacimiento: [{value: solicitante.idPais, disabled: false}, [Validators.required]],
       lugarNacimiento: [{value: solicitante.idLugarNac, disabled: false}, [Validators.required]],
       correoElectronico: [{value: solicitante.correo, disabled: false}, [Validators.required]],
-      telefono: [{value: solicitante.telFijo, disabled: false}, [Validators.required]],
+      telefono: [{value: solicitante.telefono, disabled: false}, [Validators.required]],
     });
     if (this.solicitantesEmpresa) {
       this.solicitantesEmpresa.push(solicitanteForm);

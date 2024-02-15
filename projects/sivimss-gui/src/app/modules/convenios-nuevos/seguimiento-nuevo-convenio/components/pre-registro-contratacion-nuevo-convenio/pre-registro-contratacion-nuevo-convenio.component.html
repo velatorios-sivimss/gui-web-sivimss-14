@@ -105,9 +105,9 @@
               <ng-container formArrayName="solicitantes">
                 <ng-container *ngIf="solicitantes.length > 0 else SinSolicitantes">
                   <ng-container *ngFor="let solicitanteForm of solicitantesEmpresa.controls; let i = index">
-                    <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+                    <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
                       <p-accordionTab [header]="nombresSolicitantes[i]" [formGroupName]="i">
-                        <app-datos-persona [enfermedad]="false"></app-datos-persona>
+                        <app-datos-persona [enfermedad]="false" [ID]="i.toString()"></app-datos-persona>
                       </p-accordionTab>
                     </p-accordion>
                   </ng-container>
@@ -148,7 +148,7 @@
           <ng-container formArrayName="beneficiarios">
             <ng-container *ngIf="beneficiariosPF.length > 0 else SinBeneficiarios">
               <ng-container *ngFor="let beneficiarioForm of beneficiarios.controls; let i = index">
-                <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+                <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
                   <p-accordionTab [header]="nombresBeneficiario[i]" [formGroupName]="i">
                     <app-datos-beneficiario [ID]="i.toString()"></app-datos-beneficiario>
                   </p-accordionTab>

@@ -40,6 +40,7 @@ export class DatosPersonaComponent implements OnInit {
   parentContainer: ControlContainer = inject(ControlContainer);
 
   @Input() enfermedad: boolean = true;
+  @Input() ID: string = '';
 
   constructor(private autenticacionService: AutenticacionService,
               private cargadorService: LoaderService,
