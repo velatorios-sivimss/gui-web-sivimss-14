@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
@@ -20,7 +20,8 @@ import {CalendarModule} from "primeng/calendar";
 })
 export class DatosBeneficiarioComponent implements OnInit {
 
-  parentContainer: ControlContainer = inject(ControlContainer)
+  parentContainer: ControlContainer = inject(ControlContainer);
+  @Input() ID: string = '';
 
   constructor() {
   }

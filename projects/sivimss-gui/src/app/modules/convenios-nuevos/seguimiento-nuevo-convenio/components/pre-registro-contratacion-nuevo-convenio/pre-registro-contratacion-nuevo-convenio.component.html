@@ -25,12 +25,14 @@
           <div class="flex">
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'titularSi'" name="titular" [value]="true"
-                             [(ngModel)]="mismoSustituto" [ngModelOptions]="{standalone: true}" (ngModelChange)="modificarSustituto()"></p-radioButton>
+                             [(ngModel)]="mismoSustituto" [ngModelOptions]="{standalone: true}"
+                             (ngModelChange)="modificarSustituto()"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'titularSi'">Sí</label>
             </div>
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'titularNo'" name="titular" [value]="false"
-                             [(ngModel)]="mismoSustituto" [ngModelOptions]="{standalone: true}" (ngModelChange)="modificarSustituto()"></p-radioButton>
+                             [(ngModel)]="mismoSustituto" [ngModelOptions]="{standalone: true}"
+                             (ngModelChange)="modificarSustituto()"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'titularNo'">No</label>
             </div>
           </div>
@@ -67,13 +69,13 @@
             <div class="flex">
               <div class="flex align-items-center mx-2">
                 <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
-                               [(ngModel)]="promotor" [ngModelOptions]="{standalone: true}" >>
+                               [(ngModel)]="promotor" [ngModelOptions]="{standalone: true}">>
                 </p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
               </div>
               <div class="flex align-items-center mx-2">
                 <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
-                               [(ngModel)]="promotor" [ngModelOptions]="{standalone: true}" >>
+                               [(ngModel)]="promotor" [ngModelOptions]="{standalone: true}">>
                 </p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
               </div>
@@ -139,29 +141,29 @@
           </div>
         </p-accordionTab>
       </p-accordion>
-            <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
-              <p-accordionTab header="Beneficiarios">
-                <ng-container formArrayName="beneficiarios">
-                  <ng-container *ngIf="beneficiariosPF.length > 0 else SinBeneficiarios">
-                    <ng-container *ngFor="let beneficiarioForm of beneficiarios.controls; let i = index">
-                      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
-                        <p-accordionTab [header]="nombresBeneficiario[i]" [formGroupName]="i">
-                          <app-datos-beneficiario></app-datos-beneficiario>
-                        </p-accordionTab>
-                      </p-accordion>
-                    </ng-container>
-                  </ng-container>
-                </ng-container>
-              </p-accordionTab>
-            </p-accordion>
+      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+        <p-accordionTab header="Beneficiarios">
+          <ng-container formArrayName="beneficiarios">
+            <ng-container *ngIf="beneficiariosPF.length > 0 else SinBeneficiarios">
+              <ng-container *ngFor="let beneficiarioForm of beneficiarios.controls; let i = index">
+                <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+                  <p-accordionTab [header]="nombresBeneficiario[i]" [formGroupName]="i">
+                    <app-datos-beneficiario [ID]="i.toString()"></app-datos-beneficiario>
+                  </p-accordionTab>
+                </p-accordion>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </p-accordionTab>
+      </p-accordion>
 
-            <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
-              <p-accordionTab header="Documentación requerida">
-                <ng-container *ngIf="beneficiarios.length > 0 else SinBeneficiarios">
-                  <app-documentacion-beneficiario></app-documentacion-beneficiario>
-                </ng-container>
-              </p-accordionTab>
-            </p-accordion>
+      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+        <p-accordionTab header="Documentación requerida">
+          <ng-container *ngIf="beneficiarios.length > 0 else SinBeneficiarios">
+            <app-documentacion-beneficiario></app-documentacion-beneficiario>
+          </ng-container>
+        </p-accordionTab>
+      </p-accordion>
     </form>
   </ng-container>
 </ng-container>
