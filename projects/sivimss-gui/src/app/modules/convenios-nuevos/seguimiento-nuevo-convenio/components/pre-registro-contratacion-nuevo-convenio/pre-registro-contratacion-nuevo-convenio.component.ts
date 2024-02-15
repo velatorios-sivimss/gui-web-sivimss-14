@@ -16,6 +16,9 @@ import {PreRegistroPA} from "../../models/preRegistroPA.interface";
 import {Location} from "@angular/common";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {delay} from "rxjs/operators";
+import {Observable} from "rxjs";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
@@ -49,7 +52,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   preRegistroSiguiente: boolean = false;
   folio: string = '';
   nombresBeneficiario: string[] = [];
-  tipoConvenio: string = ''
+  nombresSolicitantes: string[] = [];
+  tipoConvenio: string = '';
+  idConvenio: string = '';
   beneficiariosPF: BeneficiarioResponse[] = [];
   beneficiariosPA: BeneficiarioResponse[] = [];
   beneficiario1!: BeneficiarioResponse;
@@ -67,9 +72,11 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     private cargadorService: LoaderService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private seguimientoConvenioService: SeguimientoNuevoConvenioService
   ) {
     this.tipoConvenio = this.activatedRoute.snapshot.params.tipoConvenio ?? '';
+    this.idConvenio = this.activatedRoute.snapshot.params.idConvenio ?? '';
     this.cargarCatalogos();
     this.inicializarTipoFormulario();
   }
@@ -93,13 +100,13 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       this.convenioPersona = preRegistro.detalleConvenioPFModel;
       this.folio = this.convenioPersona.folioConvenio;
       this.beneficiariosPF = preRegistro.beneficiarios;
-      this.cargarBeneficiarios();
     }
     if (this.tipoConvenio === '2') {
       if (!preRegistro.empresa) this.errorCargarRegistro();
       if (preRegistro.empresa.idConvenio === 0) this.errorCargarRegistro();
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
       this.folio = this.convenioEmpresa.folioConvenio;
+      this.solicitantes = preRegistro.solicitantes;
     }
     if (this.tipoConvenio === '1') {
       if (!preRegistro.preRegistro) this.errorCargarRegistro();
@@ -176,6 +183,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       tipoPaquete: [{value: this.convenioPersona.idPaquete, disabled: false}, [Validators.required]],
       beneficiarios: this.formBuilder.array([])
     });
+    this.cargarBeneficiarios();
   }
 
   inicializarFormularioEmpresa(): void {
@@ -192,10 +200,13 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         calle: [{value: this.convenioEmpresa.calle, disabled: false}, [Validators.required]],
         numeroExterior: [{value: this.convenioEmpresa.numExterior, disabled: false}, [Validators.required]],
         numeroInterior: [{value: this.convenioEmpresa.numInterior, disabled: false}, [Validators.required]],
+        telefono: [{value: null, disabled: false}, [Validators.required]],
         correo: [{value: this.convenioEmpresa.correo, disabled: false},
           [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
-      })
+      }),
+      solicitantes: this.formBuilder.array([])
     });
+    this.cargarSolicitantes();
   }
 
   calcularFechaNacimiento(fecha: string): Date | null {
@@ -324,6 +335,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     }
   }
 
+  cargarSolicitantes(): void {
+    for (let solicitante of this.solicitantes) {
+      this.agregarSolicitante(solicitante)
+    }
+  }
+
   agregarBeneficiario(beneficiario: BeneficiarioResponse): void {
     this.nombresBeneficiario.push(beneficiario.nombre);
     const beneficiarioForm: FormGroup = this.formBuilder.group({
@@ -336,6 +353,35 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     });
     if (this.beneficiarios) {
       this.beneficiarios.push(beneficiarioForm);
+    }
+  }
+
+  agregarSolicitante(solicitante: PreRegistroPA): void {
+    const nombre: string = `${solicitante.nombre} ${solicitante.primerApellido} ${solicitante.primerApellido}`
+    this.nombresSolicitantes.push(nombre);
+    const nacionalidad: number = +solicitante.idPais === 119 ? 1 : 2;
+    const solicitanteForm: FormGroup = this.formBuilder.group({
+      matricula: [{value: solicitante.matricula, disabled: false}],
+      rfc: [{value: solicitante.rfc, disabled: false}, [Validators.required]],
+      curp: [{value: solicitante.curp, disabled: false}, [Validators.required]],
+      nombres: [{value: nombre, disabled: false}, [Validators.required]],
+      primerApellido: [{value: solicitante.primerApellido, disabled: false}, [Validators.required]],
+      segundoApellido: [{value: solicitante.segundoApellido, disabled: false}, [Validators.required]],
+      calle: [{value: solicitante.calle, disabled: false}, [Validators.required]],
+      numeroExterior: [{value: solicitante.numExt, disabled: false}, [Validators.required]],
+      numeroInterior: [{value: solicitante.numInt, disabled: false}],
+      codigoPostal: [{value: solicitante.cp, disabled: false}, [Validators.required]],
+      colonia: [{value: solicitante.colonia, disabled: false}, [Validators.required]],
+      municipio: [{value: solicitante.municipio, disabled: false}, [Validators.required]],
+      estado: [{value: solicitante.estado, disabled: false}, [Validators.required]],
+      nacionalidad: [{value: nacionalidad, disabled: false}, [Validators.required]],
+      paisNacimiento: [{value: solicitante.idPais, disabled: false}, [Validators.required]],
+      lugarNacimiento: [{value: solicitante.idLugarNac, disabled: false}, [Validators.required]],
+      correoElectronico: [{value: solicitante.correo, disabled: false}, [Validators.required]],
+      telefono: [{value: solicitante.telFijo, disabled: false}, [Validators.required]],
+    });
+    if (this.solicitantesEmpresa) {
+      this.solicitantesEmpresa.push(solicitanteForm);
     }
   }
 
@@ -489,9 +535,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     return this.contratacionNuevoConvenioForm?.controls["beneficiarios"] as FormArray;
   }
 
+  get solicitantesEmpresa() {
+    return this.contratacionNuevoConvenioForm?.controls["solicitantes"] as FormArray;
+  }
+
   get convenioFormGroup() {
     return this.contratacionNuevoConvenioForm.controls
   }
 
-  protected readonly FormGroup = FormGroup;
 }

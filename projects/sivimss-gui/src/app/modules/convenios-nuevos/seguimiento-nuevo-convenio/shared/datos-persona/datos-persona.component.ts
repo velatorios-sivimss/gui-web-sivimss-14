@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
@@ -37,7 +37,9 @@ export class DatosPersonaComponent implements OnInit {
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   colonias: TipoDropdown[] = [];
 
-  parentContainer: ControlContainer = inject(ControlContainer)
+  parentContainer: ControlContainer = inject(ControlContainer);
+
+  @Input() enfermedad: boolean = true;
 
   constructor(private autenticacionService: AutenticacionService,
               private cargadorService: LoaderService,

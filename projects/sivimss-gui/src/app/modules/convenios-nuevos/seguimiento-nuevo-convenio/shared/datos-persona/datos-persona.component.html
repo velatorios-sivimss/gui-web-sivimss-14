@@ -152,7 +152,7 @@
           *ngIf="parentFormGroup?.correoElectronico?.errors?.pattern && (parentFormGroup?.correoElectronico?.dirty || parentFormGroup?.correoElectronico?.touched)">
       El correo electrónico no es válido.</span>
   </div>
-  <div class="col-md-4 mb-3">
+  <div class="col-md-4 mb-3" *ngIf="enfermedad">
     <label class="control-label" for="enfermedadPreExistente">Enfermedad prexistente<span
       class="req">*</span>:</label>
     <p-dropdown id="enfermedadPreExistente" class="form-control" formControlName="enfermedadPreExistente"
