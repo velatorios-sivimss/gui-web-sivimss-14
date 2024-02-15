@@ -54,4 +54,12 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
     const body = {idFLujo, idConvenio};
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/activar-desactivar`, body);
   }
+
+  validaRFCCurp(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/validar-rfc-curp`, body);
+  }
+
+  consutaCP(cp: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/codigo-postal/` + cp);
+  }
 }
