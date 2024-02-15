@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
-import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
@@ -17,6 +17,7 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 @Component({
   selector: 'app-datos-titular-beneficiario',
@@ -48,7 +49,8 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private cargadorService: LoaderService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
-              private mensajesSistemaService: MensajesSistemaService
+              private mensajesSistemaService: MensajesSistemaService,
+              private alertaService: AlertaService,
   ) {
     this.cargarCatalogosLocalStorage();
   }
@@ -92,6 +94,39 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
 
   validarMatricula(): void {
 
+  }
+
+  validarNSS(): void {
+    const nss = this.parentContainer.control?.get('nss')?.value;
+    if (nss === '' || !nss) return;
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.consultarNSS(nss).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (response: HttpRespuesta<any>): void => this.procesarRespuestaNSS(response),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error),
+    })
+  }
+
+  procesarRespuestaNSS(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, "El Número de Seguridad Social no existe.");
+      this.parentContainer.control?.get('nss')?.setValue(null);
+      return;
+    }
+    let fecha: Date | null = null;
+    if (respuesta.datos.fechaNacimiento) {
+      fecha = new Date(diferenciaUTC(respuesta.datos.fechaNacimiento));
+    }
+    let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
+    this.parentContainer.control?.get('curp')?.setValue(respuesta.datos.curp);
+    this.parentContainer.control?.get('rfc')?.setValue(respuesta.datos.rfc);
+    this.parentContainer.control?.get('nombre')?.setValue(respuesta.datos.nombre);
+    this.parentContainer.control?.get('primerApellido')?.setValue(respuesta.datos.primerApellido);
+    this.parentContainer.control?.get('segundoApellido')?.setValue(respuesta.datos.segundoApellido);
+    this.parentContainer.control?.get('sexo')?.setValue(sexo);
+    this.parentContainer.control?.get('fechaNacimiento')?.setValue(fecha);
+    this.parentContainer.control?.get('nacionalidad')?.setValue(1);
   }
 
   cargarCP(cargaInicial: boolean = false): void {

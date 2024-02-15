@@ -30,7 +30,7 @@
   <div class="col-md-4">
     <label class="control-label" for="nss-titular">NSS:</label>
     <input id="nss-titular" class="form-control" formControlName="nss" placeholder="Ingresa el NSS" [maxlength]="11"
-           numbersOnly>
+           numbersOnly (blur)="validarNSS()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.nss?.errors?.required  && (parentFormGroup.nss?.dirty || parentFormGroup.nss?.touched)">
       Este campo es obligatorio *.</span>
