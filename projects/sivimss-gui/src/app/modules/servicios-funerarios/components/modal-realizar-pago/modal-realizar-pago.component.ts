@@ -102,7 +102,7 @@ export class ModalRealizarPagoComponent implements OnInit {
 
     this.tipoDePago = dd.selectedOption.label;
     if (this.tipoDePago.toUpperCase().includes('TARJETA CRÉDITO')) {
-      this.tituloBanco = "Nombre banco:"
+      this.tituloBanco = "Nombre del banco:"
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = true;
       this.validacion.importe = true;
@@ -113,7 +113,7 @@ export class ModalRealizarPagoComponent implements OnInit {
       this.validacion.importeValeParitaria = false;
     }
     if (this.tipoDePago.toUpperCase().includes('TARJETA DÉBITO')) {
-      this.tituloBanco = "Nombre banco:"
+      this.tituloBanco = "Nombre del banco:"
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = true;
       this.validacion.importe = true;

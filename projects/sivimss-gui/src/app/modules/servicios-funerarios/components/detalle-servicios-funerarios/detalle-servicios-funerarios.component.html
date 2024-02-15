@@ -109,7 +109,7 @@
           </tr>
         </ng-template>
       </p-table>
-      <h2 class="subtitulo pl-1 mx-6 my-4" *ngIf="ocultarBitacora">Bitácora de métodos de pago</h2>
+      <h2 class="subtitulo pl-1 mx-6 my-4" *ngIf="ocultarBitacora">Métodos de pago utilizados</h2>
       <p-table styleClass="mt-5 mb-8 mx-6" *ngIf="ocultarBitacora" [value]="PagosBitacora" [rows]="cantElementosPorPagina" [lazy]="true"
                [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
         <ng-template pTemplate="header">
