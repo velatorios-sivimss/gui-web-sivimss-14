@@ -109,6 +109,25 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     }
   }
 
+  validarMatricula(): void {
+    const matricula = this.parentContainer.control?.get('matricula')?.value;
+    if (matricula === '' || !matricula) return;
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.consultarMatriculaSiap(matricula).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (response: HttpRespuesta<any>): void => this.procesarRespuestaMatricula(response),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error),
+    });
+  }
+
+  procesarRespuestaMatricula(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos) {
+      this.parentContainer.control?.get('matricula')?.setValue(null);
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'La matrícula es incorrecta.');
+    }
+  }
+
   validarNSS(): void {
     const nss = this.parentContainer.control?.get('nss')?.value;
     if (nss === '' || !nss) return;
