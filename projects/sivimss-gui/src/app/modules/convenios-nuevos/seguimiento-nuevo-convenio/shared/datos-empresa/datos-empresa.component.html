@@ -33,14 +33,17 @@
   </div>
   <div class="col-md-4">
     <label class="control-label" for="cp">Código postal<span class="req">*</span>:</label>
-    <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa el código postal">
+    <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa el código postal"
+           [maxlength]="5" (blur)="cargarCP()" numbersOnly>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.cp?.errors?.required  && (parentFormGroup.cp?.dirty || parentFormGroup.cp?.touched)">
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
-    <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia">
+    <p-dropdown id="colonia" class="form-control" formControlName="colonia"
+                placeholder="Selecciona la colonia" [options]="colonias" [filter]="true"
+                filterBy="label"></p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.colonia?.errors?.required  && (parentFormGroup.colonia?.dirty || parentFormGroup.colonia?.touched)">
       Este campo es obligatorio *.</span>

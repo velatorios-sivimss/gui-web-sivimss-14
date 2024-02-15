@@ -99,6 +99,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     if (cp.length < 5) return;
     if (!cargaInicial) {
       this.cargadorService.activar();
+      this.parentContainer.control?.get('colonia')?.setValue(null);
     }
     this.seguimientoNuevoConvenioService.consutaCP(cp).pipe(
       finalize(() => this.cargadorService.desactivar())
