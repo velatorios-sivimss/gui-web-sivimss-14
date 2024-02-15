@@ -109,6 +109,25 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     }
   }
 
+  validarMatricula(): void {
+    const matricula = this.parentContainer.control?.get('matricula')?.value;
+    if (matricula === '' || !matricula) return;
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.consultarMatriculaSiap(matricula).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (response: HttpRespuesta<any>): void => this.procesarRespuestaMatricula(response),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error),
+    });
+  }
+
+  procesarRespuestaMatricula(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos) {
+      this.parentContainer.control?.get('matricula')?.setValue(null);
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'La matrícula es incorrecta.');
+    }
+  }
+
   validarNSS(): void {
     const nss = this.parentContainer.control?.get('nss')?.value;
     if (nss === '' || !nss) return;
@@ -142,6 +161,10 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('otroSexo')?.clearValidators();
     this.parentContainer.control?.get('fechaNacimiento')?.setValue(fecha);
     this.parentContainer.control?.get('nacionalidad')?.setValue(1);
+    this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+    this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
   }
 
   cargaCPSust(cargaInicial: boolean = false): void {

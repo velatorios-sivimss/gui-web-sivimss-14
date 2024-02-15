@@ -20,7 +20,7 @@
   <div class="col-md-4">
     <label class="control-label" [for]="'matricula' + ID">Matricula:</label>
     <input [id]="'matricula' + ID" class="form-control" formControlName="matricula" placeholder="Ingresa la matricula"
-           [maxlength]="10">
+           [maxlength]="10" (blur)="validarMatricula()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.matricula?.errors?.required  && (parentFormGroup.matricula?.dirty || parentFormGroup.matricula?.touched)">
       Este campo es obligatorio *.</span>
