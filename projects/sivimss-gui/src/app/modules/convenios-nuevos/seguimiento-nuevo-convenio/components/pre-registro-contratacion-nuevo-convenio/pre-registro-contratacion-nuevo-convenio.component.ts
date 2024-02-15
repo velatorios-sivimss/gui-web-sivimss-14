@@ -57,6 +57,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   sustituto!: BeneficiarioResponse;
   titularPA!: PreRegistroPA;
   mismoSustituto: boolean = false;
+  promotor: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -106,6 +107,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       this.obtenerSustitutoDesdeTitular();
       this.beneficiariosPA = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
       this.folio = this.titularPA.folioConvenio;
+      this.promotor = this.titularPA.gestionPromotor;
       this.obtenerBeneficiarios()
     }
   }
