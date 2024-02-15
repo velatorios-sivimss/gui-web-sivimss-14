@@ -30,7 +30,7 @@ interface FiltrosBasicosNuevoConvenio {
 interface FiltrosNuevoConvenio {
   idVelatorio: number | null,
   convenioPF: string,
-  convenioPSFFA: string,
+  convenioPSFPA: string,
   rfc: string
 }
 
@@ -197,7 +197,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   obtenerFiltroConvenio(): FiltrosNuevoConvenio {
     return {
       convenioPF: this.filtroForm.get('folioConvenioPf')?.value,
-      convenioPSFFA: this.filtroForm.get('folioConvenioPsfpa')?.value,
+      convenioPSFPA: this.filtroForm.get('folioConvenioPsfpa')?.value,
       idVelatorio: this.filtroForm.get('velatorio')?.value,
       rfc: this.filtroForm.get('rfcAfiliado')?.value
     }
