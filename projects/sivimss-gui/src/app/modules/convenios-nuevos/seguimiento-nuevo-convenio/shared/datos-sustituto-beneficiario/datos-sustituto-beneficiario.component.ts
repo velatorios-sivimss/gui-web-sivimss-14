@@ -138,6 +138,8 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('primerApellido')?.setValue(respuesta.datos.primerApellido);
     this.parentContainer.control?.get('segundoApellido')?.setValue(respuesta.datos.segundoApellido);
     this.parentContainer.control?.get('sexo')?.setValue(sexo);
+    this.parentContainer.control?.get('otroSexo')?.setValue(null);
+    this.parentContainer.control?.get('otroSexo')?.clearValidators();
     this.parentContainer.control?.get('fechaNacimiento')?.setValue(fecha);
     this.parentContainer.control?.get('nacionalidad')?.setValue(1);
   }
