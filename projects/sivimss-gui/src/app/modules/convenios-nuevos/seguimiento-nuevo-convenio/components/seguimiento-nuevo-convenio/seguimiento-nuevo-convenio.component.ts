@@ -7,7 +7,6 @@ import {OverlayPanel} from 'primeng/overlaypanel';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {CATALOGOS_DUMMIES} from '../../../../proveedores/constants/dummies';
 import {SeguimientoNuevoConvenio} from '../../models/seguimiento-nuevo-convenio.interface';
 import {SEGUIMIENTO_CONVENIO_BREADCRUMB} from "../../constants/breadcrumb";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
@@ -66,10 +65,8 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   detalleRef!: DynamicDialogRef;
   modificacionRef!: DynamicDialogRef;
 
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
-  tipoServicio: TipoDropdown[] = CATALOGOS_DUMMIES;
-  partidaPresupuestal: TipoDropdown[] = CATALOGOS_DUMMIES;
-  cuentaContable: TipoDropdown[] = CATALOGOS_DUMMIES;
+  MENSAJE_FILTROS: string = 'Selecciona por favor un criterio de búsqueda.';
+  mostrarModalFiltros: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -186,6 +183,12 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
 
   paginarConFiltros(): void {
     const filtros: FiltrosNuevoConvenio = this.obtenerFiltroConvenio();
+    const valores: string[] = Object.values(filtros);
+    console.log(valores)
+    if (valores.every(v => v === null)) {
+      this.mostrarModalFiltros = true;
+      return;
+    }
     this.cargadorService.activar();
     this.seguimientoConvenioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
