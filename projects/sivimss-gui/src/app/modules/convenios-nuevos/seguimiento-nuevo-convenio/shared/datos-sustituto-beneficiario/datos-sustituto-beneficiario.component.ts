@@ -142,6 +142,10 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('otroSexo')?.clearValidators();
     this.parentContainer.control?.get('fechaNacimiento')?.setValue(fecha);
     this.parentContainer.control?.get('nacionalidad')?.setValue(1);
+    this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+    this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
   }
 
   cargaCPSust(cargaInicial: boolean = false): void {

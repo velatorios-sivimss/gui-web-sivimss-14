@@ -129,6 +129,10 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('otroSexo')?.setValue(null);
     this.parentContainer.control?.get('fechaNacimiento')?.setValue(fecha);
     this.parentContainer.control?.get('nacionalidad')?.setValue(1);
+    this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
+    this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
   }
 
   cargarCP(cargaInicial: boolean = false): void {
