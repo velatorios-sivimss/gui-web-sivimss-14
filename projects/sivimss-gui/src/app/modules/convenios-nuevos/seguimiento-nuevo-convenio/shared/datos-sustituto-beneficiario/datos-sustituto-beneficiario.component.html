@@ -172,7 +172,7 @@
   </div>
   <div class="col-md-4 mb-3">
     <label class="control-label" [for]="'cp' + ID">Codigo Postal<span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
-    <input [id]="'cp' + ID" class="form-control" formControlName="cp" [maxlength]="5"
+    <input [id]="'cp' + ID" class="form-control" formControlName="cp" (blur)="cargaCPSust()" [maxlength]="5"
            placeholder="Ingresa el Codigo Postal">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.cp?.errors?.required  && (parentFormGroup.cp?.dirty || parentFormGroup.cp?.touched)">
@@ -180,8 +180,9 @@
   </div>
   <div class="col-md-4 mb-3">
     <label class="control-label" [for]="'colonia' + ID">Colonia<span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
-    <input [id]="'colonia' + ID" class="form-control" formControlName="colonia"
-           placeholder="Ingresa la colonia">
+    <p-dropdown [id]="'colonia' + ID" class="form-control" formControlName="colonia"
+                placeholder="Selecciona la colonia" [options]="colonias" [filter]="true"
+                filterBy="label"></p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.colonia?.errors?.required  && (parentFormGroup.colonia?.dirty || parentFormGroup.colonia?.touched)">
       Este campo es obligatorio *.</span>

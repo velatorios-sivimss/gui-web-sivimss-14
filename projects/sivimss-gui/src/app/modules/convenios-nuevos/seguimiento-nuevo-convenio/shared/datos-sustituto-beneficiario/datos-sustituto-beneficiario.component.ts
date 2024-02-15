@@ -9,6 +9,13 @@ import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo"
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {ActivatedRoute} from "@angular/router";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-datos-sustituto-beneficiario',
@@ -25,21 +32,26 @@ import {AutenticacionService} from "../../../../../services/autenticacion.servic
 })
 export class DatosSustitutoBeneficiarioComponent implements OnInit {
 
-  parentContainer: ControlContainer =  inject(ControlContainer)
+  parentContainer: ControlContainer = inject(ControlContainer)
 
   paises: TipoDropdown[] = [];
   estados: TipoDropdown[] = [];
+  colonias: TipoDropdown[] = [];
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   fechaActual: Date = new Date();
   @Input() tipo: 'sustituto' | 'beneficiario' = 'sustituto';
-  @Input() ID: string= 'sustituto';
+  @Input() ID: string = 'sustituto';
 
-  constructor(private autenticacionService: AutenticacionService) {
+  constructor(private autenticacionService: AutenticacionService,
+              private cargadorService: LoaderService,
+              private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
+              private mensajesSistemaService: MensajesSistemaService) {
     this.cargarCatalogosLocalStorage();
   }
 
   ngOnInit(): void {
+    this.cargaCPSust(true);
     this.cargarValidacionesIniciales();
   }
 
@@ -94,6 +106,45 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
       this.parentContainer.control?.get('lugarNacimiento')?.clearValidators();
     }
   }
+
+  cargaCPSust(cargaInicial: boolean = false): void {
+    const cpSust = this.parentContainer.control?.get('cp')?.value;
+    if (cpSust.length < 5) return;
+    if (!cargaInicial) {
+      this.cargadorService.activar();
+      this.parentContainer.control?.get('colonia')?.setValue(null);
+    }
+    this.seguimientoNuevoConvenioService.consutaCP(cpSust).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (response: HttpRespuesta<any>): void => this.procesarRespuestaCP(response),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error),
+    })
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
+  }
+
+  procesarRespuestaCP(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos) {
+      this.respuestaSinDatosCPSust();
+      return;
+    }
+    this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
+    const [colonia] = respuesta.datos;
+    this.parentContainer.control?.get('municipio')?.setValue(colonia.municipio.nombre);
+    this.parentContainer.control?.get('estado')?.setValue(colonia.municipio.entidadFederativa.nombre);
+  }
+
+  respuestaSinDatosCPSust(): void {
+    this.colonias = [];
+    this.parentContainer.control?.get('municipio')?.setValue(null);
+    this.parentContainer.control?.get('estado')?.setValue(null);
+    this.parentContainer.control?.get('colonia')?.setValue(null);
+  }
+
 
   get parentFormGroup() {
     return (this.parentContainer.control as FormGroup).controls
