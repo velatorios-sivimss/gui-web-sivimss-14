@@ -62,4 +62,12 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   consutaCP(cp: string): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/codigo-postal/` + cp);
   }
+
+  consultarNSS(nss: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/nss/` + nss);
+  }
+
+  consultarMatriculaSiap(matricula: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/siap/${matricula}`);
+  }
 }
