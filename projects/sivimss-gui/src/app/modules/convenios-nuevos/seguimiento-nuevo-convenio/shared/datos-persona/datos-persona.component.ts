@@ -47,8 +47,8 @@ export class DatosPersonaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.cargarCP(true);
     this.cargarValidacionesIniciales();
+    this.cargarCP(true);
   }
 
   cargarValidacionesIniciales(): void {
@@ -68,7 +68,7 @@ export class DatosPersonaComponent implements OnInit {
   }
 
   cargarCP(cargaInicial: boolean = false): void {
-    const cp = this.parentContainer.control?.get('cp')?.value;
+    const cp = this.parentContainer.control?.get('codigoPostal')?.value;
     if (cp.length < 5) return;
     if (!cargaInicial) {
       this.cargadorService.activar();

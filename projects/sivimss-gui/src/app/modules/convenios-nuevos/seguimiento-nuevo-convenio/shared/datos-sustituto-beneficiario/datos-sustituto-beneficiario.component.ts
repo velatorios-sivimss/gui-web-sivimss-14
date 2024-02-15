@@ -7,7 +7,7 @@ import {CalendarModule} from "primeng/calendar";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo";
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
-import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
@@ -16,6 +16,7 @@ import {ActivatedRoute} from "@angular/router";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 @Component({
   selector: 'app-datos-sustituto-beneficiario',
@@ -46,7 +47,8 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
   constructor(private autenticacionService: AutenticacionService,
               private cargadorService: LoaderService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
-              private mensajesSistemaService: MensajesSistemaService) {
+              private mensajesSistemaService: MensajesSistemaService,
+              private alertaService: AlertaService,) {
     this.cargarCatalogosLocalStorage();
   }
 
@@ -107,6 +109,41 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     }
   }
 
+  validarNSS(): void {
+    const nss = this.parentContainer.control?.get('nss')?.value;
+    if (nss === '' || !nss) return;
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.consultarNSS(nss).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (response: HttpRespuesta<any>): void => this.procesarRespuestaNSS(response),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error),
+    })
+  }
+
+  procesarRespuestaNSS(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, "El Número de Seguridad Social no existe.");
+      this.parentContainer.control?.get('nss')?.setValue(null);
+      return;
+    }
+    let fecha: Date | null = null;
+    if (respuesta.datos.fechaNacimiento) {
+      fecha = new Date(diferenciaUTC(respuesta.datos.fechaNacimiento));
+    }
+    let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
+    this.parentContainer.control?.get('curp')?.setValue(respuesta.datos.curp);
+    this.parentContainer.control?.get('rfc')?.setValue(respuesta.datos.rfc);
+    this.parentContainer.control?.get('nombre')?.setValue(respuesta.datos.nombre);
+    this.parentContainer.control?.get('primerApellido')?.setValue(respuesta.datos.primerApellido);
+    this.parentContainer.control?.get('segundoApellido')?.setValue(respuesta.datos.segundoApellido);
+    this.parentContainer.control?.get('sexo')?.setValue(sexo);
+    this.parentContainer.control?.get('otroSexo')?.setValue(null);
+    this.parentContainer.control?.get('otroSexo')?.clearValidators();
+    this.parentContainer.control?.get('fechaNacimiento')?.setValue(fecha);
+    this.parentContainer.control?.get('nacionalidad')?.setValue(1);
+  }
+
   cargaCPSust(cargaInicial: boolean = false): void {
     const cpSust = this.parentContainer.control?.get('cp')?.value;
     if (cpSust.length < 5) return;
@@ -139,6 +176,7 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
   }
 
   respuestaSinDatosCPSust(): void {
+    this.alertaService.mostrar(TipoAlerta.Precaucion, "El CP no existe.");
     this.colonias = [];
     this.parentContainer.control?.get('municipio')?.setValue(null);
     this.parentContainer.control?.get('estado')?.setValue(null);
