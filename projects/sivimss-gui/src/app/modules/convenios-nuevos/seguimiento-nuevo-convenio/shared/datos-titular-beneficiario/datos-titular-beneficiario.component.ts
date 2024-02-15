@@ -11,6 +11,12 @@ import {CATALOGO_NUMERO_PAGOS} from "../../constants/catalogos";
 import {CommonModule} from "@angular/common";
 import {CalendarModule} from "primeng/calendar";
 import {ActivatedRoute} from "@angular/router";
+import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-datos-titular-beneficiario',
@@ -32,6 +38,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   paises: TipoDropdown[] = [];
   estados: TipoDropdown[] = [];
   paquetes: TipoDropdown[] = [];
+  colonias: TipoDropdown[] = [];
   numeroPagos: TipoDropdown[] = CATALOGO_NUMERO_PAGOS;
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
@@ -39,11 +46,15 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
 
   constructor(private autenticacionService: AutenticacionService,
               private activatedRoute: ActivatedRoute,
+              private cargadorService: LoaderService,
+              private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
+              private mensajesSistemaService: MensajesSistemaService
   ) {
     this.cargarCatalogosLocalStorage();
   }
 
   ngOnInit(): void {
+    this.cargarCP(true);
     this.cargarValidacionesIniciales();
   }
 
@@ -71,12 +82,53 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
   }
 
-  validarCurp($event: any): void {
+  validarCurp(): void {
 
   }
 
-  validarRfc($event: any): void {
+  validarRfc(): void {
 
+  }
+
+  validarMatricula(): void {
+
+  }
+
+  cargarCP(cargaInicial: boolean = false): void {
+    const cp = this.parentContainer.control?.get('cp')?.value;
+    if (cp.length < 5) return;
+    if (!cargaInicial) {
+      this.cargadorService.activar();
+    }
+    this.seguimientoNuevoConvenioService.consutaCP(cp).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (response: HttpRespuesta<any>): void => this.procesarRespuestaCP(response),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error),
+    })
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
+  }
+
+  procesarRespuestaCP(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos) {
+      this.respuestaSinDatosCP();
+      return;
+    }
+    this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
+    const [colonia] = respuesta.datos;
+    this.parentContainer.control?.get('municipio')?.setValue(colonia.municipio.nombre);
+    this.parentContainer.control?.get('estado')?.setValue(colonia.municipio.entidadFederativa.nombre);
+  }
+
+  respuestaSinDatosCP(): void {
+    this.colonias = [];
+    this.parentContainer.control?.get('municipio')?.setValue(null);
+    this.parentContainer.control?.get('estado')?.setValue(null);
+    this.parentContainer.control?.get('colonia')?.setValue(null);
   }
 
   cambioTipoSexo(): void {
