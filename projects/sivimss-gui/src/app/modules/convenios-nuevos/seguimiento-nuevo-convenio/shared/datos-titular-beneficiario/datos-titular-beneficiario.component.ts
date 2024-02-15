@@ -161,6 +161,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   }
 
   respuestaSinDatosCP(): void {
+    this.alertaService.mostrar(TipoAlerta.Precaucion, "El CP no existe.");
     this.colonias = [];
     this.parentContainer.control?.get('municipio')?.setValue(null);
     this.parentContainer.control?.get('estado')?.setValue(null);
