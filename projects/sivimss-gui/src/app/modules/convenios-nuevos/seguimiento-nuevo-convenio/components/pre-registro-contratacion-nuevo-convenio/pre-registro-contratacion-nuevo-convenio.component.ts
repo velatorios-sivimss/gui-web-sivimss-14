@@ -93,6 +93,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       this.convenioPersona = preRegistro.detalleConvenioPFModel;
       this.folio = this.convenioPersona.folioConvenio;
       this.beneficiariosPF = preRegistro.beneficiarios;
+      this.cargarBeneficiarios();
     }
     if (this.tipoConvenio === '2') {
       if (!preRegistro.empresa) this.errorCargarRegistro();
@@ -318,24 +319,24 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   cargarBeneficiarios(): void {
-    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
-    const beneficiarios: BeneficiarioResponse[] = [];
-    for (let beneficiario of beneficiarios) {
+    for (let beneficiario of this.beneficiariosPF) {
       this.agregarBeneficiario(beneficiario)
     }
   }
 
   agregarBeneficiario(beneficiario: BeneficiarioResponse): void {
-    const nombreBeneficiario: string = `${beneficiario.nombre} ${beneficiario.primerApellido} ${beneficiario.segundoApellido}`;
-    this.nombresBeneficiario.push(nombreBeneficiario);
+    this.nombresBeneficiario.push(beneficiario.nombre);
     const beneficiarioForm: FormGroup = this.formBuilder.group({
-      nombre: [{value: nombreBeneficiario, disabled: false}],
+      nombre: [{value: beneficiario.nombre, disabled: false}],
       curp: [{value: beneficiario.curp, disabled: false}],
       rfc: [{value: beneficiario.rfc, disabled: false}],
       correo: [{value: beneficiario.correo, disabled: false}],
       telefono: [{value: beneficiario.telCelular, disabled: false}],
+      edad: [{value: beneficiario.edad, disabled: false}],
     });
-    this.beneficiarios.push(beneficiarioForm)
+    if (this.beneficiarios) {
+      this.beneficiarios.push(beneficiarioForm);
+    }
   }
 
   abrir(event: MouseEvent) {
@@ -485,11 +486,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   get beneficiarios() {
-    return this.contratacionNuevoConvenioForm.controls["beneficiarios"] as FormArray;
+    return this.contratacionNuevoConvenioForm?.controls["beneficiarios"] as FormArray;
   }
 
   get convenioFormGroup() {
     return this.contratacionNuevoConvenioForm.controls
   }
 
+  protected readonly FormGroup = FormGroup;
 }

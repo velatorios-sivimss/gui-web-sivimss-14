@@ -8,8 +8,8 @@
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
-    <label class="control-label" for="edadBeneficiario">Edad<span class="req">*</span>:</label>
-    <input id="edadBeneficiario" class="form-control" placeholder="Inserta la edad">
+    <label class="control-label" for="edad">Edad<span class="req">*</span>:</label>
+    <input id="edad" class="form-control" placeholder="Inserta la edad" formControlName="edad">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.edad?.errors?.required  && (parentFormGroup.edad?.dirty || parentFormGroup.edad?.touched)">
       Este campo es obligatorio *.</span>
