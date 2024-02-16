@@ -28,7 +28,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   readonly POSICION_CONVENIO: number = 0;
   readonly POSICION_PAQUETES: number = 1;
-  readonly POSICION_BENEFICIARIO: number = 2;
+  readonly POSICION_PROMOTORES: number = 2;
+  readonly POSICION_BENEFICIARIO: number = 3;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
