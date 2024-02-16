@@ -338,7 +338,6 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   agregarBeneficiario(beneficiario: BeneficiarioResponse): void {
-    console.log('beeb')
     this.nombresBeneficiario.push(beneficiario.nombre);
     const beneficiarioForm: FormGroup = this.formBuilder.group({
       nombre: [{value: beneficiario.nombre, disabled: false}],
@@ -376,6 +375,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       lugarNacimiento: [{value: solicitante.idLugarNac, disabled: false}, [Validators.required]],
       correoElectronico: [{value: solicitante.correo, disabled: false}, [Validators.required]],
       telefono: [{value: solicitante.telefono, disabled: false}, [Validators.required]],
+      tipoPaquete: [{value: solicitante.idPaquete, disabled: false}, [Validators.required]],
       beneficiarios: this.formBuilder.array([])
     });
     if (solicitante.beneficiarios) {
