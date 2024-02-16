@@ -17,6 +17,8 @@ export class ContratarPSFPAService extends BaseService<HttpRespuesta<any>, any> 
     super(_http, `${environment.api.conveniosPSF}`, "", "", 1, "", "", "");
   }
 
+  readonly _basePagos: string = environment.api.conveniosPSF;
+
   insertarPlanSFPA(datos: ContratarPlanSFPA): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}/linea-plan-sfpa/crear`, datos);
   }
@@ -44,6 +46,14 @@ export class ContratarPSFPAService extends BaseService<HttpRespuesta<any>, any> 
   }
 
   verContrato(idPlanSfpa: number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}/linea-plan-sfpa/reporte-contrato`, {idPlanSfpa});
+    return this._http.post<HttpRespuesta<any>>(`${this._base}/linea-plan-sfpa/reporte-contrato`, { idPlanSfpa });
+  }
+
+  guardarDatosPago(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._basePagos + `/pago/online/crear`, body);
+  }
+
+  detalleReciboPago(folio: number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._basePagos + `/pago/online/obtener/${folio}`)
   }
 }
