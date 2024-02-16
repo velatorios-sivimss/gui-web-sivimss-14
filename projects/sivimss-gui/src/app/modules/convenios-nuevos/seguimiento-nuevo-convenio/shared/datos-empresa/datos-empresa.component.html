@@ -1,21 +1,21 @@
 <div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" for="nombre">Nombre<span class="req">*</span>:</label>
-    <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre">
+    <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre" [maxlength]="20">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.nombre?.errors?.required  && (parentFormGroup.nombre?.dirty || parentFormGroup.nombre?.touched)">
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="razonSocial">Razón social<span class="req">*</span>:</label>
-    <input id="razonSocial" class="form-control" formControlName="razonSocial" placeholder="Ingresa la razón social">
+    <input id="razonSocial" class="form-control" formControlName="razonSocial" placeholder="Ingresa la razón social" [maxlength]="50">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.razonSocial?.errors?.required  && (parentFormGroup.razonSocial?.dirty || parentFormGroup.razonSocial?.touched)">
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" for="rfc">R.F.C.<span class="req">*</span>:</label>
-    <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C.">
+    <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C." [maxlength]="13">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.rfc?.errors?.required  && (parentFormGroup.rfc?.dirty || parentFormGroup.rfc?.touched)">
       Este campo es obligatorio *.</span>
@@ -66,7 +66,7 @@
   </div>
   <div class="col-md-4">
     <label class="control-label" for="calle">Calle:</label>
-    <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa la calle">
+    <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa la calle" [maxlength]="30">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.calle?.errors?.required  && (parentFormGroup.calle?.dirty || parentFormGroup.calle?.touched)">
       Este campo es obligatorio *.</span>
@@ -75,7 +75,7 @@
 <div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" for="numeroExterior">Número exterior<span class="req">*</span>:</label>
-    <input id="numeroExterior" class="form-control" formControlName="numeroExterior"
+    <input id="numeroExterior" class="form-control" formControlName="numeroExterior" [maxlength]="10"
            placeholder="Ingresa el número exterior">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.numeroExterior?.errors?.required  && (parentFormGroup.numeroExterior?.dirty || parentFormGroup.numeroExterior?.touched)">
@@ -83,7 +83,7 @@
   </div>
   <div class="col-md-4">
     <label class="control-label" for="numeroInterior">Número interior<span class="req">*</span>:</label>
-    <input id="numeroInterior" class="form-control" formControlName="numeroInterior"
+    <input id="numeroInterior" class="form-control" formControlName="numeroInterior" [maxlength]="10"
            placeholder="Ingresa el número interior">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.numeroInterior?.errors?.required  && (parentFormGroup.numeroInterior?.dirty || parentFormGroup.numeroInterior?.touched)">
@@ -91,7 +91,7 @@
   </div>
   <div class="col-md-4">
     <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
-    <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono">
+    <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono" [maxlength]="10" numbersOnly>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.telefono?.errors?.required  && (parentFormGroup.telefono?.dirty || parentFormGroup.telefono?.touched)">
       Este campo es obligatorio *.</span>
