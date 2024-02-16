@@ -3,14 +3,15 @@
     <label class="control-label" [for]="'nombreBeneficiario' + ID">Nombre completo del beneficiario<span
       class="req">*</span>:</label>
     <input [id]="'nombreBeneficiario' + ID" formControlName="nombre" class="form-control"
-           placeholder="Inserta el nombre del beneficiario">
+           placeholder="Inserta el nombre del beneficiario" [maxlength]="150">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.nombre?.errors?.required  && (parentFormGroup.nombre?.dirty || parentFormGroup.nombre?.touched)">
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" [for]="'edad' + ID">Edad<span class="req">*</span>:</label>
-    <input [id]="'edad' + ID" class="form-control" placeholder="Inserta la edad" formControlName="edad">
+    <input [id]="'edad' + ID" class="form-control" placeholder="Inserta la edad" formControlName="edad" [maxlength]="3"
+           numbersOnly>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.edad?.errors?.required  && (parentFormGroup.edad?.dirty || parentFormGroup.edad?.touched)">
       Este campo es obligatorio *.</span>
@@ -26,17 +27,22 @@
 <div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" [for]="'curpBeneficiario' + ID">C.U.R.P<span class="req">*</span>:</label>
-    <input [id]="'curpBeneficiario' + ID" class="form-control" formControlName="curp" placeholder="Inserta el C.U.R.P" (blur)="validarCurp()">
+    <input [id]="'curpBeneficiario' + ID" class="form-control" formControlName="curp" placeholder="Inserta el C.U.R.P"
+           (blur)="validarCurp()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.curp?.errors?.required  && (parentFormGroup.curp?.dirty || parentFormGroup.curp?.touched)">
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" [for]="'rfcBeneficiario' + ID">R.F.C.<span class="req">*</span>:</label>
-    <input [id]="'rfcBeneficiario' + ID" class="form-control" formControlName="rfc" placeholder="Inserta el R.F.C" (blur)="validarRfc()">
+    <input [id]="'rfcBeneficiario' + ID" class="form-control" formControlName="rfc" placeholder="Inserta el R.F.C"
+           (blur)="validarRfc()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.rfc?.errors?.required  && (parentFormGroup.rfc?.dirty || parentFormGroup.rfc?.touched)">
       Este campo es obligatorio *.</span>
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup?.rfc?.errors?.pattern && (parentFormGroup?.rfc?.dirty || parentFormGroup?.rfc?.touched)">
+      RFC no válido.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" [for]="'correoBeneficiario' + ID">Correo electrónico<span class="req">*</span>:</label>

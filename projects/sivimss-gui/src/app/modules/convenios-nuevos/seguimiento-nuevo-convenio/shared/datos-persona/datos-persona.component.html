@@ -14,6 +14,9 @@
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.rfc?.errors?.required  && (parentFormGroup.rfc?.dirty || parentFormGroup.rfc?.touched)">
       Este campo es obligatorio *.</span>
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup?.rfc?.errors?.pattern && (parentFormGroup?.rfc?.dirty || parentFormGroup?.rfc?.touched)">
+      RFC no válido.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" [for]="'matricula' + ID">Matricula:</label>
@@ -145,17 +148,17 @@
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.correoElectronico?.errors?.required  && (parentFormGroup.correoElectronico?.dirty || parentFormGroup.correoElectronico?.touched)">
       Este campo es obligatorio *.</span>
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup?.correoElectronico?.errors?.pattern && (parentFormGroup?.correoElectronico?.dirty || parentFormGroup?.correoElectronico?.touched)">
+      El correo electrónico no es válido.</span>
 
   </div>
   <div class="col-md-4 mb-3">
     <label class="control-label" [for]="'telefono' + ID">Teléfono<span class="req">*</span>:</label>
-    <input [id]="'telefono' + ID" class="form-control" formControlName="telefono" placeholder="Inserta el teléfono">
+    <input [id]="'telefono' + ID" class="form-control" formControlName="telefono" placeholder="Inserta el teléfono" [maxlength]="10" numbersOnly>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.telefono?.errors?.required  && (parentFormGroup.telefono?.dirty || parentFormGroup.telefono?.touched)">
       Este campo es obligatorio *.</span>
-    <span class="campo-obligatorio"
-          *ngIf="parentFormGroup?.correoElectronico?.errors?.pattern && (parentFormGroup?.correoElectronico?.dirty || parentFormGroup?.correoElectronico?.touched)">
-      El correo electrónico no es válido.</span>
   </div>
   <div class="col-md-4 mb-3" *ngIf="enfermedad">
     <label class="control-label" [for]="'enfermedadPreExistente' + ID">Enfermedad prexistente<span
