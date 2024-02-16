@@ -75,4 +75,10 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   consultarMatriculaSiap(matricula: string): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/siap/${matricula}`);
   }
+
+  obtenerCatalogoPromotores(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append('servicio','buscar-promotores')
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  }
 }

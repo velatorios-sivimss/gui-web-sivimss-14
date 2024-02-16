@@ -28,6 +28,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   readonly POSICION_CONVENIO: number = 0;
   readonly POSICION_PAQUETES: number = 1;
+  readonly POSICION_PROMOTORES: number = 2;
   readonly POSICION_BENEFICIARIO: number = 2;
 
   numPaginaActual: number = 0;
@@ -340,12 +341,15 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   agregarBeneficiario(beneficiario: BeneficiarioResponse): void {
     this.nombresBeneficiario.push(beneficiario.nombre);
     const beneficiarioForm: FormGroup = this.formBuilder.group({
-      nombre: [{value: beneficiario.nombre, disabled: false}],
-      curp: [{value: beneficiario.curp, disabled: false}],
-      rfc: [{value: beneficiario.rfc, disabled: false}],
-      correo: [{value: beneficiario.correo, disabled: false}],
-      telefono: [{value: beneficiario.telCelular, disabled: false}],
-      edad: [{value: beneficiario.edad, disabled: false}],
+      nombre: [{value: beneficiario.nombre, disabled: false}, [Validators.required]],
+      curp: [{value: beneficiario.curp, disabled: false}, [Validators.required]],
+      rfc: [{value: beneficiario.rfc, disabled: false}, [Validators.required]],
+      correo: [{
+        value: beneficiario.correo,
+        disabled: false
+      }, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
+      telefono: [{value: beneficiario.telCelular, disabled: false}, [Validators.required]],
+      edad: [{value: beneficiario.edad, disabled: false}, [Validators.required]],
     });
     if (this.beneficiarios) {
       this.beneficiarios.push(beneficiarioForm);
@@ -373,7 +377,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       nacionalidad: [{value: nacionalidad, disabled: false}, [Validators.required]],
       paisNacimiento: [{value: solicitante.idPais, disabled: false}, [Validators.required]],
       lugarNacimiento: [{value: solicitante.idLugarNac, disabled: false}, [Validators.required]],
-      correoElectronico: [{value: solicitante.correo, disabled: false}, [Validators.required]],
+      correoElectronico: [{
+        value: solicitante.correo,
+        disabled: false
+      }, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
       telefono: [{value: solicitante.telefono, disabled: false}, [Validators.required]],
       tipoPaquete: [{value: solicitante.idPaquete, disabled: false}, [Validators.required]],
       beneficiarios: this.formBuilder.array([])
@@ -381,12 +388,15 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     if (solicitante.beneficiarios) {
       for (let beneficiario of solicitante.beneficiarios) {
         const beneficiarioForm: FormGroup = this.formBuilder.group({
-          nombre: [{value: beneficiario.nombre, disabled: false}],
-          curp: [{value: beneficiario.curp, disabled: false}],
-          rfc: [{value: beneficiario.rfc, disabled: false}],
-          correo: [{value: beneficiario.correo, disabled: false}],
-          telefono: [{value: beneficiario.telefono, disabled: false}],
-          edad: [{value: beneficiario.edad, disabled: false}],
+          nombre: [{value: beneficiario.nombre, disabled: false}, [Validators.required]],
+          curp: [{value: beneficiario.curp, disabled: false}, [Validators.required]],
+          rfc: [{value: beneficiario.rfc, disabled: false}, [Validators.required]],
+          correo: [{
+            value: beneficiario.correo,
+            disabled: false
+          }, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
+          telefono: [{value: beneficiario.telefono, disabled: false}, [Validators.required]],
+          edad: [{value: beneficiario.edad, disabled: false}, [Validators.required]],
         });
         if (solicitanteForm.get('beneficiarios')) {
           (solicitanteForm.get('beneficiarios') as FormArray).push(beneficiarioForm);
@@ -403,7 +413,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   aceptar() {
-    this.cargadorService.desactivar();
+    this.cargadorService.activar();
     delay(3000)
     this.cargadorService.desactivar();
     this.alertaService.mostrar(TipoAlerta.Error, 'Error al guardar la información. Intenta nuevamente.')

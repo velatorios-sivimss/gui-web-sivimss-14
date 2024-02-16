@@ -9,7 +9,7 @@ import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo"
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
 import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
-import {finalize} from "rxjs/operators";
+import {delay, finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
@@ -78,12 +78,18 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
   }
 
 
-  validarCurp($event: any): void {
-
+  validarCurp(): void {
+    this.cargadorService.activar();
+    delay(3000)
+    this.cargadorService.desactivar();
+    this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información. Intenta nuevamente.');
   }
 
-  validarRfc($event: any): void {
-
+  validarRfc(): void {
+    this.cargadorService.activar();
+    delay(3000)
+    this.cargadorService.desactivar();
+    this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información. Intenta nuevamente.');
   }
 
   cambioTipoSexo(): void {

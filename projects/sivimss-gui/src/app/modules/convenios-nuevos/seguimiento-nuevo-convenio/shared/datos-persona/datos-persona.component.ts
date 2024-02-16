@@ -9,12 +9,13 @@ import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
 import {CATALOGO_ENFERMEDAD_PREEXISTENTE} from "../../../../convenios-prevision-funeraria/constants/catalogos-funcion";
-import {finalize} from "rxjs/operators";
+import {delay, finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 @Component({
   selector: 'app-datos-persona',
@@ -45,7 +46,8 @@ export class DatosPersonaComponent implements OnInit {
   constructor(private autenticacionService: AutenticacionService,
               private cargadorService: LoaderService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
-              private mensajesSistemaService: MensajesSistemaService) {
+              private mensajesSistemaService: MensajesSistemaService,
+              private alertaService: AlertaService,) {
     this.cargarCatalogosLocalStorage();
   }
 
@@ -123,5 +125,39 @@ export class DatosPersonaComponent implements OnInit {
       this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
       this.parentContainer.control?.get('lugarNacimiento')?.clearValidators();
     }
+  }
+
+  validarMatricula(): void {
+    const matricula = this.parentContainer.control?.get('matricula')?.value;
+    if (matricula === '' || !matricula) return;
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.consultarMatriculaSiap(matricula).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (response: HttpRespuesta<any>): void => this.procesarRespuestaMatricula(response),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error),
+    });
+  }
+
+  procesarRespuestaMatricula(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos) {
+      this.parentContainer.control?.get('matricula')?.setValue(null);
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'La matrícula es incorrecta.');
+    }
+  }
+
+
+  validarCurp(): void {
+    this.cargadorService.activar();
+    delay(3000)
+    this.cargadorService.desactivar();
+    this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información. Intenta nuevamente.');
+  }
+
+  validarRfc(): void {
+    this.cargadorService.activar();
+    delay(3000)
+    this.cargadorService.desactivar();
+    this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información. Intenta nuevamente.');
   }
 }
