@@ -16,6 +16,7 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {PATRON_RFC} from "../../../../../utils/constantes";
 
 @Component({
   selector: 'app-datos-persona',
@@ -155,9 +156,14 @@ export class DatosPersonaComponent implements OnInit {
   }
 
   validarRfc(): void {
-    this.cargadorService.activar();
-    delay(3000)
-    this.cargadorService.desactivar();
-    this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información. Intenta nuevamente.');
+    const rfc = this.parentContainer.control?.get('rfc')?.value;
+    if (!rfc) return;
+    this.parentContainer.control?.get('rfc')?.clearValidators();
+    this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
+    if (rfc.includes('XAXX010101000')) return;
+    if (!rfc.match(PATRON_RFC)) {
+      this.parentContainer.control?.get('rfc')?.setValidators(Validators.pattern(PATRON_RFC));
+      this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
+    }
   }
 }

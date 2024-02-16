@@ -1,5 +1,5 @@
 import {Component, inject, Input, OnInit} from '@angular/core';
-import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
 import {CommonModule} from "@angular/common";
@@ -8,6 +8,7 @@ import {delay} from "rxjs/operators";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {PATRON_RFC} from "../../../../../utils/constantes";
 
 @Component({
   selector: 'app-datos-beneficiario',
@@ -47,9 +48,14 @@ export class DatosBeneficiarioComponent implements OnInit {
   }
 
   validarRfc(): void {
-    this.cargadorService.activar();
-    delay(3000)
-    this.cargadorService.desactivar();
-    this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información. Intenta nuevamente.');
+    const rfc = this.parentContainer.control?.get('rfc')?.value;
+    if (!rfc) return;
+    this.parentContainer.control?.get('rfc')?.clearValidators();
+    this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
+    if (rfc.includes('XAXX010101000')) return;
+    if (!rfc.match(PATRON_RFC)) {
+      this.parentContainer.control?.get('rfc')?.setValidators(Validators.pattern(PATRON_RFC));
+      this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
+    }
   }
 }
