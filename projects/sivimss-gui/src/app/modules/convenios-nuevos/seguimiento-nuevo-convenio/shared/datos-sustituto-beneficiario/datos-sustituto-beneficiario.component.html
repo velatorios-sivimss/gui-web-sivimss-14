@@ -1,18 +1,16 @@
 <div class="row mb-3 grid">
   <div class="col-md-4">
-    <label class="control-label" [for]="'curp-' + ID">C.U.R.P.<span class="req"
-                                                                    *ngIf="tipo === 'sustituto'">*</span>:</label>
+    <label class="control-label" [for]="'curp-' + ID">C.U.R.P.<span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
     <input [id]="'curp-' + ID" class="form-control" formControlName="curp" placeholder="Ingresa el C.U.R.P."
-           [maxlength]="18">
+           [maxlength]="18" (blur)="validarCurp()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.curp?.errors?.required  && (parentFormGroup.curp?.dirty || parentFormGroup.curp?.touched)">
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
-    <label class="control-label" [for]="'rfc' + ID">R.F.C<span class="req"
-                                                               *ngIf="tipo === 'sustituto'">*</span>:</label>
+    <label class="control-label" [for]="'rfc' + ID">R.F.C<span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
     <input [id]="'rfc' + ID" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
-           [maxlength]="13">
+           [maxlength]="13" (blur)="validarRfc()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.rfc?.errors?.required  && (parentFormGroup.rfc?.dirty || parentFormGroup.rfc?.touched)">
       Este campo es obligatorio *.</span>

@@ -29,7 +29,6 @@ import {OrdenServicioFiltroConsulta, OrdenServicioPaginado} from "../../models/o
 import {CancelarOrdenServicioComponent} from "../cancelar-orden-servicio/cancelar-orden-servicio.component";
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
-import {of} from "rxjs";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 
 @Component({

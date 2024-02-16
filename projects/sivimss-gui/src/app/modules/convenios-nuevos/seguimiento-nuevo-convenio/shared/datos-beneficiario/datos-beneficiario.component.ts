@@ -4,6 +4,7 @@ import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
 import {CommonModule} from "@angular/common";
 import {CalendarModule} from "primeng/calendar";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 
 @Component({
   selector: 'app-datos-beneficiario',

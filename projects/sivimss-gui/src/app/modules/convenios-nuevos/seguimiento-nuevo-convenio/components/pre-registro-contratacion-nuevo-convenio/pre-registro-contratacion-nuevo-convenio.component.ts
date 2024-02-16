@@ -404,7 +404,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   aceptar() {
-    this.cargadorService.desactivar();
+    this.cargadorService.activar();
     delay(3000)
     this.cargadorService.desactivar();
     this.alertaService.mostrar(TipoAlerta.Error, 'Error al guardar la información. Intenta nuevamente.')

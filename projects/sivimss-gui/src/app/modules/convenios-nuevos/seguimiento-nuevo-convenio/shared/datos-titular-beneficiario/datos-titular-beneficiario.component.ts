@@ -13,7 +13,7 @@ import {CalendarModule} from "primeng/calendar";
 import {ActivatedRoute} from "@angular/router";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {finalize} from "rxjs/operators";
+import {delay, finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
@@ -85,11 +85,17 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   }
 
   validarCurp(): void {
-
+    this.cargadorService.activar();
+    delay(3000)
+    this.cargadorService.desactivar();
+    this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información. Intenta nuevamente.');
   }
 
   validarRfc(): void {
-
+    this.cargadorService.activar();
+    delay(3000)
+    this.cargadorService.desactivar();
+    this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información. Intenta nuevamente.');
   }
 
   validarMatricula(): void {

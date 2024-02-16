@@ -2,7 +2,7 @@
   <div class="col-md-4">
     <label class="control-label" [for]="'curp' + ID">C.U.R.P<span class="req">*</span>:</label>
     <input [id]="'curp' + ID" class="form-control" formControlName="curp" placeholder="Inserta el C.U.R.P"
-           [maxlength]="18">
+           [maxlength]="18" (blur)="validarCurp()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.curp?.errors?.required  && (parentFormGroup.curp?.dirty || parentFormGroup.curp?.touched)">
       Este campo es obligatorio *.</span>
@@ -10,7 +10,7 @@
   <div class="col-md-4">
     <label class="control-label" [for]="'rfc' + ID">R.F.C.<span class="req">*</span>:</label>
     <input [id]="'rfc' + ID" class="form-control" formControlName="rfc" placeholder="Inserta el R.F.C."
-           [maxlength]="13">
+           [maxlength]="13" (blur)="validarRfc()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.rfc?.errors?.required  && (parentFormGroup.rfc?.dirty || parentFormGroup.rfc?.touched)">
       Este campo es obligatorio *.</span>
@@ -18,7 +18,7 @@
   <div class="col-md-4">
     <label class="control-label" [for]="'matricula' + ID">Matricula:</label>
     <input [id]="'matricula' + ID" class="form-control" formControlName="matricula" placeholder="Inserta la Matricula"
-           [maxlength]="10">
+           [maxlength]="10"  (blur)="validarMatricula()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.matricula?.errors?.required  && (parentFormGroup.matricula?.dirty || parentFormGroup.matricula?.touched)">
       Este campo es obligatorio *.</span>
