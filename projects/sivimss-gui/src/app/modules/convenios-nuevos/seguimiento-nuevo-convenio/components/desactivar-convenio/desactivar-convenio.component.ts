@@ -78,11 +78,16 @@ export class DesactivarConvenioComponent implements OnInit {
       this.beneficiarios = preRegistro.beneficiarios;
     }
     if (this.tipoConvenio === '2') {
+      const registroBeneficiarios = respuesta[this.POSICION_BENEFICIARIO].datos;
       if (!preRegistro.empresa) this.errorCargarRegistro();
       if (preRegistro.empresa.idConvenio === 0) this.errorCargarRegistro();
       this.convenioEmpresa = preRegistro.empresa;
       this.folioConvenio = this.convenioEmpresa.folioConvenio;
       this.solicitantes = preRegistro.solicitantes;
+      const beneficiarios = registroBeneficiarios.beneficiarios;
+      for (let i = 0; i < this.solicitantes.length; i++) {
+        this.solicitantes[i].beneficiarios = beneficiarios.filter((b: any) => (b.idContratante === this.solicitantes[i].idContratante));
+      }
     }
     if (this.tipoConvenio === '1') {
       if (!preRegistro.preRegistro) this.errorCargarRegistro();
