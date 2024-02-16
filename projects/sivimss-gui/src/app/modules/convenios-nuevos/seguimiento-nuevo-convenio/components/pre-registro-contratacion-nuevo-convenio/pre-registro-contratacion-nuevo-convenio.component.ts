@@ -79,7 +79,6 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   ngOnInit(): void {
-    this.cargarBeneficiarios();
   }
 
   cargarCatalogos(): void {
@@ -339,6 +338,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   agregarBeneficiario(beneficiario: BeneficiarioResponse): void {
+    console.log('beeb')
     this.nombresBeneficiario.push(beneficiario.nombre);
     const beneficiarioForm: FormGroup = this.formBuilder.group({
       nombre: [{value: beneficiario.nombre, disabled: false}],
