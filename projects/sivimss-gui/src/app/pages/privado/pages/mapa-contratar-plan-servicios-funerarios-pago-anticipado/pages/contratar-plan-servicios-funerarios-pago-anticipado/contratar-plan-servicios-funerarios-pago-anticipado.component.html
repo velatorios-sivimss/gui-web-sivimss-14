@@ -15,7 +15,9 @@
             </div>
         </div>
         <div class="col-md-6 flex justify-content-end align-items-center">
-            <button class="btn btn-primary realizar-pago" *ngIf="mostrarRealizarPago" (click)="iniciarPago()" onCloseOnNavigation>Realizar pago</button>
+            <div [hidden]="!mostrarRealizarPago">
+                <button class="btn btn-primary realizar-pago" (click)="iniciarPago()" onCloseOnNavigation>Realizar pago</button>
+            </div>
         </div>
     </div>
 
@@ -1004,36 +1006,6 @@
         </div>
     </div>
 </div>
-
-<!-- <p-overlayPanel #overlayPanel [appendTo]="formPrincipal">
-    <ng-template pTemplate="content">
-        <app-overlay-panel-opciones>
-            <app-overlay-panel-opcion titulo="Registrar" (click)="abrirModalRegistroBeneficiario($event)">
-            </app-overlay-panel-opcion>
-            <app-overlay-panel-opcion titulo="Editar" (click)="abrirModalEditarBeneficiario($event)">
-            </app-overlay-panel-opcion>
-            <app-overlay-panel-opcion titulo="Desactivar" (click)="abrirModalDesactivarBeneficiario($event)">
-            </app-overlay-panel-opcion>
-        </app-overlay-panel-opciones>
-    </ng-template>
-</p-overlayPanel> -->
-
-
-<!-- <p-dialog [(visible)]="mostrarModalTipoArchivoIncorrecto" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-    [closable]="false" [draggable]="false" [resizable]="false" header="Órdenes">
-    <ng-template pTemplate="content">
-        <div>
-            <p class="text-center"><b>Tipo de archivo incorrecto.</b></p>
-            <p class="mt-2 text-center">Si tienes dudas puedes asistir a tu Velatorio más cercano</p>
-        </div>
-    </ng-template>
-    <ng-template pTemplate="footer">
-        <div class="flex justify-content-center">
-            <button class="btn btn-primary btn-md" (click)="mostrarModalTipoArchivoIncorrecto = false;">Aceptar</button>
-        </div>
-    </ng-template>
-</p-dialog> -->
-
 
 <p-dialog [(visible)]="mostrarModalConfirmacionInformacionCapturada" [modal]="true"
     [style]="{maxWidth:'544px',width: '100%'}" [closable]="false" [draggable]="false" [resizable]="false"

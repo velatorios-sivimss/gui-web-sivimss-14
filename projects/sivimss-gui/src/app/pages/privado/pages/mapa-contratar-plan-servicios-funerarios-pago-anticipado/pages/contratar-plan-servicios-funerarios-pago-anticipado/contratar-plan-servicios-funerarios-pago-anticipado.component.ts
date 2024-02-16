@@ -26,6 +26,8 @@ import { ServiciosFunerariosService } from 'projects/sivimss-gui/src/app/modules
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import { Subscription } from 'rxjs';
 import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
+import { TransaccionPago } from '../../../../models/transaccion-pago.interface';
+import { SolicitudPagos } from '../../../../models/solicitud-pagos.interface';
 
 @Component({
   selector: 'app-contratar-plan-servicios-funerarios-pago-anticipado',
@@ -34,7 +36,7 @@ import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/se
   styleUrls: [
     './contratar-plan-servicios-funerarios-pago-anticipado.component.scss',
   ],
-  providers: [DescargaArchivosService, ServiciosFunerariosService]
+  providers: [DescargaArchivosService, ServiciosFunerariosService, ContratarPSFPAService]
 })
 export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   @ViewChild('overlayPanel')
@@ -78,6 +80,9 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   cajaValidacionDatosExistentes: any[] = [false, false, false, false];
   usuarioEnSesion!: UsuarioEnSesion | null;
   subs!: Subscription;
+  folioConvenio!: string;
+  numPago!: number;
+  idRegistro!: number;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -99,9 +104,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     this.subs = this.autenticacionContratanteService.usuarioEnSesion$.subscribe(
       (usuarioEnSesion: UsuarioEnSesion | null) => {
         this.usuarioEnSesion = usuarioEnSesion;
-        this.cargarScript(() => {
-        });
-        this.subscripcionMotorPagos()
         this.idVelatorio = this.activatedRoute.snapshot.queryParams.idVelatorio;
         this.velatorio = this.activatedRoute.snapshot.queryParams.velatorio;
         this.inicializarFormPromotor();
@@ -154,7 +156,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   iniciarPago(): void {
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: 1 }));
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: this.paqueteSeleccionado.monPrecio / this.numPago }));
   }
 
   subscripcionMotorPagos(): void {
@@ -166,12 +168,55 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         return;
       }
       if (data.transaction && data.transaction.status_detail === 3) {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
+        this.guardarPagoEnLinea(data);
       }
       if (data.transaction && [9, 11, 12].includes(data.transaction.status_detail)) {
         this.alertaService.mostrar(TipoAlerta.Error, 'Pago rechazado.');
       }
     });
+  }
+
+  guardarPagoEnLinea(transaccion: TransaccionPago): void {
+    this.loaderService.activar();
+    const solicitud: SolicitudPagos = this.generarSolicitudPagosLinea(transaccion);
+    this.contratarPSFPAService.guardarDatosPago(solicitud).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const id = respuesta.datos.idPagoLinea;
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
+        void this.router.navigate(['recibo-de-pago', id], { relativeTo: this.activatedRoute });
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+      }
+    })
+  }
+
+  generarSolicitudPagosLinea(pago: TransaccionPago): SolicitudPagos {
+    let idMetodoPago: number = 4;
+    if (+pago.transaction.payment_method_type === 0) idMetodoPago = 4;
+    if (+pago.transaction.payment_method_type === 7) idMetodoPago = 3;
+
+    const importe: number = this.paqueteSeleccionado.monPrecio / this.numPago;
+
+    let nombreTitular = `${this.fdt.nombre.value} ${this.fdt.primerApellido.value} ${this.fdt.segundoApellido.value}`;
+
+    return {
+      fecTransaccion: pago.transaction.payment_date, // pagos linea
+      folio: this.folioConvenio,
+      folioPago: "TEST-1", // pagos linea
+      idFlujoPagos: 4,
+      idMetodoPago, // debito o credito payment_method_type
+      idRegistro: this.idRegistro,
+      idVelatorio: this.idVelatorio,
+      importe: importe,
+      nomContratante: nombreTitular,
+      nomTitular: nombreTitular, // pagos
+      numAprobacion: pago.transaction.authorization_code, // pagos
+      numTarjeta: pago.card.number, // pagos number
+      referencia: pago.transaction.id // pagos transaction_reference
+    }
   }
 
   errorConectarPago(): void {
@@ -616,7 +661,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
           formularioEnUso[posicion].primerApellido.setValue(datosUsuario.apellido1)
           formularioEnUso[posicion].segundoApellido.setValue(datosUsuario.apellido2)
           formularioEnUso[posicion].sexo.setValue(datosUsuario.sexo === "MUJER" ? 1 : 2)
-          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);         
+          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
         } else if (respuesta.mensaje === 'USUARIO REGISTRADO') {
           const datosUsuario = respuesta.datos[0];
           const [dia, mes, anio] = datosUsuario.fecNacimiento.split('/');
@@ -793,13 +838,21 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         this.datosBeneficiario2Form.disable();
         this.ocultarBtnGuardar = true;
         this.mostrarModalValidacionRegistro = true;
-        const file = new Blob(
-          [this.descargaArchivosService.base64_2Blob(
-            respuesta.datos,
-            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
-        const url = window.URL.createObjectURL(file);
-        window.open(url);
+        this.folioConvenio = respuesta?.mensaje;
+        this.idRegistro = respuesta.datos?.id;
+
+        if (respuesta.datos?.reporte) {
+          this.cargarScript(() => {
+          });
+          this.subscripcionMotorPagos()
+          const file = new Blob(
+            [this.descargaArchivosService.base64_2Blob(
+              respuesta.datos.reporte,
+              this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+            { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+          const url = window.URL.createObjectURL(file);
+          window.open(url);
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
@@ -898,7 +951,8 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       }
     }
 
-    const numPago = this.catNumPagos.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? '';
+    const numPagoTmp = this.catNumPagos.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? 0;
+    this.numPago = +numPagoTmp;
 
     let objetoTitular: ContratarPlanSFPA = {
       idVelatorio: this.idVelatorio ? +this.idVelatorio : null,
@@ -906,7 +960,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       idPaquete: this.fdt.paquete.value,
       monPrecio: this.paqueteSeleccionado.monPrecio,
       idTipoPagoMensual: this.fdt.numeroPago.value,
-      numPagoMensual: +numPago,
+      numPagoMensual: this.numPago,
       indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0, //Cuando te vas a contratante SI 1 no 0
       indPromotor: this.fp.gestionadoPorPromotor.value ? 1 : 0,// si = 1, No = 0
       idPromotor: this.fp.promotor.value,
@@ -950,7 +1004,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
 
     return objetoTitular;
   }
-
 
   get fp() {
     return this.promotorForm.controls;
