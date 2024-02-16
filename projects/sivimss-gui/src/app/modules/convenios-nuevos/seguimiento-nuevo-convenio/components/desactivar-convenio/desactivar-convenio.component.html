@@ -166,7 +166,7 @@
   <ng-container *ngSwitchCase="'2'">
     <app-convenio-header [tipoContratacion]="'Grupo o Empresa'"
                          [numeroFolio]="folioConvenio"></app-convenio-header>
-    <p-accordion styleClass="sivimss-accordion mt-3">
+    <p-accordion styleClass="sivimss-accordion mt-3" [activeIndex]="0">
       <p-accordionTab>
         <ng-template pTemplate="header">
           <div class="flex justify-content-between align-items-center flex-1">
@@ -196,7 +196,7 @@
         <ng-template pTemplate="content">
           <ng-container *ngIf="solicitantes.length > 0 else SinSolicitantes">
             <ng-container *ngFor="let solicitante of solicitantes">
-              <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+              <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
                 <p-accordionTab
                   [header]="solicitante.nombre + ' ' + solicitante.primerApellido + ' ' + solicitante.segundoApellido">
                   <app-resumen-persona [matricula]="solicitante.matricula" [rfc]="solicitante.rfc"
@@ -214,31 +214,7 @@
                                        [telefono]="solicitante.telefono"
                                        [mostrarEnfermedad]="false"
                   ></app-resumen-persona>
-                  <p-accordion styleClass="sivimss-accordion mt-3">
-                    <p-accordionTab>
-                      <ng-template pTemplate="header">
-                        <div class="flex justify-content-between align-items-center flex-1">
-                          <span>Beneficiarios</span>
-                        </div>
-                      </ng-template>
-                      <ng-template pTemplate="content" *ngIf="solicitante.beneficiarios && solicitante.beneficiarios.length > 0
-                                   else SolicitanteSinBeneficiarios">
-                      </ng-template>
-                    </p-accordionTab>
-                  </p-accordion>
-                  <p-accordion styleClass="sivimss-accordion mt-3">
-                    <p-accordionTab>
-                      <ng-template pTemplate="header">
-                        <div class="flex justify-content-between align-items-center flex-1">
-                          <span>Documentación requerida</span>
-                        </div>
-                      </ng-template>
-                      <ng-template pTemplate="content" *ngIf="solicitante.beneficiarios && solicitante.beneficiarios.length > 0
-                                   else SolicitanteSinBeneficiarios">
-                      </ng-template>
-                    </p-accordionTab>
-                  </p-accordion>
-                  <p-accordion styleClass="sivimss-accordion mt-3">
+                  <p-accordion styleClass="sivimss-accordion mt-3" [activeIndex]="0">
                     <p-accordionTab>
                       <ng-template pTemplate="header">
                         <div class="flex justify-content-between align-items-center flex-1">
@@ -254,6 +230,44 @@
                             </div>
                           </div>
                         </div>
+                      </ng-template>
+                    </p-accordionTab>
+                  </p-accordion>
+                  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mt-3">
+                    <p-accordionTab header="Documentación requerida">
+                      <ng-container *ngIf="false else ErrorDocumentacion">
+                        <app-documentacion-beneficiario></app-documentacion-beneficiario>
+                      </ng-container>
+                    </p-accordionTab>
+                  </p-accordion>
+                  <p-accordion styleClass="sivimss-accordion mt-3">
+                    <p-accordionTab>
+                      <ng-template pTemplate="header">
+                        <div class="flex justify-content-between align-items-center flex-1">
+                          <span>Beneficiarios</span>
+                        </div>
+                      </ng-template>
+                      <ng-template pTemplate="content" *ngIf="solicitante.beneficiarios && solicitante.beneficiarios.length > 0
+                                   else SolicitanteSinBeneficiarios">
+                        <ng-container *ngFor="let beneficiario of solicitante.beneficiarios">
+                          <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
+                            <p-accordionTab
+                              [header]="beneficiario.nombre">
+                              <app-resumen-beneficiario [nombre]="beneficiario.nombre"
+                                                        [curp]="beneficiario.curp" [rfc]="beneficiario.rfc"
+                                                        [correoElectronico]="beneficiario.correo"
+                                                        [telefono]="beneficiario.telefono"
+                                                        [edad]="beneficiario.edad"></app-resumen-beneficiario>
+                              <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mt-3" [activeIndex]="0">
+                                <p-accordionTab header="Documentación requerida">
+                                  <ng-container *ngIf="false else ErrorDocumentacion">
+                                    <app-documentacion-beneficiario></app-documentacion-beneficiario>
+                                  </ng-container>
+                                </p-accordionTab>
+                              </p-accordion>
+                            </p-accordionTab>
+                          </p-accordion>
+                        </ng-container>
                       </ng-template>
                     </p-accordionTab>
                   </p-accordion>
@@ -316,6 +330,18 @@
       <p-accordionTab>
         <ng-template pTemplate="header">
           <div class="flex justify-content-between align-items-center flex-1">
+            <span>Documentación requerida</span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content" *ngIf="false else ErrorDocumentacion">
+          <app-resumen-documentacion-beneficiario></app-resumen-documentacion-beneficiario>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+    <p-accordion styleClass="sivimss-accordion mt-3">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-between align-items-center flex-1">
             <span>Beneficiarios</span>
           </div>
         </ng-template>
@@ -329,20 +355,21 @@
                   [telefono]="beneficiario.telefono" [curp]="beneficiario.curp" [rfc]="beneficiario.rfc"
                   [correoElectronico]="beneficiario.correo" [edad]="beneficiario.edad"
                   [parentesco]="beneficiario.parentesco"></app-resumen-beneficiario>
+                <p-accordion styleClass="sivimss-accordion mt-3">
+                  <p-accordionTab>
+                    <ng-template pTemplate="header">
+                      <div class="flex justify-content-between align-items-center flex-1">
+                        <span>Documentación requerida</span>
+                      </div>
+                    </ng-template>
+                    <ng-template pTemplate="content" *ngIf="false else ErrorDocumentacion">
+                      <app-resumen-documentacion-beneficiario></app-resumen-documentacion-beneficiario>
+                    </ng-template>
+                  </p-accordionTab>
+                </p-accordion>
               </p-accordionTab>
             </p-accordion>
           </ng-container>
-        </ng-template>
-      </p-accordionTab>
-    </p-accordion>
-    <p-accordion styleClass="sivimss-accordion mt-3">
-      <p-accordionTab>
-        <ng-template pTemplate="header">
-          <div class="flex justify-content-between align-items-center flex-1">
-            <span>Documentación requerida</span>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="content" *ngIf="beneficiarios.length > 0 else SinBeneficiarios">
         </ng-template>
       </p-accordionTab>
     </p-accordion>
@@ -388,6 +415,14 @@
   <div class="row table-panel-row">
     <div class="col-md-12 mt-4">
       <p class="mensaje-cancelacion-orden font-14">El solicitante no tiene beneficiarios registrados.</p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template pTemplate="content" #ErrorDocumentacion>
+  <div class="row table-panel-row">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">Error al cargar la información.</p>
     </div>
   </div>
 </ng-template>

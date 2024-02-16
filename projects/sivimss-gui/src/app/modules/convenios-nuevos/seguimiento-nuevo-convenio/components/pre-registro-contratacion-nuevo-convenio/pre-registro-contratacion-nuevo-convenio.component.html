@@ -102,22 +102,80 @@
             </div>
           </ng-template>
           <ng-template pTemplate="content">
-              <ng-container formArrayName="solicitantes">
-                <ng-container *ngIf="solicitantes.length > 0 else SinSolicitantes">
-                  <ng-container *ngFor="let solicitanteForm of solicitantesEmpresa.controls; let i = index">
-                    <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
-                      <p-accordionTab [header]="nombresSolicitantes[i]" [formGroupName]="i">
+            <ng-container formArrayName="solicitantes">
+              <ng-container *ngIf="solicitantes.length > 0 else SinSolicitantes">
+                <ng-container *ngFor="let persona of solicitantesEmpresa.controls; let i = index">
+                  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
+                    <p-accordionTab [header]="persona.get('nombres')?.value" [formGroupName]="i">
+                      <ng-template pTemplate="content">
                         <app-datos-persona [enfermedad]="false" [ID]="i.toString()"></app-datos-persona>
-                      </p-accordionTab>
-                    </p-accordion>
-                  </ng-container>
+                        <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+                          <p-accordionTab header="Documentación requerida">
+                            <ng-container *ngIf="false else ErrorDocumentacion">
+                              <app-documentacion-beneficiario></app-documentacion-beneficiario>
+                            </ng-container>
+                          </p-accordionTab>
+                        </p-accordion>
+                        <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+                          <p-accordionTab>
+                            <ng-template pTemplate="header">
+                              <div class="flex justify-content-between align-items-center flex-1">
+                                <span>Beneficiarios</span>
+                              </div>
+                            </ng-template>
+                            <ng-template pTemplate="content">
+                              <ng-container formArrayName="beneficiarios">
+                                <ng-container *ngIf="solicitantes[i].beneficiarios && solicitantes[i].beneficiarios!.length > 0
+                              else SolicitanteSinBeneficiarios">
+                                  <ng-container
+                                    *ngFor="let beneficiario of getFormBeneficiarios(persona).controls; let j = index">
+                                    <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
+                                      <p-accordionTab [header]="beneficiario.get('nombre')?.value" [formGroupName]="j">
+                                        <ng-template pTemplate="content">
+                                          <app-datos-beneficiario></app-datos-beneficiario>
+                                          <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+                                            <p-accordionTab header="Documentación requerida">
+                                              <ng-container *ngIf="false else ErrorDocumentacion">
+                                                <app-documentacion-beneficiario></app-documentacion-beneficiario>
+                                              </ng-container>
+                                            </p-accordionTab>
+                                          </p-accordion>
+                                        </ng-template>
+                                      </p-accordionTab>
+                                    </p-accordion>
+                                  </ng-container>
+                                </ng-container>
+                              </ng-container>
+                            </ng-template>
+                          </p-accordionTab>
+                        </p-accordion>
+                        <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+                          <p-accordionTab header="Características del convenio">
+                            <div class="row mb-3">
+                              <div class="col-md-4">
+                                <label class="control-label" [for]="'tipoPaquete' + i.toString()">Tipo de paquete<span class="req">*</span>:</label>
+                                <p-dropdown appendTo="body" [id]="'tipoPaquete' + i.toString()" class="form-control" formControlName="tipoPaquete"
+                                            [options]="paquetes" placeholder="Selecciona el tipo de paquete">
+                                </p-dropdown>
+                                <span class="campo-obligatorio"
+                                      *ngIf="convenioFormGroup?.tipoPaquete?.errors?.required  && (convenioFormGroup?.tipoPaquete?.dirty || convenioFormGroup?.tipoPaquete?.touched)">
+      Este campo es obligatorio *.</span>
+                              </div>
+                            </div>
+                          </p-accordionTab>
+                        </p-accordion>
+                      </ng-template>
+                    </p-accordionTab>
+                  </p-accordion>
                 </ng-container>
               </ng-container>
+            </ng-container>
           </ng-template>
         </p-accordionTab>
       </p-accordion>
     </form>
   </ng-container>
+
   <ng-container *ngSwitchCase="'3'">
     <form [formGroup]="contratacionNuevoConvenioForm">
       <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
@@ -127,7 +185,6 @@
           </div>
         </p-accordionTab>
       </p-accordion>
-
       <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
         <p-accordionTab header="Características del convenio">
           <div class="row mb-3">
@@ -144,25 +201,31 @@
         </p-accordionTab>
       </p-accordion>
       <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+        <p-accordionTab header="Documentación requerida">
+          <ng-container *ngIf="false else ErrorDocumentacion">
+            <app-documentacion-beneficiario></app-documentacion-beneficiario>
+          </ng-container>
+        </p-accordionTab>
+      </p-accordion>
+      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
         <p-accordionTab header="Beneficiarios">
           <ng-container formArrayName="beneficiarios">
             <ng-container *ngIf="beneficiariosPF.length > 0 else SinBeneficiarios">
-              <ng-container *ngFor="let beneficiarioForm of beneficiarios.controls; let i = index">
+              <ng-container *ngFor="let beneficiario of beneficiarios.controls; let i = index">
                 <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
-                  <p-accordionTab [header]="nombresBeneficiario[i]" [formGroupName]="i">
+                  <p-accordionTab [header]="beneficiario.get('nombre')?.value" [formGroupName]="i">
                     <app-datos-beneficiario [ID]="i.toString()"></app-datos-beneficiario>
+                    <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+                      <p-accordionTab header="Documentación requerida">
+                        <ng-container *ngIf="false else ErrorDocumentacion">
+                          <app-documentacion-beneficiario></app-documentacion-beneficiario>
+                        </ng-container>
+                      </p-accordionTab>
+                    </p-accordion>
                   </p-accordionTab>
                 </p-accordion>
               </ng-container>
             </ng-container>
-          </ng-container>
-        </p-accordionTab>
-      </p-accordion>
-
-      <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
-        <p-accordionTab header="Documentación requerida">
-          <ng-container *ngIf="beneficiarios.length > 0 else SinBeneficiarios">
-            <app-documentacion-beneficiario></app-documentacion-beneficiario>
           </ng-container>
         </p-accordionTab>
       </p-accordion>
@@ -206,6 +269,15 @@
   <div class="row table-panel-row">
     <div class="col-md-12 mt-4">
       <p class="mensaje-cancelacion-orden font-14">El solicitante no tiene beneficiarios registrados.</p>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template pTemplate="content" #ErrorDocumentacion>
+  <div class="row table-panel-row">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">Error al cargar la información.</p>
     </div>
   </div>
 </ng-template>

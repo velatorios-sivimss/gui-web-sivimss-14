@@ -14,6 +14,10 @@ export class DesactivarNuevoConvenioResolver implements Resolve<boolean> {
     const idConvenio: number = route.paramMap.get('idConvenio') as unknown as number;
     const idTipo: number = route.paramMap.get('tipoConvenio') as unknown as number;
     const $convenio: Observable<HttpRespuesta<any>> = this.seguimientoConvenioService.buscarConvenioPorPersona(idConvenio, idTipo);
+    const $beneficiarios: Observable<HttpRespuesta<any>> = this.seguimientoConvenioService.buscarConvenioPorSeccion(idConvenio, idTipo, 2);
+    if (+idTipo === 2) {
+      return forkJoin([$convenio, $beneficiarios]);
+    }
     return forkJoin([$convenio]);
   }
 }

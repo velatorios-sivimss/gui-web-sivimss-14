@@ -1,11 +1,9 @@
-import {Component, ViewChild} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
-import {OverlayPanel} from 'primeng/overlaypanel';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {DIEZ_ELEMENTOS_POR_PAGINA, PATRON_CORREO} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {Documentos} from '../../models/documentos.interface';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
@@ -16,8 +14,6 @@ import {PreRegistroPA} from "../../models/preRegistroPA.interface";
 import {Location} from "@angular/common";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {delay} from "rxjs/operators";
-import {Observable} from "rxjs";
-import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 
 @Component({
@@ -28,26 +24,22 @@ import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-
 })
 export class PreRegistroContratacionNuevoConvenioComponent {
 
-  @ViewChild(OverlayPanel)
-  overlayPanel!: OverlayPanel;
-  overlayPanelPersona!: OverlayPanel;
+  contratacionNuevoConvenioForm!: FormGroup;
 
   readonly POSICION_CONVENIO: number = 0;
-  readonly POSICION_BENEFICIARIO: number = 1;
-  readonly POSICION_PAQUETES: number = 2;
+  readonly POSICION_PAQUETES: number = 1;
+  readonly POSICION_BENEFICIARIO: number = 2;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
-  infoPersona: boolean = false;
 
   convenioPersona!: ConvenioPersona;
   convenioEmpresa!: ConvenioEmpresa;
   paquetes: TipoDropdown[] = [];
 
-  documentos: Documentos[] = [];
-  documentoSeleccionado: Documentos = {};
   solicitantes: PreRegistroPA[] = [];
+  beneficiariosEmpresa: BeneficiarioResponse[] = [];
 
   preRegistroSiguiente: boolean = false;
   folio: string = '';
@@ -87,7 +79,6 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   ngOnInit(): void {
-    this.cargarBeneficiarios();
   }
 
   cargarCatalogos(): void {
@@ -102,11 +93,13 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       this.beneficiariosPF = preRegistro.beneficiarios;
     }
     if (this.tipoConvenio === '2') {
+      const registroBeneficiarios = respuesta[this.POSICION_BENEFICIARIO].datos;
       if (!preRegistro.empresa) this.errorCargarRegistro();
       if (preRegistro.empresa.idConvenio === 0) this.errorCargarRegistro();
       this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
       this.folio = this.convenioEmpresa.folioConvenio;
       this.solicitantes = preRegistro.solicitantes;
+      this.beneficiariosEmpresa = registroBeneficiarios.beneficiarios;
     }
     if (this.tipoConvenio === '1') {
       if (!preRegistro.preRegistro) this.errorCargarRegistro();
@@ -336,6 +329,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   cargarSolicitantes(): void {
+    for (let i = 0; i < this.solicitantes.length; i++) {
+      this.solicitantes[i].beneficiarios = this.beneficiariosEmpresa.filter((b: any) => (b.idContratante === this.solicitantes[i].idContratante));
+    }
     for (let solicitante of this.solicitantes) {
       this.agregarSolicitante(solicitante)
     }
@@ -379,40 +375,30 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       lugarNacimiento: [{value: solicitante.idLugarNac, disabled: false}, [Validators.required]],
       correoElectronico: [{value: solicitante.correo, disabled: false}, [Validators.required]],
       telefono: [{value: solicitante.telefono, disabled: false}, [Validators.required]],
+      tipoPaquete: [{value: solicitante.idPaquete, disabled: false}, [Validators.required]],
+      beneficiarios: this.formBuilder.array([])
     });
+    if (solicitante.beneficiarios) {
+      for (let beneficiario of solicitante.beneficiarios) {
+        const beneficiarioForm: FormGroup = this.formBuilder.group({
+          nombre: [{value: beneficiario.nombre, disabled: false}],
+          curp: [{value: beneficiario.curp, disabled: false}],
+          rfc: [{value: beneficiario.rfc, disabled: false}],
+          correo: [{value: beneficiario.correo, disabled: false}],
+          telefono: [{value: beneficiario.telefono, disabled: false}],
+          edad: [{value: beneficiario.edad, disabled: false}],
+        });
+        if (solicitanteForm.get('beneficiarios')) {
+          (solicitanteForm.get('beneficiarios') as FormArray).push(beneficiarioForm);
+        }
+      }
+    }
     if (this.solicitantesEmpresa) {
       this.solicitantesEmpresa.push(solicitanteForm);
     }
   }
 
-  abrir(event: MouseEvent) {
-    this.infoPersona = true;
-    this.overlayPanel.toggle(event);
-  }
-
-  contratacionNuevoConvenioForm!: FormGroup;
-
-  abrirPanel(event: MouseEvent): void {
-    this.overlayPanel.toggle(event);
-  }
-
-  abrirModalAgregarServicio(): void {
-    // this.creacionRef = this.dialogService.open(AgregarArticulosComponent,{
-    //   header:"Agregar artículo",
-    //   width:"920px"
-    // });
-    // this.creacionRef.onClose.subscribe((estatus:boolean) => {
-    //   if(estatus){
-    //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo agregado correctamente');
-    //   }
-    // })
-  }
-
-  abrirModificarDocumento() {
-    console.log("Se comenta método para que no marque error en Sonar");
-  }
-
-  regresar() {
+  regresar(): void {
     void this.router.navigate(['seguimiento-nuevo-convenio'], {relativeTo: this.activatedRoute});
   }
 
@@ -541,6 +527,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   get convenioFormGroup() {
     return this.contratacionNuevoConvenioForm.controls
+  }
+
+  getFormBeneficiarios(form: any) {
+    return form.get('beneficiarios') as FormArray;
   }
 
 }
