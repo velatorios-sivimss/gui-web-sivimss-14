@@ -3,14 +3,14 @@
     <label class="control-label" [for]="'nombreBeneficiario' + ID">Nombre completo del beneficiario<span
       class="req">*</span>:</label>
     <input [id]="'nombreBeneficiario' + ID" formControlName="nombre" class="form-control"
-           placeholder="Inserta el nombre del beneficiario">
+           placeholder="Inserta el nombre del beneficiario" [maxlength]="150">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.nombre?.errors?.required  && (parentFormGroup.nombre?.dirty || parentFormGroup.nombre?.touched)">
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" [for]="'edad' + ID">Edad<span class="req">*</span>:</label>
-    <input [id]="'edad' + ID" class="form-control" placeholder="Inserta la edad" formControlName="edad">
+    <input [id]="'edad' + ID" class="form-control" placeholder="Inserta la edad" formControlName="edad" [maxlength]="3" numbersOnly>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.edad?.errors?.required  && (parentFormGroup.edad?.dirty || parentFormGroup.edad?.touched)">
       Este campo es obligatorio *.</span>

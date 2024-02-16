@@ -7,6 +7,7 @@ import {CalendarModule} from "primeng/calendar";
 import {delay} from "rxjs/operators";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 
 @Component({
   selector: 'app-datos-beneficiario',
@@ -25,6 +26,7 @@ export class DatosBeneficiarioComponent implements OnInit {
 
   parentContainer: ControlContainer = inject(ControlContainer);
   @Input() ID: string = '';
+  parentesco: TipoDropdown[] = [];
 
   constructor(private alertaService: AlertaService,
               private cargadorService: LoaderService) {
