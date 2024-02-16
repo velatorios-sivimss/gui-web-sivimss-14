@@ -8,19 +8,19 @@
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
-    <label class="control-label" [for]="'matricula' + ID">Matricula:</label>
-    <input [id]="'matricula' + ID" class="form-control" formControlName="matricula" placeholder="Inserta la Matricula"
-           [maxlength]="10">
-    <span class="campo-obligatorio"
-          *ngIf="parentFormGroup.matricula?.errors?.required  && (parentFormGroup.matricula?.dirty || parentFormGroup.matricula?.touched)">
-      Este campo es obligatorio *.</span>
-  </div>
-  <div class="col-md-4">
     <label class="control-label" [for]="'rfc' + ID">R.F.C.<span class="req">*</span>:</label>
     <input [id]="'rfc' + ID" class="form-control" formControlName="rfc" placeholder="Inserta el R.F.C."
            [maxlength]="13">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.rfc?.errors?.required  && (parentFormGroup.rfc?.dirty || parentFormGroup.rfc?.touched)">
+      Este campo es obligatorio *.</span>
+  </div>
+  <div class="col-md-4">
+    <label class="control-label" [for]="'matricula' + ID">Matricula:</label>
+    <input [id]="'matricula' + ID" class="form-control" formControlName="matricula" placeholder="Inserta la Matricula"
+           [maxlength]="10">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.matricula?.errors?.required  && (parentFormGroup.matricula?.dirty || parentFormGroup.matricula?.touched)">
       Este campo es obligatorio *.</span>
   </div>
 </div>
