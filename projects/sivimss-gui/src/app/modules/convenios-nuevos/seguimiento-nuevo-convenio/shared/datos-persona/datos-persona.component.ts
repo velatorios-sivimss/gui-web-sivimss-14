@@ -158,9 +158,6 @@ export class DatosPersonaComponent implements OnInit {
   validarRfc(): void {
     const rfc = this.parentContainer.control?.get('rfc')?.value;
     if (!rfc) return;
-    this.parentContainer.control?.get('rfc')?.clearValidators();
-    this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
-    if (rfc.includes('XAXX010101000')) return;
     if (!rfc.match(PATRON_RFC)) {
       this.parentContainer.control?.get('rfc')?.setValidators(Validators.pattern(PATRON_RFC));
       this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
