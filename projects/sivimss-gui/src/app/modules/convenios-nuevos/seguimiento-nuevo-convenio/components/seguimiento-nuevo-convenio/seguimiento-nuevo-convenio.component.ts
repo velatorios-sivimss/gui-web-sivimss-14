@@ -184,7 +184,6 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   paginarConFiltros(): void {
     const filtros: FiltrosNuevoConvenio = this.obtenerFiltroConvenio();
     const valores: string[] = Object.values(filtros);
-    console.log(valores)
     if (valores.every(v => v === null)) {
       this.mostrarModalFiltros = true;
       return;
