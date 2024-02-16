@@ -106,7 +106,7 @@
               <ng-container *ngIf="solicitantes.length > 0 else SinSolicitantes">
                 <ng-container *ngFor="let persona of solicitantesEmpresa.controls; let i = index">
                   <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
-                    <p-accordionTab [header]="persona.get('nombre')?.value" [formGroupName]="i">
+                    <p-accordionTab [header]="persona.get('nombres')?.value" [formGroupName]="i">
                       <ng-template pTemplate="content">
                         <app-datos-persona [enfermedad]="false" [ID]="i.toString()"></app-datos-persona>
                         <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
