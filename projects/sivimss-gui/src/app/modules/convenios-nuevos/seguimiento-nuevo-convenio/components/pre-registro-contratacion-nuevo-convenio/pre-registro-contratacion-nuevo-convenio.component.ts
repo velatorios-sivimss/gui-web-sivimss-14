@@ -88,42 +88,33 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   cargarCatalogos(): void {
-    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
-    const preRegistro = respuesta[this.POSICION_CONVENIO].datos;
-    if (!preRegistro) {
+    const registro = this.activatedRoute.snapshot.data["respuesta"];
+    const preRegistro = registro[this.POSICION_CONVENIO].datos;
+    if (!preRegistro || (!preRegistro["detalleConvenioPFModel"] && this.tipoConvenio === '3') ||
+      (!preRegistro.empresa && this.tipoConvenio === '2') ||
+      (preRegistro.empresa?.idConvenio === 0 && this.tipoConvenio === '2') ||
+      (this.tipoConvenio === '1' && !preRegistro["preRegistro"])) {
       this.errorCargarRegistro();
       return;
     }
     this.cargarCatalogosGenerales();
     if (this.tipoConvenio === '3') {
-      if (!preRegistro.detalleConvenioPFModel) {
-        this.errorCargarRegistro();
-        return;
-      }
-      this.convenioPersona = preRegistro.detalleConvenioPFModel;
+      this.convenioPersona = preRegistro["detalleConvenioPFModel"];
       this.folio = this.convenioPersona.folioConvenio;
       this.beneficiariosPF = preRegistro.beneficiarios;
     }
     if (this.tipoConvenio === '2') {
-      const registroBeneficiarios = respuesta[this.POSICION_BENEFICIARIO].datos;
-      if (!preRegistro.empresa || preRegistro.empresa.idConvenio === 0) {
-        this.errorCargarRegistro();
-        return;
-      }
-      this.convenioEmpresa = respuesta[this.POSICION_CONVENIO].datos.empresa;
+      const registroBeneficiarios = registro[this.POSICION_BENEFICIARIO].datos;
+      this.convenioEmpresa = registro[this.POSICION_CONVENIO].datos.empresa;
       this.folio = this.convenioEmpresa.folioConvenio;
       this.solicitantes = preRegistro.solicitantes;
       this.beneficiariosEmpresa = registroBeneficiarios.beneficiarios;
     }
     if (this.tipoConvenio === '1') {
-      if (!preRegistro.preRegistro) {
-        this.errorCargarRegistro();
-        return;
-      }
-      this.titularPA = respuesta[this.POSICION_CONVENIO].datos.preRegistro;
-      this.mismoSustituto = !respuesta[this.POSICION_CONVENIO].datos.sustituto;
+      this.titularPA = registro[this.POSICION_CONVENIO].datos.preRegistro;
+      this.mismoSustituto = !registro[this.POSICION_CONVENIO].datos.sustituto;
       this.obtenerSustitutoDesdeTitular();
-      this.beneficiariosPA = respuesta[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
+      this.beneficiariosPA = registro[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
       this.folio = this.titularPA.folioConvenio;
       this.promotor = this.titularPA.gestionPromotor;
       this.obtenerBeneficiarios()
