@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {DIEZ_ELEMENTOS_POR_PAGINA, PATRON_CORREO} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
@@ -11,9 +10,8 @@ import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/fun
 import {ConvenioEmpresa} from "../../models/convenioEmpresa.interface";
 import {BeneficiarioResponse} from "../../models/beneficiarioResponse.interface";
 import {PreRegistroPA} from "../../models/preRegistroPA.interface";
-import {Location} from "@angular/common";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {delay} from "rxjs/operators";
+import {delay, finalize} from "rxjs/operators";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {
   SolicitudActualizarBeneficiario,
@@ -67,13 +65,11 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private breadcrumbService: BreadcrumbService,
     private alertaService: AlertaService,
     public dialogService: DialogService,
     private cargadorService: LoaderService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
     private seguimientoConvenioService: SeguimientoNuevoConvenioService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
@@ -191,7 +187,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         paisNacimiento: [{value: this.convenioPersona?.idPais, disabled: false}, [Validators.required]],
         lugarNacimiento: [{value: this.convenioPersona?.idLugarNac, disabled: false}, [Validators.required]],
         correoElectronico: [{value: this.convenioPersona?.correo, disabled: false}, [Validators.required]],
-        telefono: [{value: this.convenioPersona?.telFijo, disabled: false}, [Validators.required]],
+        telefono: [{value: this.convenioPersona?.telCelular, disabled: false}, [Validators.required]],
         enfermedadPreExistente: [{value: +this.convenioPersona?.enfermedadPre, disabled: false}, [Validators.required]],
       }),
       tipoPaquete: [{value: this.convenioPersona?.idPaquete, disabled: false}, [Validators.required]],
@@ -439,7 +435,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   aceptar(): void {
-    if (+this.idConvenio === 2) {
+    if (+this.tipoConvenio === 3) {
       this.guardarContratacionPersona();
       return;
     }
@@ -578,10 +574,13 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       convenio: this.obtenerDatosSolicitante(),
       beneficiarios: this.obtenerDatosBeneficiarios()
     }
-    this.seguimientoConvenioService.guardarConvenioPorPersona(solicitud).subscribe({
+    this.cargadorService.activar();
+    this.seguimientoConvenioService.guardarConvenioPorPersona(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         console.log(respuesta);
-        void this.router.navigate(['seguimiento-nuevo-convenio'], {relativeTo: this.activatedRoute});
+        this.regresar();
         this.alertaService.mostrar(TipoAlerta.Exito, `Convenio ${this.folio} agregado correctamente.`);
       },
       error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
@@ -608,7 +607,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       idPais: this.contratacionNuevoConvenioForm.controls["persona"].get('paisNacimiento')?.value,
       idPaquete: this.contratacionNuevoConvenioForm.get('tipoPaquete')?.value,
       idPersona: this.convenioPersona.idPersona,
-      indEnfermedad: 0,
+      indEnfermedad: false,
       municipio: this.contratacionNuevoConvenioForm.controls["persona"].get('municipio')?.value,
       nombre: this.contratacionNuevoConvenioForm.controls["persona"].get('nombres')?.value,
       numExt: this.contratacionNuevoConvenioForm.controls["persona"].get('numeroExterior')?.value,

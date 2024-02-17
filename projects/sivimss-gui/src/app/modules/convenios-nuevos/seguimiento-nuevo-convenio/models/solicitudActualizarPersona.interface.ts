@@ -25,7 +25,7 @@ export interface SolicitudActualizarSolicitante {
   colonia: string,
   municipio: string,
   estado: string,
-  indEnfermedad: number,
+  indEnfermedad: boolean,
   otraEnfermedad: string
 }
 
