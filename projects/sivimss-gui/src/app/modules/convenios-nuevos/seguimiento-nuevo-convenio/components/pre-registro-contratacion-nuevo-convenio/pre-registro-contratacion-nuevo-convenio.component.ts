@@ -29,7 +29,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   readonly POSICION_CONVENIO: number = 0;
   readonly POSICION_PAQUETES: number = 1;
   readonly POSICION_PROMOTORES: number = 2;
-  readonly POSICION_BENEFICIARIO: number = 2;
+  readonly POSICION_BENEFICIARIO: number = 3;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
@@ -344,12 +344,11 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       nombre: [{value: beneficiario.nombre, disabled: false}, [Validators.required]],
       curp: [{value: beneficiario.curp, disabled: false}, [Validators.required]],
       rfc: [{value: beneficiario.rfc, disabled: false}, [Validators.required]],
-      correo: [{
-        value: beneficiario.correo,
-        disabled: false
-      }, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
-      telefono: [{value: beneficiario.telCelular, disabled: false}, [Validators.required]],
+      correo: [{value: beneficiario.correo, disabled: false},
+        [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
+      telefono: [{value: beneficiario.telefono, disabled: false}, [Validators.required]],
       edad: [{value: beneficiario.edad, disabled: false}, [Validators.required]],
+      parentesco: [{value: beneficiario.idParentesco, disabled: false}, [Validators.required]],
     });
     if (this.beneficiarios) {
       this.beneficiarios.push(beneficiarioForm);
@@ -397,6 +396,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
           }, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
           telefono: [{value: beneficiario.telefono, disabled: false}, [Validators.required]],
           edad: [{value: beneficiario.edad, disabled: false}, [Validators.required]],
+          parentesco: [{value: null, disabled: false}, [Validators.required]],
         });
         if (solicitanteForm.get('beneficiarios')) {
           (solicitanteForm.get('beneficiarios') as FormArray).push(beneficiarioForm);

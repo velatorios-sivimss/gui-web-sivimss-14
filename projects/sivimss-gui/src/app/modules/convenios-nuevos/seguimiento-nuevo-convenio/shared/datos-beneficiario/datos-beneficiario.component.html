@@ -18,7 +18,9 @@
   </div>
   <div class="col-md-4">
     <label class="control-label" [for]="'parentesco' + ID">Parentesco<span class="req">*</span>:</label>
-    <input [id]="'parentesco' + ID" class="form-control" placeholder="Inserta el parentesco">
+    <p-dropdown [id]="'parentesco' + ID" class="form-control" [options]="parentesco" formControlName="parentesco"
+                placeholder="Seleccionar el parentesco" [filter]="true" filterBy="label">
+    </p-dropdown>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.parentesco?.errors?.required  && (parentFormGroup.parentesco?.dirty || parentFormGroup.parentesco?.touched)">
       Este campo es obligatorio *.</span>
