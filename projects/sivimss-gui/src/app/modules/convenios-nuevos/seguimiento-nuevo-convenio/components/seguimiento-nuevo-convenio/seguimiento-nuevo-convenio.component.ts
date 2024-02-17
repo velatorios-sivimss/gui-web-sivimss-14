@@ -21,17 +21,11 @@ import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-
-interface FiltrosBasicosNuevoConvenio {
-  idVelatorio: number | null
-}
-
-interface FiltrosNuevoConvenio {
-  idVelatorio: number | null,
-  convenioPF: string,
-  convenioPSFPA: string,
-  rfc: string
-}
+import {
+  DefaultNuevoConvenio,
+  FiltrosBasicosNuevoConvenio,
+  FiltrosNuevoConvenio
+} from "../../models/filtros-seguimiento.interface";
 
 @Component({
   selector: 'app-seguimiento-nuevo-convenio',
@@ -170,7 +164,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     const velatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
-    const DEFAULT = {nivel, velatorio}
+    const DEFAULT: DefaultNuevoConvenio = {nivel, velatorio}
     this.filtroFormDir.resetForm(DEFAULT);
   }
 
