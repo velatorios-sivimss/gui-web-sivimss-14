@@ -84,8 +84,10 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   }
 
   obtenerCatalogoParentesco(): Observable<HttpRespuesta<any>> {
-    const params: HttpParams = new HttpParams()
-      .append('servicio', 'buscar-promotores')
     return this._http.get<HttpRespuesta<any>>(this._baseParentesco + 'catalogo/parentesco');
+  }
+
+  guardarConvenioPorPersona(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actu-datos-conve-persona`, body);
   }
 }

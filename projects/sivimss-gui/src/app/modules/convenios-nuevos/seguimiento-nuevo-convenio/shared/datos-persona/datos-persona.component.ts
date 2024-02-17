@@ -75,6 +75,7 @@ export class DatosPersonaComponent implements OnInit {
 
   cargarCP(cargaInicial: boolean = false): void {
     const cp = this.parentContainer.control?.get('codigoPostal')?.value;
+    if (!cp) return;
     if (cp.length < 5) return;
     if (!cargaInicial) {
       this.cargadorService.activar();

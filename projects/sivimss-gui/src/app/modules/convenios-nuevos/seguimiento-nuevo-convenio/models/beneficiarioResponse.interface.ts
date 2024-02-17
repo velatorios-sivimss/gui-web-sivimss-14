@@ -29,5 +29,6 @@ export interface BeneficiarioResponse {
   telefono: string,
   idLugarNac: string,
   otroSexo: string,
-  idParentesco: number
+  idParentesco: number,
+  idPersona: number
 }
