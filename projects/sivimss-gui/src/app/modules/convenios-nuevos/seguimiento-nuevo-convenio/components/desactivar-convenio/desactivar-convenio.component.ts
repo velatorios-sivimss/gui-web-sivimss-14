@@ -3,13 +3,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DialogService} from 'primeng/dynamicdialog';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {Documentos} from '../../models/documentos.interface';
 import {SeguimientoNuevoConvenio} from '../../models/seguimiento-nuevo-convenio.interface';
 import {ConvenioPersona} from "../../models/ConvenioPersona.interface";
 import {PreRegistroPA} from "../../models/preRegistroPA.interface";
 import {ConvenioEmpresa} from "../../models/convenioEmpresa.interface";
 import {BeneficiarioResponse} from "../../models/beneficiarioResponse.interface";
-import {Location} from "@angular/common";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
@@ -29,8 +27,6 @@ export class DesactivarConvenioComponent implements OnInit {
 
   convenios: SeguimientoNuevoConvenio[] = [];
   convenioSeleccionado: SeguimientoNuevoConvenio = {};
-  documentos: Documentos[] = [];
-  documentoSeleccionado: Documentos = {};
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
@@ -54,7 +50,6 @@ export class DesactivarConvenioComponent implements OnInit {
     public dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
     private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
     private mensajesSistemaService: MensajesSistemaService,
     private cargadorService: LoaderService,
@@ -70,28 +65,30 @@ export class DesactivarConvenioComponent implements OnInit {
   cargarCatalogos(): void {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     const preRegistro = respuesta[this.POSICION_CONVENIO].datos;
-    if (!preRegistro) this.errorCargarRegistro();
+    if (!preRegistro || (!preRegistro["detalleConvenioPFModel"] && this.tipoConvenio === '3') ||
+      (!preRegistro.empresa && this.tipoConvenio === '2') ||
+      (preRegistro.empresa.idConvenio === 0 && this.tipoConvenio === '2') ||
+      (this.tipoConvenio === '1' && !preRegistro["preRegistro"])) {
+      this.errorCargarRegistro();
+      return;
+    }
     if (this.tipoConvenio === '3') {
-      if (!preRegistro.detalleConvenioPFModel) this.errorCargarRegistro();
-      this.convenioPersona = preRegistro.detalleConvenioPFModel;
+      this.convenioPersona = preRegistro["detalleConvenioPFModel"];
       this.folioConvenio = this.convenioPersona.folioConvenio;
       this.beneficiarios = preRegistro.beneficiarios;
     }
     if (this.tipoConvenio === '2') {
       const registroBeneficiarios = respuesta[this.POSICION_BENEFICIARIO].datos;
-      if (!preRegistro.empresa) this.errorCargarRegistro();
-      if (preRegistro.empresa.idConvenio === 0) this.errorCargarRegistro();
       this.convenioEmpresa = preRegistro.empresa;
       this.folioConvenio = this.convenioEmpresa.folioConvenio;
       this.solicitantes = preRegistro.solicitantes;
       const beneficiarios = registroBeneficiarios.beneficiarios;
-      for (let i = 0; i < this.solicitantes.length; i++) {
-        this.solicitantes[i].beneficiarios = beneficiarios.filter((b: any) => (b.idContratante === this.solicitantes[i].idContratante));
-      }
+      this.solicitantes.forEach(solicitante => {
+        solicitante.beneficiarios = beneficiarios.filter((b: any) => b.idContratante === solicitante.idContratante);
+      });
     }
     if (this.tipoConvenio === '1') {
-      if (!preRegistro.preRegistro) this.errorCargarRegistro();
-      this.titularPA = preRegistro.preRegistro;
+      this.titularPA = preRegistro["preRegistro"];
       this.folioConvenio = this.titularPA.folioConvenio;
       this.mismoSustituto = !preRegistro.sustituto;
       this.obtenerSustitutoDesdeTitular();
@@ -104,7 +101,11 @@ export class DesactivarConvenioComponent implements OnInit {
 
   errorCargarRegistro(): void {
     this.alertaService.mostrar(TipoAlerta.Error, 'El registro no pudo ser cargado, Intenta nuevamente mas tarde.');
-    this.location.back();
+    this.regresar();
+  }
+
+  regresar(): void {
+    void this.router.navigate(['../../../'], {relativeTo: this.activatedRoute});
   }
 
   obtenerBeneficiarios(): void {
@@ -134,8 +135,9 @@ export class DesactivarConvenioComponent implements OnInit {
   }
 
   private manejarRespuestaExitosa(): void {
-    this.alertaService.mostrar(TipoAlerta.Exito, `Convenio ${this.folioConvenio} ${this.activo ? 'Desactivado' : 'Activado'}
-    satisfactoriamente`);
+    const mensaje: string = `Convenio ${this.folioConvenio} ${this.activo ? 'Desactivado' : 'Activado'}
+    satisfactoriamente`;
+    this.alertaService.mostrar(TipoAlerta.Exito, mensaje);
     void this.router.navigate(['./../../../'], {relativeTo: this.activatedRoute});
   }
 
