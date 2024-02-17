@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {LazyLoadEvent} from 'primeng/api';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
@@ -72,7 +72,6 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
-    private router: Router,
     private activatedRoute: ActivatedRoute,
     private cargadorService: LoaderService,
     private seguimientoConvenioService: SeguimientoNuevoConvenioService,
@@ -156,7 +155,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
 
   procesarRespuestaPaginacion(respuesta: HttpRespuesta<any>): void {
     this.convenios = respuesta.datos.content;
-    this.totalElementos = respuesta.datos.totalElements;
+    this.totalElementos = respuesta.datos["totalElements"];
   }
 
   limpiar(): void {
@@ -205,26 +204,13 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
     }
   }
 
-  abrirModalAgregarServicio(): void {
-    // this.creacionRef = this.dialogService.open(AgregarArticulosComponent,{
-    //   header:"Agregar artículo",
-    //   width:"920px"
-    // });
-    // this.creacionRef.onClose.subscribe((estatus:boolean) => {
-    //   if(estatus){
-    //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo agregado correctamente');
-    //   }
-    // })
-  }
-
-
   abrirPanel(event: MouseEvent, convenioSeleccionado: SeguimientoNuevoConvenio): void {
     this.convenioSeleccionado = convenioSeleccionado;
     this.overlayPanel.toggle(event);
   }
 
   obtenerTipoConvenio(tipo: string): number {
-    if (tipo === 'PF Persona'){
+    if (tipo === 'PF Persona') {
       return 3;
     }
     if (tipo === 'PA') {
