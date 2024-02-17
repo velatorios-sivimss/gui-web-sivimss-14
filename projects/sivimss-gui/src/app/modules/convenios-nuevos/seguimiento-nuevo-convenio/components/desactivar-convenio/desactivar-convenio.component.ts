@@ -13,6 +13,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-desactivar-convenio',
@@ -24,6 +26,7 @@ export class DesactivarConvenioComponent implements OnInit {
 
   readonly POSICION_CONVENIO: number = 0;
   readonly POSICION_BENEFICIARIO: number = 1;
+  readonly POSICION_PROMOTORES: number = 1;
 
   convenios: SeguimientoNuevoConvenio[] = [];
   convenioSeleccionado: SeguimientoNuevoConvenio = {};
@@ -44,6 +47,8 @@ export class DesactivarConvenioComponent implements OnInit {
   activo: boolean = false;
   folioConvenio: string = '';
   idConvenio!: number;
+  idPromotor: number | null = null;
+  promotores: TipoDropdown[] = [];
 
   constructor(
     private alertaService: AlertaService,
@@ -67,7 +72,7 @@ export class DesactivarConvenioComponent implements OnInit {
     const preRegistro = respuesta[this.POSICION_CONVENIO].datos;
     if (!preRegistro || (!preRegistro["detalleConvenioPFModel"] && this.tipoConvenio === '3') ||
       (!preRegistro.empresa && this.tipoConvenio === '2') ||
-      (preRegistro.empresa.idConvenio === 0 && this.tipoConvenio === '2') ||
+      (preRegistro.empresa?.idConvenio === 0 && this.tipoConvenio === '2') ||
       (this.tipoConvenio === '1' && !preRegistro["preRegistro"])) {
       this.errorCargarRegistro();
       return;
@@ -88,6 +93,8 @@ export class DesactivarConvenioComponent implements OnInit {
       });
     }
     if (this.tipoConvenio === '1') {
+      const promotores = respuesta[this.POSICION_PROMOTORES].datos;
+      this.promotores = mapearArregloTipoDropdown(promotores, 'nombrePromotor', 'idPromotor');
       this.titularPA = preRegistro["preRegistro"];
       this.folioConvenio = this.titularPA.folioConvenio;
       this.mismoSustituto = !preRegistro.sustituto;
@@ -95,6 +102,7 @@ export class DesactivarConvenioComponent implements OnInit {
       this.activo = this.titularPA.activo === 1;
       this.beneficiarios = preRegistro.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
       this.promotor = this.titularPA.gestionPromotor;
+      this.idPromotor = this.titularPA.idPromotor;
       this.obtenerBeneficiarios();
     }
   }
