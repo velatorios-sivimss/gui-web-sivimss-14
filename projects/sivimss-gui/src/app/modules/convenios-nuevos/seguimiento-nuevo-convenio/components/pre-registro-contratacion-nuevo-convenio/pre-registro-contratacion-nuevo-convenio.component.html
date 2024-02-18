@@ -65,19 +65,28 @@
             </div>
           </ng-template>
           <ng-template pTemplate="content">
-            <label class="control-label">¿El servicio fue gestionado por un promotor? *</label>
-            <div class="flex">
-              <div class="flex align-items-center mx-2">
-                <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
-                               [(ngModel)]="promotor" [ngModelOptions]="{standalone: true}">>
-                </p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+            <div class="row">
+              <div class="col-md-6">
+                <label class="control-label">¿El servicio fue gestionado por un promotor? *</label>
+                <div class="flex">
+                  <div class="flex align-items-center mx-2">
+                    <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
+                                   [(ngModel)]="promotor" [ngModelOptions]="{standalone: true}">>
+                    </p-radioButton>
+                    <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+                  </div>
+                  <div class="flex align-items-center mx-2">
+                    <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
+                                   [(ngModel)]="promotor" [ngModelOptions]="{standalone: true}">>
+                    </p-radioButton>
+                    <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+                  </div>
+                </div>
               </div>
-              <div class="flex align-items-center mx-2">
-                <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
-                               [(ngModel)]="promotor" [ngModelOptions]="{standalone: true}">>
-                </p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+              <div class="col-md-6">
+                <label class="control-label" for="promotor">Promotor:</label>
+                <p-dropdown id="promotor" class="form-control" [disabled]="true" placeholder="Selecciona promotor"
+                            [options]="promotores" filterBy="label" formControlName="idPromotor"></p-dropdown>
               </div>
             </div>
           </ng-template>
@@ -133,7 +142,8 @@
                                       <p-accordionTab [header]="beneficiario.get('nombre')?.value" [formGroupName]="j">
                                         <ng-template pTemplate="content">
                                           <app-datos-beneficiario></app-datos-beneficiario>
-                                          <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+                                          <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5"
+                                                       [activeIndex]="0">
                                             <p-accordionTab header="Documentación requerida">
                                               <ng-container *ngIf="false else ErrorDocumentacion">
                                                 <app-documentacion-beneficiario></app-documentacion-beneficiario>
@@ -153,8 +163,10 @@
                           <p-accordionTab header="Características del convenio">
                             <div class="row mb-3">
                               <div class="col-md-4">
-                                <label class="control-label" [for]="'tipoPaquete' + i.toString()">Tipo de paquete<span class="req">*</span>:</label>
-                                <p-dropdown appendTo="body" [id]="'tipoPaquete' + i.toString()" class="form-control" formControlName="tipoPaquete"
+                                <label class="control-label" [for]="'tipoPaquete' + i.toString()">Tipo de paquete<span
+                                  class="req">*</span>:</label>
+                                <p-dropdown appendTo="body" [id]="'tipoPaquete' + i.toString()" class="form-control"
+                                            formControlName="tipoPaquete"
                                             [options]="paquetes" placeholder="Selecciona el tipo de paquete">
                                 </p-dropdown>
                                 <span class="campo-obligatorio"
@@ -237,7 +249,9 @@
 <div class="row mt-3 mb-2">
   <div class="col-md-12 flex justify-content-end mt-6 mb-4">
     <button type="button" class="btn btn-default btn-md" routerLink="./../../../">Cancelar</button>
-    <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()" [disabled]="contratacionNuevoConvenioForm.invalid">Aprobar Convenio</button>
+    <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()"
+            [disabled]="contratacionNuevoConvenioForm.invalid">Aprobar Convenio
+    </button>
   </div>
 </div>
 

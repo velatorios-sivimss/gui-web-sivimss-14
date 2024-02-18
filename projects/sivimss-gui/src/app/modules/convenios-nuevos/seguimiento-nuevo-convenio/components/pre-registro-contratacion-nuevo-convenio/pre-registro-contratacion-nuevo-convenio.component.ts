@@ -44,6 +44,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   convenioPersona!: ConvenioPersona;
   convenioEmpresa!: ConvenioEmpresa;
   paquetes: TipoDropdown[] = [];
+  promotores: TipoDropdown[] = [];
 
   solicitantes: PreRegistroPA[] = [];
   beneficiariosEmpresa: BeneficiarioResponse[] = [];
@@ -113,6 +114,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     if (this.tipoConvenio === '1') {
       this.titularPA = registro[this.POSICION_CONVENIO].datos.preRegistro;
       this.mismoSustituto = !registro[this.POSICION_CONVENIO].datos.sustituto;
+      const promotores = registro[this.POSICION_PROMOTORES].datos;
+      this.promotores = mapearArregloTipoDropdown(promotores, 'nombrePromotor', 'idPromotor');
       this.obtenerSustitutoDesdeTitular();
       this.beneficiariosPA = registro[this.POSICION_CONVENIO].datos.beneficiarios.filter((beneficiario: any) => beneficiario !== null);
       this.folio = this.titularPA.folioConvenio;
@@ -331,6 +334,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         municipio: [{value: null, disabled: false}],
         estado: [{value: null, disabled: false}],
       }),
+      idPromotor: [{value: this.titularPA.idPromotor, disabled: false}]
     });
   }
 
