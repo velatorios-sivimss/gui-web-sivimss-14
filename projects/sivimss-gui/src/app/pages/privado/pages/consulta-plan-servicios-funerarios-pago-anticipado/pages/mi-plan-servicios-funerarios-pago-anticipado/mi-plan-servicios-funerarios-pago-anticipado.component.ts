@@ -1,5 +1,5 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
 import { finalize } from 'rxjs';
 import { ContratarPSFPAService } from '../../../mapa-contratar-plan-servicios-funerarios-pago-anticipado/services/contratar-psfpa.service';
@@ -7,9 +7,12 @@ import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/a
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DetalleServicioFunerario, TitularesBeneficiarios } from '../../models/consulta-plan-sfpa.interface';
+import { DetalleServicioFunerario, PagoSFPA, TitularesBeneficiarios } from '../../models/consulta-plan-sfpa.interface';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { TransaccionPago } from '../../../../models/transaccion-pago.interface';
+import { SolicitudPagos } from '../../../../models/solicitud-pagos.interface';
+import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
 @Component({
   selector: 'app-mi-plan-servicios-funerarios-pago-anticipado',
   templateUrl: './mi-plan-servicios-funerarios-pago-anticipado.component.html',
@@ -17,11 +20,13 @@ import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-a
   providers: [DescargaArchivosService]
 })
 export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
+  readonly ESTATUS_POR_PAGAR: number = 8;
   beneficiarios: TitularesBeneficiarios[] = [];
   titular!: TitularesBeneficiarios;
   titularSubstituto!: TitularesBeneficiarios;
   detalleServicioFunerario!: DetalleServicioFunerario;
   idPlanSfpa: number | undefined;
+  montoTotal: number = 0;
 
   constructor(
     private dialogService: DialogService,
@@ -31,12 +36,16 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private renderer: Renderer2,
+    private router: Router,
+    private consultaConveniosService: BusquedaConveniosPFServic,
   ) { }
 
   ngOnInit(): void {
-    this.cargarScript(() => {
-    });
-    this.subscripcionMotorPagos()
+    let timeoutTmp = setTimeout(() => {
+      this.cargarScript(() => { });
+      this.subscripcionMotorPagos();
+      clearTimeout(timeoutTmp);
+    }, 300);
     this.detalleConvenio();
   }
 
@@ -58,9 +67,14 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   }
 
   iniciarPago(): void {
+    this.detalleServicioFunerario.pagoSFPA.forEach((e: PagoSFPA) => {
+      if (e.idEstatus === this.ESTATUS_POR_PAGAR && typeof e.importeMensual === 'number') {
+        this.montoTotal += e.importeMensual;
+      }
+    })
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: 1 }));
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: this.montoTotal }));
   }
 
   subscripcionMotorPagos(): void {
@@ -72,12 +86,54 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
         return;
       }
       if (data.transaction && data.transaction.status_detail === 3) {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
+        this.guardarPagoEnLinea(data);
       }
       if (data.transaction && [9, 11, 12].includes(data.transaction.status_detail)) {
         this.alertaService.mostrar(TipoAlerta.Error, 'Pago rechazado.');
       }
     });
+  }
+
+  guardarPagoEnLinea(transaccion: TransaccionPago): void {
+    this.loaderService.activar();
+    const solicitud: SolicitudPagos = this.generarSolicitudPagosLinea(transaccion);
+    this.consultaConveniosService.guardarDatosPago(solicitud).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const id = respuesta.datos.idPagoLinea;
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
+        void this.router.navigate(['recibo-de-pago', id], { relativeTo: this.rutaActiva });
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+      }
+    })
+  }
+
+  generarSolicitudPagosLinea(pago: TransaccionPago): SolicitudPagos {
+    let idMetodoPago: number = 4;
+    if (+pago.transaction.payment_method_type === 0) idMetodoPago = 4;
+    if (+pago.transaction.payment_method_type === 7) idMetodoPago = 3;
+
+    let nombreTitular = `${this.titular.nomPersona} ${this.titular.primerApellido} ${this.titular.segundoApellido}`;
+
+    return {
+      fecTransaccion: pago.transaction.payment_date,
+      folio: this.detalleServicioFunerario.numFolioPlanSFPA ?? '',
+      folioPago: "TEST-1",
+      idFlujoPagos: 4,
+      idMetodoPago, // debito o credito payment_method_type
+      idRegistro: this.detalleServicioFunerario.idPlanSfpa ? +this.detalleServicioFunerario.idPlanSfpa : null,
+      idVelatorio: this.detalleServicioFunerario.idVelatorio ?? null,
+      importe: this.montoTotal,
+      nomContratante: nombreTitular,
+      nomTitular: nombreTitular,
+      numAprobacion: pago.transaction.authorization_code,
+      numTarjeta: pago.card.number,
+      referencia: pago.transaction.id,
+
+    }
   }
 
   detalleConvenio() {
