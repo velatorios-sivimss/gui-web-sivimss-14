@@ -16,7 +16,8 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
-import {PATRON_RFC} from "../../../../../utils/constantes";
+import {PATRON_CURP, PATRON_RFC} from "../../../../../utils/constantes";
+import * as moment from "moment/moment";
 
 @Component({
   selector: 'app-datos-persona',
@@ -75,6 +76,7 @@ export class DatosPersonaComponent implements OnInit {
 
   cargarCP(cargaInicial: boolean = false): void {
     const cp = this.parentContainer.control?.get('codigoPostal')?.value;
+    if (!cp) return;
     if (cp.length < 5) return;
     if (!cargaInicial) {
       this.cargadorService.activar();
@@ -149,10 +151,35 @@ export class DatosPersonaComponent implements OnInit {
 
 
   validarCurp(): void {
+    const curp = this.parentContainer.control?.get('curp')?.value;
+    if (!curp) return;
+    if (!curp.match(PATRON_CURP)) {
+      this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
+      return;
+    }
     this.cargadorService.activar();
-    delay(3000)
-    this.cargadorService.desactivar();
-    this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información. Intenta nuevamente.');
+    const parametros = {curp, rfc: null};
+    this.seguimientoNuevoConvenioService.buscarCurpRFC(parametros)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => this.procesarRespuestaCURP(respuesta),
+        error: (error: HttpErrorResponse) => this.manejarMensajeError(error),
+      });
+  }
+
+  procesarRespuestaCURP(respuesta: HttpRespuesta<any>): void {
+    if (respuesta.error && respuesta.mensaje !== 'Exito') {
+      this.mostrarMensaje(+respuesta.mensaje);
+      return;
+    }
+    if (respuesta.mensaje == 'Exito') {
+      let [valores] = respuesta.datos;
+      this.parentContainer.control?.get('nombres')?.setValue(valores.nomPersona);
+      this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
+      this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
+      this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
+      this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
+    }
   }
 
   validarRfc(): void {
@@ -161,6 +188,64 @@ export class DatosPersonaComponent implements OnInit {
     if (!rfc.match(PATRON_RFC)) {
       this.parentContainer.control?.get('rfc')?.setValidators(Validators.pattern(PATRON_RFC));
       this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
+    }
+  }
+
+  mostrarMensaje(numero: number): void {
+    switch (numero) {
+      case 5:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Error al guardar la información. Intenta nuevamente.'
+        );
+        break;
+      case 33:
+        this.alertaService.mostrar(TipoAlerta.Info, 'R.F.C. no valido.');
+        break;
+      case 52:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Error al consultar la información.'
+        );
+        break;
+      case 184:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El servicio de RENAPO  no esta disponible.'
+        );
+        break;
+      case 185:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El código postal no existe.'
+        );
+        break;
+      case 186:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'El servicio no responde, no permite más llamadas.'
+        );
+        break;
+      case 187:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+        );
+        break;
+      case 802:
+        this.alertaService.mostrar(
+          TipoAlerta.Info,
+          'El beneficiario ya fue registrado con anterioridad, ingrese un beneficiario diferente.'
+        );
+        break;
+      case 900:
+        this.alertaService.mostrar(TipoAlerta.Info, 'Selecciona un paquete.');
+        break;
+      default:
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+        );
     }
   }
 }

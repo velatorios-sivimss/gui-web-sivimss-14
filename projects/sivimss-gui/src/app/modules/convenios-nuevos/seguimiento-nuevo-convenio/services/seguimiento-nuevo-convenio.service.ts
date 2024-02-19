@@ -18,6 +18,7 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
 
   _filtros: string = 'buscar-preregistros';
   _paquetes: string = 'buscar-paquetes';
+  _baseParentesco: string = environment.api.conveniosPF;
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -78,7 +79,23 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
 
   obtenerCatalogoPromotores(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
-      .append('servicio','buscar-promotores')
+      .append('servicio', 'buscar-promotores')
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  }
+
+  obtenerCatalogoParentesco(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._baseParentesco + 'catalogo/parentesco');
+  }
+
+  guardarConvenioPorPersona(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actu-datos-conve-persona`, body);
+  }
+
+  guardarPlanPA(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actu-datos-conve-pa`, body);
+  }
+
+  buscarCurpRFC(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(environment.api.conveniosPF + 'convenio-pf/validar-curp-rfc', parametros);
   }
 }

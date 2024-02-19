@@ -5,8 +5,8 @@
 
 <ng-container [ngSwitch]="tipoConvenio">
   <ng-container *ngSwitchCase="'1'">
-    <app-convenio-header [tipoContratacion]="'Por persona'"
-                         [numeroFolio]="folioConvenio"></app-convenio-header>
+    <app-convenio-header [tipoContratacion]="'Por persona'" [numeroFolio]="folioConvenio">
+    </app-convenio-header>
     <p-accordion styleClass="sivimss-accordion mt-3">
       <p-accordionTab>
         <ng-template pTemplate="header">
@@ -143,19 +143,28 @@
           </div>
         </ng-template>
         <ng-template pTemplate="content">
-          <label class="control-label">¿El servicio fue gestionado por un promotor? *</label>
-          <div class="flex">
-            <div class="flex align-items-center mx-2">
-              <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
-                             [(ngModel)]="promotor" [disabled]="true">>
-              </p-radioButton>
-              <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+          <div class="row">
+            <div class="col-md-6">
+              <label class="control-label">¿El servicio fue gestionado por un promotor? *</label>
+              <div class="flex">
+                <div class="flex align-items-center mx-2">
+                  <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
+                                 [(ngModel)]="promotor" [disabled]="true">>
+                  </p-radioButton>
+                  <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+                </div>
+                <div class="flex align-items-center mx-2">
+                  <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
+                                 [(ngModel)]="promotor" [disabled]="true">>
+                  </p-radioButton>
+                  <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+                </div>
+              </div>
             </div>
-            <div class="flex align-items-center mx-2">
-              <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
-                             [(ngModel)]="promotor" [disabled]="true">>
-              </p-radioButton>
-              <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+            <div class="col-md-6">
+              <label class="control-label" for="promotor">Promotor:</label>
+              <p-dropdown id="promotor" class="form-control" [disabled]="true" placeholder="Selecciona promotor"
+                          [options]="promotores" filterBy="label" [(ngModel)]="idPromotor"></p-dropdown>
             </div>
           </div>
         </ng-template>

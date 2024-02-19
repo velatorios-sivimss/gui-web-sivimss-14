@@ -17,8 +17,12 @@ export class PreregistroConvenioResolver implements Resolve<boolean> {
     const $paquetes: Observable<HttpRespuesta<any>> = this.seguimientoConvenioService.obtenerCatalogoPaquetes();
     const $beneficiarios: Observable<HttpRespuesta<any>> = this.seguimientoConvenioService.buscarConvenioPorSeccion(idConvenio, idTipo, 2);
     const $promotores: Observable<HttpRespuesta<any>> = this.seguimientoConvenioService.obtenerCatalogoPromotores();
+    const $parentesco: Observable<HttpRespuesta<any>> = this.seguimientoConvenioService.obtenerCatalogoParentesco();
     if (+idTipo === 2) {
-      return forkJoin([$convenio, $paquetes, $beneficiarios]);
+      return forkJoin([$convenio, $paquetes, $parentesco, $beneficiarios]);
+    }
+    if (+idTipo === 3) {
+      return forkJoin([$convenio, $paquetes, $parentesco]);
     }
     return forkJoin([$convenio, $paquetes, $promotores]);
   }
