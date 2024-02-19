@@ -87,7 +87,7 @@
               </div>
               <div class="col-md-6">
                 <label class="control-label" for="promotor">Promotor:</label>
-                <p-dropdown id="promotor" class="form-control" [disabled]="true" placeholder="Selecciona promotor"
+                <p-dropdown id="promotor" class="form-control" placeholder="Selecciona promotor"
                             [options]="promotores" filterBy="label" formControlName="idPromotor"></p-dropdown>
               </div>
             </div>
@@ -301,7 +301,7 @@
 
 <p-dialog [(visible)]="validacionRegistro" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="Generar Factura">
+          [draggable]="false" [resizable]="false" header="Aprobar pre registro">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify"> ¿Estás seguro de guardar el registro con folio {{ folio }}?</span>

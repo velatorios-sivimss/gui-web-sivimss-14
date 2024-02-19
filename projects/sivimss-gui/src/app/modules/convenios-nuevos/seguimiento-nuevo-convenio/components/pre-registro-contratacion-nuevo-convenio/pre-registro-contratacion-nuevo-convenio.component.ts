@@ -596,6 +596,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.error) {
+          this.alertaService.mostrar(TipoAlerta.Error, 'Error al guardar la información');
+          return;
+        }
         this.regresar();
         this.alertaService.mostrar(TipoAlerta.Exito, `Convenio ${this.folio} agregado correctamente.`);
       },
@@ -615,6 +619,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.error) {
+          this.alertaService.mostrar(TipoAlerta.Error, 'Error al guardar la información');
+          return;
+        }
         console.log(respuesta);
         this.regresar();
         this.alertaService.mostrar(TipoAlerta.Exito, `Plan PSFPA ${this.folio} agregado correctamente.`);
@@ -625,7 +633,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   private manejarMensajeError(error: HttpErrorResponse): void {
     console.error(error);
-    this.mensajesSistemaService.mostrarMensajeError(error, 'Error al consultar la información');
+    this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información');
   }
 
   obtenerDatosSolicitante(): SolicitudActualizarSolicitante {
