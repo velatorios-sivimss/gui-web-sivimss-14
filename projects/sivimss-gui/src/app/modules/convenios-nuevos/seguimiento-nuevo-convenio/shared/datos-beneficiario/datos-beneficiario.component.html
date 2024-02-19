@@ -68,3 +68,15 @@
       Este campo es obligatorio *.</span>
   </div>
 </div>
+
+<p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+  <p-accordionTab header="Documentación requerida">
+  </p-accordionTab>
+</p-accordion>
+
+<div class="row mt-3 mb-2">
+  <div class="col-md-12 flex justify-content-end mt-6 mb-4">
+    <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="parentContainer.invalid" (click)="guardarBeneficiario()">Guardar Información Beneficiario
+    </button>
+  </div>
+</div>

@@ -98,4 +98,13 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   buscarCurpRFC(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(environment.api.conveniosPF + 'convenio-pf/validar-curp-rfc', parametros);
   }
+
+  guardarBeneficiario(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actualizar-datos-conve-persona-beneficiario`, body);
+  }
+
+  actualizaEstatusConvenioPersona(idConvenioPF: number): Observable<HttpRespuesta<any>> {
+    const body = { idConvenioPF };
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actualizar-estatus-conve-pf`, body);
+  }
 }

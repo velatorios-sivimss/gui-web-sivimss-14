@@ -39,3 +39,25 @@ export interface SolicitudActualizarBeneficiario {
   correo: string,
   telefono: string
 }
+
+export interface SolicitudBeneficiario {
+  validaIne: boolean,
+  nombreIne: string | null,
+  validaActa: boolean,
+  nombreActa: string | null,
+  documento: string | null,
+  idContratanteBeneficiario: number,
+  rfc: string,
+  curp: string,
+  nombre: string,
+  primerApe: string,
+  segunApe: string,
+  idSexo: number,
+  otroSexo: string,
+  fechaNaciemiento: string,
+  idPais: number,
+  idEstado: number,
+  telefono: string,
+  correo: string,
+  idPersona: number
+}
