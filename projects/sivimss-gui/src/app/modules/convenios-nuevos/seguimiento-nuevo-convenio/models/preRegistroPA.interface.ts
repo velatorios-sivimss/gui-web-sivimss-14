@@ -45,5 +45,6 @@ export interface PreRegistroPA {
   sexo: string,
   otroSexo: string,
   idPromotor: number,
-  idPersonaContratante: number
+  idPersonaContratante: number,
+  idTipoPagoMensual: number
 }

@@ -94,4 +94,8 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   guardarPlanPA(body: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actu-datos-conve-pa`, body);
   }
+
+  buscarCurpRFC(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(environment.api.conveniosPF + 'convenio-pf/validar-curp-rfc', parametros);
+  }
 }

@@ -26,6 +26,7 @@ import {
   SolicitudActualizarConvenioPA,
   SustitutoBeneficiario
 } from "../../models/solicitudActualizarConvenioPA.interface";
+import * as moment from "moment";
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
@@ -262,7 +263,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         municipio: [{value: this.titularPA.municipio, disabled: false}, [Validators.required]],
         estado: [{value: this.titularPA.estado, disabled: false}, [Validators.required]],
         tipoPaquete: [{value: this.titularPA.idPaquete, disabled: false}, [Validators.required]],
-        numeroPagos: [{value: this.titularPA.numPagos, disabled: false}, [Validators.required]],
+        numeroPagos: [{value: this.titularPA.idTipoPagoMensual, disabled: false}, [Validators.required]],
       }),
       sustituto: this.formBuilder.group({
         curp: [{value: this.sustituto?.curp ?? null, disabled: this.mismoSustituto}, [Validators.required]],
@@ -683,22 +684,24 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   obtenerDatosPlan(): PlanPA {
+    const fecNac = this.contratacionNuevoConvenioForm.controls["titular"].get('fechaNacimiento')?.value
+    const idEstado = +this.contratacionNuevoConvenioForm.controls["titular"].get('lugarNacimiento')?.value;
     return {
       calle: this.contratacionNuevoConvenioForm.controls["titular"].get('calle')?.value,
       colonia: this.contratacionNuevoConvenioForm.controls["titular"].get('colonia')?.value,
       correo: this.contratacionNuevoConvenioForm.controls["titular"].get('correoElectronico')?.value,
       cp: this.contratacionNuevoConvenioForm.controls["titular"].get('cp')?.value,
       curp: this.contratacionNuevoConvenioForm.controls["titular"].get('curp')?.value,
-      estadi: this.contratacionNuevoConvenioForm.controls["titular"].get('estado')?.value,
-      fecNac: this.contratacionNuevoConvenioForm.controls["titular"].get('fechaNacimiento')?.value,
+      estado: this.contratacionNuevoConvenioForm.controls["titular"].get('estado')?.value,
+      fecNac:  moment(fecNac).format('YYYY-MM-DD'),
       idConvenio: +this.idConvenio,
       idDomicilio: this.titularPA.idDomicilio,
-      idEstado: this.contratacionNuevoConvenioForm.controls["titular"].get('lugarNacimiento')?.value,
+      idEstado: idEstado === 0 ? null : idEstado,
       idPagonMensual: this.contratacionNuevoConvenioForm.controls["titular"].get('numeroPagos')?.value,
       idPais: this.contratacionNuevoConvenioForm.controls["titular"].get('paisNacimiento')?.value,
       idPaquete: this.contratacionNuevoConvenioForm.controls["titular"].get('tipoPaquete')?.value,
       idPersonaContratante: this.titularPA.idPersonaContratante,
-      idTitularSust: this.titularPA.idTitularSust,
+      idTitularSust: this.titularPA.idTitularSust === 0 ? null : this.titularPA.idTitularSust,
       indTitularSut: this.mismoSustituto,
       municipio: this.contratacionNuevoConvenioForm.controls["titular"].get('municipio')?.value,
       nombre: this.contratacionNuevoConvenioForm.controls["titular"].get('nombre')?.value,

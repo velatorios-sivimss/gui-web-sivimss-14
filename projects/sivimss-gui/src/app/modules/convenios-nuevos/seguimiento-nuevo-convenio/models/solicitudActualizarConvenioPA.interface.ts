@@ -8,7 +8,7 @@ export interface SolicitudActualizarConvenioPA {
 export interface PlanPA {
   idPagonMensual: number,
   idPaquete: number,
-  idTitularSust: number,
+  idTitularSust: number | null,
   indTitularSut: boolean,
   idConvenio: number,
   curp: string,
@@ -21,7 +21,7 @@ export interface PlanPA {
   oreoSex: string,
   fecNac: string,
   idPais: number,
-  idEstado: number,
+  idEstado: number | null,
   telefono: string,
   telefonoFij: string,
   correo: string,
@@ -33,7 +33,7 @@ export interface PlanPA {
   cp: string,
   colonia: string,
   municipio: string,
-  estadi: string
+  estado: string
 }
 
 export interface SustitutoBeneficiario {
