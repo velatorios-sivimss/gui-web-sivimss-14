@@ -340,9 +340,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         municipio: [{value: null, disabled: false}],
         estado: [{value: null, disabled: false}],
       }),
-      idPromotor: [{value: this.titularPA.idPromotor, disabled: this.promotor}]
+      idPromotor: [{value: this.titularPA.idPromotor, disabled: !this.titularPA.gestionPromotor}]
     });
-    if (this.promotor) this.contratacionNuevoConvenioForm.get('idPromotor')?.setValidators([Validators.required])
+    if (this.titularPA.gestionPromotor) this.contratacionNuevoConvenioForm.get('idPromotor')?.setValidators([Validators.required])
   }
 
   cambiarValidacionesPromotor(): void {
