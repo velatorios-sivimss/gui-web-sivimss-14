@@ -607,7 +607,7 @@
 
 
 <p-dialog [(visible)]="mostrarModalTipoArchivoIncorrecto" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-  [closable]="false" [draggable]="false" [resizable]="false" header="Órdenes">
+  [closable]="false" [draggable]="false" [resizable]="false" header="Órdenes" [showHeader]="true">
   <ng-template pTemplate="content">
     <div>
       <p class="text-center"><b>Tipo de archivo incorrecto.</b></p>
@@ -624,7 +624,7 @@
 
 <p-dialog [(visible)]="mostrarModalConfirmacionInformacionCapturada" [modal]="true"
   [style]="{maxWidth:'544px',width: '100%'}" [closable]="false" [draggable]="false" [resizable]="false"
-  header="Órdenes">
+  header="Guardar" [showHeader]="true">
   <ng-template pTemplate="content">
     <div>
       <p class="mt-2 text-center">¿Estás seguro de guardar la información capturada para tu convenio de Previsión
@@ -642,7 +642,7 @@
 </p-dialog>
 
 <p-dialog [(visible)]="mostrarModalValidacionRegistro" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-  [closable]="false" [draggable]="false" [resizable]="false" header="Órdenes" [showHeader]="true">
+  [closable]="false" [draggable]="false" [resizable]="false" header="Registro" [showHeader]="true">
   <ng-template pTemplate="content">
     <div>
       <p class="mt-2 text-center">El registro de contratación de una previsión funeraria deberá ser validado por el área
@@ -660,7 +660,7 @@
 
 <p-dialog [(visible)]="mostrarMensajeGuardado" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}" [closable]="true" [draggable]="false" [resizable]="false"
-          header=" " [showHeader]="true">
+          header="Registro" [showHeader]="true">
   <ng-template pTemplate="content">
     <div>
       <p class="mt-2 text-center">{{mensajeConfirmacionGuardado}}</p>
@@ -677,7 +677,7 @@
 
 <p-dialog [(visible)]="mostrarMensajeGenerico" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}" [closable]="true" [draggable]="false" [resizable]="false"
-          header=" " [showHeader]="true">
+          header="Carga de archivos" [showHeader]="true">
   <ng-template pTemplate="content">
     <div>
       <p class="mt-2 text-center">{{mensajeGenerico}}</p>
@@ -692,7 +692,7 @@
 
 <p-dialog [(visible)]="confirmacionGuardado" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}" [closable]="true" [draggable]="false" [resizable]="false"
-          header=" " [showHeader]="true">
+          header="Guardar" [showHeader]="true">
   <ng-template pTemplate="content">
     <div>
       <p class="mt-2 text-center">{{mensajeConfirmacionGuardar}}</p>

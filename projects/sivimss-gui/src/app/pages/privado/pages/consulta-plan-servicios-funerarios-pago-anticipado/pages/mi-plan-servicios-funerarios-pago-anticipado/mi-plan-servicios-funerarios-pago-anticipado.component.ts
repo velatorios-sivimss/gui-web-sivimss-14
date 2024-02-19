@@ -21,12 +21,14 @@ import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-
 })
 export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   readonly ESTATUS_POR_PAGAR: number = 8;
+  readonly ESTATUS_CON_ADEUDO: number = 2;
   beneficiarios: TitularesBeneficiarios[] = [];
   titular!: TitularesBeneficiarios;
   titularSubstituto!: TitularesBeneficiarios;
   detalleServicioFunerario!: DetalleServicioFunerario;
   idPlanSfpa: number | undefined;
   montoTotal: number = 0;
+  idsPago: number[] = [];
 
   constructor(
     private dialogService: DialogService,
@@ -41,6 +43,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   ) { }
 
   ngOnInit(): void {
+    this.idsPago = [this.ESTATUS_POR_PAGAR, this.ESTATUS_CON_ADEUDO];
     let timeoutTmp = setTimeout(() => {
       this.cargarScript(() => { });
       this.subscripcionMotorPagos();
@@ -68,7 +71,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
 
   iniciarPago(): void {
     this.detalleServicioFunerario.pagoSFPA.forEach((e: PagoSFPA) => {
-      if (e.idEstatus === this.ESTATUS_POR_PAGAR && typeof e.importeMensual === 'number') {
+      if (e.idEstatus && this.idsPago.includes(e.idEstatus) && typeof e.importeMensual === 'number') {
         this.montoTotal += e.importeMensual;
       }
     })

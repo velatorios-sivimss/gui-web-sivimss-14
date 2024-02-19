@@ -37,7 +37,7 @@ export class EstatusConvenioPrevisionFunerariaComponent implements OnInit {
     this.loaderService.activar();
     const estatus = Number(this.convenioSeleccionado.estatusConvenio) == 3 ? 1 : 0;
     this.agregarConvenioPFService.cambiarEstatusConvenio(
-      {folioConvenio:this.convenioSeleccionado.folioConvenio,banderaActivo:estatus}).pipe(
+      {folioConvenio:this.convenioSeleccionado.idConvenio,banderaActivo:estatus}).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
