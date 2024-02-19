@@ -588,12 +588,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   guardarContratacionPersona(): void {
-    const solicitud: SolicitudActualizarPersona = {
-      convenio: this.obtenerDatosSolicitante(),
-      beneficiarios: this.obtenerDatosBeneficiarios()
-    }
+    // const solicitud: SolicitudActualizarPersona = {
+    //   convenio: this.obtenerDatosSolicitante(),
+    //   beneficiarios: this.obtenerDatosBeneficiarios()
+    // }
     this.cargadorService.activar();
-    this.seguimientoConvenioService.guardarConvenioPorPersona(solicitud).pipe(
+    this.seguimientoConvenioService.actualizaEstatusConvenioPersona(+this.idConvenio).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
@@ -602,7 +602,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
           return;
         }
         this.regresar();
-        this.alertaService.mostrar(TipoAlerta.Exito, `Convenio ${this.folio} agregado correctamente.`);
+        this.alertaService.mostrar(TipoAlerta.Exito, `Convenio ${this.folio} actualizado correctamente.`);
       },
       error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
     });

@@ -68,3 +68,49 @@
       Este campo es obligatorio *.</span>
   </div>
 </div>
+<ng-container *ngIf="tipo ==='persona'">
+  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0" >
+    <p-accordionTab header="Documentación requerida">
+<!--      <div class="row mb-3">-->
+<!--        <div class="col-md-4">-->
+<!--          <label class="control-label" for="numDoc">Número del documento<span class="req">*</span>:</label>-->
+<!--          <input id="numDoc" class="form-control" placeholder="Inserta la Matricula">-->
+<!--        </div>-->
+<!--        <div class="col-md-4">-->
+<!--          <label class="control-label" for="tipoDoc">Tipo del documento<span class="req">*</span>:</label>-->
+<!--          <p-dropdown id="tipoDoc" class="form-control" [options]="tipoDoc"-->
+<!--                      placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">-->
+<!--          </p-dropdown>-->
+
+<!--        </div>-->
+<!--        <div class="col-md-4">-->
+<!--          <label class="control-label" for="nombreDoc">Nombre del documento<span class="req">*</span>:</label>-->
+<!--          <input id="nombreDoc" class="form-control" placeholder="Inserta el C.U.R.P">-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="row mb-3">-->
+<!--        <div class="col-md-6">-->
+<!--          <label class="control-label" for="verDoc">Ver documento<span class="req">*</span>:</label>-->
+<!--          <input id="verDoc" class="form-control" placeholder="Inserta el nombre">-->
+<!--        </div>-->
+<!--        <div class="col-md-6">-->
+<!--          <label class="control-label" for="modificarDoc">Modificar Documento<span class="req">*</span>:</label>-->
+<!--          <input id="modificarDoc" class="form-control" placeholder="Inserta el primer Apellido">-->
+<!--        </div>-->
+<!--      </div>-->
+      <div class="row table-panel-row">
+        <div class="col-md-12 mt-4">
+          <p class="mensaje-cancelacion-orden font-14">Error al cargar la información.</p>
+        </div>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+
+  <div class="row mt-3 mb-2">
+    <div class="col-md-12 flex justify-content-end mt-6 mb-4">
+      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="parentContainer.invalid"
+              (click)="guardarBeneficiario()">Guardar Información Beneficiario
+      </button>
+    </div>
+  </div>
+</ng-container>

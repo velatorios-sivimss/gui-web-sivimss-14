@@ -9,20 +9,22 @@ import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/a
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {PATRON_CURP, PATRON_RFC} from "../../../../../utils/constantes";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import * as moment from 'moment';
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
+import {SolicitudBeneficiario} from "../../models/solicitudActualizarPersona.interface";
+import {AccordionModule} from "primeng/accordion";
 
 @Component({
   selector: 'app-datos-beneficiario',
   templateUrl: './datos-beneficiario.component.html',
   styleUrls: ['./datos-beneficiario.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, DropdownModule, UtileriaModule, CommonModule, CalendarModule],
+  imports: [ReactiveFormsModule, DropdownModule, UtileriaModule, CommonModule, CalendarModule, RouterLink, AccordionModule],
   viewProviders: [
     {
       provide: ControlContainer,
@@ -34,7 +36,14 @@ export class DatosBeneficiarioComponent implements OnInit {
 
   parentContainer: ControlContainer = inject(ControlContainer);
   @Input() ID: string = '';
+  @Input() tipo: 'persona' | 'empresa' = 'empresa';
   parentesco: TipoDropdown[] = [];
+
+  tipoDoc: TipoDropdown[] = [{
+    value: 1, label: 'INE del afiliado',
+  }, {
+    value: 2, label: 'Acta de nacimiento del afiliadp'
+  }]
 
   constructor(private cargadorService: LoaderService,
               private activatedRoute: ActivatedRoute,
@@ -165,6 +174,43 @@ export class DatosBeneficiarioComponent implements OnInit {
           TipoAlerta.Error,
           'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
         );
+    }
+  }
+
+  guardarBeneficiario(): void {
+    const solicitud = this.crearSolicitudBeneficiario();
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.guardarBeneficiario(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.alertaService.mostrar(TipoAlerta.Exito, `Información de beneficiario actualizada satisfactoriamente`);
+      },
+      error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
+    });
+  }
+
+  crearSolicitudBeneficiario(): SolicitudBeneficiario {
+    return {
+      correo: this.parentContainer.control?.get('correo')?.value,
+      curp: this.parentContainer.control?.get('curp')?.value,
+      documento: null,
+      fechaNaciemiento: "",
+      idContratanteBeneficiario: 0,
+      idEstado: 0,
+      idPais: 0,
+      idPersona: 0,
+      idSexo: 0,
+      nombre: "",
+      nombreActa: null,
+      nombreIne: null,
+      otroSexo: "",
+      primerApe: "",
+      rfc: this.parentContainer.control?.get('rfc')?.value,
+      segunApe: "",
+      telefono: this.parentContainer.control?.get('telefono')?.value,
+      validaActa: false,
+      validaIne: false
     }
   }
 }
