@@ -198,11 +198,11 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('otroSexo')?.clearValidators();
     this.parentContainer.control?.get('fechaNacimiento')?.setValue(fecha);
     this.parentContainer.control?.get('nacionalidad')?.setValue(1);
-    this.cambioNacionalidad();
     this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
     this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
     this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
     this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
+    this.cargarValidacionesIniciales();
   }
 
   cargaCPSust(cargaInicial: boolean = false): void {
@@ -268,6 +268,7 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
       this.parentContainer.control?.get('sexo')?.setValue(valores.sexo);
       this.parentContainer.control?.get('otroSexo')?.setValue(valores.otroSexo);
       this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
+      this.cargarValidacionesIniciales();
     }
   }
 
