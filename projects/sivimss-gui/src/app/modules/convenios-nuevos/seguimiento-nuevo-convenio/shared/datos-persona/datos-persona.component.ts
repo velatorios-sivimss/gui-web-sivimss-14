@@ -174,16 +174,11 @@ export class DatosPersonaComponent implements OnInit {
     }
     if (respuesta.mensaje == 'Exito') {
       let [valores] = respuesta.datos;
-      // let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
-      // let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
       this.parentContainer.control?.get('nombres')?.setValue(valores.nomPersona);
       this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
       this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
-      // this.f.fecha.setValue(fechaNacimiento);
-      // this.f.fechaNacimiento.setValue(moment(fechaNacimiento).format('YYYY-MM-DD'));
       this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
       this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
-      // this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
     }
   }
 
