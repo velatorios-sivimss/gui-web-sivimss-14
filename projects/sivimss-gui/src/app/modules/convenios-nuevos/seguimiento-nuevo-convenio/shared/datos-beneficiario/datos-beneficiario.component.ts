@@ -9,6 +9,8 @@ import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/a
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {PATRON_RFC} from "../../../../../utils/constantes";
+import {ActivatedRoute} from "@angular/router";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-datos-beneficiario',
@@ -30,10 +32,19 @@ export class DatosBeneficiarioComponent implements OnInit {
   parentesco: TipoDropdown[] = [];
 
   constructor(private alertaService: AlertaService,
-              private cargadorService: LoaderService) {
+              private cargadorService: LoaderService,
+              private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+    this.cargarCatalogos();
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    const POSICION_PARENTESCO: number = 2;
+    const parentesco = respuesta[POSICION_PARENTESCO].datos;
+    this.parentesco = mapearArregloTipoDropdown(parentesco, 'nombreParentesco', 'idParentesco');
   }
 
   get parentFormGroup() {
