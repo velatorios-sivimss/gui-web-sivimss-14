@@ -452,6 +452,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       this.guardarContratacionPersona();
       return;
     }
+    if (+this.tipoConvenio === 1) {
+      this.guardarContratacionPA();
+      return;
+    }
     this.cargadorService.activar();
     delay(3000)
     this.cargadorService.desactivar();
@@ -592,12 +596,11 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        console.log(respuesta);
         this.regresar();
         this.alertaService.mostrar(TipoAlerta.Exito, `Convenio ${this.folio} agregado correctamente.`);
       },
       error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
-    })
+    });
   }
 
   guardarContratacionPA(): void {
@@ -607,6 +610,17 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       beneficiario1: this.obtenerDatosSustituto('beneficiario1'),
       beneficiario2: this.obtenerDatosSustituto('beneficiario2')
     }
+    this.cargadorService.activar();
+    this.seguimientoConvenioService.guardarPlanPA(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        console.log(respuesta);
+        this.regresar();
+        this.alertaService.mostrar(TipoAlerta.Exito, `Plan PSFPA ${this.folio} agregado correctamente.`);
+      },
+      error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
+    });
   }
 
   private manejarMensajeError(error: HttpErrorResponse): void {

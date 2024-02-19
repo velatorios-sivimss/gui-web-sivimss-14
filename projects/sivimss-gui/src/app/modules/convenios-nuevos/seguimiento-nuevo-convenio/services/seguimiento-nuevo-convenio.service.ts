@@ -90,4 +90,8 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   guardarConvenioPorPersona(body: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actu-datos-conve-persona`, body);
   }
+
+  guardarPlanPA(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actu-datos-conve-pa`, body);
+  }
 }
