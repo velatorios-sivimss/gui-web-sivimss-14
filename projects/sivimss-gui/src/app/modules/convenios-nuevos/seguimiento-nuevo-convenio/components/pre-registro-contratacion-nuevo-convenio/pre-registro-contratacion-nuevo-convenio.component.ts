@@ -63,6 +63,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   titularPA!: PreRegistroPA;
   mismoSustituto: boolean = false;
   promotor: boolean = false;
+  validacionRegistro: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -334,8 +335,20 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         municipio: [{value: null, disabled: false}],
         estado: [{value: null, disabled: false}],
       }),
-      idPromotor: [{value: this.titularPA.idPromotor, disabled: false}]
+      idPromotor: [{value: this.titularPA.idPromotor, disabled: this.promotor}]
     });
+    if (this.promotor) this.contratacionNuevoConvenioForm.get('idPromotor')?.setValidators([Validators.required])
+  }
+
+  cambiarValidacionesPromotor(): void {
+    if (this.promotor) {
+      this.contratacionNuevoConvenioForm.get('idPromotor')?.setValidators([Validators.required])
+      this.contratacionNuevoConvenioForm.get('idPromotor')?.enable()
+    } else {
+      this.contratacionNuevoConvenioForm.get('idPromotor')?.clearAsyncValidators()
+      this.contratacionNuevoConvenioForm.get('idPromotor')?.setValue(null)
+      this.contratacionNuevoConvenioForm.get('idPromotor')?.disable()
+    }
   }
 
   cargarBeneficiarios(): void {
