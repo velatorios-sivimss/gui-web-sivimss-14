@@ -1009,7 +1009,7 @@
 
 <p-dialog [(visible)]="mostrarModalConfirmacionInformacionCapturada" [modal]="true"
     [style]="{maxWidth:'544px',width: '100%'}" [closable]="false" [draggable]="false" [resizable]="false"
-    header="Guardar">
+    header="Guardar" [showHeader]="true">
     <ng-template pTemplate="content">
         <div>
             <p class="mt-2 text-center">
@@ -1028,7 +1028,7 @@
 </p-dialog>
 
 <p-dialog [(visible)]="mostrarModalValidacionRegistro" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-    [closable]="false" [draggable]="false" [resizable]="false" header="Registro">
+    [closable]="false" [draggable]="false" [resizable]="false" header="Registro" [showHeader]="true">
     <ng-template pTemplate="content">
         <div>
             <p class="mt-2 text-center">

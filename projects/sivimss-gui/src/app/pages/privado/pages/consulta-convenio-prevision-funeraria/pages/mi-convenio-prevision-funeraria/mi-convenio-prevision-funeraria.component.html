@@ -106,7 +106,7 @@
     </div>
     <div class="row">
         <div class="col-md-12 flex justify-content-end">
-            <button class="btn btn-primary btn-md" routerLink="comprobante-de-pago">Ver comprobante de pago</button>
+            <button class="btn btn-primary btn-md" *ngIf="datosGenerales?.idPagoLinea" (click)="visualizarReciboPago();">Ver comprobante de pago</button>
             <button class="btn btn-primary btn-md ml-5" *ngIf="agregarBeneficiarios"
                 (click)="abrirModalRenovarConvenio($event)">Renovar
                 convenio</button>

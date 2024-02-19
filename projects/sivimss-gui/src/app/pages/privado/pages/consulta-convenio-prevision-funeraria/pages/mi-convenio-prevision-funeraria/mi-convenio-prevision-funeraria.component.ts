@@ -34,13 +34,15 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
     'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
   ref!: DynamicDialogRef;
   agregarBeneficiarios: boolean = false;
+  idPlan!: string;
 
   constructor(
     private dialogService: DialogService,
     private rutaActiva: ActivatedRoute,
     private consultaConveniosService: BusquedaConveniosPFServic,
     private alertaService: AlertaService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -49,9 +51,9 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   detalleConvenio() {
-    let idPlan = this.rutaActiva.snapshot.queryParams.idpfs;
+    this.idPlan = this.rutaActiva.snapshot.queryParams.idpfs;
     this.consultaConveniosService
-      .detalleConvenio(idPlan)
+      .detalleConvenio(this.idPlan)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
@@ -177,6 +179,10 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
           );
         },
       });
+  }
+
+  visualizarReciboPago(): void {
+    void this.router.navigate(['recibo-de-pago', this.datosGenerales.idPagoLinea], { relativeTo: this.rutaActiva });
   }
 
   validarAlta(): void {
