@@ -36,7 +36,14 @@ export class DatosBeneficiarioComponent implements OnInit {
 
   parentContainer: ControlContainer = inject(ControlContainer);
   @Input() ID: string = '';
+  @Input() tipo: 'persona' | 'empresa' = 'empresa';
   parentesco: TipoDropdown[] = [];
+
+  tipoDoc: TipoDropdown[] = [{
+    value: 1, label: 'INE del afiliado',
+  }, {
+    value: 2, label: 'Acta de nacimiento del afiliadp'
+  }]
 
   constructor(private cargadorService: LoaderService,
               private activatedRoute: ActivatedRoute,

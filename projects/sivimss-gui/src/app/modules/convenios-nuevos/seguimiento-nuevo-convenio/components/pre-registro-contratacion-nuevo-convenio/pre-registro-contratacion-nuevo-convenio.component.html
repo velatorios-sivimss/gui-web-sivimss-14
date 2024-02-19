@@ -228,7 +228,7 @@
               <ng-container *ngFor="let beneficiario of beneficiarios.controls; let i = index">
                 <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
                   <p-accordionTab [header]="beneficiario.get('nombre')?.value" [formGroupName]="i">
-                    <app-datos-beneficiario [ID]="i.toString()"></app-datos-beneficiario>
+                    <app-datos-beneficiario [ID]="i.toString()" [tipo]="'persona'"></app-datos-beneficiario>
                   </p-accordionTab>
                 </p-accordion>
               </ng-container>
