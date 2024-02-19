@@ -21,6 +21,11 @@ import {
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {
+  PlanPA,
+  SolicitudActualizarConvenioPA,
+  SustitutoBeneficiario
+} from "../../models/solicitudActualizarConvenioPA.interface";
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
@@ -595,6 +600,15 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     })
   }
 
+  guardarContratacionPA(): void {
+    const solicitud: SolicitudActualizarConvenioPA = {
+      plan: this.obtenerDatosPlan(),
+      titularSustituto: this.obtenerDatosSustituto('sustituto'),
+      beneficiario1: this.obtenerDatosSustituto('beneficiario1'),
+      beneficiario2: this.obtenerDatosSustituto('beneficiario2')
+    }
+  }
+
   private manejarMensajeError(error: HttpErrorResponse): void {
     console.error(error);
     this.mensajesSistemaService.mostrarMensajeError(error, 'Error al consultar la información');
@@ -646,4 +660,65 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     return beneficiarios;
   }
 
+  obtenerDatosPlan(): PlanPA {
+    return {
+      calle: this.contratacionNuevoConvenioForm.controls["titular"].get('calle')?.value,
+      colonia: this.contratacionNuevoConvenioForm.controls["titular"].get('colonia')?.value,
+      correo: this.contratacionNuevoConvenioForm.controls["titular"].get('correoElectronico')?.value,
+      cp: this.contratacionNuevoConvenioForm.controls["titular"].get('cp')?.value,
+      curp: this.contratacionNuevoConvenioForm.controls["titular"].get('curp')?.value,
+      estadi: this.contratacionNuevoConvenioForm.controls["titular"].get('estado')?.value,
+      fecNac: this.contratacionNuevoConvenioForm.controls["titular"].get('fechaNacimiento')?.value,
+      idConvenio: +this.idConvenio,
+      idDomicilio: 0,
+      idEstado: this.contratacionNuevoConvenioForm.controls["titular"].get('lugarNacimiento')?.value,
+      idPagonMensual: this.contratacionNuevoConvenioForm.controls["titular"].get('numeroPagos')?.value,
+      idPais: this.contratacionNuevoConvenioForm.controls["titular"].get('paisNacimiento')?.value,
+      idPaquete: this.contratacionNuevoConvenioForm.controls["titular"].get('tipoPaquete')?.value,
+      idPersonaContratante: 0,
+      idTitularSust: 0,
+      indTitularSut: this.mismoSustituto,
+      municipio: this.contratacionNuevoConvenioForm.controls["titular"].get('municipio')?.value,
+      nombre: this.contratacionNuevoConvenioForm.controls["titular"].get('nombre')?.value,
+      nss: this.contratacionNuevoConvenioForm.controls["titular"].get('nss')?.value,
+      numExt: this.contratacionNuevoConvenioForm.controls["titular"].get('numeroExterior')?.value,
+      numInt: this.contratacionNuevoConvenioForm.controls["titular"].get('numeroInterior')?.value,
+      numSex: this.contratacionNuevoConvenioForm.controls["titular"].get('sexo')?.value,
+      oreoSex: this.contratacionNuevoConvenioForm.controls["titular"].get('otroSexo')?.value,
+      primApellido: this.contratacionNuevoConvenioForm.controls["titular"].get('primerApellido')?.value,
+      rfc: this.contratacionNuevoConvenioForm.controls["titular"].get('crfcurp')?.value,
+      segApellido: this.contratacionNuevoConvenioForm.controls["titular"].get('segundoApellido')?.value,
+      telefono: this.contratacionNuevoConvenioForm.controls["titular"].get('telefonoCelular')?.value,
+      telefonoFij: this.contratacionNuevoConvenioForm.controls["titular"].get('telefonoFijo')?.value
+    }
+  }
+
+  obtenerDatosSustituto(formulario: 'sustituto' | 'beneficiario1' | 'beneficiario2'): null | SustitutoBeneficiario {
+    if (this.mismoSustituto && formulario === 'sustituto') return null
+    if (!this.contratacionNuevoConvenioForm.controls[formulario].get('nombre')?.value) return null;
+    return {
+      calle: this.contratacionNuevoConvenioForm.controls[formulario].get('calle')?.value,
+      colonia: this.contratacionNuevoConvenioForm.controls[formulario].get('colonia')?.value,
+      correo: this.contratacionNuevoConvenioForm.controls[formulario].get('correoElectronico')?.value,
+      curp: this.contratacionNuevoConvenioForm.controls[formulario].get('curp')?.value,
+      estado: this.contratacionNuevoConvenioForm.controls[formulario].get('estado')?.value,
+      fecNac: this.contratacionNuevoConvenioForm.controls[formulario].get('fechaNacimiento')?.value,
+      idDomicilio: 0,
+      idEstado: this.contratacionNuevoConvenioForm.controls[formulario].get('lugarNacimiento')?.value,
+      idPais: this.contratacionNuevoConvenioForm.controls[formulario].get('paisNacimiento')?.value,
+      idPersonaTitular: 0,
+      municipio: this.contratacionNuevoConvenioForm.controls[formulario].get('municipio')?.value,
+      nombre: this.contratacionNuevoConvenioForm.controls[formulario].get('nombre')?.value,
+      nss: this.contratacionNuevoConvenioForm.controls[formulario].get('nss')?.value,
+      numExt: this.contratacionNuevoConvenioForm.controls[formulario].get('numeroExterior')?.value,
+      numInt: this.contratacionNuevoConvenioForm.controls[formulario].get('numeroInterior')?.value,
+      otroSexo: this.contratacionNuevoConvenioForm.controls[formulario].get('otroSexo')?.value,
+      primerApe: this.contratacionNuevoConvenioForm.controls[formulario].get('primerApellido')?.value,
+      rfc: this.contratacionNuevoConvenioForm.controls[formulario].get('rfc')?.value,
+      segunApe: this.contratacionNuevoConvenioForm.controls[formulario].get('segundoApellido')?.value,
+      sexo: this.contratacionNuevoConvenioForm.controls[formulario].get('sexo')?.value,
+      telefono: this.contratacionNuevoConvenioForm.controls[formulario].get('telefono')?.value,
+      telefonoFijo: this.contratacionNuevoConvenioForm.controls[formulario].get('telefono')?.value
+    }
+  }
 }
