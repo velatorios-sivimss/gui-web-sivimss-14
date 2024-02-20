@@ -48,6 +48,7 @@ export class DatosBeneficiarioComponent implements OnInit {
   ];
 
   inputSeleccionado: string = '';
+  archivoModificado: boolean = false;
 
   constructor(private cargadorService: LoaderService,
               private activatedRoute: ActivatedRoute,
@@ -77,7 +78,6 @@ export class DatosBeneficiarioComponent implements OnInit {
     const nombre = this.parentContainer.control?.get('nombreDocumento')?.value;
     if (verDocInput) {
       verDocInput.value = nombre;
-      // Forzar un rerender para actualizar la vista
       this.cdr.detectChanges();
     }
   }
@@ -214,10 +214,13 @@ export class DatosBeneficiarioComponent implements OnInit {
     const idEstado = this.parentContainer.control?.get('idEstado')?.value;
     const idPais = this.parentContainer.control?.get('idPais')?.value;
     const idSexo = this.parentContainer.control?.get('idSexo')?.value;
+    const edad = this.parentContainer.control?.get('edad')?.value;
+    const documento = this.parentContainer.control?.get('documento')?.value;
+    const nuevoDocumento = this.parentContainer.control?.get('nuevoDocumento')?.value;
     return {
       correo: this.parentContainer.control?.get('correo')?.value,
       curp: this.parentContainer.control?.get('curp')?.value,
-      documento: null,
+      documento: documento ? documento : null,
       fechaNaciemiento: this.parentContainer.control?.get('fechaNacimiento')?.value,
       idContratanteBeneficiario: this.parentContainer.control?.get('idContratante')?.value,
       idEstado: idEstado === 0 ? null : idEstado,
@@ -225,15 +228,15 @@ export class DatosBeneficiarioComponent implements OnInit {
       idPersona: this.parentContainer.control?.get('idPersona')?.value,
       idSexo: idSexo === 0 ? null : idSexo,
       nombre: this.parentContainer.control?.get('nombre')?.value,
-      nombreActa: null,
-      nombreIne: null,
+      nombreActa: (documento && edad < 18) ? nuevoDocumento : null,
+      nombreIne: (documento && edad >= 18) ? nuevoDocumento : null,
       otroSexo: this.parentContainer.control?.get('otroSexo')?.value,
       primerApe: this.parentContainer.control?.get('primerApellido')?.value,
       rfc: this.parentContainer.control?.get('rfc')?.value,
       segunApe: this.parentContainer.control?.get('segundoApellido')?.value,
       telefono: this.parentContainer.control?.get('telefono')?.value,
-      validaActa: false,
-      validaIne: false
+      validaActa: (documento && edad < 18),
+      validaIne: (documento && edad >= 18)
     }
   }
 
@@ -269,7 +272,7 @@ export class DatosBeneficiarioComponent implements OnInit {
     if (nombreActa) {
       this.parentContainer.control?.get('nuevoDocumento')?.setValue(nombreActa);
     }
-
+    this.archivoModificado = true;
     this.getBase64(fileReaded).then((data: any): void => {
       this.inputSeleccionado = data;
       this.parentContainer.control?.get('documento')?.setValue(data);
@@ -278,10 +281,10 @@ export class DatosBeneficiarioComponent implements OnInit {
 
   getBase64(file: any) {
     return new Promise((resolve, reject): void => {
-      const reader: FileReader = new FileReader();
+      const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      reader.onerror = (error: ProgressEvent<FileReader>) => reject(error);
+      reader.onerror = (error) => reject(error);
     });
   }
 

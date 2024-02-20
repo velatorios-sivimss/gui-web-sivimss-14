@@ -121,8 +121,8 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nuevoDocumento">Modificar Documento<span class="req">*</span>:</label>
-        <div (click)="handleClick('archivo')">
-          <input class="hidden" type="file" id="upload-file" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
+        <div (click)="handleClick('uploadFile')" class="file-container">
+          <input class="hidden" type="file" id="uploadFile" name="uploadFile" accept=".jpg, .jpeg, .png, .pdf"
                  ngf-max-size="5MB" (change)="addAttachment($event)"/>
           <input id="nuevoDocumento" class="form-control" formControlName="nuevoDocumento" readonly/>
           <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
@@ -135,7 +135,7 @@
 <div class="row mt-3 mb-2">
   <div class="col-md-12 flex justify-content-end mt-6 mb-4">
     <button type="submit" class="btn btn-primary btn-md ml-5"
-            [disabled]="parentContainer.invalid || parentContainer.pristine"
+            [disabled]="(parentContainer.invalid || parentContainer.pristine ) && !archivoModificado"
             (click)="guardarBeneficiario()">Guardar Información Beneficiario
     </button>
   </div>

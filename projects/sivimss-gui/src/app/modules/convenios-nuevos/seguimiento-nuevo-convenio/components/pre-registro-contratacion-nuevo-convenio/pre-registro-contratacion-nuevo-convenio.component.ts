@@ -416,6 +416,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       nombreDocumento: [{value: beneficiario.nombreArchivo, disabled: true}],
       nuevoDocumento: [{value: null, disabled: false}],
       idContraPaqPF: [{value: this.convenioPersona.idContraPaqPF, disabled: false}],
+      documento: [{value: null, disabled: false}],
     });
     if (this.beneficiarios) {
       this.beneficiarios.push(beneficiarioForm);
@@ -443,10 +444,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       nacionalidad: [{value: nacionalidad, disabled: false}, [Validators.required]],
       paisNacimiento: [{value: solicitante.idPais, disabled: false}, [Validators.required]],
       lugarNacimiento: [{value: solicitante.idLugarNac, disabled: false}, [Validators.required]],
-      correoElectronico: [{
-        value: solicitante.correo,
-        disabled: false
-      }, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
+      correoElectronico: [{value: solicitante.correo, disabled: false},
+        [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
       telefono: [{value: solicitante.telefono, disabled: false}, [Validators.required]],
       enfermedadPreExistente: [{value: +solicitante.enfermedadPre, disabled: true}],
       tipoPaquete: [{value: solicitante.idPaquete, disabled: false}, [Validators.required]],
@@ -500,7 +499,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
           tipoDocumento: [{value: tipoDocumento, disabled: true}],
           nombreDocumento: [{value: beneficiario.nombreArchivo, disabled: true}],
           nuevoDocumento: [{value: null, disabled: false}],
-          documento: [{value: null, disabled: true}],
+          documento: [{value: null, disabled: false}],
           idContraPaqPF: [{value: solicitante.idContraPaqPF, disabled: false}],
         });
         if (solicitanteForm.get('beneficiarios')) {
