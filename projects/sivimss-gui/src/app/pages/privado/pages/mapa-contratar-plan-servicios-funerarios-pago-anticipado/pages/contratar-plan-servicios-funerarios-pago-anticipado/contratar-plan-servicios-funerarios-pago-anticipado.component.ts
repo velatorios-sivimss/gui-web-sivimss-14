@@ -155,8 +155,10 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
 
   iniciarPago(): void {
     const elemento_ref = document.querySelector('.realizar-pago');
+    const e = document.getElementById('btn-realizar-pago');
     if (!elemento_ref) return;
     elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: this.paqueteSeleccionado.monPrecio / this.numPago }));
+    e?.click();
   }
 
   subscripcionMotorPagos(): void {
