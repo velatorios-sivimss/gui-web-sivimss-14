@@ -13,6 +13,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {SolicitudEmpresa} from "../../models/solicitudActualizarPersona.interface";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 @Component({
   selector: 'app-datos-empresa',
@@ -37,7 +39,8 @@ export class DatosEmpresaComponent implements OnInit {
   constructor(private autenticacionService: AutenticacionService,
               private cargadorService: LoaderService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
-              private mensajesSistemaService: MensajesSistemaService) {
+              private mensajesSistemaService: MensajesSistemaService,
+              private alertaService: AlertaService,) {
     this.cargarCatalogosLocalStorage();
   }
 
@@ -93,4 +96,37 @@ export class DatosEmpresaComponent implements OnInit {
     return (this.parentContainer.control as FormGroup).controls
   }
 
+  guardarEmpresa(): void {
+    const solicitud: SolicitudEmpresa = this.crearSolicitudEmpresa();
+    this.seguimientoNuevoConvenioService.guardarEmpresa(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.alertaService.mostrar(TipoAlerta.Exito, `Información de empresa actualizada satisfactoriamente`);
+        this.parentContainer.control?.markAsPristine();
+      },
+      error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
+    });
+  }
+
+  crearSolicitudEmpresa(): SolicitudEmpresa {
+    return {
+      calle: this.parentContainer.control?.get('calle')?.value,
+      colonia: this.parentContainer.control?.get('colonia')?.value,
+      correo: this.parentContainer.control?.get('correo')?.value,
+      cp: this.parentContainer.control?.get('cp')?.value,
+      estado: this.parentContainer.control?.get('estado')?.value,
+      idConvenioPF: this.parentContainer.control?.get('idConvenio')?.value,
+      idDomicilio: this.parentContainer.control?.get('idDomicilio')?.value,
+      idEmpresa: this.parentContainer.control?.get('idEmpresa')?.value,
+      idPais: this.parentContainer.control?.get('pais')?.value,
+      municipio: this.parentContainer.control?.get('municipio')?.value,
+      nombre: this.parentContainer.control?.get('nombre')?.value,
+      numExt: this.parentContainer.control?.get('numeroExterior')?.value,
+      numInt: this.parentContainer.control?.get('numeroInterior')?.value,
+      razonSocial: this.parentContainer.control?.get('razonSocial')?.value,
+      rfc: this.parentContainer.control?.get('rfc')?.value,
+      telefono: this.parentContainer.control?.get('telefono')?.value
+    }
+  }
 }

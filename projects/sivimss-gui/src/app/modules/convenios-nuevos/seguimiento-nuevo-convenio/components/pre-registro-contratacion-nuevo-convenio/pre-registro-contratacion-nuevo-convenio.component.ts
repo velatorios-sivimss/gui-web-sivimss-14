@@ -204,6 +204,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormularioEmpresa(): void {
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       empresa: this.formBuilder.group({
+        idConvenioPF: [{value: this.convenioEmpresa.idConvenio, disabled: true}],
+        idDomicilio: [{value: this.convenioEmpresa.idDomicilio, disabled: true}],
+        idEmpresa: [{value: this.convenioEmpresa.idEmpresa, disabled: true}],
         nombre: [{value: this.convenioEmpresa.nombre, disabled: false}, [Validators.required]],
         razonSocial: [{value: this.convenioEmpresa.razonSocial, disabled: false}, [Validators.required]],
         rfc: [{value: this.convenioEmpresa.rfc, disabled: false}, [Validators.required]],

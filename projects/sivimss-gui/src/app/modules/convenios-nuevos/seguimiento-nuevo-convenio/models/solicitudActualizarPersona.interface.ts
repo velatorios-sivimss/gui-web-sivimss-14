@@ -61,3 +61,22 @@ export interface SolicitudBeneficiario {
   correo: string,
   idPersona: number
 }
+
+export interface SolicitudEmpresa {
+  nombre:string,
+  razonSocial:string,
+  rfc: string,
+  idPais:number,
+  telefono:string,
+  correo: string,
+  idEmpresa:number,
+  idConvenioPF:number,
+  calle: string,
+  numExt:string,
+  numInt:string,
+  cp:string,
+  colonia:string,
+  municipio:string,
+  estado:string,
+  idDomicilio:number
+}

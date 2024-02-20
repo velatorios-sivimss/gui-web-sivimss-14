@@ -19,8 +19,7 @@ import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-
 import {SolicitudBeneficiario} from "../../models/solicitudActualizarPersona.interface";
 import {AccordionModule} from "primeng/accordion";
 import {SolicitudDocumento} from "../../models/solicitudDocumento.interface";
-import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
-import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
+
 
 @Component({
   selector: 'app-datos-beneficiario',
@@ -58,7 +57,6 @@ export class DatosBeneficiarioComponent implements OnInit {
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
               private alertaService: AlertaService,
               private renderer: Renderer2,
-              private descargaArchivosService: DescargaArchivosService,
   ) {
   }
 
@@ -188,7 +186,7 @@ export class DatosBeneficiarioComponent implements OnInit {
   }
 
   guardarBeneficiario(): void {
-    const solicitud = this.crearSolicitudBeneficiario();
+    const solicitud: SolicitudBeneficiario = this.crearSolicitudBeneficiario();
     this.cargadorService.activar();
     this.seguimientoNuevoConvenioService.guardarBeneficiario(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())

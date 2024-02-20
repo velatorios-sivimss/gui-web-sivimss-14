@@ -16,5 +16,6 @@ export interface ConvenioEmpresa {
   idConvenio: number,
   idEmpresa: number,
   idPromotor: number,
-  folioConvenio: string
+  folioConvenio: string,
+  idDomicilio: number
 }
