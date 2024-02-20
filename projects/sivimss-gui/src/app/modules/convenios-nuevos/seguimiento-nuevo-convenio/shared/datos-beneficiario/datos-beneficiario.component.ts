@@ -278,14 +278,15 @@ export class DatosBeneficiarioComponent implements OnInit {
 
   descargarArchivo(): void {
     const solicitud: SolicitudDocumento = this.generarSolicitudDescarga();
-    this.cargadorService.activar()
-    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
+    this.cargadorService.activar();
     this.seguimientoNuevoConvenioService.descargarDocumento(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta) => {
         let link = this.renderer.createElement('a');
-        link.setAttribute('download', 'documento');
+        const nombre = this.parentContainer.control?.get('nombreDocumento')?.value;
+        const [nombreDocumento] = nombre.split('.');
+        link.setAttribute('download', nombreDocumento);
         link.setAttribute('href', respuesta.datos);
         link.click();
         link.remove();
