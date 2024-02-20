@@ -373,9 +373,10 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   agregarBeneficiario(beneficiario: BeneficiarioResponse): void {
-    this.nombresBeneficiario.push(beneficiario.nombre);
     const beneficiarioForm: FormGroup = this.formBuilder.group({
       nombre: [{value: beneficiario.nombre, disabled: false}, [Validators.required]],
+      primerApellido: [{value: beneficiario.primerApellido, disabled: false}, [Validators.required]],
+      segundoApellido: [{value: beneficiario.segundoApellido, disabled: false}, [Validators.required]],
       curp: [{value: beneficiario.curp, disabled: false}, [Validators.required]],
       rfc: [{value: beneficiario.rfc, disabled: false}, [Validators.required]],
       correo: [{value: beneficiario.correo, disabled: false},
@@ -385,6 +386,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       parentesco: [{value: beneficiario.idParentesco, disabled: false}, [Validators.required]],
       idBeneficiario: [{value: beneficiario.idBeneficiario, disabled: false}],
       idPersona: [{value: beneficiario.idPersona, disabled: false}],
+      idContratante: [{value: beneficiario.idContratante, disabled: false}],
     });
     if (this.beneficiarios) {
       this.beneficiarios.push(beneficiarioForm);

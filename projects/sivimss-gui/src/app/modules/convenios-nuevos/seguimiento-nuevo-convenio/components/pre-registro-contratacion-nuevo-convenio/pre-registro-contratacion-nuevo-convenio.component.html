@@ -227,7 +227,9 @@
             <ng-container *ngIf="beneficiariosPF.length > 0 else SinBeneficiarios">
               <ng-container *ngFor="let beneficiario of beneficiarios.controls; let i = index">
                 <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5">
-                  <p-accordionTab [header]="beneficiario.get('nombre')?.value" [formGroupName]="i">
+                  <p-accordionTab [header]="beneficiario.get('nombre')?.value + ' ' +
+                      beneficiario.get('primerApellido')?.value + ' ' +
+                      beneficiario.get('segundoApellido')?.value" [formGroupName]="i">
                     <app-datos-beneficiario [ID]="i.toString()" [tipo]="'persona'"></app-datos-beneficiario>
                   </p-accordionTab>
                 </p-accordion>
