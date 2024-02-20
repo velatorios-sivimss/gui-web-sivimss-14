@@ -436,7 +436,18 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         disabled: false
       }, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
       telefono: [{value: solicitante.telefono, disabled: false}, [Validators.required]],
+      enfermedadPreExistente: [{value: +solicitante.enfermedadPre, disabled: true}],
       tipoPaquete: [{value: solicitante.idPaquete, disabled: false}, [Validators.required]],
+      fechaNaciemiento: [{value: solicitante.fechaNaciemiento, disabled: true}],
+      idContraPaqPF: [{value: solicitante.idContraPaqPF, disabled: true}],
+      idContrantante: [{value: solicitante.idContratante, disabled: true}],
+      idConvenioPF: [{value: this.idConvenio, disabled: true}],
+      idDomicilio: [{value: solicitante.idDomicilio, disabled: true}],
+      idPersona: [{value: solicitante.idPersona, disabled: true}],
+      idPromotor: [{value: solicitante.idPromotor, disabled: true}],
+      idSexo: [{value: solicitante.idSexo, disabled: true}],
+      idValidaDocumento: [{value: solicitante.idValidaDocumento, disabled: true}],
+      otroSexo: [{value: solicitante.otroSexo, disabled: true}],
       beneficiarios: this.formBuilder.array([])
     });
     if (solicitante.beneficiarios) {

@@ -1,6 +1,9 @@
 import {BeneficiarioResponse} from "./beneficiarioResponse.interface";
 
 export interface PreRegistroPA {
+  idValidaDocumento: number;
+  fechaNaciemiento: string;
+  enfermedadPre: string;
   idPersona: number,
   idContratante: number,
   idDomicilio: number,
