@@ -48,10 +48,6 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/buscar-detalle-preregistros`, body);
   }
 
-  buscarBeneficiarioPorPersona(id: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${this._base}/buscar/beneficiarios/${id}`);
-  }
-
   obtenerCatalogoPaquetes(): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paquetes}`, {});
   }
@@ -59,10 +55,6 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   cambiarEstatusConvenio(idConvenio: number, idFLujo: number): Observable<HttpRespuesta<any>> {
     const body = {idFLujo, idConvenio};
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/activar-desactivar`, body);
-  }
-
-  validaRFCCurp(body: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/validar-rfc-curp`, body);
   }
 
   consutaCP(cp: string): Observable<HttpRespuesta<any>> {
@@ -85,10 +77,6 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
 
   obtenerCatalogoParentesco(): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(this._baseParentesco + 'catalogo/parentesco');
-  }
-
-  guardarConvenioPorPersona(body: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actu-datos-conve-persona`, body);
   }
 
   guardarPlanPA(body: any): Observable<HttpRespuesta<any>> {
