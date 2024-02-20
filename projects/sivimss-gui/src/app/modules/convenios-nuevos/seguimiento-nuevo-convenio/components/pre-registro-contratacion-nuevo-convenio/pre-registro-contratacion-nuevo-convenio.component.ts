@@ -186,7 +186,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         tipoPaquete: [{value: this.convenioPersona?.idPaquete, disabled: false}, [Validators.required]],
         fechaNaciemiento: [{value: this.convenioPersona.fechaNaciemiento, disabled: true}],
         idContraPaqPF: [{value: this.convenioPersona.idContraPaqPF, disabled: true}],
-        idContrantante: [{value: this.convenioPersona.idContratante, disabled: true}],
+        idContrantante: [{value: this.convenioPersona.idContrantante, disabled: true}],
         idConvenioPF: [{value: this.idConvenio, disabled: true}],
         idDomicilio: [{value: this.convenioPersona.idDomicilio, disabled: true}],
         idPersona: [{value: this.convenioPersona.idPersona, disabled: true}],
@@ -472,7 +472,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       tipoDocumentoRFC: [{value: 3, disabled: true}],
       nombreDocumentoRFC: [{value: solicitante.nombreDocumentoRFC, disabled: true}],
       nuevoDocumentoRFC: [{value: null, disabled: false}],
-      idContratante: [{value: solicitante.idContratante, disabled: false}],
+      idContratante: [{value: solicitante.idContrantante, disabled: false}],
       beneficiarios: this.formBuilder.array([])
     });
     if (solicitante.beneficiarios) {

@@ -374,9 +374,24 @@ export class DatosPersonaComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta) => {
+        if (!respuesta.datos) {
+          this.alertaService.mostrar(TipoAlerta.Error, 'Error en la descarga del documento.Intenta nuevamente.');
+          return;
+        }
         let link = this.renderer.createElement('a');
-        const nombre = this.parentContainer.control?.get('nombreDocumento')?.value;
-        const [nombreDocumento] = nombre.split('.');
+        const nombreDocumentoRFC = this.parentContainer.control?.get('nombreDocumentoRFC')?.value;
+        const nombreDocumentoINE = this.parentContainer.control?.get('nombreDocumentoINE')?.value;
+        const nombreDocumentoCURP = this.parentContainer.control?.get('nombreDocumentoCURP')?.value;
+        let nombreDocumento: string = 'documento';
+        if (tipoDocumento === 1) {
+          nombreDocumento = nombreDocumentoCURP.split('.');
+        }
+        if (tipoDocumento === 2) {
+          nombreDocumento = nombreDocumentoINE.split('.');
+        }
+        if (tipoDocumento === 3) {
+          nombreDocumento = nombreDocumentoRFC.split('.');
+        }
         link.setAttribute('download', nombreDocumento);
         link.setAttribute('href', respuesta.datos);
         link.click();
@@ -391,7 +406,7 @@ export class DatosPersonaComponent implements OnInit {
 
   generarSolicitudDescarga(tipoDocumento: number): SolicitudDocumento {
     return {
-      idContratante: this.parentContainer.control?.get('idContratante')?.value,
+      idContratante: this.parentContainer.control?.get('idContrantante')?.value,
       idPaqueteConvenio: this.parentContainer.control?.get('idContraPaqPF')?.value,
       idPersona: this.parentContainer.control?.get('idPersona')?.value,
       tipoDocumento,
