@@ -464,14 +464,17 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       tipoDocumentoINE: [{value: 1, disabled: true}],
       nombreDocumentoINE: [{value: solicitante.nombreDocumentoINE, disabled: true}],
       nuevoDocumentoINE: [{value: null, disabled: false}],
+      documentoINE: [{value: null, disabled: false}],
       numeroDocumentoCURP: [{value: null, disabled: true}],
       tipoDocumentoCURP: [{value: 2, disabled: true}],
       nombreDocumentoCURP: [{value: solicitante.nombreDocumentoCURP, disabled: true}],
+      documentoCURP: [{value: null, disabled: false}],
       nuevoDocumentoCURP: [{value: null, disabled: false}],
       numeroDocumentoRFC: [{value: null, disabled: true}],
       tipoDocumentoRFC: [{value: 3, disabled: true}],
       nombreDocumentoRFC: [{value: solicitante.nombreDocumentoRFC, disabled: true}],
       nuevoDocumentoRFC: [{value: null, disabled: false}],
+      documentoRFC: [{value: null, disabled: false}],
       idContratante: [{value: solicitante.idContrantante, disabled: false}],
       beneficiarios: this.formBuilder.array([])
     });
