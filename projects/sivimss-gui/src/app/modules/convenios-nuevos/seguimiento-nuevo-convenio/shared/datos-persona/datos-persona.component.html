@@ -227,11 +227,11 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="control-label" for="verDoc-INE">Ver documento<span class="req">*</span>:</label>
-            <div (click)="descargarArchivo()">
+            <label class="control-label" for="verDocINE">Ver documento<span class="req">*</span>:</label>
+            <div (click)="descargarArchivo(1)">
               <input class="hidden" type="file" id="download-file-INE" name="download-file"
                      accept=".jpg, .jpeg, .png, .pdf">
-              <input id="verDoc-INE" class="form-control" readonly/>
+              <input id="verDocINE" class="form-control" readonly/>
               <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
             </div>
           </div>
@@ -272,7 +272,7 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="verDocCURP">Ver documento<span class="req">*</span>:</label>
-            <div (click)="descargarArchivo()">
+            <div (click)="descargarArchivo(2)">
               <input class="hidden" type="file" id="download-file-CURP" name="download-file"
                      accept=".jpg, .jpeg, .png, .pdf">
               <input id="verDocCURP" class="form-control" readonly/>
@@ -317,7 +317,7 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="verDocRFC">Ver documento<span class="req">*</span>:</label>
-            <div (click)="descargarArchivo()">
+            <div (click)="descargarArchivo(3)">
               <input class="hidden" type="file" id="download-file-RFC" name="download-file"
                      accept=".jpg, .jpeg, .png, .pdf">
               <input id="verDocRFC" class="form-control" readonly/>

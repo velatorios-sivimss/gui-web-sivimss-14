@@ -44,7 +44,7 @@ export class DatosBeneficiarioComponent implements OnInit {
 
   tipoDoc: TipoDropdown[] = [
     {value: 1, label: 'INE del beneficiario'},
-    {value: 2, label: 'Acta de nacimiento del beneficiario'}
+    {value: 4, label: 'Acta de nacimiento del beneficiario'}
   ];
 
   inputSeleccionado: string = '';

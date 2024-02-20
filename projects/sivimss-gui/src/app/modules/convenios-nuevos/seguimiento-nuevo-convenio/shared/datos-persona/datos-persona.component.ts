@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, inject, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, inject, Input, OnInit, Renderer2} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
@@ -20,6 +20,7 @@ import {PATRON_CURP, PATRON_RFC} from "../../../../../utils/constantes";
 import {AccordionModule} from "primeng/accordion";
 import {ActivatedRoute} from "@angular/router";
 import {SolicitudPersona} from "../../models/solicitudActualizarPersona.interface";
+import {SolicitudDocumento} from "../../models/solicitudDocumento.interface";
 
 @Component({
   selector: 'app-datos-persona',
@@ -66,6 +67,7 @@ export class DatosPersonaComponent implements OnInit {
               private alertaService: AlertaService,
               private activatedRoute: ActivatedRoute,
               private el: ElementRef,
+              private renderer: Renderer2,
               private cdr: ChangeDetectorRef) {
     this.cargarCatalogosLocalStorage();
   }
@@ -365,7 +367,35 @@ export class DatosPersonaComponent implements OnInit {
 
   }
 
-  descargarArchivo() {
+  descargarArchivo(tipoDocumento: number) {
+    const solicitud: SolicitudDocumento = this.generarSolicitudDescarga(tipoDocumento);
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.descargarDocumento(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta) => {
+        let link = this.renderer.createElement('a');
+        const nombre = this.parentContainer.control?.get('nombreDocumento')?.value;
+        const [nombreDocumento] = nombre.split('.');
+        link.setAttribute('download', nombreDocumento);
+        link.setAttribute('href', respuesta.datos);
+        link.click();
+        link.remove();
+      },
+      error: (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    });
+  }
 
+  generarSolicitudDescarga(tipoDocumento: number): SolicitudDocumento {
+    return {
+      idContratante: this.parentContainer.control?.get('idContratante')?.value,
+      idPaqueteConvenio: this.parentContainer.control?.get('idContraPaqPF')?.value,
+      idPersona: this.parentContainer.control?.get('idPersona')?.value,
+      tipoDocumento,
+      tipoPersona: 1
+    }
   }
 }

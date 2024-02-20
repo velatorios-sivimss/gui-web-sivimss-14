@@ -206,6 +206,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         tipoDocumentoRFC: [{value: 3, disabled: true}],
         nombreDocumentoRFC: [{value: this.convenioPersona.nombreDocumentoRFC, disabled: true}],
         nuevoDocumentoRFC: [{value: null, disabled: false}],
+        idContratante: [{value: this.convenioPersona.idContratante, disabled: false}],
       }),
       beneficiarios: this.formBuilder.array([])
     });
@@ -391,7 +392,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   agregarBeneficiario(beneficiario: BeneficiarioResponse): void {
-    const tipoDocumento: number = beneficiario.docIne === 1 ? 1 : 2
+    const tipoDocumento: number = beneficiario.docIne === 1 ? 1 : 4
     const beneficiarioForm: FormGroup = this.formBuilder.group({
       nombre: [{value: beneficiario.nombre, disabled: false}, [Validators.required]],
       primerApellido: [{value: beneficiario.primerApellido, disabled: false}, [Validators.required]],
@@ -471,6 +472,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       tipoDocumentoRFC: [{value: 3, disabled: true}],
       nombreDocumentoRFC: [{value: solicitante.nombreDocumentoRFC, disabled: true}],
       nuevoDocumentoRFC: [{value: null, disabled: false}],
+      idContratante: [{value: solicitante.idContratante, disabled: false}],
       beneficiarios: this.formBuilder.array([])
     });
     if (solicitante.beneficiarios) {
