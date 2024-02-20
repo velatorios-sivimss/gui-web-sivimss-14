@@ -107,6 +107,10 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actualizar-empresa-conve-pf`, body);
   }
 
+  guardarSolicitante(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actualizar-datos-conve-persona`, body);
+  }
+
   actualizaEstatusConvenioPersona(idConvenioPF: number): Observable<HttpRespuesta<any>> {
     const body = { idConvenioPF };
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actualizar-estatus-conve-pf`, body);

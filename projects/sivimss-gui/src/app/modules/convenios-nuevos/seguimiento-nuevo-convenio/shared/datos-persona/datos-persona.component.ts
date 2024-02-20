@@ -9,7 +9,7 @@ import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
 import {CATALOGO_ENFERMEDAD_PREEXISTENTE} from "../../../../convenios-prevision-funeraria/constants/catalogos-funcion";
-import {delay, finalize} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
@@ -17,14 +17,16 @@ import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {PATRON_CURP, PATRON_RFC} from "../../../../../utils/constantes";
-import * as moment from "moment/moment";
+import {AccordionModule} from "primeng/accordion";
+import {ActivatedRoute} from "@angular/router";
+import {SolicitudPersona} from "../../models/solicitudActualizarPersona.interface";
 
 @Component({
   selector: 'app-datos-persona',
   templateUrl: './datos-persona.component.html',
   styleUrls: ['./datos-persona.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, DropdownModule, UtileriaModule, CommonModule, CalendarModule],
+  imports: [ReactiveFormsModule, DropdownModule, UtileriaModule, CommonModule, CalendarModule, AccordionModule],
   viewProviders: [
     {
       provide: ControlContainer,
@@ -39,6 +41,8 @@ export class DatosPersonaComponent implements OnInit {
   enfermedades: TipoDropdown[] = CATALOGO_ENFERMEDAD_PREEXISTENTE;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   colonias: TipoDropdown[] = [];
+  paquetes: TipoDropdown[] = [];
+  readonly POSICION_PAQUETES: number = 1;
 
   parentContainer: ControlContainer = inject(ControlContainer);
 
@@ -49,13 +53,21 @@ export class DatosPersonaComponent implements OnInit {
               private cargadorService: LoaderService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
               private mensajesSistemaService: MensajesSistemaService,
-              private alertaService: AlertaService,) {
+              private alertaService: AlertaService,
+              private activatedRoute: ActivatedRoute) {
     this.cargarCatalogosLocalStorage();
   }
 
   ngOnInit(): void {
     this.cargarValidacionesIniciales();
+    this.cargarCatalogosAdicionales();
     this.cargarCP(true);
+  }
+
+  cargarCatalogosAdicionales(): void {
+    const registro = this.activatedRoute.snapshot.data["respuesta"];
+    const paquetes = registro[this.POSICION_PAQUETES].datos;
+    this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
   }
 
   cargarValidacionesIniciales(): void {
@@ -246,6 +258,67 @@ export class DatosPersonaComponent implements OnInit {
           TipoAlerta.Error,
           'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
         );
+    }
+  }
+
+  guardarSolicitante(): void {
+    const solicitud: SolicitudPersona = this.crearSolicitudPersona();
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.guardarSolicitante(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.alertaService.mostrar(TipoAlerta.Exito, `Información de solicitante actualizada satisfactoriamente`);
+        this.parentContainer.control?.markAsPristine();
+      },
+      error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
+    });
+  }
+
+  crearSolicitudPersona(): SolicitudPersona {
+    const idEstado = this.parentContainer.control?.get('lugarNacimiento')?.value;
+    const idPais = this.parentContainer.control?.get('paisNacimiento')?.value;
+    const idSexo = this.parentContainer.control?.get('idSexo')?.value;
+    return {
+      archivoCurp: null,
+      archivoIne: null,
+      archivoRfc: null,
+      calle: this.parentContainer.control?.get('calle')?.value,
+      colonia: this.parentContainer.control?.get('colonia')?.value,
+      correo: this.parentContainer.control?.get('correoElectronico')?.value,
+      cp: this.parentContainer.control?.get('codigoPostal')?.value,
+      curp: this.parentContainer.control?.get('curp')?.value,
+      estado: this.parentContainer.control?.get('estado')?.value,
+      fechaNaciemiento: this.parentContainer.control?.get('fechaNaciemiento')?.value,
+      idContraPaqPF: this.parentContainer.control?.get('idContraPaqPF')?.value,
+      idContrantante: this.parentContainer.control?.get('idContrantante')?.value,
+      idConvenioPF: this.parentContainer.control?.get('idConvenioPF')?.value,
+      idDomicilio: this.parentContainer.control?.get('idDomicilio')?.value,
+      idEnfermedad: this.parentContainer.control?.get('enfermedadPreExistente')?.value,
+      idEstado: idEstado === 0 ? null : idEstado,
+      idPais: idPais === 0 ? null : idPais,
+      idPaquete: this.parentContainer.control?.get('tipoPaquete')?.value,
+      idPersona: this.parentContainer.control?.get('idPersona')?.value,
+      idPromotor: this.parentContainer.control?.get('idPromotor')?.value,
+      idSexo: idSexo === 0 ? null : idSexo,
+      idValidaDocumento: this.parentContainer.control?.get('idValidaDocumento')?.value,
+      matricula: this.parentContainer.control?.get('matricula')?.value,
+      municipio: this.parentContainer.control?.get('municipio')?.value,
+      nombre: this.parentContainer.control?.get('nombres')?.value,
+      nombreCurp: null,
+      nombreIne: null,
+      nombreRfc: null,
+      numExt: this.parentContainer.control?.get('numeroExterior')?.value,
+      numInt: this.parentContainer.control?.get('numeroInterior')?.value,
+      otraEnfermedad: null,
+      otroSexo: this.parentContainer.control?.get('otroSexo')?.value,
+      primerApe: this.parentContainer.control?.get('primerApellido')?.value,
+      rfc: this.parentContainer.control?.get('rfc')?.value,
+      segunApe: this.parentContainer.control?.get('segundoApellido')?.value,
+      telefono: this.parentContainer.control?.get('telefono')?.value,
+      validaCurp: false,
+      validaIne: false,
+      validaRfc: false
     }
   }
 }
