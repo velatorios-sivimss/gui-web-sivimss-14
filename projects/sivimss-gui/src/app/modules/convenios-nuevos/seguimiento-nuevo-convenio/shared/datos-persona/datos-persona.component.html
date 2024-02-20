@@ -202,7 +202,7 @@
 <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
   <p-accordionTab header="Documentación requerida">
     <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mt-3" [activeIndex]="0">
-      <p-accordionTab header="" class="mb-3">
+      <p-accordionTab [header]="nombreINE" class="mb-3">
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" [for]="'numeroDocumentoINE' + ID">Número del documento<span
@@ -246,7 +246,7 @@
           </div>
         </div>
       </p-accordionTab>
-      <p-accordionTab header="">
+      <p-accordionTab [header]="nombreCURP">
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" [for]="'numeroDocumentoCURP' + ID">Número del documento<span
@@ -291,7 +291,7 @@
           </div>
         </div>
       </p-accordionTab>
-      <p-accordionTab header="">
+      <p-accordionTab [header]="nombreRFC">
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" [for]="'numeroDocumentoRFC' + ID">Número del documento<span

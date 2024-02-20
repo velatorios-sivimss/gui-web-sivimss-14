@@ -55,6 +55,10 @@ export class DatosPersonaComponent implements OnInit {
   @Input() enfermedad: boolean = true;
   @Input() ID: string = '';
 
+  nombreCURP: string = '';
+  nombreINE: string = '';
+  nombreRFC: string = '';
+
   constructor(private autenticacionService: AutenticacionService,
               private cargadorService: LoaderService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
@@ -74,6 +78,9 @@ export class DatosPersonaComponent implements OnInit {
     const registro = this.activatedRoute.snapshot.data["respuesta"];
     const paquetes = registro[this.POSICION_PAQUETES].datos;
     this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
+    this.nombreCURP = this.parentContainer.control?.get('nombreDocumentoCURP')?.value
+    this.nombreINE = this.parentContainer.control?.get('nombreDocumentoINE')?.value
+    this.nombreRFC = this.parentContainer.control?.get('nombreDocumentoRFC')?.value
   }
 
   cargarValidacionesIniciales(): void {
