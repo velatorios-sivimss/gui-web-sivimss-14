@@ -107,4 +107,8 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
     const body = { idConvenioPF };
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actualizar-estatus-conve-pf`, body);
   }
+
+  descargarDocumento(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/descargar-documentos`, body);
+  }
 }

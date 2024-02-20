@@ -15,7 +15,6 @@ import {delay, finalize} from "rxjs/operators";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {
   SolicitudActualizarBeneficiario,
-  SolicitudActualizarPersona,
   SolicitudActualizarSolicitante
 } from "../../models/solicitudActualizarPersona.interface";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -27,12 +26,13 @@ import {
   SustitutoBeneficiario
 } from "../../models/solicitudActualizarConvenioPA.interface";
 import * as moment from "moment";
+import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
   templateUrl: './pre-registro-contratacion-nuevo-convenio.component.html',
   styleUrls: ['./pre-registro-contratacion-nuevo-convenio.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 export class PreRegistroContratacionNuevoConvenioComponent {
 
@@ -373,7 +373,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   agregarBeneficiario(beneficiario: BeneficiarioResponse): void {
-    const tipoDocumento: number = beneficiario.docActa === 1 ? 1 : 2
+    const tipoDocumento: number = beneficiario.docIne === 1 ? 1 : 2
     const beneficiarioForm: FormGroup = this.formBuilder.group({
       nombre: [{value: beneficiario.nombre, disabled: false}, [Validators.required]],
       primerApellido: [{value: beneficiario.primerApellido, disabled: false}, [Validators.required]],
@@ -395,6 +395,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       fechaNacimiento: [{value: beneficiario.fechaNaciemiento, disabled: false}],
       numeroDocumento: [{value: null, disabled: true}],
       tipoDocumento: [{value: tipoDocumento, disabled: true}],
+      nombreDocumento: [{value: beneficiario.nombreArchivo, disabled: true}],
+      nuevoDocumento: [{value: null, disabled: false}],
+      idContraPaqPF: [{value: this.convenioPersona.idContraPaqPF, disabled: false}],
     });
     if (this.beneficiarios) {
       this.beneficiarios.push(beneficiarioForm);

@@ -79,7 +79,8 @@
   </div>
   <div class="col-md-4 mb-3">
     <label class="control-label" [for]="'telefono' + ID">Teléfono<span class="req">*</span>:</label>
-    <input [id]="'telefono' + ID" class="form-control" formControlName="telefono" placeholder="Inserta el telefono" [maxlength]="10">
+    <input [id]="'telefono' + ID" class="form-control" formControlName="telefono" placeholder="Inserta el telefono"
+           [maxlength]="10">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.telefono?.errors?.required  && (parentFormGroup.telefono?.dirty || parentFormGroup.telefono?.touched)">
       Este campo es obligatorio *.</span>
@@ -96,25 +97,33 @@
                  formControlName="numeroDocumento">
         </div>
         <div class="col-md-4">
-          <label class="control-label" [for]="'tipoDocumento' + ID">Tipo del documento<span class="req">*</span>:</label>
-          <p-dropdown [id]="'tipoDocumento' + ID" class="form-control" [options]="tipoDoc" formControlName="tipoDocumento"
+          <label class="control-label" [for]="'tipoDocumento' + ID">Tipo del documento<span
+            class="req">*</span>:</label>
+          <p-dropdown [id]="'tipoDocumento' + ID" class="form-control" [options]="tipoDoc"
+                      formControlName="tipoDocumento"
                       placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
           </p-dropdown>
-
         </div>
         <div class="col-md-4">
-          <label class="control-label" for="nombreDoc">Nombre del documento<span class="req">*</span>:</label>
-          <input id="nombreDoc" class="form-control" placeholder="Inserta el C.U.R.P">
+          <label class="control-label" [for]="'nombreDocumento' + ID">Nombre del documento<span
+            class="req">*</span>:</label>
+          <input [id]="'nombreDocumento' + ID" class="form-control" placeholder="Inserta nombre del documento"
+                 formControlName="nombreDocumento">
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="verDoc">Ver documento<span class="req">*</span>:</label>
-          <input id="verDoc" class="form-control" placeholder="Inserta el nombre">
+          <input id="verDoc" class="form-control" placeholder="Inserta el nombre" (click)="descargarArchivo()" >
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="modificarDoc">Modificar Documento<span class="req">*</span>:</label>
-          <input id="modificarDoc" class="form-control" placeholder="Inserta el primer Apellido">
+          <label class="control-label" for="nuevoDocumento">Modificar Documento<span class="req">*</span>:</label>
+          <div (click)="handleClick('archivo')">
+            <input class="hidden" type="file" id="upload-file" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
+                   ngf-max-size="5MB" (change)="addAttachment($event)" />
+            <input id="nuevoDocumento" class="form-control" formControlName="nuevoDocumento" readonly />
+            <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver" />
+          </div>
         </div>
       </div>
     </p-accordionTab>
@@ -122,7 +131,8 @@
 
   <div class="row mt-3 mb-2">
     <div class="col-md-12 flex justify-content-end mt-6 mb-4">
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="parentContainer.invalid || parentContainer.pristine"
+      <button type="submit" class="btn btn-primary btn-md ml-5"
+              [disabled]="parentContainer.invalid || parentContainer.pristine"
               (click)="guardarBeneficiario()">Guardar Información Beneficiario
       </button>
     </div>

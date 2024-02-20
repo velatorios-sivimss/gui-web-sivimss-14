@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {Component, inject, Input, OnInit, Renderer2} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
@@ -18,6 +18,9 @@ import * as moment from 'moment';
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {SolicitudBeneficiario} from "../../models/solicitudActualizarPersona.interface";
 import {AccordionModule} from "primeng/accordion";
+import {SolicitudDocumento} from "../../models/solicitudDocumento.interface";
+import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 
 @Component({
   selector: 'app-datos-beneficiario',
@@ -35,21 +38,28 @@ import {AccordionModule} from "primeng/accordion";
 export class DatosBeneficiarioComponent implements OnInit {
 
   parentContainer: ControlContainer = inject(ControlContainer);
+
   @Input() ID: string = '';
   @Input() tipo: 'persona' | 'empresa' = 'empresa';
+
   parentesco: TipoDropdown[] = [];
 
   tipoDoc: TipoDropdown[] = [{
     value: 1, label: 'INE del afiliado',
   }, {
     value: 2, label: 'Acta de nacimiento del afiliado'
-  }]
+  }];
+
+  inputSeleccionado: string = '';
 
   constructor(private cargadorService: LoaderService,
               private activatedRoute: ActivatedRoute,
               private mensajesSistemaService: MensajesSistemaService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
-              private alertaService: AlertaService,) {
+              private alertaService: AlertaService,
+              private renderer: Renderer2,
+              private descargaArchivosService: DescargaArchivosService,
+  ) {
   }
 
   ngOnInit(): void {
@@ -201,7 +211,7 @@ export class DatosBeneficiarioComponent implements OnInit {
       documento: null,
       fechaNaciemiento: this.parentContainer.control?.get('fechaNacimiento')?.value,
       idContratanteBeneficiario: this.parentContainer.control?.get('idContratante')?.value,
-      idEstado: idEstado === 0 ? null :idEstado,
+      idEstado: idEstado === 0 ? null : idEstado,
       idPais: idPais === 0 ? null : idPais,
       idPersona: this.parentContainer.control?.get('idPersona')?.value,
       idSexo: idSexo === 0 ? null : idSexo,
@@ -215,6 +225,86 @@ export class DatosBeneficiarioComponent implements OnInit {
       telefono: this.parentContainer.control?.get('telefono')?.value,
       validaActa: false,
       validaIne: false
+    }
+  }
+
+  handleClick(controlName: string): void {
+    const elements = document.getElementById(controlName);
+    this.inputSeleccionado = controlName;
+    elements?.click();
+  }
+
+  addAttachment(fileInput: any): void {
+    const extensionesPermitidas: string[] = ['pdf', 'gif', 'jpeg', 'jpg'];
+    const maxSize: number = 5000000;
+    const fileReaded = fileInput.target.files[0];
+    const tipoArchivo = fileReaded.type.split('/');
+    if (!extensionesPermitidas.includes(tipoArchivo[1])) {
+      this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(97));
+      return
+    }
+    if (fileReaded.size > maxSize) {
+      const tamanioEnMb: number = maxSize / 1000000;
+      const alerta: string = `El tamaño máximo permititido es de ${tamanioEnMb} MB`
+      this.alertaService.mostrar(TipoAlerta.Info, alerta);
+      return;
+    }
+    const edad = this.parentContainer.control?.get('edad')?.value;
+    const curp = this.parentContainer.control?.get('curp')?.value;
+
+    const nombreINE: string | null = edad >= 18 ? 'INE-' + curp + '.' + tipoArchivo[1] : null;
+    const nombreActa: string | null = edad < 18 ? 'ACTA-' + curp + '.' + tipoArchivo[1] : null;
+    if (nombreINE) {
+      this.parentContainer.control?.get('nuevoDocumento')?.setValue(nombreINE);
+    }
+    if (nombreActa) {
+      this.parentContainer.control?.get('nuevoDocumento')?.setValue(nombreActa);
+    }
+
+    this.getBase64(fileReaded).then((data: any): void => {
+      this.inputSeleccionado = data;
+      this.parentContainer.control?.get('documento')?.setValue(data);
+    });
+  }
+
+  getBase64(file: any) {
+    return new Promise((resolve, reject): void => {
+      const reader: FileReader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error: ProgressEvent<FileReader>) => reject(error);
+    });
+  }
+
+  descargarArchivo(): void {
+    const solicitud: SolicitudDocumento = this.generarSolicitudDescarga();
+    this.cargadorService.activar()
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
+    this.seguimientoNuevoConvenioService.descargarDocumento(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta) => {
+        let link = this.renderer.createElement('a');
+        link.setAttribute('download', 'documento');
+        link.setAttribute('href', respuesta.datos);
+        link.click();
+        link.remove();
+      },
+      error: (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    });
+  }
+
+  generarSolicitudDescarga(): SolicitudDocumento {
+    const tipoDocumento = this.parentContainer.control?.get('tipoDocumento')?.value;
+    return {
+      idContratante: this.parentContainer.control?.get('idContratante')?.value,
+      idPaqueteConvenio: this.parentContainer.control?.get('idContraPaqPF')?.value,
+      idPersona: this.parentContainer.control?.get('idPersona')?.value,
+      tipoDocumento,
+      tipoPersona: 2
     }
   }
 }
