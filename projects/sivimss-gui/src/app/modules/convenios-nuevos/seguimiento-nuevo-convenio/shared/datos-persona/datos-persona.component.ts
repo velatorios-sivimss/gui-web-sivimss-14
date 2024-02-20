@@ -44,6 +44,12 @@ export class DatosPersonaComponent implements OnInit {
   paquetes: TipoDropdown[] = [];
   readonly POSICION_PAQUETES: number = 1;
 
+  tipoDoc: TipoDropdown[] = [{
+    value: 1, label: 'INE del afiliado',
+  }, {
+    value: 2, label: 'Acta de nacimiento del afiliado'
+  }];
+
   parentContainer: ControlContainer = inject(ControlContainer);
 
   @Input() enfermedad: boolean = true;
@@ -320,5 +326,17 @@ export class DatosPersonaComponent implements OnInit {
       validaIne: false,
       validaRfc: false
     }
+  }
+
+  addAttachment($event: Event) {
+
+  }
+
+  handleClick(archivo: string) {
+
+  }
+
+  descargarArchivo() {
+
   }
 }

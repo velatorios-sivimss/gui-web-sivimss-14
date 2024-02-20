@@ -201,6 +201,141 @@
 </p-accordion>
 <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
   <p-accordionTab header="Documentación requerida">
+    <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mt-3" [activeIndex]="0">
+      <p-accordionTab header="" class="mb-3">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="control-label" [for]="'numeroDocumentoINE' + ID">Número del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'numeroDocumentoINE' + ID" class="form-control" placeholder="Inserta el número de documento"
+                   formControlName="numeroDocumento">
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'tipoDocumentoINE' + ID">Tipo del documento<span
+              class="req">*</span>:</label>
+            <p-dropdown [id]="'tipoDocumentoINE' + ID" class="form-control" [options]="tipoDoc"
+                        formControlName="tipoDocumento"
+                        placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
+            </p-dropdown>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'nombreDocumentoINE' + ID">Nombre del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'nombreDocumentoINE' + ID" class="form-control" placeholder="Inserta nombre del documento"
+                   formControlName="nombreDocumento">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="control-label" for="verDoc">Ver documento<span class="req">*</span>:</label>
+            <div (click)="descargarArchivo()">
+              <input class="hidden" type="file" id="download-file-INE" name="download-file"
+                     accept=".jpg, .jpeg, .png, .pdf">
+              <input id="verDoc-INE" class="form-control" readonly/>
+              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="control-label" for="nuevoDocumento">Modificar Documento<span class="req">*</span>:</label>
+            <div (click)="handleClick('archivo')">
+              <input class="hidden" type="file" id="upload-file-INE" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
+                     ngf-max-size="5MB" (change)="addAttachment($event)"/>
+              <input id="nuevoDocumento-INE" class="form-control" formControlName="nuevoDocumento" readonly/>
+              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+            </div>
+          </div>
+        </div>
+      </p-accordionTab>
+      <p-accordionTab header="">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="control-label" [for]="'numeroDocumentoCURP' + ID">Número del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'numeroDocumentoCURP' + ID" class="form-control" placeholder="Inserta el número de documento"
+                   formControlName="numeroDocumento">
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'tipoDocumentoCURP' + ID">Tipo del documento<span
+              class="req">*</span>:</label>
+            <p-dropdown [id]="'tipoDocumentoCURP' + ID" class="form-control" [options]="tipoDoc"
+                        formControlName="tipoDocumento"
+                        placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
+            </p-dropdown>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'nombreDocumentoCURP' + ID">Nombre del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'nombreDocumentoCURP' + ID" class="form-control" placeholder="Inserta nombre del documento"
+                   formControlName="nombreDocumento">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="control-label" for="verDocCURP">Ver documento<span class="req">*</span>:</label>
+            <div (click)="descargarArchivo()">
+              <input class="hidden" type="file" id="download-file-CURP" name="download-file"
+                     accept=".jpg, .jpeg, .png, .pdf">
+              <input id="verDocCURP" class="form-control" readonly/>
+              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="control-label" for="nuevoDocumentoCURP">Modificar Documento<span class="req">*</span>:</label>
+            <div (click)="handleClick('archivo')">
+              <input class="hidden" type="file" id="upload-file-CURP" name="upload-file"
+                     accept=".jpg, .jpeg, .png, .pdf"
+                     ngf-max-size="5MB" (change)="addAttachment($event)"/>
+              <input id="nuevoDocumentoCURP" class="form-control" formControlName="nuevoDocumento" readonly/>
+              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+            </div>
+          </div>
+        </div>
+      </p-accordionTab>
+      <p-accordionTab header="">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="control-label" [for]="'numeroDocumentoRFC' + ID">Número del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'numeroDocumentoRFC' + ID" class="form-control" placeholder="Inserta el número de documento"
+                   formControlName="numeroDocumento">
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'tipoDocumentoRFC' + ID">Tipo del documento<span
+              class="req">*</span>:</label>
+            <p-dropdown [id]="'tipoDocumentoRFC' + ID" class="form-control" [options]="tipoDoc"
+                        formControlName="tipoDocumento"
+                        placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
+            </p-dropdown>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'nombreDocumentoRFC' + ID">Nombre del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'nombreDocumentoRFC' + ID" class="form-control" placeholder="Inserta nombre del documento"
+                   formControlName="nombreDocumento">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="control-label" for="verDocRFC">Ver documento<span class="req">*</span>:</label>
+            <div (click)="descargarArchivo()">
+              <input class="hidden" type="file" id="download-file-RFC" name="download-file"
+                     accept=".jpg, .jpeg, .png, .pdf">
+              <input id="verDocRFC" class="form-control" readonly/>
+              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="control-label" for="nuevoDocumentoRFC">Modificar Documento<span class="req">*</span>:</label>
+            <div (click)="handleClick('archivo')">
+              <input class="hidden" type="file" id="upload-file" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
+                     ngf-max-size="5MB" (change)="addAttachment($event)"/>
+              <input id="nuevoDocumentoRFC" class="form-control" formControlName="nuevoDocumento" readonly/>
+              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+            </div>
+          </div>
+        </div>
+      </p-accordionTab>
+    </p-accordion>
   </p-accordionTab>
 </p-accordion>
 
