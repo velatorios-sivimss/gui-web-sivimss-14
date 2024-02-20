@@ -387,6 +387,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       idBeneficiario: [{value: beneficiario.idBeneficiario, disabled: false}],
       idPersona: [{value: beneficiario.idPersona, disabled: false}],
       idContratante: [{value: beneficiario.idContratante, disabled: false}],
+      idEstado: [{value: beneficiario.idEstado, disabled: false}],
+      idPais: [{value: beneficiario.idPais, disabled: false}],
+      idSexo: [{value: beneficiario.idSexo, disabled: false}],
+      otroSexo: [{value: beneficiario.otroSexo, disabled: false}],
+      fechaNacimiento: [{value: beneficiario.fechaNaciemiento, disabled: false}],
+      numeroDocumento: [{value: null, disabled: true}],
     });
     if (this.beneficiarios) {
       this.beneficiarios.push(beneficiarioForm);
