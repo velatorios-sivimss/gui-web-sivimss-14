@@ -96,8 +96,8 @@
                  formControlName="numeroDocumento">
         </div>
         <div class="col-md-4">
-          <label class="control-label" for="tipoDoc">Tipo del documento<span class="req">*</span>:</label>
-          <p-dropdown id="tipoDoc" class="form-control" [options]="tipoDoc"
+          <label class="control-label" [for]="'tipoDocumento' + ID">Tipo del documento<span class="req">*</span>:</label>
+          <p-dropdown [id]="'tipoDocumento' + ID" class="form-control" [options]="tipoDoc" formControlName="tipoDocumento"
                       placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
           </p-dropdown>
 
@@ -122,7 +122,7 @@
 
   <div class="row mt-3 mb-2">
     <div class="col-md-12 flex justify-content-end mt-6 mb-4">
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="parentContainer.invalid"
+      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="parentContainer.invalid || parentContainer.pristine"
               (click)="guardarBeneficiario()">Guardar Información Beneficiario
       </button>
     </div>

@@ -4,7 +4,7 @@ import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
 import {CommonModule} from "@angular/common";
 import {CalendarModule} from "primeng/calendar";
-import {delay, finalize} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
@@ -42,7 +42,7 @@ export class DatosBeneficiarioComponent implements OnInit {
   tipoDoc: TipoDropdown[] = [{
     value: 1, label: 'INE del afiliado',
   }, {
-    value: 2, label: 'Acta de nacimiento del afiliadp'
+    value: 2, label: 'Acta de nacimiento del afiliado'
   }]
 
   constructor(private cargadorService: LoaderService,
@@ -185,22 +185,26 @@ export class DatosBeneficiarioComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.alertaService.mostrar(TipoAlerta.Exito, `Información de beneficiario actualizada satisfactoriamente`);
+        this.parentContainer.control?.markAsPristine();
       },
       error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
     });
   }
 
   crearSolicitudBeneficiario(): SolicitudBeneficiario {
+    const idEstado = this.parentContainer.control?.get('idEstado')?.value;
+    const idPais = this.parentContainer.control?.get('idPais')?.value;
+    const idSexo = this.parentContainer.control?.get('idSexo')?.value;
     return {
       correo: this.parentContainer.control?.get('correo')?.value,
       curp: this.parentContainer.control?.get('curp')?.value,
       documento: null,
       fechaNaciemiento: this.parentContainer.control?.get('fechaNacimiento')?.value,
       idContratanteBeneficiario: this.parentContainer.control?.get('idContratante')?.value,
-      idEstado: this.parentContainer.control?.get('idEstado')?.value,
-      idPais: this.parentContainer.control?.get('idPais')?.value,
+      idEstado: idEstado === 0 ? null :idEstado,
+      idPais: idPais === 0 ? null : idPais,
       idPersona: this.parentContainer.control?.get('idPersona')?.value,
-      idSexo: this.parentContainer.control?.get('idSexo')?.value,
+      idSexo: idSexo === 0 ? null : idSexo,
       nombre: this.parentContainer.control?.get('nombre')?.value,
       nombreActa: null,
       nombreIne: null,
