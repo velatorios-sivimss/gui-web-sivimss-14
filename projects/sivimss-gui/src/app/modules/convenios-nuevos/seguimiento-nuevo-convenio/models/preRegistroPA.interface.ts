@@ -53,5 +53,6 @@ export interface PreRegistroPA {
   idContraPaqPF: number,
   nombreDocumentoCURP: string,
   nombreDocumentoINE: string,
-  nombreDocumentoRFC: string
+  nombreDocumentoRFC: string,
+  idContrantante: number
 }

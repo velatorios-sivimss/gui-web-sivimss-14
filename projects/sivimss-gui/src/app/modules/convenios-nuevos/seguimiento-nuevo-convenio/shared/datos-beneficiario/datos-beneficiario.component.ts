@@ -296,6 +296,10 @@ export class DatosBeneficiarioComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta) => {
+        if (!respuesta.datos) {
+          this.alertaService.mostrar(TipoAlerta.Error, 'Error en la descarga del documento.Intenta nuevamente.');
+          return;
+        }
         let link = this.renderer.createElement('a');
         const nombre = this.parentContainer.control?.get('nombreDocumento')?.value;
         const [nombreDocumento] = nombre.split('.');
