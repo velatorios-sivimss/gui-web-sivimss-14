@@ -50,5 +50,8 @@ export interface PreRegistroPA {
   idPromotor: number,
   idPersonaContratante: number,
   idTipoPagoMensual: number,
-  idContraPaqPF: number
+  idContraPaqPF: number,
+  nombreDocumentoCURP: string,
+  nombreDocumentoINE: string,
+  nombreDocumentoRFC: string
 }

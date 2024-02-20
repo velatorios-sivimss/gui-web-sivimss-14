@@ -39,5 +39,8 @@ export interface ConvenioPersona {
   idContratante: number,
   idPromotor: number,
   otroSexo: string,
-  idValidaDocumento: number
+  idValidaDocumento: number,
+  nombreDocumentoCURP: string,
+  nombreDocumentoINE: string,
+  nombreDocumentoRFC: string
 }
