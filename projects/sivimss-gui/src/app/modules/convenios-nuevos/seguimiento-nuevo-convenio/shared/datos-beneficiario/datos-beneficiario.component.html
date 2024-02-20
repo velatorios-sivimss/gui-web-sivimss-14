@@ -1,13 +1,33 @@
 <div class="row mb-3">
   <div class="col-md-4">
-    <label class="control-label" [for]="'nombreBeneficiario' + ID">Nombre completo del beneficiario<span
+    <label class="control-label" [for]="'nombreBeneficiario' + ID">Nombre del beneficiario<span
       class="req">*</span>:</label>
     <input [id]="'nombreBeneficiario' + ID" formControlName="nombre" class="form-control"
-           placeholder="Inserta el nombre del beneficiario" [maxlength]="150">
+           placeholder="Inserta el nombre del beneficiario" [maxlength]="30">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.nombre?.errors?.required  && (parentFormGroup.nombre?.dirty || parentFormGroup.nombre?.touched)">
       Este campo es obligatorio *.</span>
   </div>
+  <div class="col-md-4">
+    <label class="control-label" [for]="'primerApellido' + ID">Primer Apellido del beneficiario<span
+      class="req">*</span>:</label>
+    <input [id]="'primerApellido' + ID" formControlName="primerApellido" class="form-control"
+           placeholder="Inserta el primer apellido del beneficiario" [maxlength]="20">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.primerApellido?.errors?.required  && (parentFormGroup.primerApellido?.dirty || parentFormGroup.primerApellido?.touched)">
+      Este campo es obligatorio *.</span>
+  </div>
+  <div class="col-md-4">
+    <label class="control-label" [for]="'segundoApellido' + ID">Segundo Apellido del beneficiario<span
+      class="req">*</span>:</label>
+    <input [id]="'segundoApellido' + ID" formControlName="segundoApellido" class="form-control"
+           placeholder="Inserta el segundo apellido del beneficiario" [maxlength]="20">
+    <span class="campo-obligatorio"
+          *ngIf="parentFormGroup.segundoApellido?.errors?.required  && (parentFormGroup.segundoApellido?.dirty || parentFormGroup.segundoApellido?.touched)">
+      Este campo es obligatorio *.</span>
+  </div>
+</div>
+<div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" [for]="'edad' + ID">Edad<span class="req">*</span>:</label>
     <input [id]="'edad' + ID" class="form-control" placeholder="Inserta la edad" formControlName="edad" [maxlength]="3"
@@ -25,20 +45,20 @@
           *ngIf="parentFormGroup.parentesco?.errors?.required  && (parentFormGroup.parentesco?.dirty || parentFormGroup.parentesco?.touched)">
       Este campo es obligatorio *.</span>
   </div>
-</div>
-<div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" [for]="'curpBeneficiario' + ID">C.U.R.P<span class="req">*</span>:</label>
     <input [id]="'curpBeneficiario' + ID" class="form-control" formControlName="curp" placeholder="Inserta el C.U.R.P"
-           (blur)="validarCurp()">
+           (blur)="validarCurp()" [maxlength]="18">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.curp?.errors?.required  && (parentFormGroup.curp?.dirty || parentFormGroup.curp?.touched)">
       Este campo es obligatorio *.</span>
   </div>
+</div>
+<div class="row mb-3">
   <div class="col-md-4">
     <label class="control-label" [for]="'rfcBeneficiario' + ID">R.F.C.<span class="req">*</span>:</label>
     <input [id]="'rfcBeneficiario' + ID" class="form-control" formControlName="rfc" placeholder="Inserta el R.F.C"
-           (blur)="validarRfc()">
+           (blur)="validarRfc()" [maxlength]="13">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.rfc?.errors?.required  && (parentFormGroup.rfc?.dirty || parentFormGroup.rfc?.touched)">
       Este campo es obligatorio *.</span>
@@ -57,60 +77,66 @@
           *ngIf="parentFormGroup?.correo?.errors?.pattern && (parentFormGroup?.correo?.dirty || parentFormGroup?.correo?.touched)">
       El correo electrónico no es válido.</span>
   </div>
-</div>
-<div class="row mb-3">
-
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <label class="control-label" [for]="'telefono' + ID">Teléfono<span class="req">*</span>:</label>
-    <input [id]="'telefono' + ID" class="form-control" formControlName="telefono" placeholder="Inserta el telefono">
+    <input [id]="'telefono' + ID" class="form-control" formControlName="telefono" placeholder="Inserta el telefono"
+           [maxlength]="10">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.telefono?.errors?.required  && (parentFormGroup.telefono?.dirty || parentFormGroup.telefono?.touched)">
       Este campo es obligatorio *.</span>
   </div>
 </div>
-<ng-container *ngIf="tipo ==='persona'">
-  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0" >
-    <p-accordionTab header="Documentación requerida">
-<!--      <div class="row mb-3">-->
-<!--        <div class="col-md-4">-->
-<!--          <label class="control-label" for="numDoc">Número del documento<span class="req">*</span>:</label>-->
-<!--          <input id="numDoc" class="form-control" placeholder="Inserta la Matricula">-->
-<!--        </div>-->
-<!--        <div class="col-md-4">-->
-<!--          <label class="control-label" for="tipoDoc">Tipo del documento<span class="req">*</span>:</label>-->
-<!--          <p-dropdown id="tipoDoc" class="form-control" [options]="tipoDoc"-->
-<!--                      placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">-->
-<!--          </p-dropdown>-->
-
-<!--        </div>-->
-<!--        <div class="col-md-4">-->
-<!--          <label class="control-label" for="nombreDoc">Nombre del documento<span class="req">*</span>:</label>-->
-<!--          <input id="nombreDoc" class="form-control" placeholder="Inserta el C.U.R.P">-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="row mb-3">-->
-<!--        <div class="col-md-6">-->
-<!--          <label class="control-label" for="verDoc">Ver documento<span class="req">*</span>:</label>-->
-<!--          <input id="verDoc" class="form-control" placeholder="Inserta el nombre">-->
-<!--        </div>-->
-<!--        <div class="col-md-6">-->
-<!--          <label class="control-label" for="modificarDoc">Modificar Documento<span class="req">*</span>:</label>-->
-<!--          <input id="modificarDoc" class="form-control" placeholder="Inserta el primer Apellido">-->
-<!--        </div>-->
-<!--      </div>-->
-      <div class="row table-panel-row">
-        <div class="col-md-12 mt-4">
-          <p class="mensaje-cancelacion-orden font-14">Error al cargar la información.</p>
+<p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5 mt-3" [activeIndex]="0">
+  <p-accordionTab header="Documentación requerida">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" [for]="'numeroDocumento' + ID">Número del documento<span
+          class="req">*</span>:</label>
+        <input [id]="'numeroDocumento' + ID" class="form-control" placeholder="Inserta el número de documento"
+               formControlName="numeroDocumento">
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" [for]="'tipoDocumento' + ID">Tipo del documento<span
+          class="req">*</span>:</label>
+        <p-dropdown [id]="'tipoDocumento' + ID" class="form-control" [options]="tipoDoc"
+                    formControlName="tipoDocumento"
+                    placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" [for]="'nombreDocumento' + ID">Nombre del documento<span
+          class="req">*</span>:</label>
+        <input [id]="'nombreDocumento' + ID" class="form-control" placeholder="Inserta nombre del documento"
+               formControlName="nombreDocumento">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="verDoc">Ver documento<span class="req">*</span>:</label>
+        <div (click)="descargarArchivo()">
+          <input class="hidden" type="file" id="download-file" name="download-file" accept=".jpg, .jpeg, .png, .pdf">
+          <input id="verDoc" class="form-control" readonly/>
+          <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
         </div>
       </div>
-    </p-accordionTab>
-  </p-accordion>
-
-  <div class="row mt-3 mb-2">
-    <div class="col-md-12 flex justify-content-end mt-6 mb-4">
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="parentContainer.invalid"
-              (click)="guardarBeneficiario()">Guardar Información Beneficiario
-      </button>
+      <div class="col-md-6">
+        <label class="control-label" for="nuevoDocumento">Modificar Documento<span class="req">*</span>:</label>
+        <div (click)="handleClick('uploadFile')" class="file-container">
+          <input class="hidden" type="file" id="uploadFile" name="uploadFile" accept=".jpg, .jpeg, .png, .pdf"
+                 ngf-max-size="5MB" (change)="addAttachment($event)"/>
+          <input id="nuevoDocumento" class="form-control" formControlName="nuevoDocumento" readonly/>
+          <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+        </div>
+      </div>
     </div>
+  </p-accordionTab>
+</p-accordion>
+
+<div class="row mt-3 mb-2">
+  <div class="col-md-12 flex justify-content-end mt-6 mb-4">
+    <button type="submit" class="btn btn-primary btn-md ml-5"
+            [disabled]="(parentContainer.invalid || parentContainer.pristine ) && !archivoModificado"
+            (click)="guardarBeneficiario()">Guardar Información Beneficiario
+    </button>
   </div>
-</ng-container>
+</div>

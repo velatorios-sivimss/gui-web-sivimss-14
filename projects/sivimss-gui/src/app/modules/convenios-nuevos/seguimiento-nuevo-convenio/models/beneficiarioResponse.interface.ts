@@ -31,5 +31,10 @@ export interface BeneficiarioResponse {
   otroSexo: string,
   idParentesco: number,
   idPersona: number,
-  idDomicilio: number
+  idDomicilio: number,
+  idContratante: number,
+  docActa: number,
+  docIne: number,
+  nombreArchivo: string,
+  fechaNaciemiento: string
 }

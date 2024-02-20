@@ -34,5 +34,13 @@ export interface ConvenioPersona {
   segundoApellido: string,
   telCelular: string,
   telFijo: string,
-  tipoPaquete: string
+  tipoPaquete: string,
+  fechaNaciemiento: string,
+  idContratante: number,
+  idPromotor: number,
+  otroSexo: string,
+  idValidaDocumento: number,
+  nombreDocumentoCURP: string,
+  nombreDocumentoINE: string,
+  nombreDocumentoRFC: string
 }
