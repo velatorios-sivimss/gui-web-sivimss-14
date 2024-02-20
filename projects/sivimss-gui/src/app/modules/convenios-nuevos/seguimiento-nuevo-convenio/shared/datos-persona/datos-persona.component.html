@@ -208,13 +208,13 @@
             <label class="control-label" [for]="'numeroDocumentoINE' + ID">Número del documento<span
               class="req">*</span>:</label>
             <input [id]="'numeroDocumentoINE' + ID" class="form-control" placeholder="Inserta el número de documento"
-                   formControlName="numeroDocumento">
+                   formControlName="numeroDocumentoINE">
           </div>
           <div class="col-md-4">
             <label class="control-label" [for]="'tipoDocumentoINE' + ID">Tipo del documento<span
               class="req">*</span>:</label>
             <p-dropdown [id]="'tipoDocumentoINE' + ID" class="form-control" [options]="tipoDoc"
-                        formControlName="tipoDocumento"
+                        formControlName="tipoDocumentoINE"
                         placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
             </p-dropdown>
           </div>
@@ -222,12 +222,12 @@
             <label class="control-label" [for]="'nombreDocumentoINE' + ID">Nombre del documento<span
               class="req">*</span>:</label>
             <input [id]="'nombreDocumentoINE' + ID" class="form-control" placeholder="Inserta nombre del documento"
-                   formControlName="nombreDocumento">
+                   formControlName="nombreDocumentoINE">
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="control-label" for="verDoc">Ver documento<span class="req">*</span>:</label>
+            <label class="control-label" for="verDoc-INE">Ver documento<span class="req">*</span>:</label>
             <div (click)="descargarArchivo()">
               <input class="hidden" type="file" id="download-file-INE" name="download-file"
                      accept=".jpg, .jpeg, .png, .pdf">
@@ -236,11 +236,11 @@
             </div>
           </div>
           <div class="col-md-6">
-            <label class="control-label" for="nuevoDocumento">Modificar Documento<span class="req">*</span>:</label>
+            <label class="control-label" for="nuevoDocumentoINE">Modificar Documento<span class="req">*</span>:</label>
             <div (click)="handleClick('archivo')">
               <input class="hidden" type="file" id="upload-file-INE" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
                      ngf-max-size="5MB" (change)="addAttachment($event)"/>
-              <input id="nuevoDocumento-INE" class="form-control" formControlName="nuevoDocumento" readonly/>
+              <input id="nuevoDocumentoINE" class="form-control" formControlName="nuevoDocumentoINE" readonly/>
               <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
             </div>
           </div>
@@ -252,13 +252,13 @@
             <label class="control-label" [for]="'numeroDocumentoCURP' + ID">Número del documento<span
               class="req">*</span>:</label>
             <input [id]="'numeroDocumentoCURP' + ID" class="form-control" placeholder="Inserta el número de documento"
-                   formControlName="numeroDocumento">
+                   formControlName="numeroDocumentoCURP">
           </div>
           <div class="col-md-4">
             <label class="control-label" [for]="'tipoDocumentoCURP' + ID">Tipo del documento<span
               class="req">*</span>:</label>
             <p-dropdown [id]="'tipoDocumentoCURP' + ID" class="form-control" [options]="tipoDoc"
-                        formControlName="tipoDocumento"
+                        formControlName="tipoDocumentoCURP"
                         placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
             </p-dropdown>
           </div>
@@ -266,7 +266,7 @@
             <label class="control-label" [for]="'nombreDocumentoCURP' + ID">Nombre del documento<span
               class="req">*</span>:</label>
             <input [id]="'nombreDocumentoCURP' + ID" class="form-control" placeholder="Inserta nombre del documento"
-                   formControlName="nombreDocumento">
+                   formControlName="nombreDocumentoCURP">
           </div>
         </div>
         <div class="row mb-3">
@@ -285,7 +285,7 @@
               <input class="hidden" type="file" id="upload-file-CURP" name="upload-file"
                      accept=".jpg, .jpeg, .png, .pdf"
                      ngf-max-size="5MB" (change)="addAttachment($event)"/>
-              <input id="nuevoDocumentoCURP" class="form-control" formControlName="nuevoDocumento" readonly/>
+              <input id="nuevoDocumentoCURP" class="form-control" formControlName="nuevoDocumentoCURP" readonly/>
               <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
             </div>
           </div>
@@ -297,13 +297,13 @@
             <label class="control-label" [for]="'numeroDocumentoRFC' + ID">Número del documento<span
               class="req">*</span>:</label>
             <input [id]="'numeroDocumentoRFC' + ID" class="form-control" placeholder="Inserta el número de documento"
-                   formControlName="numeroDocumento">
+                   formControlName="numeroDocumentoRFC">
           </div>
           <div class="col-md-4">
             <label class="control-label" [for]="'tipoDocumentoRFC' + ID">Tipo del documento<span
               class="req">*</span>:</label>
             <p-dropdown [id]="'tipoDocumentoRFC' + ID" class="form-control" [options]="tipoDoc"
-                        formControlName="tipoDocumento"
+                        formControlName="tipoDocumentoRFC"
                         placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
             </p-dropdown>
           </div>
@@ -311,7 +311,7 @@
             <label class="control-label" [for]="'nombreDocumentoRFC' + ID">Nombre del documento<span
               class="req">*</span>:</label>
             <input [id]="'nombreDocumentoRFC' + ID" class="form-control" placeholder="Inserta nombre del documento"
-                   formControlName="nombreDocumento">
+                   formControlName="nombreDocumentoRFC">
           </div>
         </div>
         <div class="row mb-3">
@@ -329,7 +329,7 @@
             <div (click)="handleClick('archivo')">
               <input class="hidden" type="file" id="upload-file" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
                      ngf-max-size="5MB" (change)="addAttachment($event)"/>
-              <input id="nuevoDocumentoRFC" class="form-control" formControlName="nuevoDocumento" readonly/>
+              <input id="nuevoDocumentoRFC" class="form-control" formControlName="nuevoDocumentoRFC" readonly/>
               <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
             </div>
           </div>

@@ -194,6 +194,18 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         idSexo: [{value: this.convenioPersona.idSexo, disabled: true}],
         idValidaDocumento: [{value: this.convenioPersona.idValidaDocumento, disabled: true}],
         otroSexo: [{value: this.convenioPersona.otroSexo, disabled: true}],
+        numeroDocumentoINE: [{value: null, disabled: true}],
+        tipoDocumentoINE: [{value: 1, disabled: true}],
+        nombreDocumentoINE: [{value: null, disabled: true}],
+        nuevoDocumentoINE: [{value: null, disabled: false}],
+        numeroDocumentoCURP: [{value: null, disabled: true}],
+        tipoDocumentoCURP: [{value: 2, disabled: true}],
+        nombreDocumentoCURP: [{value: null, disabled: true}],
+        nuevoDocumentoCURP: [{value: null, disabled: false}],
+        numeroDocumentoRFC: [{value: null, disabled: true}],
+        tipoDocumentoRFC: [{value: 3, disabled: true}],
+        nombreDocumentoRFC: [{value: null, disabled: true}],
+        nuevoDocumentoRFC: [{value: null, disabled: false}],
       }),
       beneficiarios: this.formBuilder.array([])
     });
@@ -448,6 +460,18 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       idSexo: [{value: solicitante.idSexo, disabled: true}],
       idValidaDocumento: [{value: solicitante.idValidaDocumento, disabled: true}],
       otroSexo: [{value: solicitante.otroSexo, disabled: true}],
+      numeroDocumentoINE: [{value: null, disabled: true}],
+      tipoDocumentoINE: [{value: 1, disabled: true}],
+      nombreDocumentoINE: [{value: null, disabled: true}],
+      nuevoDocumentoINE: [{value: null, disabled: false}],
+      numeroDocumentoCURP: [{value: null, disabled: true}],
+      tipoDocumentoCURP: [{value: 2, disabled: true}],
+      nombreDocumentoCURP: [{value: null, disabled: true}],
+      nuevoDocumentoCURP: [{value: null, disabled: false}],
+      numeroDocumentoRFC: [{value: null, disabled: true}],
+      tipoDocumentoRFC: [{value: 3, disabled: true}],
+      nombreDocumentoRFC: [{value: null, disabled: true}],
+      nuevoDocumentoRFC: [{value: null, disabled: false}],
       beneficiarios: this.formBuilder.array([])
     });
     if (solicitante.beneficiarios) {
