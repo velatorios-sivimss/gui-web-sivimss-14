@@ -1,4 +1,4 @@
-import {Component, OnInit, Renderer2, ViewChild} from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { BusquedaConveniosPFServic } from './services/busqueda-convenios-pf.service';
 import {
@@ -8,14 +8,14 @@ import {
 import { LazyLoadEvent } from "primeng/api";
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { BusquedaPrevision } from './models/BusquedaPrevision.interface';
-import {TransaccionPago} from "../../models/transaccion-pago.interface";
-import {SolicitudPagos} from "../../models/solicitud-pagos.interface";
+import { TransaccionPago } from "../../models/transaccion-pago.interface";
+import { SolicitudPagos } from "../../models/solicitud-pagos.interface";
 import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 @Component({
   selector: 'app-consulta-convenio-prevision-funeraria',
@@ -44,15 +44,15 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   idConvenioPf: number | null = null;
   idVelatorio: number | null = null;
   nombreCompleto: string = '';
-  importe:number = 0;
+  importe: number = 0;
   constructor(
     private consultaConveniosService: BusquedaConveniosPFServic,
     private alertaService: AlertaService,
     private loaderService: LoaderService,
     private router: Router,
-  private rutaActiva: ActivatedRoute,
+    private rutaActiva: ActivatedRoute,
     private renderer: Renderer2,
-  ) {}
+  ) { }
   ngOnInit(): void {
     // this.busqueda();
   }
@@ -132,6 +132,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
 
   cargarScript(callback: () => void): void {
     const elementoId: string = 'realizar-pago';
+
     if (!document.getElementById(elementoId)) {
       const body: HTMLElement = document.body;
       const elemento_ref = this.renderer.createElement('script');
@@ -173,7 +174,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         const id = respuesta.datos.idPagoLinea;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
-        void this.router.navigate(['recibo-de-pago', id], {relativeTo: this.rutaActiva});
+        void this.router.navigate(['recibo-de-pago', id], { relativeTo: this.rutaActiva });
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -203,11 +204,13 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
     }
   }
 
-  iniciarPago(event: MouseEvent): void {
+  iniciarPago(): void {
     const elemento_ref = document.querySelector('.realizar-pago');
+    const e = document.getElementById('btn-realizar-pago');
     if (!elemento_ref) return;
     this.overlayPanel.hide();
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({referencia: 'NPF', monto: this.importe}));
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'NPF', monto: this.importe }));
+    e?.click();
   }
 
   abrirPanel(event: MouseEvent, itemConvenio: BusquedaPrevision): void {
@@ -223,12 +226,12 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
     if (idEstatus == 2 || idEstatus == 4) {
       this.descargarConvenio = true;
     }
-    if (idEstatus == 5){
+    if (idEstatus == 5) {
       this.realizarPago = true;
-      setTimeout(()=> {
-        this.cargarScript(() => {});
+      setTimeout(() => {
+        this.cargarScript(() => { });
         this.subscripcionMotorPagos()
-      },300)
+      }, 300)
     }
     this.overlayPanel.toggle(event);
   }
