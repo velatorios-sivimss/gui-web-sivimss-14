@@ -1,8 +1,3 @@
-export interface SolicitudActualizarPersona {
-  convenio: SolicitudActualizarSolicitante,
-  beneficiarios: SolicitudActualizarBeneficiario[];
-}
-
 export interface SolicitudActualizarSolicitante {
   idConvenioPF: number,
   idPersona: number,
@@ -27,17 +22,6 @@ export interface SolicitudActualizarSolicitante {
   estado: string,
   indEnfermedad: boolean,
   otraEnfermedad: string
-}
-
-export interface SolicitudActualizarBeneficiario {
-  idPersona: number,
-  idBeneficiario: number,
-  idParentesco: number,
-  nombre: string,
-  curp: string,
-  rfc: string,
-  correo: string,
-  telefono: string
 }
 
 export interface SolicitudBeneficiario {

@@ -39,7 +39,6 @@ export class DatosBeneficiarioComponent implements OnInit {
   parentContainer: ControlContainer = inject(ControlContainer);
 
   @Input() ID: string = '';
-  @Input() tipo: 'persona' | 'empresa' = 'empresa';
 
   parentesco: TipoDropdown[] = [];
 

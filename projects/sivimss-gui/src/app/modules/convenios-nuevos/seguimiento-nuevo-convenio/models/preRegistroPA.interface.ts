@@ -47,4 +47,5 @@ export interface PreRegistroPA {
   idPromotor: number,
   idPersonaContratante: number,
   idTipoPagoMensual: number,
+  idContraPaqPF: number
 }
