@@ -222,7 +222,7 @@ export class DatosBeneficiarioComponent implements OnInit {
       curp: this.parentContainer.control?.get('curp')?.value,
       documento: documento ? documento : null,
       fechaNaciemiento: this.parentContainer.control?.get('fechaNacimiento')?.value,
-      idContratanteBeneficiario: this.parentContainer.control?.get('idContraPaqPF')?.value,
+      idContratanteBeneficiario: this.parentContainer.control?.get('idBeneficiario')?.value,
       idEstado: idEstado === 0 ? null : idEstado,
       idPais: idPais === 0 ? null : idPais,
       idPersona: this.parentContainer.control?.get('idPersona')?.value,
