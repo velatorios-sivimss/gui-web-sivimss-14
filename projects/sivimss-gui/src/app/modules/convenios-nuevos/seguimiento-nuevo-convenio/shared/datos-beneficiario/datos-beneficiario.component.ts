@@ -54,8 +54,8 @@ export class DatosBeneficiarioComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private mensajesSistemaService: MensajesSistemaService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
-              private alertaService: AlertaService,
               private renderer: Renderer2,
+              private alertaService: AlertaService,
               private el: ElementRef,
               private cdr: ChangeDetectorRef
   ) {
@@ -236,7 +236,8 @@ export class DatosBeneficiarioComponent implements OnInit {
       segunApe: this.parentContainer.control?.get('segundoApellido')?.value,
       telefono: this.parentContainer.control?.get('telefono')?.value,
       validaActa: (documento && edad < 18),
-      validaIne: (documento && edad >= 18)
+      validaIne: (documento && edad >= 18),
+      idParentesco: this.parentContainer.control?.get('parentesco')?.value,
     }
   }
 

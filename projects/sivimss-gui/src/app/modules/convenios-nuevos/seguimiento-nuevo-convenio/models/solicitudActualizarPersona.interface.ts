@@ -17,7 +17,8 @@ export interface SolicitudBeneficiario {
   idEstado: number,
   telefono: string,
   correo: string,
-  idPersona: number
+  idPersona: number,
+  idParentesco: number
 }
 
 export interface SolicitudEmpresa {

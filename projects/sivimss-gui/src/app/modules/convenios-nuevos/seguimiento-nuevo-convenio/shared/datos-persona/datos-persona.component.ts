@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, inject, Input, OnInit} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
@@ -64,14 +64,36 @@ export class DatosPersonaComponent implements OnInit {
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
               private mensajesSistemaService: MensajesSistemaService,
               private alertaService: AlertaService,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private el: ElementRef,
+              private cdr: ChangeDetectorRef) {
     this.cargarCatalogosLocalStorage();
   }
 
   ngOnInit(): void {
     this.cargarValidacionesIniciales();
     this.cargarCatalogosAdicionales();
+    this.cambiarValorInputDescarga();
     this.cargarCP(true);
+  }
+
+  cambiarValorInputDescarga(): void {
+    const verDocINE = this.el.nativeElement.querySelector('#verDocINE') as HTMLInputElement;
+    const verDocCURP = this.el.nativeElement.querySelector('#verDocCURP') as HTMLInputElement;
+    const verDocRFC = this.el.nativeElement.querySelector('#verDocRFC') as HTMLInputElement;
+    const nombreCURP = this.parentContainer.control?.get('nombreDocumentoCURP')?.value;
+    const nombreINE = this.parentContainer.control?.get('nombreDocumentoINE')?.value;
+    const nombreRFC = this.parentContainer.control?.get('nombreDocumentoRFC')?.value;
+    if (verDocINE) {
+      verDocINE.value = nombreINE;
+    }
+    if (verDocCURP) {
+      verDocCURP.value = nombreCURP;
+    }
+    if (verDocRFC) {
+      verDocRFC.value = nombreRFC;
+    }
+    this.cdr.detectChanges();
   }
 
   cargarCatalogosAdicionales(): void {
