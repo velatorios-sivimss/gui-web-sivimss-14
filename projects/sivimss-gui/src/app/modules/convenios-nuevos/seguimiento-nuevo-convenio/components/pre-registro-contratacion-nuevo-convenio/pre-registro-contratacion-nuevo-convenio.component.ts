@@ -11,13 +11,8 @@ import {ConvenioEmpresa} from "../../models/convenioEmpresa.interface";
 import {BeneficiarioResponse} from "../../models/beneficiarioResponse.interface";
 import {PreRegistroPA} from "../../models/preRegistroPA.interface";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {delay, finalize} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
-import {
-  SolicitudActualizarBeneficiario,
-  SolicitudActualizarPersona,
-  SolicitudActualizarSolicitante
-} from "../../models/solicitudActualizarPersona.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
@@ -27,19 +22,19 @@ import {
   SustitutoBeneficiario
 } from "../../models/solicitudActualizarConvenioPA.interface";
 import * as moment from "moment";
+import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
   templateUrl: './pre-registro-contratacion-nuevo-convenio.component.html',
   styleUrls: ['./pre-registro-contratacion-nuevo-convenio.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 export class PreRegistroContratacionNuevoConvenioComponent {
 
   contratacionNuevoConvenioForm!: FormGroup;
 
   readonly POSICION_CONVENIO: number = 0;
-  readonly POSICION_PAQUETES: number = 1;
   readonly POSICION_PROMOTORES: number = 2;
   readonly POSICION_BENEFICIARIO: number = 3;
 
@@ -55,9 +50,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   solicitantes: PreRegistroPA[] = [];
   beneficiariosEmpresa: BeneficiarioResponse[] = [];
 
-  preRegistroSiguiente: boolean = false;
   folio: string = '';
-  nombresBeneficiario: string[] = [];
   nombresSolicitantes: string[] = [];
   tipoConvenio: string = '';
   idConvenio: string = '';
@@ -190,8 +183,31 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         correoElectronico: [{value: this.convenioPersona?.correo, disabled: false}, [Validators.required]],
         telefono: [{value: this.convenioPersona?.telCelular, disabled: false}, [Validators.required]],
         enfermedadPreExistente: [{value: +this.convenioPersona?.enfermedadPre, disabled: false}, [Validators.required]],
+        tipoPaquete: [{value: this.convenioPersona?.idPaquete, disabled: false}, [Validators.required]],
+        fechaNaciemiento: [{value: this.convenioPersona.fechaNaciemiento, disabled: true}],
+        idContraPaqPF: [{value: this.convenioPersona.idContraPaqPF, disabled: true}],
+        idContrantante: [{value: this.convenioPersona.idContrantante, disabled: true}],
+        idConvenioPF: [{value: this.idConvenio, disabled: true}],
+        idDomicilio: [{value: this.convenioPersona.idDomicilio, disabled: true}],
+        idPersona: [{value: this.convenioPersona.idPersona, disabled: true}],
+        idPromotor: [{value: this.convenioPersona.idPromotor, disabled: true}],
+        idSexo: [{value: this.convenioPersona.idSexo, disabled: true}],
+        idValidaDocumento: [{value: this.convenioPersona.idValidaDocumento, disabled: true}],
+        otroSexo: [{value: this.convenioPersona.otroSexo, disabled: true}],
+        numeroDocumentoINE: [{value: null, disabled: true}],
+        tipoDocumentoINE: [{value: 1, disabled: true}],
+        nombreDocumentoINE: [{value: this.convenioPersona.nombreDocumentoINE, disabled: true}],
+        nuevoDocumentoINE: [{value: null, disabled: false}],
+        numeroDocumentoCURP: [{value: null, disabled: true}],
+        tipoDocumentoCURP: [{value: 2, disabled: true}],
+        nombreDocumentoCURP: [{value: this.convenioPersona.nombreDocumentoCURP, disabled: true}],
+        nuevoDocumentoCURP: [{value: null, disabled: false}],
+        numeroDocumentoRFC: [{value: null, disabled: true}],
+        tipoDocumentoRFC: [{value: 3, disabled: true}],
+        nombreDocumentoRFC: [{value: this.convenioPersona.nombreDocumentoRFC, disabled: true}],
+        nuevoDocumentoRFC: [{value: null, disabled: false}],
+        idContratante: [{value: this.convenioPersona.idContratante, disabled: false}],
       }),
-      tipoPaquete: [{value: this.convenioPersona?.idPaquete, disabled: false}, [Validators.required]],
       beneficiarios: this.formBuilder.array([])
     });
     if (!this.convenioPersona) {
@@ -204,6 +220,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   inicializarFormularioEmpresa(): void {
     this.contratacionNuevoConvenioForm = this.formBuilder.group({
       empresa: this.formBuilder.group({
+        idConvenioPF: [{value: this.convenioEmpresa.idConvenio, disabled: true}],
+        idDomicilio: [{value: this.convenioEmpresa.idDomicilio, disabled: true}],
+        idEmpresa: [{value: this.convenioEmpresa.idEmpresa, disabled: true}],
         nombre: [{value: this.convenioEmpresa.nombre, disabled: false}, [Validators.required]],
         razonSocial: [{value: this.convenioEmpresa.razonSocial, disabled: false}, [Validators.required]],
         rfc: [{value: this.convenioEmpresa.rfc, disabled: false}, [Validators.required]],
@@ -373,9 +392,11 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   agregarBeneficiario(beneficiario: BeneficiarioResponse): void {
-    this.nombresBeneficiario.push(beneficiario.nombre);
+    const tipoDocumento: number = beneficiario.docIne === 1 ? 1 : 4
     const beneficiarioForm: FormGroup = this.formBuilder.group({
       nombre: [{value: beneficiario.nombre, disabled: false}, [Validators.required]],
+      primerApellido: [{value: beneficiario.primerApellido, disabled: false}, [Validators.required]],
+      segundoApellido: [{value: beneficiario.segundoApellido, disabled: false}, [Validators.required]],
       curp: [{value: beneficiario.curp, disabled: false}, [Validators.required]],
       rfc: [{value: beneficiario.rfc, disabled: false}, [Validators.required]],
       correo: [{value: beneficiario.correo, disabled: false},
@@ -385,6 +406,18 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       parentesco: [{value: beneficiario.idParentesco, disabled: false}, [Validators.required]],
       idBeneficiario: [{value: beneficiario.idBeneficiario, disabled: false}],
       idPersona: [{value: beneficiario.idPersona, disabled: false}],
+      idContratante: [{value: beneficiario.idContratante, disabled: false}],
+      idEstado: [{value: beneficiario.idEstado, disabled: false}],
+      idPais: [{value: beneficiario.idPais, disabled: false}],
+      idSexo: [{value: beneficiario.idSexo, disabled: false}],
+      otroSexo: [{value: beneficiario.otroSexo, disabled: false}],
+      fechaNacimiento: [{value: beneficiario.fechaNaciemiento, disabled: false}],
+      numeroDocumento: [{value: null, disabled: true}],
+      tipoDocumento: [{value: tipoDocumento, disabled: true}],
+      nombreDocumento: [{value: beneficiario.nombreArchivo, disabled: true}],
+      nuevoDocumento: [{value: null, disabled: false}],
+      idContraPaqPF: [{value: this.convenioPersona.idContraPaqPF, disabled: false}],
+      documento: [{value: null, disabled: false}],
     });
     if (this.beneficiarios) {
       this.beneficiarios.push(beneficiarioForm);
@@ -412,27 +445,64 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       nacionalidad: [{value: nacionalidad, disabled: false}, [Validators.required]],
       paisNacimiento: [{value: solicitante.idPais, disabled: false}, [Validators.required]],
       lugarNacimiento: [{value: solicitante.idLugarNac, disabled: false}, [Validators.required]],
-      correoElectronico: [{
-        value: solicitante.correo,
-        disabled: false
-      }, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
+      correoElectronico: [{value: solicitante.correo, disabled: false},
+        [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
       telefono: [{value: solicitante.telefono, disabled: false}, [Validators.required]],
+      enfermedadPreExistente: [{value: +solicitante.enfermedadPre, disabled: true}],
       tipoPaquete: [{value: solicitante.idPaquete, disabled: false}, [Validators.required]],
+      fechaNaciemiento: [{value: solicitante.fechaNaciemiento, disabled: true}],
+      idContraPaqPF: [{value: solicitante.idContraPaqPF, disabled: true}],
+      idContrantante: [{value: solicitante.idContratante, disabled: true}],
+      idConvenioPF: [{value: this.idConvenio, disabled: true}],
+      idDomicilio: [{value: solicitante.idDomicilio, disabled: true}],
+      idPersona: [{value: solicitante.idPersona, disabled: true}],
+      idPromotor: [{value: solicitante.idPromotor, disabled: true}],
+      idSexo: [{value: solicitante.idSexo, disabled: true}],
+      idValidaDocumento: [{value: solicitante.idValidaDocumento, disabled: true}],
+      otroSexo: [{value: solicitante.otroSexo, disabled: true}],
+      numeroDocumentoINE: [{value: null, disabled: true}],
+      tipoDocumentoINE: [{value: 1, disabled: true}],
+      nombreDocumentoINE: [{value: solicitante.nombreDocumentoINE, disabled: true}],
+      nuevoDocumentoINE: [{value: null, disabled: false}],
+      numeroDocumentoCURP: [{value: null, disabled: true}],
+      tipoDocumentoCURP: [{value: 2, disabled: true}],
+      nombreDocumentoCURP: [{value: solicitante.nombreDocumentoCURP, disabled: true}],
+      nuevoDocumentoCURP: [{value: null, disabled: false}],
+      numeroDocumentoRFC: [{value: null, disabled: true}],
+      tipoDocumentoRFC: [{value: 3, disabled: true}],
+      nombreDocumentoRFC: [{value: solicitante.nombreDocumentoRFC, disabled: true}],
+      nuevoDocumentoRFC: [{value: null, disabled: false}],
+      idContratante: [{value: solicitante.idContrantante, disabled: false}],
       beneficiarios: this.formBuilder.array([])
     });
     if (solicitante.beneficiarios) {
       for (let beneficiario of solicitante.beneficiarios) {
+        const tipoDocumento: number = beneficiario.docIne === 1 ? 1 : 2
         const beneficiarioForm: FormGroup = this.formBuilder.group({
           nombre: [{value: beneficiario.nombre, disabled: false}, [Validators.required]],
+          primerApellido: [{value: beneficiario.primerApellido, disabled: false}, [Validators.required]],
+          segundoApellido: [{value: beneficiario.segundoApellido, disabled: false}, [Validators.required]],
           curp: [{value: beneficiario.curp, disabled: false}, [Validators.required]],
           rfc: [{value: beneficiario.rfc, disabled: false}, [Validators.required]],
-          correo: [{
-            value: beneficiario.correo,
-            disabled: false
-          }, [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
+          correo: [{value: beneficiario.correo, disabled: false},
+            [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
           telefono: [{value: beneficiario.telefono, disabled: false}, [Validators.required]],
           edad: [{value: beneficiario.edad, disabled: false}, [Validators.required]],
-          parentesco: [{value: null, disabled: false}, [Validators.required]],
+          parentesco: [{value: beneficiario.idParentesco, disabled: false}, [Validators.required]],
+          idBeneficiario: [{value: beneficiario.idBeneficiario, disabled: false}],
+          idPersona: [{value: beneficiario.idPersona, disabled: false}],
+          idContratante: [{value: beneficiario.idContratante, disabled: false}],
+          idEstado: [{value: beneficiario.idEstado, disabled: false}],
+          idPais: [{value: beneficiario.idPais, disabled: false}],
+          idSexo: [{value: beneficiario.idSexo, disabled: false}],
+          otroSexo: [{value: beneficiario.otroSexo, disabled: false}],
+          fechaNacimiento: [{value: beneficiario.fechaNaciemiento, disabled: false}],
+          numeroDocumento: [{value: null, disabled: true}],
+          tipoDocumento: [{value: tipoDocumento, disabled: true}],
+          nombreDocumento: [{value: beneficiario.nombreArchivo, disabled: true}],
+          nuevoDocumento: [{value: null, disabled: false}],
+          documento: [{value: null, disabled: false}],
+          idContraPaqPF: [{value: solicitante.idContraPaqPF, disabled: false}],
         });
         if (solicitanteForm.get('beneficiarios')) {
           (solicitanteForm.get('beneficiarios') as FormArray).push(beneficiarioForm);
@@ -449,23 +519,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   aceptar(): void {
-    if (+this.tipoConvenio === 3) {
-      this.guardarContratacionPersona();
+    if (![3, 2, 1].includes(+this.tipoConvenio)) return;
+    if ([3, 2].includes(+this.tipoConvenio)) {
+      this.guardarContratacion();
       return;
     }
-    if (+this.tipoConvenio === 1) {
-      this.guardarContratacionPA();
-      return;
-    }
-    this.cargadorService.activar();
-    delay(3000)
-    this.cargadorService.desactivar();
-    this.alertaService.mostrar(TipoAlerta.Error, 'Error al guardar la información. Intenta nuevamente.')
-  }
-
-  cancelar() {
-    //agregar Mensaje
-    this.preRegistroSiguiente = false;
+    this.guardarContratacionPA();
   }
 
   modificarSustituto(): void {
@@ -587,11 +646,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     return form.get('beneficiarios') as FormArray;
   }
 
-  guardarContratacionPersona(): void {
-    // const solicitud: SolicitudActualizarPersona = {
-    //   convenio: this.obtenerDatosSolicitante(),
-    //   beneficiarios: this.obtenerDatosBeneficiarios()
-    // }
+  guardarContratacion(): void {
     this.cargadorService.activar();
     this.seguimientoConvenioService.actualizaEstatusConvenioPersona(+this.idConvenio).pipe(
       finalize(() => this.cargadorService.desactivar())
@@ -637,52 +692,6 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información');
   }
 
-  obtenerDatosSolicitante(): SolicitudActualizarSolicitante {
-    return {
-      calle: this.contratacionNuevoConvenioForm.controls["persona"].get('calle')?.value,
-      colonia: this.contratacionNuevoConvenioForm.controls["persona"].get('colonia')?.value,
-      correo: this.contratacionNuevoConvenioForm.controls["persona"].get('correoElectronico')?.value,
-      cp: this.contratacionNuevoConvenioForm.controls["persona"].get('codigoPostal')?.value,
-      curp: this.contratacionNuevoConvenioForm.controls["persona"].get('curp')?.value,
-      estado: this.contratacionNuevoConvenioForm.controls["persona"].get('estado')?.value,
-      idContraPaqPF: this.convenioPersona.idContraPaqPF,
-      idConvenioPF: +this.idConvenio,
-      idDomicilio: this.convenioPersona.idDomicilio,
-      idEstado: this.contratacionNuevoConvenioForm.controls["persona"].get('lugarNacimiento')?.value,
-      idPais: this.contratacionNuevoConvenioForm.controls["persona"].get('paisNacimiento')?.value,
-      idPaquete: this.contratacionNuevoConvenioForm.get('tipoPaquete')?.value,
-      idPersona: this.convenioPersona.idPersona,
-      indEnfermedad: false,
-      municipio: this.contratacionNuevoConvenioForm.controls["persona"].get('municipio')?.value,
-      nombre: this.contratacionNuevoConvenioForm.controls["persona"].get('nombres')?.value,
-      numExt: this.contratacionNuevoConvenioForm.controls["persona"].get('numeroExterior')?.value,
-      numInt: this.contratacionNuevoConvenioForm.controls["persona"].get('numeroInterior')?.value,
-      otraEnfermedad: "",
-      primerApe: this.contratacionNuevoConvenioForm.controls["persona"].get('primerApellido')?.value,
-      rfc: this.contratacionNuevoConvenioForm.controls["persona"].get('rfc')?.value,
-      segunApe: this.contratacionNuevoConvenioForm.controls["persona"].get('segundoApellido')?.value,
-      telefono: this.contratacionNuevoConvenioForm.controls["persona"].get('telefono')?.value
-    }
-  }
-
-  obtenerDatosBeneficiarios(): SolicitudActualizarBeneficiario[] {
-    const beneficiarios: SolicitudActualizarBeneficiario[] = [];
-    const form = this.contratacionNuevoConvenioForm.getRawValue();
-    for (let beneficiario of form.beneficiarios) {
-      beneficiarios.push({
-        correo: beneficiario.correo,
-        curp: beneficiario.curp,
-        idBeneficiario: beneficiario.idBeneficiario,
-        idParentesco: beneficiario.parentesco,
-        idPersona: beneficiario.idPersona,
-        nombre: beneficiario.nombre,
-        rfc: beneficiario.rfc,
-        telefono: beneficiario.telefono
-      })
-    }
-    return beneficiarios;
-  }
-
   obtenerDatosPlan(): PlanPA {
     const fecNac = this.contratacionNuevoConvenioForm.controls["titular"].get('fechaNacimiento')?.value
     const idEstado = +this.contratacionNuevoConvenioForm.controls["titular"].get('lugarNacimiento')?.value;
@@ -693,7 +702,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       cp: this.contratacionNuevoConvenioForm.controls["titular"].get('cp')?.value,
       curp: this.contratacionNuevoConvenioForm.controls["titular"].get('curp')?.value,
       estado: this.contratacionNuevoConvenioForm.controls["titular"].get('estado')?.value,
-      fecNac:  moment(fecNac).format('YYYY-MM-DD'),
+      fecNac: moment(fecNac).format('YYYY-MM-DD'),
       idConvenio: +this.idConvenio,
       idDomicilio: this.titularPA.idDomicilio,
       idEstado: idEstado === 0 ? null : idEstado,

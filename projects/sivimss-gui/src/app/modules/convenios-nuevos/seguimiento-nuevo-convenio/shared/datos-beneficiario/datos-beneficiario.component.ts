@@ -1,10 +1,10 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, inject, Input, OnInit, Renderer2} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
 import {CommonModule} from "@angular/common";
 import {CalendarModule} from "primeng/calendar";
-import {delay, finalize} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
@@ -18,6 +18,8 @@ import * as moment from 'moment';
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {SolicitudBeneficiario} from "../../models/solicitudActualizarPersona.interface";
 import {AccordionModule} from "primeng/accordion";
+import {SolicitudDocumento} from "../../models/solicitudDocumento.interface";
+
 
 @Component({
   selector: 'app-datos-beneficiario',
@@ -35,25 +37,33 @@ import {AccordionModule} from "primeng/accordion";
 export class DatosBeneficiarioComponent implements OnInit {
 
   parentContainer: ControlContainer = inject(ControlContainer);
+
   @Input() ID: string = '';
-  @Input() tipo: 'persona' | 'empresa' = 'empresa';
+
   parentesco: TipoDropdown[] = [];
 
-  tipoDoc: TipoDropdown[] = [{
-    value: 1, label: 'INE del afiliado',
-  }, {
-    value: 2, label: 'Acta de nacimiento del afiliadp'
-  }]
+  tipoDoc: TipoDropdown[] = [
+    {value: 1, label: 'INE del beneficiario'},
+    {value: 4, label: 'Acta de nacimiento del beneficiario'}
+  ];
+
+  inputSeleccionado: string = '';
+  archivoModificado: boolean = false;
 
   constructor(private cargadorService: LoaderService,
               private activatedRoute: ActivatedRoute,
               private mensajesSistemaService: MensajesSistemaService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
-              private alertaService: AlertaService,) {
+              private renderer: Renderer2,
+              private alertaService: AlertaService,
+              private el: ElementRef,
+              private cdr: ChangeDetectorRef
+  ) {
   }
 
   ngOnInit(): void {
     this.cargarCatalogos();
+    this.cambiarValorInputDescarga();
   }
 
   cargarCatalogos(): void {
@@ -61,6 +71,15 @@ export class DatosBeneficiarioComponent implements OnInit {
     const POSICION_PARENTESCO: number = 2;
     const parentesco = respuesta[POSICION_PARENTESCO].datos;
     this.parentesco = mapearArregloTipoDropdown(parentesco, 'nombreParentesco', 'idParentesco');
+  }
+
+  cambiarValorInputDescarga(): void {
+    const verDocInput = this.el.nativeElement.querySelector('#verDoc') as HTMLInputElement;
+    const nombre = this.parentContainer.control?.get('nombreDocumento')?.value;
+    if (verDocInput) {
+      verDocInput.value = nombre;
+      this.cdr.detectChanges();
+    }
   }
 
   get parentFormGroup() {
@@ -178,39 +197,132 @@ export class DatosBeneficiarioComponent implements OnInit {
   }
 
   guardarBeneficiario(): void {
-    const solicitud = this.crearSolicitudBeneficiario();
+    const solicitud: SolicitudBeneficiario = this.crearSolicitudBeneficiario();
     this.cargadorService.activar();
     this.seguimientoNuevoConvenioService.guardarBeneficiario(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.alertaService.mostrar(TipoAlerta.Exito, `Información de beneficiario actualizada satisfactoriamente`);
+        this.parentContainer.control?.markAsPristine();
       },
       error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
     });
   }
 
   crearSolicitudBeneficiario(): SolicitudBeneficiario {
+    const idEstado = this.parentContainer.control?.get('idEstado')?.value;
+    const idPais = this.parentContainer.control?.get('idPais')?.value;
+    const idSexo = this.parentContainer.control?.get('idSexo')?.value;
+    const edad = this.parentContainer.control?.get('edad')?.value;
+    const documento = this.parentContainer.control?.get('documento')?.value;
+    const nuevoDocumento = this.parentContainer.control?.get('nuevoDocumento')?.value;
     return {
       correo: this.parentContainer.control?.get('correo')?.value,
       curp: this.parentContainer.control?.get('curp')?.value,
-      documento: null,
-      fechaNaciemiento: "",
-      idContratanteBeneficiario: 0,
-      idEstado: 0,
-      idPais: 0,
-      idPersona: 0,
-      idSexo: 0,
-      nombre: "",
-      nombreActa: null,
-      nombreIne: null,
-      otroSexo: "",
-      primerApe: "",
+      documento: documento ? documento : null,
+      fechaNaciemiento: this.parentContainer.control?.get('fechaNacimiento')?.value,
+      idContratanteBeneficiario: this.parentContainer.control?.get('idBeneficiario')?.value,
+      idEstado: idEstado === 0 ? null : idEstado,
+      idPais: idPais === 0 ? null : idPais,
+      idPersona: this.parentContainer.control?.get('idPersona')?.value,
+      idSexo: idSexo === 0 ? null : idSexo,
+      nombre: this.parentContainer.control?.get('nombre')?.value,
+      nombreActa: (documento && edad < 18) ? nuevoDocumento : null,
+      nombreIne: (documento && edad >= 18) ? nuevoDocumento : null,
+      otroSexo: this.parentContainer.control?.get('otroSexo')?.value,
+      primerApe: this.parentContainer.control?.get('primerApellido')?.value,
       rfc: this.parentContainer.control?.get('rfc')?.value,
-      segunApe: "",
+      segunApe: this.parentContainer.control?.get('segundoApellido')?.value,
       telefono: this.parentContainer.control?.get('telefono')?.value,
-      validaActa: false,
-      validaIne: false
+      validaActa: (documento && edad < 18),
+      validaIne: (documento && edad >= 18),
+      idParentesco: this.parentContainer.control?.get('parentesco')?.value,
+    }
+  }
+
+  handleClick(controlName: string): void {
+    const elements = document.getElementById(controlName);
+    this.inputSeleccionado = controlName;
+    elements?.click();
+  }
+
+  addAttachment(fileInput: any): void {
+    const extensionesPermitidas: string[] = ['pdf', 'gif', 'jpeg', 'jpg'];
+    const maxSize: number = 5000000;
+    const fileReaded = fileInput.target.files[0];
+    const tipoArchivo = fileReaded.type.split('/');
+    if (!extensionesPermitidas.includes(tipoArchivo[1])) {
+      this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(97));
+      return
+    }
+    if (fileReaded.size > maxSize) {
+      const tamanioEnMb: number = maxSize / 1000000;
+      const alerta: string = `El tamaño máximo permititido es de ${tamanioEnMb} MB`
+      this.alertaService.mostrar(TipoAlerta.Info, alerta);
+      return;
+    }
+    const edad = this.parentContainer.control?.get('edad')?.value;
+    const curp = this.parentContainer.control?.get('curp')?.value;
+
+    const nombreINE: string | null = edad >= 18 ? 'INE-' + curp + '.' + tipoArchivo[1] : null;
+    const nombreActa: string | null = edad < 18 ? 'ACTA-' + curp + '.' + tipoArchivo[1] : null;
+    if (nombreINE) {
+      this.parentContainer.control?.get('nuevoDocumento')?.setValue(nombreINE);
+    }
+    if (nombreActa) {
+      this.parentContainer.control?.get('nuevoDocumento')?.setValue(nombreActa);
+    }
+    this.archivoModificado = true;
+    this.getBase64(fileReaded).then((data: any): void => {
+      this.inputSeleccionado = data;
+      this.parentContainer.control?.get('documento')?.setValue(data);
+    });
+  }
+
+  getBase64(file: any) {
+    return new Promise((resolve, reject): void => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
+  descargarArchivo(): void {
+    const solicitud: SolicitudDocumento = this.generarSolicitudDescarga();
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.descargarDocumento(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta) => {
+        if (!respuesta.datos) {
+          this.alertaService.mostrar(TipoAlerta.Error, 'Error en la descarga del documento.Intenta nuevamente.');
+          return;
+        }
+        let link = this.renderer.createElement('a');
+        const nombre = this.parentContainer.control?.get('nombreDocumento')?.value;
+        const [nombreDocumento] = nombre.split('.');
+        link.setAttribute('download', nombreDocumento);
+        link.setAttribute('href', respuesta.datos);
+        link.click();
+        link.remove();
+      },
+      error: (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    });
+  }
+
+  generarSolicitudDescarga(): SolicitudDocumento {
+    const tipoDocumento = this.parentContainer.control?.get('tipoDocumento')?.value;
+    return {
+      idContratante: this.parentContainer.control?.get('idContratante')?.value,
+      idPaqueteConvenio: this.parentContainer.control?.get('idContraPaqPF')?.value,
+      idPersona: this.parentContainer.control?.get('idPersona')?.value,
+      tipoDocumento,
+      tipoPersona: 2
     }
   }
 }

@@ -8,7 +8,8 @@
   </div>
   <div class="col-md-4">
     <label class="control-label" for="razonSocial">Razón social<span class="req">*</span>:</label>
-    <input id="razonSocial" class="form-control" formControlName="razonSocial" placeholder="Ingresa la razón social" [maxlength]="50">
+    <input id="razonSocial" class="form-control" formControlName="razonSocial" placeholder="Ingresa la razón social"
+           [maxlength]="50">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.razonSocial?.errors?.required  && (parentFormGroup.razonSocial?.dirty || parentFormGroup.razonSocial?.touched)">
       Este campo es obligatorio *.</span>
@@ -91,7 +92,8 @@
   </div>
   <div class="col-md-4">
     <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
-    <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono" [maxlength]="10" numbersOnly>
+    <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono"
+           [maxlength]="10" numbersOnly>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.telefono?.errors?.required  && (parentFormGroup.telefono?.dirty || parentFormGroup.telefono?.touched)">
       Este campo es obligatorio *.</span>
@@ -107,5 +109,14 @@
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup?.correo?.errors?.pattern && (parentFormGroup?.correo?.dirty || parentFormGroup?.correo?.touched)">
       El correo electrónico no es válido.</span>
+  </div>
+</div>
+
+<div class="row mt-3 mb-2">
+  <div class="col-md-12 flex justify-content-end mt-6 mb-4">
+    <button type="submit" class="btn btn-primary btn-md ml-5"
+            [disabled]="parentContainer.invalid || parentContainer.pristine"
+            (click)="guardarEmpresa()">Guardar Información Empresa
+    </button>
   </div>
 </div>

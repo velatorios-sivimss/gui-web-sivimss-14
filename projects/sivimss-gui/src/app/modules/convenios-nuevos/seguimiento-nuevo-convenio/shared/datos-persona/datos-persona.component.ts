@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, inject, Input, OnInit, Renderer2} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
@@ -9,7 +9,7 @@ import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
 import {CATALOGO_ENFERMEDAD_PREEXISTENTE} from "../../../../convenios-prevision-funeraria/constants/catalogos-funcion";
-import {delay, finalize} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
@@ -17,14 +17,17 @@ import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {PATRON_CURP, PATRON_RFC} from "../../../../../utils/constantes";
-import * as moment from "moment/moment";
+import {AccordionModule} from "primeng/accordion";
+import {ActivatedRoute} from "@angular/router";
+import {SolicitudPersona} from "../../models/solicitudActualizarPersona.interface";
+import {SolicitudDocumento} from "../../models/solicitudDocumento.interface";
 
 @Component({
   selector: 'app-datos-persona',
   templateUrl: './datos-persona.component.html',
   styleUrls: ['./datos-persona.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, DropdownModule, UtileriaModule, CommonModule, CalendarModule],
+  imports: [ReactiveFormsModule, DropdownModule, UtileriaModule, CommonModule, CalendarModule, AccordionModule],
   viewProviders: [
     {
       provide: ControlContainer,
@@ -39,23 +42,69 @@ export class DatosPersonaComponent implements OnInit {
   enfermedades: TipoDropdown[] = CATALOGO_ENFERMEDAD_PREEXISTENTE;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   colonias: TipoDropdown[] = [];
+  paquetes: TipoDropdown[] = [];
+  readonly POSICION_PAQUETES: number = 1;
+
+  tipoDoc: TipoDropdown[] = [
+    {value: 1, label: 'INE del afiliado'},
+    {value: 2, label: 'CURP del afiliado'},
+    {value: 3, label: 'RFC del afiliado'}
+  ];
 
   parentContainer: ControlContainer = inject(ControlContainer);
 
   @Input() enfermedad: boolean = true;
   @Input() ID: string = '';
 
+  nombreCURP: string = '';
+  nombreINE: string = '';
+  nombreRFC: string = '';
+
   constructor(private autenticacionService: AutenticacionService,
               private cargadorService: LoaderService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
               private mensajesSistemaService: MensajesSistemaService,
-              private alertaService: AlertaService,) {
+              private alertaService: AlertaService,
+              private activatedRoute: ActivatedRoute,
+              private el: ElementRef,
+              private renderer: Renderer2,
+              private cdr: ChangeDetectorRef) {
     this.cargarCatalogosLocalStorage();
   }
 
   ngOnInit(): void {
     this.cargarValidacionesIniciales();
+    this.cargarCatalogosAdicionales();
+    this.cambiarValorInputDescarga();
     this.cargarCP(true);
+  }
+
+  cambiarValorInputDescarga(): void {
+    const verDocINE = this.el.nativeElement.querySelector('#verDocINE') as HTMLInputElement;
+    const verDocCURP = this.el.nativeElement.querySelector('#verDocCURP') as HTMLInputElement;
+    const verDocRFC = this.el.nativeElement.querySelector('#verDocRFC') as HTMLInputElement;
+    const nombreCURP = this.parentContainer.control?.get('nombreDocumentoCURP')?.value;
+    const nombreINE = this.parentContainer.control?.get('nombreDocumentoINE')?.value;
+    const nombreRFC = this.parentContainer.control?.get('nombreDocumentoRFC')?.value;
+    if (verDocINE) {
+      verDocINE.value = nombreINE;
+    }
+    if (verDocCURP) {
+      verDocCURP.value = nombreCURP;
+    }
+    if (verDocRFC) {
+      verDocRFC.value = nombreRFC;
+    }
+    this.cdr.detectChanges();
+  }
+
+  cargarCatalogosAdicionales(): void {
+    const registro = this.activatedRoute.snapshot.data["respuesta"];
+    const paquetes = registro[this.POSICION_PAQUETES].datos;
+    this.paquetes = mapearArregloTipoDropdown(paquetes, 'nombrePaquete', 'idPaquete');
+    this.nombreCURP = this.parentContainer.control?.get('nombreDocumentoCURP')?.value
+    this.nombreINE = this.parentContainer.control?.get('nombreDocumentoINE')?.value
+    this.nombreRFC = this.parentContainer.control?.get('nombreDocumentoRFC')?.value
   }
 
   cargarValidacionesIniciales(): void {
@@ -246,6 +295,122 @@ export class DatosPersonaComponent implements OnInit {
           TipoAlerta.Error,
           'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
         );
+    }
+  }
+
+  guardarSolicitante(): void {
+    const solicitud: SolicitudPersona = this.crearSolicitudPersona();
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.guardarSolicitante(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.alertaService.mostrar(TipoAlerta.Exito, `Información de solicitante actualizada satisfactoriamente`);
+        this.parentContainer.control?.markAsPristine();
+      },
+      error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
+    });
+  }
+
+  crearSolicitudPersona(): SolicitudPersona {
+    const idEstado = this.parentContainer.control?.get('lugarNacimiento')?.value;
+    const idPais = this.parentContainer.control?.get('paisNacimiento')?.value;
+    const idSexo = this.parentContainer.control?.get('idSexo')?.value;
+    return {
+      archivoCurp: null,
+      archivoIne: null,
+      archivoRfc: null,
+      calle: this.parentContainer.control?.get('calle')?.value,
+      colonia: this.parentContainer.control?.get('colonia')?.value,
+      correo: this.parentContainer.control?.get('correoElectronico')?.value,
+      cp: this.parentContainer.control?.get('codigoPostal')?.value,
+      curp: this.parentContainer.control?.get('curp')?.value,
+      estado: this.parentContainer.control?.get('estado')?.value,
+      fechaNaciemiento: this.parentContainer.control?.get('fechaNaciemiento')?.value,
+      idContraPaqPF: this.parentContainer.control?.get('idContraPaqPF')?.value,
+      idContrantante: this.parentContainer.control?.get('idContrantante')?.value,
+      idConvenioPF: this.parentContainer.control?.get('idConvenioPF')?.value,
+      idDomicilio: this.parentContainer.control?.get('idDomicilio')?.value,
+      idEnfermedad: this.parentContainer.control?.get('enfermedadPreExistente')?.value,
+      idEstado: idEstado === 0 ? null : idEstado,
+      idPais: idPais === 0 ? null : idPais,
+      idPaquete: this.parentContainer.control?.get('tipoPaquete')?.value,
+      idPersona: this.parentContainer.control?.get('idPersona')?.value,
+      idPromotor: this.parentContainer.control?.get('idPromotor')?.value,
+      idSexo: idSexo === 0 ? null : idSexo,
+      idValidaDocumento: this.parentContainer.control?.get('idValidaDocumento')?.value,
+      matricula: this.parentContainer.control?.get('matricula')?.value,
+      municipio: this.parentContainer.control?.get('municipio')?.value,
+      nombre: this.parentContainer.control?.get('nombres')?.value,
+      nombreCurp: null,
+      nombreIne: null,
+      nombreRfc: null,
+      numExt: this.parentContainer.control?.get('numeroExterior')?.value,
+      numInt: this.parentContainer.control?.get('numeroInterior')?.value,
+      otraEnfermedad: null,
+      otroSexo: this.parentContainer.control?.get('otroSexo')?.value,
+      primerApe: this.parentContainer.control?.get('primerApellido')?.value,
+      rfc: this.parentContainer.control?.get('rfc')?.value,
+      segunApe: this.parentContainer.control?.get('segundoApellido')?.value,
+      telefono: this.parentContainer.control?.get('telefono')?.value,
+      validaCurp: false,
+      validaIne: false,
+      validaRfc: false
+    }
+  }
+
+  addAttachment($event: Event) {
+
+  }
+
+  handleClick(archivo: string) {
+
+  }
+
+  descargarArchivo(tipoDocumento: number) {
+    const solicitud: SolicitudDocumento = this.generarSolicitudDescarga(tipoDocumento);
+    this.cargadorService.activar();
+    this.seguimientoNuevoConvenioService.descargarDocumento(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta) => {
+        if (!respuesta.datos) {
+          this.alertaService.mostrar(TipoAlerta.Error, 'Error en la descarga del documento.Intenta nuevamente.');
+          return;
+        }
+        let link = this.renderer.createElement('a');
+        const nombreDocumentoRFC = this.parentContainer.control?.get('nombreDocumentoRFC')?.value;
+        const nombreDocumentoINE = this.parentContainer.control?.get('nombreDocumentoINE')?.value;
+        const nombreDocumentoCURP = this.parentContainer.control?.get('nombreDocumentoCURP')?.value;
+        let nombreDocumento: string = 'documento';
+        if (tipoDocumento === 1) {
+          nombreDocumento = nombreDocumentoCURP.split('.');
+        }
+        if (tipoDocumento === 2) {
+          nombreDocumento = nombreDocumentoINE.split('.');
+        }
+        if (tipoDocumento === 3) {
+          nombreDocumento = nombreDocumentoRFC.split('.');
+        }
+        link.setAttribute('download', nombreDocumento);
+        link.setAttribute('href', respuesta.datos);
+        link.click();
+        link.remove();
+      },
+      error: (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    });
+  }
+
+  generarSolicitudDescarga(tipoDocumento: number): SolicitudDocumento {
+    return {
+      idContratante: this.parentContainer.control?.get('idContrantante')?.value,
+      idPaqueteConvenio: this.parentContainer.control?.get('idContraPaqPF')?.value,
+      idPersona: this.parentContainer.control?.get('idPersona')?.value,
+      tipoDocumento,
+      tipoPersona: 1
     }
   }
 }
