@@ -113,7 +113,11 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="verDoc">Ver documento<span class="req">*</span>:</label>
-        <input id="verDoc" class="form-control" placeholder="Inserta el nombre" (click)="descargarArchivo()">
+        <div (click)="descargarArchivo()">
+          <input class="hidden" type="file" id="download-file" name="download-file" accept=".jpg, .jpeg, .png, .pdf">
+          <input id="verDoc" class="form-control" formControlName="documento" readonly/>
+          <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+        </div>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nuevoDocumento">Modificar Documento<span class="req">*</span>:</label>

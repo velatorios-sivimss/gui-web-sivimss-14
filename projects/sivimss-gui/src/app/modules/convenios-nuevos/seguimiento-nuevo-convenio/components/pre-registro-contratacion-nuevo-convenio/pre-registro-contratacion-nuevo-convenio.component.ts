@@ -476,6 +476,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
           tipoDocumento: [{value: tipoDocumento, disabled: true}],
           nombreDocumento: [{value: beneficiario.nombreArchivo, disabled: true}],
           nuevoDocumento: [{value: null, disabled: false}],
+          documento: [{value: null, disabled: true}],
           idContraPaqPF: [{value: solicitante.idContraPaqPF, disabled: false}],
         });
         if (solicitanteForm.get('beneficiarios')) {

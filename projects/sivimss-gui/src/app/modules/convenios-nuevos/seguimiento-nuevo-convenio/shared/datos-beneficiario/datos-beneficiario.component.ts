@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnInit, Renderer2} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, inject, Input, OnInit, Renderer2} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
@@ -56,11 +56,14 @@ export class DatosBeneficiarioComponent implements OnInit {
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
               private alertaService: AlertaService,
               private renderer: Renderer2,
+              private el: ElementRef,
+              private cdr: ChangeDetectorRef
   ) {
   }
 
   ngOnInit(): void {
     this.cargarCatalogos();
+    this.cambiarValorInputDescarga();
   }
 
   cargarCatalogos(): void {
@@ -68,6 +71,16 @@ export class DatosBeneficiarioComponent implements OnInit {
     const POSICION_PARENTESCO: number = 2;
     const parentesco = respuesta[POSICION_PARENTESCO].datos;
     this.parentesco = mapearArregloTipoDropdown(parentesco, 'nombreParentesco', 'idParentesco');
+  }
+
+  cambiarValorInputDescarga(): void {
+    const verDocInput = this.el.nativeElement.querySelector('#verDoc') as HTMLInputElement;
+    const nombre = this.parentContainer.control?.get('nombreDocumento')?.value;
+    if (verDocInput) {
+      verDocInput.value = nombre;
+      // Forzar un rerender para actualizar la vista
+      this.cdr.detectChanges();
+    }
   }
 
   get parentFormGroup() {
