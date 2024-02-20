@@ -478,18 +478,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   aceptar(): void {
-    if (+this.tipoConvenio === 3) {
-      this.guardarContratacionPersona();
+    if (![3, 2, 1].includes(+this.tipoConvenio)) return;
+    if ([3, 2].includes(+this.tipoConvenio)) {
+      this.guardarContratacion();
       return;
     }
-    if (+this.tipoConvenio === 1) {
-      this.guardarContratacionPA();
-      return;
-    }
-    this.cargadorService.activar();
-    delay(3000)
-    this.cargadorService.desactivar();
-    this.alertaService.mostrar(TipoAlerta.Error, 'Error al guardar la información. Intenta nuevamente.')
+    this.guardarContratacionPA();
   }
 
   cancelar() {
@@ -616,11 +610,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     return form.get('beneficiarios') as FormArray;
   }
 
-  guardarContratacionPersona(): void {
-    // const solicitud: SolicitudActualizarPersona = {
-    //   convenio: this.obtenerDatosSolicitante(),
-    //   beneficiarios: this.obtenerDatosBeneficiarios()
-    // }
+  guardarContratacion(): void {
     this.cargadorService.activar();
     this.seguimientoConvenioService.actualizaEstatusConvenioPersona(+this.idConvenio).pipe(
       finalize(() => this.cargadorService.desactivar())
