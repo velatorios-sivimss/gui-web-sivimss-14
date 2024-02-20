@@ -20,7 +20,7 @@ import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ActivatedRoute,Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {
   CATALOGO_ENFERMEDAD_PREEXISTENTE,
@@ -28,7 +28,7 @@ import {
 } from 'projects/sivimss-gui/src/app/modules/convenios-prevision-funeraria/constants/catalogos-funcion';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { Beneficiarios } from '../../../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
-import {MensajesSistemaService} from "../../../../../../../../services/mensajes-sistema.service";
+import { MensajesSistemaService } from "../../../../../../../../services/mensajes-sistema.service";
 import * as moment from "moment/moment";
 
 @Component({
@@ -107,7 +107,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private readonly router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.formPersona = this.crearFormPersona();
@@ -503,21 +503,18 @@ export class RegistroPersonaGrupoComponent implements OnInit {
   cambioTipoSexo(): void {
     if (this.datosPersonales.sexo.value == 3) {
       this.validaSexo = true;
-      this.datosPersonales.otroSexo.setValidators(Validators.required);
     } else {
       this.datosPersonales.otroSexo.patchValue(null);
-      this.datosPersonales.otroSexo.clearValidators();
       this.validaSexo = false;
     }
-    this.datosPersonales.otroSexo.updateValueAndValidity();
   }
 
   addAttachment(fileInput: any): void {
-    const extensionesPermitidas = ['pdf','gif','jpeg','jpg'];
+    const extensionesPermitidas = ['pdf', 'gif', 'jpeg', 'jpg'];
     const maxSize = 5000000;
     const fileReaded = fileInput.target.files[0];
     const tipoArchivo = fileReaded.type.split('/');
-    if(!extensionesPermitidas.includes(tipoArchivo[1])){
+    if (!extensionesPermitidas.includes(tipoArchivo[1])) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(97));
       return
     }
@@ -568,7 +565,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
         this.archivoRfc = data;
       }
     });
-    this.mostrarMensajeGenerico= true;
+    this.mostrarMensajeGenerico = true;
   }
 
   validarRFC(): void {
@@ -584,8 +581,8 @@ export class RegistroPersonaGrupoComponent implements OnInit {
   }
 
   validarCorreo(): void {
-    if(this.domicilio.correoElectronico?.errors?.pattern){
-      this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
+    if (this.domicilio.correoElectronico?.errors?.pattern) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
     }
   }
 
@@ -612,10 +609,10 @@ export class RegistroPersonaGrupoComponent implements OnInit {
     if (!this.datosPersonales.matricula.value) return;
     this.loaderService.activar();
     this.consultaConveniosService.consultarMatriculaSIAP(this.datosPersonales.matricula.value).pipe(
-      finalize(()=> this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos === null){
+        if (respuesta.datos === null) {
           const mensajeErr: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(70);
           this.alertaService.mostrar(TipoAlerta.Info, mensajeErr);
         }
@@ -673,9 +670,9 @@ export class RegistroPersonaGrupoComponent implements OnInit {
                 valores.segundoApellido;
               this.datosPersonales.lugarNacimiento.setValue(valores.idEstado)
               this.datosPersonales.sexo.setValue(+valores.sexo)
-              if(typeof valores.sexo == 'string'){
-                if(+valores.sexo == 1)this.datosPersonales.sexo.setValue(2)
-                if(+valores.sexo == 2)this.datosPersonales.sexo.setValue(1)
+              if (typeof valores.sexo == 'string') {
+                if (+valores.sexo == 1) this.datosPersonales.sexo.setValue(2)
+                if (+valores.sexo == 2) this.datosPersonales.sexo.setValue(1)
               }
             }
           }
@@ -730,7 +727,7 @@ export class RegistroPersonaGrupoComponent implements OnInit {
       correo: this.domicilio.correoElectronico.value,
       idConvenioPF: +this.idConvenioPF,
       idSexo: this.datosPersonales.sexo.value,
-      otroSexo:this.datosPersonales.otroSexo.value,
+      otroSexo: this.datosPersonales.otroSexo.value,
     };
 
     this.consultaConveniosService
@@ -910,15 +907,15 @@ export class RegistroPersonaGrupoComponent implements OnInit {
 
   detalleBeneficiarios(): void {
     this.loaderService.activar()
-    let obj = {idConvenio:this.idConvenioPF, idContratante: this.idContratante}
+    let obj = { idConvenio: this.idConvenioPF, idContratante: this.idContratante }
     this.consultaConveniosService.consultarBeneficiariosPorPersona(obj).pipe(
-      finalize(()=> this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe(
       {
         next: (respuesta: HttpRespuesta<any>) => {
           this.beneficiarios = respuesta.datos.beneficiarios || [];
         },
-        error:(error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           this.mostrarMensaje(0);
         }
@@ -993,7 +990,8 @@ export class RegistroPersonaGrupoComponent implements OnInit {
 
   regresarPantalla(): void {
     this.router.navigate(['externo-privado/contratar-convenio-de-prevision-funeraria/registro-contratacion-convenio-de-prevision-funeraria'],
-      {queryParams:{
+      {
+        queryParams: {
           idVelatorio: this.idVelatorio,
           velatorio: this.velatorio,
           idConvenio: this.idConvenioPf,

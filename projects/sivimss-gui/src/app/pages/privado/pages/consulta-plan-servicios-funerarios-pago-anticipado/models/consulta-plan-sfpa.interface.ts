@@ -89,4 +89,5 @@ export interface PagoSFPA {
   importePagado?: number;
   folioRecibo?: string;
   metodoPago?: any;
+  noReciboPago?: string;
 }
