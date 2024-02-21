@@ -306,7 +306,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
           [Validators.required]],
         lugarNacimiento: [{value: +this.sustituto?.idLugarNac ?? null, disabled: this.mismoSustituto},
           [Validators.required]],
-        telefono: [{value: this.sustituto?.telFijo ?? null, disabled: this.mismoSustituto}, [Validators.required]],
+        telefono: [{value: this.sustituto?.telCelular ?? null, disabled: this.mismoSustituto}, [Validators.required]],
         correoElectronico: [{value: this.sustituto?.correo ?? null, disabled: this.mismoSustituto},
           [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
         calle: [{value: this.sustituto?.calle ?? null, disabled: this.mismoSustituto}, [Validators.required]],
