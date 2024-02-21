@@ -70,6 +70,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   }
 
   iniciarPago(): void {
+    this.montoTotal = 0;
     this.detalleServicioFunerario.pagoSFPA.forEach((e: PagoSFPA) => {
       if (e.idEstatus && this.idsPago.includes(e.idEstatus) && typeof e.importeMensual === 'number') {
         this.montoTotal += e.importeMensual;
@@ -137,7 +138,6 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
       numAprobacion: pago.transaction.authorization_code,
       numTarjeta: pago.card.number,
       referencia: pago.transaction.id,
-
     }
   }
 
