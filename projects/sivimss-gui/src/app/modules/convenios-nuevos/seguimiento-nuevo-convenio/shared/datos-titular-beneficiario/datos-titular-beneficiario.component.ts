@@ -63,15 +63,9 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   }
 
   cargarValidacionesIniciales(): void {
-    const idSexo = this.parentContainer.control?.get('sexo')?.value;
     const nacionalidad = this.parentContainer.control?.get('nacionalidad')?.value;
-    if (idSexo === 3) {
-      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
-    }
     if (nacionalidad === 1) {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
-    } else {
-      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
     }
   }
 
@@ -168,7 +162,6 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
     this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
     this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
-    this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
     this.cargarValidacionesIniciales();
   }
 
@@ -214,11 +207,6 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   cambioTipoSexo(): void {
     const idSexo = this.parentContainer.control?.get('sexo')?.value;
     this.parentContainer.control?.get('otroSexo')?.setValue(null);
-    if (idSexo === 3) {
-      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
-    } else {
-      this.parentContainer.control?.get('otroSexo')?.clearValidators();
-    }
   }
 
   cambioNacionalidad(): void {
@@ -227,9 +215,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
     if (nacionalidad === 1) {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
-      this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
     } else {
-      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
       this.parentContainer.control?.get('lugarNacimiento')?.clearValidators();
     }
   }
