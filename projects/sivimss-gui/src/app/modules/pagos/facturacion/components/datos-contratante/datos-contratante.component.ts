@@ -10,7 +10,7 @@ import {MetodosPagoFact} from "../../models/metodosPagoFact.interface";
 export class DatosContratanteComponent {
   @Input() nombreContratante: string = '';
   @Input() fecha: string = '';
-  @Input() tipoFecha: 1 | 2 | 3 | 4 = 1;
+  @Input() tipoFecha: 1 | 2 | 3 | 4 | 5 = 1;
   @Input() fechaPago: string = '';
   @Input() concepto: string = '';
   @Input() servicios: ServiciosContratados[] = [];
@@ -18,4 +18,5 @@ export class DatosContratanteComponent {
   @Input() activeIndex: number = 0;
   @Input() totalPagado: number = 0;
   @Input() totalServicios: number = 0;
+  @Input() numeroRecibo: string = '';
 }

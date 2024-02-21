@@ -44,6 +44,7 @@ export class DatosPersonaComponent implements OnInit {
   colonias: TipoDropdown[] = [];
   paquetes: TipoDropdown[] = [];
   readonly POSICION_PAQUETES: number = 1;
+  archivoModificado: boolean = false;
 
   tipoDoc: TipoDropdown[] = [
     {value: 1, label: 'INE del afiliado'},
@@ -59,6 +60,7 @@ export class DatosPersonaComponent implements OnInit {
   nombreCURP: string = '';
   nombreINE: string = '';
   nombreRFC: string = '';
+  inputSeleccionado: string = '';
 
   constructor(private autenticacionService: AutenticacionService,
               private cargadorService: LoaderService,
@@ -307,6 +309,7 @@ export class DatosPersonaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         this.alertaService.mostrar(TipoAlerta.Exito, `Información de solicitante actualizada satisfactoriamente`);
         this.parentContainer.control?.markAsPristine();
+        this.archivoModificado = false;
       },
       error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
     });
@@ -316,10 +319,13 @@ export class DatosPersonaComponent implements OnInit {
     const idEstado = this.parentContainer.control?.get('lugarNacimiento')?.value;
     const idPais = this.parentContainer.control?.get('paisNacimiento')?.value;
     const idSexo = this.parentContainer.control?.get('idSexo')?.value;
+    const nombreDocumentoRFC = this.parentContainer.control?.get('nuevoDocumentoRFC')?.value;
+    const nombreDocumentoINE = this.parentContainer.control?.get('nuevoDocumentoINE')?.value;
+    const nombreDocumentoCURP = this.parentContainer.control?.get('nuevoDocumentoCURP')?.value;
     return {
-      archivoCurp: null,
-      archivoIne: null,
-      archivoRfc: null,
+      archivoCurp: nombreDocumentoCURP !== null ? this.parentContainer.control?.get('documentoCURP')?.value : null,
+      archivoIne: nombreDocumentoINE !== null ? this.parentContainer.control?.get('documentoINE')?.value : null,
+      archivoRfc: nombreDocumentoRFC !== null ? this.parentContainer.control?.get('documentoRFC')?.value : null,
       calle: this.parentContainer.control?.get('calle')?.value,
       colonia: this.parentContainer.control?.get('colonia')?.value,
       correo: this.parentContainer.control?.get('correoElectronico')?.value,
@@ -342,9 +348,9 @@ export class DatosPersonaComponent implements OnInit {
       matricula: this.parentContainer.control?.get('matricula')?.value,
       municipio: this.parentContainer.control?.get('municipio')?.value,
       nombre: this.parentContainer.control?.get('nombres')?.value,
-      nombreCurp: null,
-      nombreIne: null,
-      nombreRfc: null,
+      nombreCurp: nombreDocumentoCURP !== null ? nombreDocumentoCURP : null,
+      nombreIne: nombreDocumentoINE !== null ? nombreDocumentoINE : null,
+      nombreRfc: nombreDocumentoRFC !== null ? nombreDocumentoRFC : null,
       numExt: this.parentContainer.control?.get('numeroExterior')?.value,
       numInt: this.parentContainer.control?.get('numeroInterior')?.value,
       otraEnfermedad: null,
@@ -353,18 +359,10 @@ export class DatosPersonaComponent implements OnInit {
       rfc: this.parentContainer.control?.get('rfc')?.value,
       segunApe: this.parentContainer.control?.get('segundoApellido')?.value,
       telefono: this.parentContainer.control?.get('telefono')?.value,
-      validaCurp: false,
-      validaIne: false,
-      validaRfc: false
+      validaCurp: nombreDocumentoCURP !== null,
+      validaIne: nombreDocumentoINE !== null,
+      validaRfc: nombreDocumentoRFC !== null
     }
-  }
-
-  addAttachment($event: Event) {
-
-  }
-
-  handleClick(archivo: string) {
-
   }
 
   descargarArchivo(tipoDocumento: number) {
@@ -412,5 +410,63 @@ export class DatosPersonaComponent implements OnInit {
       tipoDocumento,
       tipoPersona: 1
     }
+  }
+
+  handleClick(controlName: string): void {
+    const elements = document.getElementById(controlName);
+    this.inputSeleccionado = controlName;
+    elements?.click();
+  }
+
+  addAttachment(fileInput: any): void {
+    const extensionesPermitidas: string[] = ['pdf', 'gif', 'jpeg', 'jpg'];
+    const maxSize: number = 5000000;
+    const fileReaded = fileInput.target.files[0];
+    const tipoArchivo = fileReaded.type.split('/');
+    if (!extensionesPermitidas.includes(tipoArchivo[1])) {
+      this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(97));
+      return
+    }
+    if (fileReaded.size > maxSize) {
+      const tamanioEnMb: number = maxSize / 1000000;
+      const alerta: string = `El tamaño máximo permititido es de ${tamanioEnMb} MB`
+      this.alertaService.mostrar(TipoAlerta.Info, alerta);
+      return;
+    }
+    const curp = this.parentContainer.control?.get('curp')?.value;
+    const nombreRFC: string | null = this.inputSeleccionado === 'uploadFileRFC' ? 'RFC-' + curp + '.' + tipoArchivo[1] : null;
+    const nombreCURP: string | null = this.inputSeleccionado === 'uploadFileCURP' ? 'CURP-' + curp + '.' + tipoArchivo[1] : null;
+    const nombreINE: string | null = this.inputSeleccionado === 'uploadFileINE' ? 'INE-' + curp + '.' + tipoArchivo[1] : null;
+    if (nombreINE) {
+      this.parentContainer.control?.get('nuevoDocumentoINE')?.setValue(nombreINE);
+    }
+    if (nombreCURP) {
+      this.parentContainer.control?.get('nuevoDocumentoCURP')?.setValue(nombreCURP);
+    }
+    if (nombreRFC) {
+      this.parentContainer.control?.get('nuevoDocumentoRFC')?.setValue(nombreRFC);
+    }
+    this.archivoModificado = true;
+    this.getBase64(fileReaded).then((data: any): void => {
+      this.inputSeleccionado = data;
+      if (nombreINE) {
+        this.parentContainer.control?.get('documentoINE')?.setValue(data);
+      }
+      if (nombreCURP) {
+        this.parentContainer.control?.get('documentoCURP')?.setValue(data);
+      }
+      if (nombreRFC) {
+        this.parentContainer.control?.get('documentoRFC')?.setValue(data);
+      }
+    });
+  }
+
+  getBase64(file: any) {
+    return new Promise((resolve, reject): void => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
   }
 }

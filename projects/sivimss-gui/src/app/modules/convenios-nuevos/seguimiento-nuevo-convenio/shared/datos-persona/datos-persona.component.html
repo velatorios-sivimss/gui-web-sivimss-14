@@ -237,8 +237,8 @@
           </div>
           <div class="col-md-6">
             <label class="control-label" for="nuevoDocumentoINE">Modificar Documento<span class="req">*</span>:</label>
-            <div (click)="handleClick('archivo')">
-              <input class="hidden" type="file" id="upload-file-INE" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
+            <div (click)="handleClick('uploadFileINE')">
+              <input class="hidden" type="file" id="uploadFileINE" name="uploadFileINE" accept=".jpg, .jpeg, .png, .pdf"
                      ngf-max-size="5MB" (change)="addAttachment($event)"/>
               <input id="nuevoDocumentoINE" class="form-control" formControlName="nuevoDocumentoINE" readonly/>
               <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
@@ -281,8 +281,8 @@
           </div>
           <div class="col-md-6">
             <label class="control-label" for="nuevoDocumentoCURP">Modificar Documento<span class="req">*</span>:</label>
-            <div (click)="handleClick('archivo')">
-              <input class="hidden" type="file" id="upload-file-CURP" name="upload-file"
+            <div (click)="handleClick('uploadFileCURP')">
+              <input class="hidden" type="file" id="uploadFileCURP" name="uploadFileCURP"
                      accept=".jpg, .jpeg, .png, .pdf"
                      ngf-max-size="5MB" (change)="addAttachment($event)"/>
               <input id="nuevoDocumentoCURP" class="form-control" formControlName="nuevoDocumentoCURP" readonly/>
@@ -326,8 +326,8 @@
           </div>
           <div class="col-md-6">
             <label class="control-label" for="nuevoDocumentoRFC">Modificar Documento<span class="req">*</span>:</label>
-            <div (click)="handleClick('archivo')">
-              <input class="hidden" type="file" id="upload-file" name="upload-file" accept=".jpg, .jpeg, .png, .pdf"
+            <div (click)="handleClick('uploadFileRFC')">
+              <input class="hidden" type="file" id="uploadFileRFC" name="uploadFileRFC" accept=".jpg, .jpeg, .png, .pdf"
                      ngf-max-size="5MB" (change)="addAttachment($event)"/>
               <input id="nuevoDocumentoRFC" class="form-control" formControlName="nuevoDocumentoRFC" readonly/>
               <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
@@ -342,7 +342,7 @@
 <div class="row mt-3 mb-2">
   <div class="col-md-12 flex justify-content-end mt-6 mb-4">
     <button type="submit" class="btn btn-primary btn-md ml-5"
-            [disabled]="parentContainer.invalid || parentContainer.pristine"
+            [disabled]="(parentContainer.invalid || parentContainer.pristine) && !archivoModificado"
             (click)="guardarSolicitante()">Guardar Información Solicitante
     </button>
   </div>

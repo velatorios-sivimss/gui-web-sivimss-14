@@ -9,18 +9,18 @@
       <ng-container>
         <app-table-panel>
           <div class="row table-panel-row">
-            <div [ngClass]="{ 'col-8': tipoFecha !== 2, 'col-9': tipoFecha === 2 }">
+            <div [ngClass]="{ 'col-8': ![2,3].includes(tipoFecha), 'col-9': [2,3].includes(tipoFecha), 'col-12': tipoFecha === 4 }">
               <div class="grid">
-                <div class="pl-3" *ngIf="tipoFecha !== 3"
-                     [ngClass]="{ 'col-6': tipoFecha === 2, 'col': tipoFecha !== 2 }">
+                <div class="pl-3" *ngIf="tipoFecha !== 5"
+                     [ngClass]="{ 'col-6': [2,3].includes(tipoFecha), 'col': ![2,3].includes(tipoFecha) }">
                   <div class="table-panel-column">
                     <label *ngIf="tipoFecha === 1">Fecha de ODS</label>
-                    <label *ngIf="tipoFecha === 2">Fecha de contratación / renovación</label>
+                    <label *ngIf="[2,3].includes(tipoFecha)">Fecha de contratación / renovación</label>
                     <label *ngIf="tipoFecha === 4">Fecha de contratación</label>
                     <span>{{fecha | date:'dd-MM-YYYY'}}</span>
                   </div>
                 </div>
-                <div class="col" [ngClass]="{ 'pl-3': tipoFecha === 3 }">
+                <div class="col" [ngClass]="{ 'pl-3': tipoFecha === 5 }">
                   <div class="table-panel-column">
                     <label>Fecha de pago</label>
                     <span>{{fechaPago| date:'dd-MM-YYYY'}}</span>
@@ -32,7 +32,13 @@
                     <span>{{concepto}}</span>
                   </div>
                 </div>
-                <div class="col" *ngIf="tipoFecha === 3"></div>
+                <div class="col" *ngIf="tipoFecha === 5"></div>
+                <div class="col" *ngIf="tipoFecha === 4">
+                  <div class="table-panel-column">
+                    <label>Número de recibo de pago</label>
+                    <span>{{numeroRecibo}}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
