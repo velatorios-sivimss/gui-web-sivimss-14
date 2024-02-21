@@ -62,9 +62,6 @@
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.rfc?.errors?.required  && (parentFormGroup.rfc?.dirty || parentFormGroup.rfc?.touched)">
       Este campo es obligatorio *.</span>
-    <span class="campo-obligatorio"
-          *ngIf="parentFormGroup?.rfc?.errors?.pattern && (parentFormGroup?.rfc?.dirty || parentFormGroup?.rfc?.touched)">
-      RFC no válido.</span>
   </div>
   <div class="col-md-4">
     <label class="control-label" [for]="'correoBeneficiario' + ID">Correo electrónico<span class="req">*</span>:</label>

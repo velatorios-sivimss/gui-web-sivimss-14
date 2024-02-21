@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
 import {CommonModule} from "@angular/common";
@@ -15,6 +15,7 @@ import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {SolicitudEmpresa} from "../../models/solicitudActualizarPersona.interface";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {PATRON_RFC} from "../../../../../utils/constantes";
 
 @Component({
   selector: 'app-datos-empresa',
@@ -51,6 +52,16 @@ export class DatosEmpresaComponent implements OnInit {
   cargarCatalogosLocalStorage(): void {
     const catalogoPais = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_pais');
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
+  }
+
+  validarRfc(): void {
+    const rfc = this.parentContainer.control?.get('rfc')?.value;
+    if (!rfc) return;
+    if (!rfc.match(PATRON_RFC)) {
+      this.alertaService.mostrar(TipoAlerta.Error, 'RFC no válido.');
+      this.parentContainer.control?.get('rfc')?.setValidators(Validators.pattern(PATRON_RFC));
+      this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
+    }
   }
 
   cargarCP(cargaInicial: boolean = false): void {

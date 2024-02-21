@@ -112,6 +112,7 @@ export class DatosBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
     if (rfc.includes('XAXX010101000')) return;
     if (!rfc.match(PATRON_RFC)) {
+      this.alertaService.mostrar(TipoAlerta.Error, 'RFC no válido.');
       this.parentContainer.control?.get('rfc')?.setValidators(Validators.pattern(PATRON_RFC));
       this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
     }
