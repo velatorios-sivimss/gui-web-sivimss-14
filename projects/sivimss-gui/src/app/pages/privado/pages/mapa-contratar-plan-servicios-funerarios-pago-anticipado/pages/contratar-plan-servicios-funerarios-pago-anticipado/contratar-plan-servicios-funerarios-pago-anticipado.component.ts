@@ -83,6 +83,8 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   folioConvenio!: string;
   numPago!: number;
   idRegistro!: number;
+  idPagoSFPA!: number;
+  montoTotalPagar!: number;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -157,7 +159,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     const elemento_ref = document.querySelector('.realizar-pago');
     const e = document.getElementById('btn-realizar-pago');
     if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: this.paqueteSeleccionado.monPrecio / this.numPago }));
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: this.montoTotalPagar }));
     e?.click();
   }
 
@@ -200,8 +202,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     if (+pago.transaction.payment_method_type === 0) idMetodoPago = 4;
     if (+pago.transaction.payment_method_type === 7) idMetodoPago = 3;
 
-    const importe: number = this.paqueteSeleccionado.monPrecio / this.numPago;
-
     let nombreTitular = `${this.fdt.nombre.value} ${this.fdt.primerApellido.value} ${this.fdt.segundoApellido.value}`;
 
     return {
@@ -212,12 +212,13 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       idMetodoPago, // debito o credito payment_method_type
       idRegistro: this.idRegistro,
       idVelatorio: this.idVelatorio,
-      importe: importe,
+      importe: this.montoTotalPagar,
       nomContratante: nombreTitular,
       nomTitular: nombreTitular, // pagos
       numAprobacion: pago.transaction.authorization_code, // pagos
       numTarjeta: pago.card.number, // pagos number
-      referencia: pago.transaction.id // pagos transaction_reference
+      referencia: pago.transaction.id, // pagos transaction_reference
+      idPagoSFPA: this.idPagoSFPA,
     }
   }
 
@@ -842,7 +843,8 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         this.mostrarModalValidacionRegistro = true;
         this.folioConvenio = respuesta?.mensaje;
         this.idRegistro = respuesta.datos?.id;
-
+        this.idPagoSFPA = respuesta.datos?.idPagoMensual;
+        this.montoTotalPagar = +respuesta.datos?.pagoMensual;
         if (respuesta.datos?.reporte) {
           this.cargarScript(() => {
           });
