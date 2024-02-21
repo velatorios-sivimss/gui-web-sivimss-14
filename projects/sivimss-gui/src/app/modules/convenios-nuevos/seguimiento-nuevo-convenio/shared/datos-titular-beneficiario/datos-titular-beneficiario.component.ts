@@ -229,21 +229,23 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
       this.mostrarMensaje(+respuesta.mensaje);
       return;
     }
-    if (respuesta.mensaje == 'Exito') {
-      let [valores] = respuesta.datos;
-      let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
-      let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
-      this.parentContainer.control?.get('nombre')?.setValue(valores.nomPersona);
-      this.parentContainer.control?.get('fechaNacimiento')?.setValue(fechaNacimiento);
-      this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
-      this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
-      this.parentContainer.control?.get('nacionalidad')?.setValue(1);
-      this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
-      this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
-      this.parentContainer.control?.get('sexo')?.setValue(valores.sexo);
-      this.parentContainer.control?.get('otroSexo')?.setValue(valores.otroSexo);
-      this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
-      this.cargarValidacionesIniciales();
+    let [valores] = respuesta.datos;
+    let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
+    let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
+    this.parentContainer.control?.get('nombre')?.setValue(valores.nomPersona);
+    this.parentContainer.control?.get('fechaNacimiento')?.setValue(fechaNacimiento);
+    this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
+    this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
+    this.parentContainer.control?.get('nacionalidad')?.setValue(1);
+    this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
+    this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
+    this.parentContainer.control?.get('sexo')?.setValue(valores.sexo);
+    this.parentContainer.control?.get('otroSexo')?.setValue(valores.otroSexo);
+    this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
+    this.cargarValidacionesIniciales();
+    if (valores.nomPersona === '') {
+      this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
+      this.parentContainer.control?.get('curp')?.setErrors({'incorrect': true});
     }
   }
 
