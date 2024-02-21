@@ -174,9 +174,7 @@ export class DatosPersonaComponent implements OnInit {
     this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
     if (nacionalidadPersona === 1) {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
-      this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
     } else {
-      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
       this.parentContainer.control?.get('lugarNacimiento')?.clearValidators();
     }
   }
