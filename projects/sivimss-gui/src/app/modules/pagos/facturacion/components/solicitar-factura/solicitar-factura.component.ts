@@ -1,22 +1,22 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
-import {TipoDropdown} from "../../../../../models/tipo-dropdown";
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
-import {REGISTROS_PAGOS} from "../../constants/dummies";
-import {TIPO_FACTURACION} from "../../constants/tipoFacturacion";
-import {ActivatedRoute, Router} from "@angular/router";
-import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
-import {FacturacionService} from "../../services/facturacion.service";
-import {HttpErrorResponse} from "@angular/common/http";
-import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
-import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {finalize} from "rxjs/operators";
-import {DatosContratante} from "../../models/datosContratante.interface";
-import {RegistroRFC} from "../../models/registroRFC.interface";
-import {forkJoin, Observable} from "rxjs";
-import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
-import {SolicitudGenerarFact} from "../../models/solicitudGenerarFact.interface";
-import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, FormGroupDirective, Validators } from "@angular/forms";
+import { TipoDropdown } from "../../../../../models/tipo-dropdown";
+import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../../utils/constantes";
+import { REGISTROS_PAGOS } from "../../constants/dummies";
+import { TIPO_FACTURACION } from "../../constants/tipoFacturacion";
+import { ActivatedRoute, Router } from "@angular/router";
+import { mapearArregloTipoDropdown } from "../../../../../utils/funciones";
+import { FacturacionService } from "../../services/facturacion.service";
+import { HttpErrorResponse } from "@angular/common/http";
+import { HttpRespuesta } from "../../../../../models/http-respuesta.interface";
+import { LoaderService } from "../../../../../shared/loader/services/loader.service";
+import { finalize } from "rxjs/operators";
+import { DatosContratante } from "../../models/datosContratante.interface";
+import { RegistroRFC } from "../../models/registroRFC.interface";
+import { forkJoin, Observable } from "rxjs";
+import { MensajesSistemaService } from "../../../../../services/mensajes-sistema.service";
+import { SolicitudGenerarFact } from "../../models/solicitudGenerarFact.interface";
+import { AlertaService, TipoAlerta } from "../../../../../shared/alerta/services/alerta.service";
 
 interface Folio {
   idRegistro: number,
@@ -24,6 +24,11 @@ interface Folio {
   idPagoBitacora: number
 }
 
+interface RecibosPago {
+  idPagoSFPA: number,
+  folio: string,
+  idRegistro: number
+}
 interface SolicitudDatosContratante {
   tipoFactura: string,
   idPagoBitacora: number,
@@ -39,13 +44,13 @@ export class SolicitarFacturaComponent implements OnInit {
 
   readonly DIEZ_ELEMENTOS_POR_PAGINA: number = DIEZ_ELEMENTOS_POR_PAGINA;
 
-  @ViewChild("solicitudDirForm", {read: FormGroupDirective})
+  @ViewChild("solicitudDirForm", { read: FormGroupDirective })
   private solicitudDirForm!: FormGroupDirective;
 
-  @ViewChild("CFDIDirForm", {read: FormGroupDirective})
+  @ViewChild("CFDIDirForm", { read: FormGroupDirective })
   private CFDIDirForm!: FormGroupDirective;
 
-  @ViewChild("datosContratanteDirForm", {read: FormGroupDirective})
+  @ViewChild("datosContratanteDirForm", { read: FormGroupDirective })
   private datosContratanteDirForm!: FormGroupDirective;
 
   solicitudForm!: FormGroup;
@@ -54,11 +59,13 @@ export class SolicitarFacturaComponent implements OnInit {
   indice: number = 0;
   tiposFactura: any[] = TIPO_FACTURACION;
   folios: TipoDropdown[] = [];
+  recibosPago: TipoDropdown[] = [];
   servicios: any[] = REGISTROS_PAGOS;
   cfdi: TipoDropdown[] = [];
   metodosPago: TipoDropdown[] = [];
   formasPago: TipoDropdown[] = [];
   registroFolios: Folio[] = [];
+  registrosRecibosPago: RecibosPago[] = [];
   registroContratante: DatosContratante | null = null;
   registroRFC: RegistroRFC | null = null;
   tipoSolicitud!: 1 | 2 | 3 | 4;
@@ -66,12 +73,12 @@ export class SolicitarFacturaComponent implements OnInit {
   validacionFactura: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
-              private readonly router: Router,
-              private route: ActivatedRoute,
-              private facturacionService: FacturacionService,
-              private cargadorService: LoaderService,
-              private mensajesSistemaService: MensajesSistemaService,
-              private alertaService: AlertaService,
+    private readonly router: Router,
+    private route: ActivatedRoute,
+    private facturacionService: FacturacionService,
+    private cargadorService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private alertaService: AlertaService,
   ) {
   }
 
@@ -83,26 +90,26 @@ export class SolicitarFacturaComponent implements OnInit {
 
   inicializarForm(): void {
     this.solicitudForm = this.formBuilder.group({
-      tipoFactura: [{value: null, disabled: false}, [Validators.required]],
-      folio: [{value: null, disabled: false}, [Validators.required]],
-      numeroRecibo: [{value: null, disabled: false}],
+      tipoFactura: [{ value: null, disabled: false }, [Validators.required]],
+      folio: [{ value: null, disabled: false }, [Validators.required]],
+      numeroRecibo: [{ value: null, disabled: false }, [Validators.required]],
     });
   }
 
   inicializarFormRFC(): void {
     this.datosContratanteForm = this.formBuilder.group({
-      rfc: [{value: null, disabled: false}, [Validators.required]],
-      correoElectronico: [{value: null, disabled: false}, [Validators.required]],
+      rfc: [{ value: null, disabled: false }, [Validators.required]],
+      correoElectronico: [{ value: null, disabled: false }, [Validators.required]],
     });
   }
 
   inicializarFormCFDI(): void {
     this.datosCFDIForm = this.formBuilder.group({
-      cfdi: [{value: null, disabled: false}, [Validators.required]],
-      metodoPago: [{value: null, disabled: false}, [Validators.required]],
-      formaPago: [{value: null, disabled: false}, [Validators.required]],
-      observaciones1: [{value: null, disabled: true}],
-      observaciones2: [{value: null, disabled: false}, [Validators.required]],
+      cfdi: [{ value: null, disabled: false }, [Validators.required]],
+      metodoPago: [{ value: null, disabled: false }, [Validators.required]],
+      formaPago: [{ value: null, disabled: false }, [Validators.required]],
+      observaciones1: [{ value: null, disabled: true }],
+      observaciones2: [{ value: null, disabled: false }, [Validators.required]],
     });
   }
 
@@ -149,10 +156,35 @@ export class SolicitarFacturaComponent implements OnInit {
     });
   }
 
+  obtenerRecibosPago(): void {
+    const folio = this.registroFolios.find((item: Folio) => item.folio === this.solicitudForm.get('folio')?.value)
+    if (folio?.idRegistro) {
+      this.cargadorService.activar();
+      this.limpiarRecibosPago();
+      this.facturacionService.obtenerRecibosPago(folio?.idRegistro).pipe(
+        finalize(() => this.cargadorService.desactivar())
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.registrosRecibosPago = respuesta.datos;
+          this.recibosPago = mapearArregloTipoDropdown(respuesta.datos, 'folio', 'folio');
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error("ERROR: ", error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
+    }
+  }
+
   limpiarFolios(): void {
     this.registroFolios = [];
     this.folios = [];
     this.solicitudForm.get('folio')?.setValue(null);
+  }
+
+  limpiarRecibosPago(): void {
+    this.recibosPago = [];
+    this.solicitudForm.get('numeroRecibo')?.setValue(null);
   }
 
   buscarDatosContratante(): void {
@@ -162,9 +194,14 @@ export class SolicitarFacturaComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.registroContratante = respuesta.datos;
-        this.datosContratanteForm.get('rfc')?.setValue(this.registroContratante!.rfc)
-        this.datosContratanteForm.get('correoElectronico')?.setValue(this.registroContratante!.correo)
+        if (respuesta.datos) {
+          this.registroContratante = respuesta.datos;
+          this.datosContratanteForm.get('rfc')?.setValue(this.registroContratante!.rfc);
+          this.datosContratanteForm.get('correoElectronico')?.setValue(this.registroContratante!.correo);
+        } else {
+          const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+          this.alertaService.mostrar(TipoAlerta.Exito, msg);
+        }
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
@@ -175,12 +212,12 @@ export class SolicitarFacturaComponent implements OnInit {
 
   crearSolicitudDatosContratante(): SolicitudDatosContratante {
     const tipoFactura = this.solicitudForm.get('tipoFactura')?.value;
-    const folio = this.solicitudForm.get('folio')?.value;
-    const folioSeleccionado = this.registroFolios.find(f => f.folio === folio);
+    const numeroRecibo = this.solicitudForm.get('numeroRecibo')?.value;
+    const reciboPago = this.registrosRecibosPago.find((item: RecibosPago) => item.folio === numeroRecibo);
     return {
       tipoFactura,
-      idPagoBitacora: folioSeleccionado!.idPagoBitacora,
-      idRegistro: folioSeleccionado!.idRegistro
+      idPagoBitacora: reciboPago!.idPagoSFPA,
+      idRegistro: reciboPago!.idRegistro
     }
   }
 
@@ -252,7 +289,7 @@ export class SolicitarFacturaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Factura registrada correctamente');
-        void this.router.navigate(['./..'], {relativeTo: this.route});
+        void this.router.navigate(['./..'], { relativeTo: this.route });
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
@@ -281,7 +318,7 @@ export class SolicitarFacturaComponent implements OnInit {
       concPago: this.registroContratante?.concPago ?? '',
       cveRegimenFiscal,
       fecPago: this.registroContratante?.fecPago ?? '',
-      cfdi: {desCfdi: CFDI!.label, idCfdi: CFDI!.value as number},
+      cfdi: { desCfdi: CFDI!.label, idCfdi: CFDI!.value as number },
       correo,
       domicilioFiscal: {
         calle: this.registroRFC!.domicilioFiscal.calle,
@@ -317,11 +354,11 @@ export class SolicitarFacturaComponent implements OnInit {
         tvialidad: this.registroRFC!.domicilioFiscal.tvialidad
       },
       folio,
-      forPago: {desForPago: FORMA_PAGO!.label, idForPago: FORMA_PAGO!.value as number},
+      forPago: { desForPago: FORMA_PAGO!.label, idForPago: FORMA_PAGO!.value as number },
       idPagoBitacora: folioSeleccionado!.idPagoBitacora,
       idRegistro: folioSeleccionado!.idRegistro,
       idVelatorio: this.registroContratante!.idVelatorio,
-      metPagoFac: {desMetPagoFac: METODO_PAGO!.label, idMetPagoFac: METODO_PAGO!.value as number},
+      metPagoFac: { desMetPagoFac: METODO_PAGO!.label, idMetPagoFac: METODO_PAGO!.value as number },
       nomContratante: this.registroContratante!.nomContratante,
       obsAutomatica,
       obsManual,
