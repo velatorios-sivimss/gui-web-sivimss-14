@@ -85,6 +85,7 @@ export class SolicitarFacturaComponent implements OnInit {
     this.solicitudForm = this.formBuilder.group({
       tipoFactura: [{value: null, disabled: false}, [Validators.required]],
       folio: [{value: null, disabled: false}, [Validators.required]],
+      numeroRecibo: [{value: null, disabled: false}],
     });
   }
 
