@@ -221,13 +221,15 @@ export class DatosPersonaComponent implements OnInit {
       this.mostrarMensaje(+respuesta.mensaje);
       return;
     }
-    if (respuesta.mensaje == 'Exito') {
-      let [valores] = respuesta.datos;
-      this.parentContainer.control?.get('nombres')?.setValue(valores.nomPersona);
-      this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
-      this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
-      this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
-      this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
+    let [valores] = respuesta.datos;
+    this.parentContainer.control?.get('nombres')?.setValue(valores.nomPersona);
+    this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
+    this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
+    this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
+    this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
+    if (valores.nomPersona === '') {
+      this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
+      this.parentContainer.control?.get('curp')?.setErrors({'incorrect': true});
     }
   }
 

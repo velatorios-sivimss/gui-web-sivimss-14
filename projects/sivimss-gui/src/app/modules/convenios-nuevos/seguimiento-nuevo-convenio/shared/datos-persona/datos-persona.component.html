@@ -31,7 +31,7 @@
       <div class="col-md-4">
         <label class="control-label" [for]="'nombres' + ID">Nombre(s)<span class="req">*</span>:</label>
         <input [id]="'nombres' + ID" class="form-control" formControlName="nombres" placeholder="Inserta el nombre"
-               [maxlength]="30">
+               [maxlength]="30" lettersOnly>
         <span class="campo-obligatorio"
               *ngIf="parentFormGroup.nombres?.errors?.required  && (parentFormGroup.nombres?.dirty || parentFormGroup.nombres?.touched)">
       Este campo es obligatorio *.</span>
@@ -39,7 +39,7 @@
       <div class="col-md-4">
         <label class="control-label" [for]="'primerApellido' + ID">Primer apellido<span class="req">*</span>:</label>
         <input [id]="'primerApellido' + ID" class="form-control" formControlName="primerApellido"
-               placeholder="Inserta el primer Apellido" [maxlength]="20">
+               placeholder="Inserta el primer Apellido" [maxlength]="20" lettersOnly>
         <span class="campo-obligatorio"
               *ngIf="parentFormGroup.primerApellido?.errors?.required  && (parentFormGroup.primerApellido?.dirty || parentFormGroup.primerApellido?.touched)">
       Este campo es obligatorio *.</span>
@@ -47,7 +47,7 @@
       <div class="col-md-4">
         <label class="control-label" [for]="'segundoApellido' + ID">Segundo apellido<span class="req">*</span>:</label>
         <input [id]="'segundoApellido' + ID" class="form-control" formControlName="segundoApellido"
-               placeholder="Inserta el segundo Apellido" [maxlength]="20">
+               placeholder="Inserta el segundo Apellido" [maxlength]="20" lettersOnly>
         <span class="campo-obligatorio"
               *ngIf="parentFormGroup.segundoApellido?.errors?.required  && (parentFormGroup.segundoApellido?.dirty || parentFormGroup.segundoApellido?.touched)">
       Este campo es obligatorio *.</span>
