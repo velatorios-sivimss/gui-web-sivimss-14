@@ -251,8 +251,10 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
 
   iniciarPago(): void {
     const elemento_ref = document.querySelector('.realizar-pago');
+    const e = document.getElementById('btn-realizar-pago');
     if (!elemento_ref) return;
     elemento_ref.setAttribute('data-objeto', JSON.stringify({referencia: 'NPF', monto: this.importe}));
+    e?.click();
   }
 
   crearFormPersona(): FormGroup {

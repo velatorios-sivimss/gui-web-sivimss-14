@@ -9,7 +9,7 @@
         </div>
         <div class="col-md-4">
             <label class="control-label" for="nombre">Nombre<span class="req">*</span>:</label>
-            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre"  maxlength="50" lettersOnly />
+            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre"  maxlength="45" lettersOnly />
             <span class="campo-obligatorio"
                 *ngIf="f.nombre?.errors?.required && (f.nombre?.dirty || f.nombre?.touched)">
                 Este campo es obligatorio *.</span>
@@ -17,7 +17,7 @@
         <div class="col-md-4">
             <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
             <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
-                placeholder="Ingresa primer Apellido" maxlength="50" lettersOnly />
+                placeholder="Ingresa primer Apellido" maxlength="45" lettersOnly />
             <span class="campo-obligatorio" *ngIf="f.primerApellido?.errors?.required &&
           (f.primerApellido?.dirty || f.primerApellido?.touched)">
                 Este campo es obligatorio *.</span>
@@ -27,7 +27,7 @@
         <div class="col-md-4">
             <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
             <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
-                placeholder="Ingresa segundo apellido" maxlength="50" lettersOnly />
+                placeholder="Ingresa segundo apellido" maxlength="45" lettersOnly />
             <span class="campo-obligatorio" *ngIf="
           f.segundoApellido?.errors?.required &&
           (f.segundoApellido?.dirty || f.segundoApellido?.touched)
@@ -61,7 +61,7 @@
         <div class="col-md-4">
             <label class="control-label" for="rfc">RFC<span class="req">*</span>:</label>
             <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa rfc"
-                (blur)="validarRFC()" />
+                (blur)="validarRFC()" maxlength="13" />
             <span class="campo-obligatorio" *ngIf="f.rfc?.errors?.required && (f.rfc?.dirty || f.rfc?.touched)">Este
                 campo es obligatorio *.</span>
         </div>
@@ -101,7 +101,7 @@
         <div class="col-md-4">
             <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
             <input id="telefono" type="text" class="form-control" formControlName="telefono"
-                placeholder="Ingresa telefono" />
+                placeholder="Ingresa telefono" maxlength="10" />
             <span class="campo-obligatorio" *ngIf="
           f.telefono?.errors?.required &&
           (f.telefono?.dirty || f.telefono?.touched)

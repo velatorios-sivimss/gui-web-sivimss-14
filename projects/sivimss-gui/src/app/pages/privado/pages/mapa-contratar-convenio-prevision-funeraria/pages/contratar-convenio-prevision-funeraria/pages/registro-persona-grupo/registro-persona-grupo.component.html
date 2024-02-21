@@ -80,7 +80,7 @@
                             <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span
                                     class="req">*</span>:</label>
                             <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
-                                [readonly]="readonlyInputs" appendTo="body" placeholder="Selecciona promotor"
+                                [readonly]="readonlyInputs" appendTo="body" placeholder="Selecciona lugar de nacimiento"
                                 [options]="estado" [filter]="true" filterBy="label"></p-dropdown>
 
                             <span class="campo-obligatorio"
@@ -191,7 +191,7 @@
                             <label class="control-label" for="enfermedadPrexistente">Enfermedad prexistente:</label>
                             <p-dropdown id="enfermedadPrexistente" class="form-control"
                                 formControlName="enfermedadPrexistente" appendTo="body" [readonly]="readonlyInputs"
-                                placeholder="Selecciona promotor" (onChange)="cambioEnfermedadPrexistente()"
+                                placeholder="Selecciona enfermedad prexistente" (onChange)="cambioEnfermedadPrexistente()"
                                 [options]="enfermedadPrexistenteArray" [filter]="true" filterBy="label"></p-dropdown>
                         </div>
                         <div class="col-md-3" *ngIf="muestraOtraEnfermedad">
@@ -383,7 +383,7 @@
 </div>
 <p-dialog [(visible)]="mostrarMensajeGenerico" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}" [closable]="true" [draggable]="false" [resizable]="false"
-          header=" " [showHeader]="true">
+          header="Carga de archivos" [showHeader]="true">
   <ng-template pTemplate="content">
     <div>
       <p class="mt-2 text-center">{{mensajeGenerico}}</p>

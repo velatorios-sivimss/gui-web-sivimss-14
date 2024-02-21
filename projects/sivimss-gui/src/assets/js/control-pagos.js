@@ -34,9 +34,7 @@ let paymentCheckout = new PaymentCheckout.modal({
   }
 });
 
-
-let btnOpenCheckout = document.querySelector('.realizar-pago');
-btnOpenCheckout.addEventListener('click', function () {
+var eventValue = function () {
   console.log('Click')
   // Accede al objeto pasado como atributo del script
   const dataObj = JSON.parse(btnOpenCheckout.getAttribute('data-objeto'));
@@ -57,7 +55,11 @@ btnOpenCheckout.addEventListener('click', function () {
     //conf_exclusive_types: 'ak,ex', // Opcional: Tipos de tarjeta permitidos para esta operación. Opciones: https://developers.gpvicomm.com/api/#metodos-de-pago-tarjetas-marcas-de-tarjetas
     //conf_invalid_card_type_message: 'Tarjeta invalida para esta operación' // Opcional: Define un mensaje personalizado para mostrar para los tipos de tarjeta no válidos.
   });
-});
+}
+
+let btnOpenCheckout = document.querySelector('.realizar-pago');
+
+btnOpenCheckout.addEventListener('click', eventValue);
 
 // Cerrar el Checkout en la navegación de la página:
 window.addEventListener('popstate', function () {
