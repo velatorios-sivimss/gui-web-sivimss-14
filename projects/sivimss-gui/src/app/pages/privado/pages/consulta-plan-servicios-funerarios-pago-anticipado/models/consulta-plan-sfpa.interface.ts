@@ -78,8 +78,8 @@ export interface CP {
 export interface PagoSFPA {
   idPagoSFPA?: number;
   fechaParcialidad?: string;
-  importeMensual?: number;
-  importeAcumulado?: number;
+  importeMensual: number;
+  importeAcumulado: number;
   estatusPago?: string;
   noPagos?: string;
   velatorio?: string;
