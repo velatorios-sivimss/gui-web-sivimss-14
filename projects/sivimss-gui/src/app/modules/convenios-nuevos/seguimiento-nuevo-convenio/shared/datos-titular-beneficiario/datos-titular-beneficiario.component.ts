@@ -205,7 +205,6 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   }
 
   cambioTipoSexo(): void {
-    const idSexo = this.parentContainer.control?.get('sexo')?.value;
     this.parentContainer.control?.get('otroSexo')?.setValue(null);
   }
 

@@ -1,6 +1,7 @@
 <div class="row mb-3 grid">
   <div class="col-md-4">
-    <label class="control-label" [for]="'curp-' + ID">C.U.R.P.<span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
+    <label class="control-label" [for]="'curp-' + ID">C.U.R.P.
+      <span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
     <input [id]="'curp-' + ID" class="form-control" formControlName="curp" placeholder="Ingresa el C.U.R.P."
            [maxlength]="18" (blur)="validarCurp()">
     <span class="campo-obligatorio"
@@ -8,7 +9,8 @@
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
-    <label class="control-label" [for]="'rfc' + ID">R.F.C<span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
+    <label class="control-label" [for]="'rfc' + ID">R.F.C
+      <span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
     <input [id]="'rfc' + ID" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
            [maxlength]="13" (blur)="validarRfc()">
     <span class="campo-obligatorio"
@@ -16,8 +18,8 @@
       RFC no válido.</span>
   </div>
   <div class="col-md-4">
-    <label class="control-label" [for]="'matricula' + ID">Matricula:</label>
-    <input [id]="'matricula' + ID" class="form-control" formControlName="matricula" placeholder="Ingresa la matricula"
+    <label class="control-label" [for]="'matricula' + ID">Matrícula:</label>
+    <input [id]="'matricula' + ID" class="form-control" formControlName="matricula" placeholder="Ingresa la matrícula"
            [maxlength]="10" (blur)="validarMatricula()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.matricula?.errors?.required  && (parentFormGroup.matricula?.dirty || parentFormGroup.matricula?.touched)">
@@ -36,16 +38,16 @@
   <div class="col-md-4">
     <label class="control-label" [for]="'nombre' + ID">Nombre (s)<span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
     <input [id]="'nombre' + ID" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre"
-           [maxlength]="30">
+           [maxlength]="30" lettersOnly>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.nombre?.errors?.required  && (parentFormGroup.nombre?.dirty || parentFormGroup.nombre?.touched)">
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4">
-    <label class="control-label" [for]="'primerApellido' + ID">Primer Apellido<span class="req"
-                                                                                    *ngIf="tipo === 'sustituto'">*</span>:</label>
+    <label class="control-label" [for]="'primerApellido' + ID">Primer Apellido
+      <span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
     <input [id]="'primerApellido' + ID" class="form-control" formControlName="primerApellido" [maxlength]="20"
-           placeholder="Ingresa el primer apellido">
+           placeholder="Ingresa el primer apellido" lettersOnly>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.primerApellido?.errors?.required  && (parentFormGroup.primerApellido?.dirty || parentFormGroup.primerApellido?.touched)">
       Este campo es obligatorio *.</span>
@@ -53,10 +55,10 @@
 </div>
 <div class="row grid">
   <div class="col-md-4 mb-3">
-    <label class="control-label" [for]="'segundoApellido' + ID">Segundo Apellido<span class="req"
-                                                                                      *ngIf="tipo === 'sustituto'">*</span>:</label>
+    <label class="control-label" [for]="'segundoApellido' + ID">Segundo Apellido
+      <span class="req" *ngIf="tipo === 'sustituto'">*</span>:</label>
     <input [id]="'segundoApellido' + ID" class="form-control" formControlName="segundoApellido" [maxlength]="20"
-           placeholder="Ingresa el segundo Apellido">
+           placeholder="Ingresa el segundo Apellido" lettersOnly>
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.segundoApellido?.errors?.required  && (parentFormGroup.segundoApellido?.dirty || parentFormGroup.segundoApellido?.touched)">
       Este campo es obligatorio *.</span>
@@ -72,8 +74,7 @@
       Este campo es obligatorio *.</span>
   </div>
   <div class="col-md-4 mb-3" *ngIf="parentFormGroup.sexo.value === 3">
-    <label class="control-label" [for]="'otroSexo' + ID">Sexo<span class="req"
-                                                                   *ngIf="tipo === 'sustituto'">*</span>:</label>
+    <label class="control-label" [for]="'otroSexo' + ID">Otro Sexo:</label>
     <input [id]="'otroSexo' + ID" class="form-control" formControlName="otroSexo"
            placeholder="Ingresa el sexo correspondiente">
     <span class="campo-obligatorio"
