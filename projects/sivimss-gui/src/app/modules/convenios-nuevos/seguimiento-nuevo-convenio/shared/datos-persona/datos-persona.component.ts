@@ -198,7 +198,6 @@ export class DatosPersonaComponent implements OnInit {
     }
   }
 
-
   validarCurp(): void {
     const curp = this.parentContainer.control?.get('curp')?.value;
     if (!curp) return;
