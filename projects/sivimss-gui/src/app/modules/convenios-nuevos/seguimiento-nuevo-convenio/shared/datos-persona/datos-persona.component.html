@@ -342,7 +342,7 @@
 <div class="row mt-3 mb-2">
   <div class="col-md-12 flex justify-content-end mt-6 mb-4">
     <button type="submit" class="btn btn-primary btn-md ml-5"
-            [disabled]="parentContainer.invalid || parentContainer.pristine"
+            [disabled]="(parentContainer.invalid || parentContainer.pristine) && !archivoModificado"
             (click)="guardarSolicitante()">Guardar Información Solicitante
     </button>
   </div>

@@ -309,6 +309,7 @@ export class DatosPersonaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         this.alertaService.mostrar(TipoAlerta.Exito, `Información de solicitante actualizada satisfactoriamente`);
         this.parentContainer.control?.markAsPristine();
+        this.archivoModificado = false;
       },
       error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
     });
@@ -318,13 +319,13 @@ export class DatosPersonaComponent implements OnInit {
     const idEstado = this.parentContainer.control?.get('lugarNacimiento')?.value;
     const idPais = this.parentContainer.control?.get('paisNacimiento')?.value;
     const idSexo = this.parentContainer.control?.get('idSexo')?.value;
-    const nombreDocumentoRFC = this.parentContainer.control?.get('nombreDocumentoRFC')?.value;
-    const nombreDocumentoINE = this.parentContainer.control?.get('nombreDocumentoINE')?.value;
-    const nombreDocumentoCURP = this.parentContainer.control?.get('nombreDocumentoCURP')?.value;
+    const nombreDocumentoRFC = this.parentContainer.control?.get('nuevoDocumentoRFC')?.value;
+    const nombreDocumentoINE = this.parentContainer.control?.get('nuevoDocumentoINE')?.value;
+    const nombreDocumentoCURP = this.parentContainer.control?.get('nuevoDocumentoCURP')?.value;
     return {
-      archivoCurp: !!nombreDocumentoCURP ? this.parentContainer.control?.get('documentoCURP')?.value : null,
-      archivoIne: !!nombreDocumentoINE ? this.parentContainer.control?.get('documentoINE')?.value : null,
-      archivoRfc: !!nombreDocumentoRFC ? this.parentContainer.control?.get('documentoRFC')?.value : null,
+      archivoCurp: nombreDocumentoCURP !== null ? this.parentContainer.control?.get('documentoCURP')?.value : null,
+      archivoIne: nombreDocumentoINE !== null ? this.parentContainer.control?.get('documentoINE')?.value : null,
+      archivoRfc: nombreDocumentoRFC !== null ? this.parentContainer.control?.get('documentoRFC')?.value : null,
       calle: this.parentContainer.control?.get('calle')?.value,
       colonia: this.parentContainer.control?.get('colonia')?.value,
       correo: this.parentContainer.control?.get('correoElectronico')?.value,
@@ -347,9 +348,9 @@ export class DatosPersonaComponent implements OnInit {
       matricula: this.parentContainer.control?.get('matricula')?.value,
       municipio: this.parentContainer.control?.get('municipio')?.value,
       nombre: this.parentContainer.control?.get('nombres')?.value,
-      nombreCurp: !!nombreDocumentoCURP ? nombreDocumentoCURP : null,
-      nombreIne: !!nombreDocumentoINE ? nombreDocumentoINE : null,
-      nombreRfc: !!nombreDocumentoRFC ? nombreDocumentoRFC : null,
+      nombreCurp: nombreDocumentoCURP !== null ? nombreDocumentoCURP : null,
+      nombreIne: nombreDocumentoINE !== null ? nombreDocumentoINE : null,
+      nombreRfc: nombreDocumentoRFC !== null ? nombreDocumentoRFC : null,
       numExt: this.parentContainer.control?.get('numeroExterior')?.value,
       numInt: this.parentContainer.control?.get('numeroInterior')?.value,
       otraEnfermedad: null,
@@ -358,9 +359,9 @@ export class DatosPersonaComponent implements OnInit {
       rfc: this.parentContainer.control?.get('rfc')?.value,
       segunApe: this.parentContainer.control?.get('segundoApellido')?.value,
       telefono: this.parentContainer.control?.get('telefono')?.value,
-      validaCurp: !!nombreDocumentoCURP,
-      validaIne: !!nombreDocumentoINE,
-      validaRfc: !!nombreDocumentoRFC
+      validaCurp: nombreDocumentoCURP !== null,
+      validaIne: nombreDocumentoINE !== null,
+      validaRfc: nombreDocumentoRFC !== null
     }
   }
 
@@ -451,10 +452,10 @@ export class DatosPersonaComponent implements OnInit {
       if (nombreINE) {
         this.parentContainer.control?.get('documentoINE')?.setValue(data);
       }
-      if (nombreINE) {
+      if (nombreCURP) {
         this.parentContainer.control?.get('documentoCURP')?.setValue(data);
       }
-      if (nombreINE) {
+      if (nombreRFC) {
         this.parentContainer.control?.get('documentoRFC')?.setValue(data);
       }
     });
