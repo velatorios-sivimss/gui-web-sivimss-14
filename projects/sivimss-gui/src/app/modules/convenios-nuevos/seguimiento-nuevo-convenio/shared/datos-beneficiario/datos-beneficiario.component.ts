@@ -128,14 +128,16 @@ export class DatosBeneficiarioComponent implements OnInit {
       this.mostrarMensaje(+respuesta.mensaje);
       return;
     }
-    if (respuesta.mensaje == 'Exito') {
-      let [valores] = respuesta.datos;
-      let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
-      let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
-      this.parentContainer.control?.get('nombres')?.setValue(`${valores.nomPersona} ${valores.primerApellido} ${valores.segundoApellido}`);
-      this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
-      this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
-      this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
+    let [valores] = respuesta.datos;
+    let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
+    let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
+    this.parentContainer.control?.get('nombres')?.setValue(`${valores.nomPersona} ${valores.primerApellido} ${valores.segundoApellido}`);
+    this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
+    this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
+    this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
+    if (valores.nomPersona === '') {
+      this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
+      this.parentContainer.control?.get('curp')?.setErrors({'incorrect': true});
     }
   }
 
