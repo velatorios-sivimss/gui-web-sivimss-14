@@ -63,15 +63,9 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   }
 
   cargarValidacionesIniciales(): void {
-    const idSexo = this.parentContainer.control?.get('sexo')?.value;
     const nacionalidad = this.parentContainer.control?.get('nacionalidad')?.value;
-    if (idSexo === 3) {
-      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
-    }
     if (nacionalidad === 1) {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
-    } else {
-      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
     }
   }
 
@@ -107,6 +101,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     const rfc = this.parentContainer.control?.get('rfc')?.value;
     if (!rfc) return;
     if (!rfc.match(PATRON_RFC)) {
+      this.alertaService.mostrar(TipoAlerta.Error, 'RFC no válido.');
       this.parentContainer.control?.get('rfc')?.setValidators(Validators.pattern(PATRON_RFC));
       this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
     }
@@ -167,7 +162,6 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
     this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
     this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
-    this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
     this.cargarValidacionesIniciales();
   }
 
@@ -213,11 +207,6 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   cambioTipoSexo(): void {
     const idSexo = this.parentContainer.control?.get('sexo')?.value;
     this.parentContainer.control?.get('otroSexo')?.setValue(null);
-    if (idSexo === 3) {
-      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
-    } else {
-      this.parentContainer.control?.get('otroSexo')?.clearValidators();
-    }
   }
 
   cambioNacionalidad(): void {
@@ -226,9 +215,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
     if (nacionalidad === 1) {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
-      this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
     } else {
-      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
       this.parentContainer.control?.get('lugarNacimiento')?.clearValidators();
     }
   }
@@ -242,21 +229,23 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
       this.mostrarMensaje(+respuesta.mensaje);
       return;
     }
-    if (respuesta.mensaje == 'Exito') {
-      let [valores] = respuesta.datos;
-      let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
-      let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
-      this.parentContainer.control?.get('nombre')?.setValue(valores.nomPersona);
-      this.parentContainer.control?.get('fechaNacimiento')?.setValue(fechaNacimiento);
-      this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
-      this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
-      this.parentContainer.control?.get('nacionalidad')?.setValue(1);
-      this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
-      this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
-      this.parentContainer.control?.get('sexo')?.setValue(valores.sexo);
-      this.parentContainer.control?.get('otroSexo')?.setValue(valores.otroSexo);
-      this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
-      this.cargarValidacionesIniciales();
+    let [valores] = respuesta.datos;
+    let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
+    let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
+    this.parentContainer.control?.get('nombre')?.setValue(valores.nomPersona);
+    this.parentContainer.control?.get('fechaNacimiento')?.setValue(fechaNacimiento);
+    this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
+    this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
+    this.parentContainer.control?.get('nacionalidad')?.setValue(1);
+    this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
+    this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
+    this.parentContainer.control?.get('sexo')?.setValue(valores.sexo);
+    this.parentContainer.control?.get('otroSexo')?.setValue(valores.otroSexo);
+    this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
+    this.cargarValidacionesIniciales();
+    if (valores.nomPersona === '') {
+      this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
+      this.parentContainer.control?.get('curp')?.setErrors({'incorrect': true});
     }
   }
 

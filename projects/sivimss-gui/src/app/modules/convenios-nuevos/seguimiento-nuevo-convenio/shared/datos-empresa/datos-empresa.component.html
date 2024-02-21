@@ -16,7 +16,8 @@
   </div>
   <div class="col-md-4">
     <label class="control-label" for="rfc">R.F.C.<span class="req">*</span>:</label>
-    <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C." [maxlength]="13">
+    <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C." [maxlength]="13"
+    (blur)="validarRfc()">
     <span class="campo-obligatorio"
           *ngIf="parentFormGroup.rfc?.errors?.required  && (parentFormGroup.rfc?.dirty || parentFormGroup.rfc?.touched)">
       Este campo es obligatorio *.</span>
