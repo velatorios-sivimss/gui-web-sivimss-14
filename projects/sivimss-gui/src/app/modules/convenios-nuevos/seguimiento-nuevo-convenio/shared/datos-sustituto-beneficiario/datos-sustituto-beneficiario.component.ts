@@ -9,10 +9,9 @@ import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo"
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
 import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
-import {delay, finalize} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ActivatedRoute} from "@angular/router";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
@@ -60,11 +59,7 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
   }
 
   cargarValidacionesIniciales(): void {
-    const idSexoSust = this.parentContainer.control?.get('sexo')?.value;
     const nacionalidad = this.parentContainer.control?.get('nacionalidad')?.value;
-    if (idSexoSust === 3) {
-      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
-    }
     if (nacionalidad === 1) {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
     } else {
@@ -111,6 +106,10 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     }
   }
 
+  cambioTipoSexo(): void {
+    this.parentContainer.control?.get('otroSexo')?.setValue(null);
+  }
+
   validarRfcBeneficiario(): void {
     const rfc = this.parentContainer.control?.get('rfc')?.value;
     if (!rfc) return;
@@ -118,18 +117,9 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
     if (rfc.includes('XAXX010101000')) return;
     if (!rfc.match(PATRON_RFC)) {
+      this.alertaService.mostrar(TipoAlerta.Error, 'RFC no válido.');
       this.parentContainer.control?.get('rfc')?.setValidators(Validators.pattern(PATRON_RFC));
       this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
-    }
-  }
-
-  cambioTipoSexo(): void {
-    const idSexoSust = this.parentContainer.control?.get('sexo')?.value;
-    this.parentContainer.control?.get('otroSexo')?.setValue(null);
-    if (idSexoSust === 3) {
-      this.parentContainer.control?.get('otroSexo')?.setValidators([Validators.required]);
-    } else {
-      this.parentContainer.control?.get('otroSexo')?.clearValidators();
     }
   }
 
@@ -195,7 +185,6 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('segundoApellido')?.setValue(respuesta.datos.segundoApellido);
     this.parentContainer.control?.get('sexo')?.setValue(sexo);
     this.parentContainer.control?.get('otroSexo')?.setValue(null);
-    this.parentContainer.control?.get('otroSexo')?.clearValidators();
     this.parentContainer.control?.get('fechaNacimiento')?.setValue(fecha);
     this.parentContainer.control?.get('nacionalidad')?.setValue(1);
     this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
@@ -254,21 +243,23 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
       this.mostrarMensaje(+respuesta.mensaje);
       return;
     }
-    if (respuesta.mensaje == 'Exito') {
-      let [valores] = respuesta.datos;
-      let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
-      let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
-      this.parentContainer.control?.get('nombre')?.setValue(valores.nomPersona);
-      this.parentContainer.control?.get('fechaNacimiento')?.setValue(fechaNacimiento);
-      this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
-      this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
-      this.parentContainer.control?.get('nacionalidad')?.setValue(1);
-      this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
-      this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
-      this.parentContainer.control?.get('sexo')?.setValue(valores.sexo);
-      this.parentContainer.control?.get('otroSexo')?.setValue(valores.otroSexo);
-      this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
-      this.cargarValidacionesIniciales();
+    let [valores] = respuesta.datos;
+    let [anioD, mesD, diaD] = valores.fechaNacimiento.split('-');
+    let fechaNacimiento = new Date(anioD + '/' + mesD + '/' + diaD);
+    this.parentContainer.control?.get('nombre')?.setValue(valores.nomPersona);
+    this.parentContainer.control?.get('fechaNacimiento')?.setValue(fechaNacimiento);
+    this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
+    this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
+    this.parentContainer.control?.get('nacionalidad')?.setValue(1);
+    this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
+    this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
+    this.parentContainer.control?.get('sexo')?.setValue(valores.sexo);
+    this.parentContainer.control?.get('otroSexo')?.setValue(valores.otroSexo);
+    this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
+    this.cargarValidacionesIniciales();
+    if (valores.nomPersona === '') {
+      this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
+      this.parentContainer.control?.get('curp')?.setErrors({'incorrect': true});
     }
   }
 
