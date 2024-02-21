@@ -13,6 +13,7 @@ import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-a
 import { TransaccionPago } from '../../../../models/transaccion-pago.interface';
 import { SolicitudPagos } from '../../../../models/solicitud-pagos.interface';
 import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
+import * as moment from 'moment';
 @Component({
   selector: 'app-mi-plan-servicios-funerarios-pago-anticipado',
   templateUrl: './mi-plan-servicios-funerarios-pago-anticipado.component.html',
@@ -21,14 +22,13 @@ import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-
 })
 export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   readonly ESTATUS_POR_PAGAR: number = 8;
-  readonly ESTATUS_CON_ADEUDO: number = 2;
   beneficiarios: TitularesBeneficiarios[] = [];
   titular!: TitularesBeneficiarios;
   titularSubstituto!: TitularesBeneficiarios;
   detalleServicioFunerario!: DetalleServicioFunerario;
   idPlanSfpa: number | undefined;
-  montoTotal: number = 0;
-  idsPago: number[] = [];
+  registroPagar!: PagoSFPA;
+  mostrarBtnRealizarPago: boolean = false;
 
   constructor(
     private dialogService: DialogService,
@@ -43,7 +43,6 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   ) { }
 
   ngOnInit(): void {
-    this.idsPago = [this.ESTATUS_POR_PAGAR, this.ESTATUS_CON_ADEUDO];
     let timeoutTmp = setTimeout(() => {
       this.cargarScript(() => { });
       this.subscripcionMotorPagos();
@@ -70,16 +69,14 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   }
 
   iniciarPago(): void {
-    this.montoTotal = 0;
-    this.detalleServicioFunerario.pagoSFPA.forEach((e: PagoSFPA) => {
-      if (e.idEstatus && this.idsPago.includes(e.idEstatus) && typeof e.importeMensual === 'number') {
-        this.montoTotal += e.importeMensual;
-      }
-    })
     const elemento_ref = document.querySelector('.realizar-pago');
     const e = document.getElementById('btn-realizar-pago');
     if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'Mensualidad SFPA', monto: this.montoTotal }));
+    elemento_ref.setAttribute('data-objeto',
+      JSON.stringify({
+        referencia: 'Mensualidad SFPA',
+        monto: this.registroPagar.importeAcumulado === 0 ? this.registroPagar.importeMensual : this.registroPagar.importeAcumulado
+      }));
     e?.click();
   }
 
@@ -132,12 +129,13 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
       idMetodoPago, // debito o credito payment_method_type
       idRegistro: this.detalleServicioFunerario.idPlanSfpa ? +this.detalleServicioFunerario.idPlanSfpa : null,
       idVelatorio: this.detalleServicioFunerario.idVelatorio ?? null,
-      importe: this.montoTotal,
+      importe: this.registroPagar.importeAcumulado === 0 ? this.registroPagar.importeMensual : this.registroPagar.importeAcumulado,
       nomContratante: nombreTitular,
       nomTitular: nombreTitular,
       numAprobacion: pago.transaction.authorization_code,
       numTarjeta: pago.card.number,
       referencia: pago.transaction.id,
+      idPagoSFPA: this.registroPagar.idPagoSFPA,
     }
   }
 
@@ -178,6 +176,13 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
 
               if (beneficiario1) this.beneficiarios.push(beneficiario1);
               if (beneficiario2) this.beneficiarios.push(beneficiario2);
+
+              this.detalleServicioFunerario.pagoSFPA.forEach((item: PagoSFPA) => {
+                if (moment().isSame(moment(item.fechaParcialidad, 'DD/MM/YYYY'), 'day') && item.idEstatus === this.ESTATUS_POR_PAGAR) {
+                  this.registroPagar = item;
+                  this.mostrarBtnRealizarPago = true;
+                }
+              });
             } catch (error) {
               console.error(error);
             }
