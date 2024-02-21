@@ -107,6 +107,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     const rfc = this.parentContainer.control?.get('rfc')?.value;
     if (!rfc) return;
     if (!rfc.match(PATRON_RFC)) {
+      this.alertaService.mostrar(TipoAlerta.Error, 'RFC no válido.');
       this.parentContainer.control?.get('rfc')?.setValidators(Validators.pattern(PATRON_RFC));
       this.parentContainer.control?.get('rfc')?.updateValueAndValidity();
     }
