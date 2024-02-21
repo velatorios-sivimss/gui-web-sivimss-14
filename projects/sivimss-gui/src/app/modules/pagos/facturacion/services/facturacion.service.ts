@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {BaseService} from "../../../../utils/base-service";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {AutenticacionService} from "../../../../services/autenticacion.service";
-import {environment} from "../../../../../environments/environment";
-import {Observable} from "rxjs";
+import { Injectable } from '@angular/core';
+import { BaseService } from "../../../../utils/base-service";
+import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { AutenticacionService } from "../../../../services/autenticacion.service";
+import { environment } from "../../../../../environments/environment";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
@@ -26,11 +26,11 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
       .append("pagina", pagina)
       .append("tamanio", tamanio);
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`, filtros,
-      {params});
+      { params });
   }
 
   obtenerCatalogoVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body = {idDelegacion: delegacion}
+    const body = { idDelegacion: delegacion }
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
@@ -38,12 +38,16 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`, {}, {params});
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`, {}, { params });
   }
 
   obtenerFolioODS(tipoFactura: string): Observable<HttpRespuesta<any>> {
-    const body: { tipoFactura: string } = {tipoFactura};
+    const body: { tipoFactura: string } = { tipoFactura };
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._filtros}`, body);
+  }
+
+  obtenerRecibosPago(idRegistro: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-psfpa-numRecPago`, { idRegistro });
   }
 
   obtenerInfoFolioFacturacion(body: any): Observable<HttpRespuesta<any>> {
@@ -51,22 +55,22 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   consultarRFC(rfc: string): Observable<HttpRespuesta<any>> {
-    const body = {rfc};
+    const body = { rfc };
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._rfc}`, body);
   }
 
   consultarCFDI(tipoPersona: string): Observable<HttpRespuesta<any>> {
-    const body = {tipoPersona};
+    const body = { tipoPersona };
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._cfdi}`, body);
   }
 
   consultarMetodosPago(tipoPersona: string): Observable<HttpRespuesta<any>> {
-    const body = {tipoPersona};
+    const body = { tipoPersona };
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._metodosPago}`, body);
   }
 
   consultarFormasPago(tipoPersona: string): Observable<HttpRespuesta<any>> {
-    const body = {tipoPersona};
+    const body = { tipoPersona };
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._formasPago}`, body);
   }
 
@@ -77,7 +81,7 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
   consultarMotivosCancelacion(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append('servicio', 'consultar-cancelacion-facturacion');
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}`, {params});
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}`, { params });
   }
 
   cancelarFactura(body: any): Observable<HttpRespuesta<any>> {
@@ -89,12 +93,12 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   generarFactura(idFactura: number): Observable<Blob> {
-    const body = {idFactura};
+    const body = { idFactura };
     const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
     return this._http.post<any>(this._base + `${this._funcionalidad}/generar-factura-pdf/generarDocumento/pdf`, body,
-      {headers, responseType: 'blob' as 'json'});
+      { headers, responseType: 'blob' as 'json' });
   }
 }

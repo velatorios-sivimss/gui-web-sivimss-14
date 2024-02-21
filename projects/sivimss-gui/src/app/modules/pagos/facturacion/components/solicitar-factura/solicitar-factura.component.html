@@ -16,7 +16,7 @@
       <div class="col-md-6" *ngIf="pf?.tipoFactura?.value">
         <label class="control-label" for="folio">{{ folio }}<span class="req">*</span>:</label>
         <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="folios"
-                    placeholder="Selecciona el folio" [filter]="true" filterBy="label">
+                    placeholder="Selecciona el folio" [filter]="true" filterBy="label" (onChange)="obtenerRecibosPago()" >
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="pf?.folio?.errors?.required && (pf?.folio?.dirty || pf?.folio?.touched)">Este campo es obligatorio *.</span>
@@ -24,9 +24,10 @@
     </div>
     <div class="row mb-3 mt-3" *ngIf="pf?.tipoFactura?.value === 4">
       <div class="col-md-6">
-        <label class="control-label" for="numeroRecibo">Número de recibo de pago:</label>
-        <input id="numeroRecibo" class="form-control" formControlName="numeroRecibo"
-               placeholder="Inserta el número de recibo de pago">
+        <label class="control-label" for="numeroRecibo">Número de recibo de pago<span class="req">*</span>:</label>
+        <p-dropdown id="folio" class="form-control" formControlName="numeroRecibo" [options]="recibosPago"
+                    placeholder="Selecciona el número de recibo de pago" [filter]="true" filterBy="label" >
+        </p-dropdown>
       </div>
     </div>
     <div class="row mb-4">
