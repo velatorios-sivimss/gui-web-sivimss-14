@@ -56,4 +56,8 @@ export class ContratarPSFPAService extends BaseService<HttpRespuesta<any>, any> 
   detalleReciboPago(folio: number): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(this._basePagos + `/pago/online/obtener/${folio}`)
   }
+
+  obtenerDatosTitular(idVelatorio: number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base + `/linea-plan-sfpa/consulta-detalle-linea-plan-sfpa/contratante/${idVelatorio}`)
+  }
 }
