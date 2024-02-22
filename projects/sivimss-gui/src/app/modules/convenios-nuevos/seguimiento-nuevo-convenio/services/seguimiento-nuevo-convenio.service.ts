@@ -99,8 +99,8 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actualizar-datos-conve-persona`, body);
   }
 
-  actualizaEstatusConvenioPersona(idConvenioPF: number): Observable<HttpRespuesta<any>> {
-    const body = { idConvenioPF };
+  actualizaEstatusConvenioPersona(idConvenioPF: number, tipoContratacion: number): Observable<HttpRespuesta<any>> {
+    const body = { idConvenioPF, tipoContratacion };
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/actualizar-estatus-conve-pf`, body);
   }
 

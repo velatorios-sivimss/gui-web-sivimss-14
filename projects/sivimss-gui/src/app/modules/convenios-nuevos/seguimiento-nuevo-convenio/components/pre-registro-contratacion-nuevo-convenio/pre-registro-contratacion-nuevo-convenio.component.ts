@@ -534,8 +534,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   aceptar(): void {
     if (![3, 2, 1].includes(+this.tipoConvenio)) return;
-    if ([3, 2].includes(+this.tipoConvenio)) {
-      this.guardarContratacion();
+    if (+this.tipoConvenio === 2) {
+      this.guardarContratacion(2);
+      return;
+    }
+    if (+this.tipoConvenio === 3) {
+      this.guardarContratacion(1);
       return;
     }
     this.guardarContratacionPA();
@@ -660,9 +664,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     return form.get('beneficiarios') as FormArray;
   }
 
-  guardarContratacion(): void {
+  guardarContratacion(id: number): void {
     this.cargadorService.activar();
-    this.seguimientoConvenioService.actualizaEstatusConvenioPersona(+this.idConvenio).pipe(
+    this.seguimientoConvenioService.actualizaEstatusConvenioPersona(+this.idConvenio, id).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
