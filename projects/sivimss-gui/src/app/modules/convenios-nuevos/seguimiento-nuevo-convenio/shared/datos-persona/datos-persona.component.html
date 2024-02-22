@@ -197,7 +197,7 @@
 <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
   <p-accordionTab header="Documentación requerida">
     <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mt-3" [activeIndex]="0">
-      <p-accordionTab [header]="nombreINE" class="mb-3"  *ngIf="nombreINE.toString() !== '0'">
+      <p-accordionTab [header]="nombreINE" class="mb-3">
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" [for]="'numeroDocumentoINE' + ID">Número del documento<span
@@ -224,7 +224,7 @@
           <div class="col-md-6">
             <label class="control-label" for="verDocINE">Ver documento<span class="req">*</span>:</label>
             <div (click)="descargarArchivo(1)">
-              <input class="hidden" type="file" id="download-file-INE" name="download-file"
+              <input class="hidden" type="file" id="downloadFileINE" name="downloadFile"
                      accept=".jpg, .jpeg, .png, .pdf">
               <input id="verDocINE" class="form-control" readonly/>
               <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
@@ -241,7 +241,7 @@
           </div>
         </div>
       </p-accordionTab>
-      <p-accordionTab [header]="nombreCURP" *ngIf="nombreCURP.toString() !== '0'">
+      <p-accordionTab [header]="nombreCURP">
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" [for]="'numeroDocumentoCURP' + ID">Número del documento<span
@@ -268,7 +268,7 @@
           <div class="col-md-6">
             <label class="control-label" for="verDocCURP">Ver documento<span class="req">*</span>:</label>
             <div (click)="descargarArchivo(2)">
-              <input class="hidden" type="file" id="download-file-CURP" name="download-file"
+              <input class="hidden" type="file" id="downloadFileCURP" name="downloadFile"
                      accept=".jpg, .jpeg, .png, .pdf">
               <input id="verDocCURP" class="form-control" readonly/>
               <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
@@ -286,7 +286,7 @@
           </div>
         </div>
       </p-accordionTab>
-      <p-accordionTab [header]="nombreRFC" *ngIf="nombreRFC.toString() !== '0'">
+      <p-accordionTab [header]="nombreRFC">
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" [for]="'numeroDocumentoRFC' + ID">Número del documento<span
@@ -313,7 +313,7 @@
           <div class="col-md-6">
             <label class="control-label" for="verDocRFC">Ver documento<span class="req">*</span>:</label>
             <div (click)="descargarArchivo(3)">
-              <input class="hidden" type="file" id="download-file-RFC" name="download-file"
+              <input class="hidden" type="file" id="downloadFileRFC" name="downloadFile"
                      accept=".jpg, .jpeg, .png, .pdf">
               <input id="verDocRFC" class="form-control" readonly/>
               <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
