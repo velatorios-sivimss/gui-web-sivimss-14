@@ -197,7 +197,7 @@
 <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
   <p-accordionTab header="Documentación requerida">
     <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mt-3" [activeIndex]="0">
-      <p-accordionTab [header]="nombreINE" class="mb-3">
+      <p-accordionTab [header]="nombreINE" class="mb-3"  *ngIf="nombreINE.toString() !== '0'">
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" [for]="'numeroDocumentoINE' + ID">Número del documento<span
@@ -241,7 +241,7 @@
           </div>
         </div>
       </p-accordionTab>
-      <p-accordionTab [header]="nombreCURP">
+      <p-accordionTab [header]="nombreCURP" *ngIf="nombreCURP.toString() !== '0'">
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" [for]="'numeroDocumentoCURP' + ID">Número del documento<span
@@ -286,7 +286,7 @@
           </div>
         </div>
       </p-accordionTab>
-      <p-accordionTab [header]="nombreRFC">
+      <p-accordionTab [header]="nombreRFC" *ngIf="nombreRFC.toString() !== '0'">
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" [for]="'numeroDocumentoRFC' + ID">Número del documento<span

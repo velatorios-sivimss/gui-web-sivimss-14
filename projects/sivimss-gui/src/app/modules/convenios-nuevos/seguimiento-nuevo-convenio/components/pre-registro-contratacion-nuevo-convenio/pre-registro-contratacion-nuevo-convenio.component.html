@@ -138,7 +138,7 @@
                                         [header]="beneficiario.get('nombre')?.value + ' '  + beneficiario.get('primerApellido')?.value + ' ' + beneficiario.get('segundoApellido')?.value"
                                         [formGroupName]="j">
                                         <ng-template pTemplate="content">
-                                          <app-datos-beneficiario></app-datos-beneficiario>
+                                          <app-datos-beneficiario [ID]="j.toString()"></app-datos-beneficiario>
                                         </ng-template>
                                       </p-accordionTab>
                                     </p-accordion>
@@ -146,23 +146,6 @@
                                 </ng-container>
                               </ng-container>
                             </ng-template>
-                          </p-accordionTab>
-                        </p-accordion>
-                        <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
-                          <p-accordionTab header="Características del convenio">
-                            <div class="row mb-3">
-                              <div class="col-md-4">
-                                <label class="control-label" [for]="'tipoPaquete' + i.toString()">Tipo de paquete<span
-                                  class="req">*</span>:</label>
-                                <p-dropdown appendTo="body" [id]="'tipoPaquete' + i.toString()" class="form-control"
-                                            formControlName="tipoPaquete"
-                                            [options]="paquetes" placeholder="Selecciona el tipo de paquete">
-                                </p-dropdown>
-                                <span class="campo-obligatorio"
-                                      *ngIf="convenioFormGroup?.tipoPaquete?.errors?.required  && (convenioFormGroup?.tipoPaquete?.dirty || convenioFormGroup?.tipoPaquete?.touched)">
-      Este campo es obligatorio *.</span>
-                              </div>
-                            </div>
                           </p-accordionTab>
                         </p-accordion>
                       </ng-template>
