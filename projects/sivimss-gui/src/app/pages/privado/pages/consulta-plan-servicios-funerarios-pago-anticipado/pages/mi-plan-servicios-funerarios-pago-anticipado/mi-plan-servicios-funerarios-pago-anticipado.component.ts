@@ -148,7 +148,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
         .pipe(finalize(() => this.loaderService.desactivar()))
         .subscribe({
           next: (respuesta: HttpRespuesta<any>) => {
-            if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
+            if (respuesta.error && respuesta.mensaje !== 'Exito') {
               this.alertaService.mostrar(
                 TipoAlerta.Error,
                 'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
