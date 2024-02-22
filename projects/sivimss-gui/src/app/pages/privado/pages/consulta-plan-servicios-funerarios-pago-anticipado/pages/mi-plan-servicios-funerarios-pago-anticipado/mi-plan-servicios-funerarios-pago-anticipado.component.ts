@@ -75,7 +75,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
     elemento_ref.setAttribute('data-objeto',
       JSON.stringify({
         referencia: 'Mensualidad SFPA',
-        monto: this.registroPagar.importeAcumulado === 0 ? this.registroPagar.importeMensual : this.registroPagar.importeAcumulado
+        monto: this.registroPagar.importeAcumulado
       }));
     e?.click();
   }
