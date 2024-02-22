@@ -188,26 +188,28 @@ export class SolicitarFacturaComponent implements OnInit {
   }
 
   buscarDatosContratante(): void {
-    const solicitud: SolicitudDatosContratante = this.crearSolicitudDatosContratante();
-    this.cargadorService.activar();
-    this.facturacionService.obtenerInfoFolioFacturacion(solicitud).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        if (respuesta.datos) {
-          this.registroContratante = respuesta.datos;
-          this.datosContratanteForm.get('rfc')?.setValue(this.registroContratante!.rfc);
-          this.datosContratanteForm.get('correoElectronico')?.setValue(this.registroContratante!.correo);
-        } else {
-          const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-          this.alertaService.mostrar(TipoAlerta.Exito, msg);
+    if (this.solicitudForm.valid) {
+      const solicitud: SolicitudDatosContratante = this.crearSolicitudDatosContratante();
+      this.cargadorService.activar();
+      this.facturacionService.obtenerInfoFolioFacturacion(solicitud).pipe(
+        finalize(() => this.cargadorService.desactivar())
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          if (respuesta.datos) {
+            this.registroContratante = respuesta.datos;
+            this.datosContratanteForm.get('rfc')?.setValue(this.registroContratante!.rfc);
+            this.datosContratanteForm.get('correoElectronico')?.setValue(this.registroContratante!.correo);
+          } else {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Exito, msg);
+          }
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error("ERROR: ", error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
-    });
+      });
+    }
   }
 
   crearSolicitudDatosContratante(): SolicitudDatosContratante {

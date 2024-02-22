@@ -327,7 +327,7 @@
           </div>
           <div class="row mb-8">
             <div class="col-md-2">
-              <label class="control-label" for="curp">Copia INE:</label>
+              <label class="control-label" for="curp">Copia INE<span class="req">*</span>:</label>
               <div (click)="handleClick('archivoIneUpload')" class="file-container">
                 <input class="hidden" type="file" id="archivoIneUpload" name="archivoIneUpload"
                   accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB" (change)="addAttachment($event)">
@@ -336,7 +336,7 @@
               </div>
             </div>
             <div class="col-md-2">
-              <label class="control-label" for="curp">Copia CURP:</label>
+              <label class="control-label" for="curp">Copia CURP<span class="req">*</span>:</label>
               <div (click)="handleClick('archivoCURPUpload')" class="file-container">
                 <input class="hidden" type="file" id="archivoCURPUpload" name="archivoCURPUpload"
                   accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB" (change)="addAttachment($event)">
@@ -346,7 +346,7 @@
             </div>
 
             <div class="col-md-2">
-              <label class="control-label" for="rfc">Copia RFC:</label>
+              <label class="control-label" for="rfc">Copia RFC<span class="req">*</span>:</label>
               <div (click)="handleClick('archivoRFCUpload')" class="file-container">
                 <input class="hidden" type="file" id="archivoRFCUpload" name="archivoRFCUpload"
                   accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB" (change)="addAttachment($event)">
@@ -582,8 +582,8 @@
           <button class="btn btn-primary btn-md ml-4" type="submit" [disabled]="!this.formEmpresa.valid"
                   *ngIf="mostrarBontonGaurdarPersona">Guardar</button>
           <button class="btn btn-gold ml-4 btn-md"
-                  (click)="mostrarMensajeGuardado = true" type="button" *ngIf="!mostrarBontonGaurdarPersona">Terminar
-            contratación</button>
+                  (click)="mostrarMensajeGuardado = true" type="button" *ngIf="!mostrarBontonGaurdarPersona">Terminar contratación
+          </button>
         </div>
       </div>
     </form>
