@@ -180,7 +180,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         nacionalidad: [{value: nacionalidad, disabled: false}],
         paisNacimiento: [{value: this.convenioPersona?.idPais, disabled: false}],
         lugarNacimiento: [{value: this.convenioPersona?.idLugarNac, disabled: false}],
-        correoElectronico: [{value: this.convenioPersona?.correo, disabled: false}, [Validators.required]],
+        correoElectronico: [{value: this.convenioPersona?.correo, disabled: false},
+          [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
         telefono: [{value: this.convenioPersona?.telCelular, disabled: false}, [Validators.required]],
         enfermedadPreExistente: [{value: +this.convenioPersona?.enfermedadPre, disabled: false}, [Validators.required]],
         tipoPaquete: [{value: this.convenioPersona?.idPaquete, disabled: false}, [Validators.required]],
@@ -316,10 +317,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         calle: [{value: this.sustituto?.calle ?? null, disabled: this.mismoSustituto}, [Validators.required]],
         numeroExterior: [{value: this.sustituto?.numExt ?? null, disabled: this.mismoSustituto}, [Validators.required]],
         numeroInterior: [{value: this.sustituto?.numInt ?? null, disabled: this.mismoSustituto}],
-        cp: [{
-          value: this.sustituto?.cp?.padStart(5, '0') ?? null,
-          disabled: this.mismoSustituto
-        }, [Validators.required]],
+        cp: [{value: this.sustituto?.cp?.padStart(5, '0') ?? null, disabled: this.mismoSustituto},
+          [Validators.required]],
         colonia: [{value: this.sustituto?.colonia ?? null, disabled: this.mismoSustituto}, [Validators.required]],
         municipio: [{value: this.sustituto?.municipio ?? null, disabled: this.mismoSustituto}, [Validators.required]],
         estado: [{value: this.sustituto?.estado ?? null, disabled: this.mismoSustituto}, [Validators.required]],
@@ -333,16 +332,18 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         primerApellido: [{value: this.beneficiario1?.primerApellido ?? null, disabled: false}],
         segundoApellido: [{value: this.beneficiario1?.segundoApellido ?? null, disabled: false}],
         sexo: [{value: +this.beneficiario1?.idSexo ?? null, disabled: false}],
+        otroSexo: [{value: +this.beneficiario1?.otroSexo ?? null, disabled: false}],
         fechaNacimiento: [{value: this.calcularFechaNacimiento(this.beneficiario1?.fecNacimiento), disabled: false}],
-        nacionalidad: [{value: nacionalidadBeneficiario1, disabled: this.mismoSustituto}],
-        paisNacimiento: [{value: +this.beneficiario1?.idPais ?? null, disabled: this.mismoSustituto}],
-        lugarNacimiento: [{value: +this.beneficiario1?.idLugarNac ?? null, disabled: this.mismoSustituto}],
+        nacionalidad: [{value: nacionalidadBeneficiario1, disabled: false}],
+        paisNacimiento: [{value: +this.beneficiario1?.idPais ?? null, disabled: false}],
+        lugarNacimiento: [{value: +this.beneficiario1?.idLugarNac ?? null, disabled: false}],
         telefono: [{value: this.beneficiario1?.telFijo ?? null, disabled: false}],
-        correoElectronico: [{value: this.beneficiario1?.correo ?? null, disabled: false}],
+        correoElectronico: [{value: this.beneficiario1?.correo ?? null, disabled: false},
+          [Validators.email, Validators.pattern(PATRON_CORREO)]],
         calle: [{value: this.beneficiario1?.calle ?? null, disabled: false}],
         numeroExterior: [{value: this.beneficiario1?.numExt ?? null, disabled: false}],
         numeroInterior: [{value: this.beneficiario1?.numInt ?? null, disabled: false}],
-        cp: [{value: this.beneficiario1?.cp ?? null, disabled: false}],
+        cp: [{value: this.beneficiario1?.cp?.padStart(5, '0') ?? null, disabled: false}],
         colonia: [{value: this.beneficiario1?.colonia ?? null, disabled: false}],
         municipio: [{value: this.beneficiario1?.municipio ?? null, disabled: false}],
         estado: [{value: this.beneficiario1?.estado ?? null, disabled: false}],
@@ -356,16 +357,18 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         primerApellido: [{value: this.beneficiario2?.primerApellido ?? null, disabled: false}],
         segundoApellido: [{value: this.beneficiario2?.segundoApellido ?? null, disabled: false}],
         sexo: [{value: +this.beneficiario2?.idSexo ?? null, disabled: false}],
+        otroSexo: [{value: +this.beneficiario2?.otroSexo ?? null, disabled: false}],
         fechaNacimiento: [{value: this.calcularFechaNacimiento(this.beneficiario2?.fecNacimiento), disabled: false}],
-        nacionalidad: [{value: nacionalidadBeneficiario2, disabled: this.mismoSustituto}],
-        paisNacimiento: [{value: +this.beneficiario2?.idPais ?? null, disabled: this.mismoSustituto}],
-        lugarNacimiento: [{value: +this.beneficiario2?.idLugarNac ?? null, disabled: this.mismoSustituto}],
+        nacionalidad: [{value: nacionalidadBeneficiario2, disabled: false}],
+        paisNacimiento: [{value: +this.beneficiario2?.idPais ?? null, disabled: false}],
+        lugarNacimiento: [{value: +this.beneficiario2?.idLugarNac ?? null, disabled: false}],
         telefono: [{value: null, disabled: false}],
-        correoElectronico: [{value: this.beneficiario2?.correo ?? null, disabled: false}],
+        correoElectronico: [{value: this.beneficiario2?.correo ?? null, disabled: false},
+          [Validators.email, Validators.pattern(PATRON_CORREO)]],
         calle: [{value: this.beneficiario2?.calle ?? null, disabled: false}],
         numeroExterior: [{value: this.beneficiario2?.numExt ?? null, disabled: false}],
         numeroInterior: [{value: this.beneficiario2?.numInt ?? null, disabled: false}],
-        cp: [{value: this.beneficiario2?.cp ?? null, disabled: false}],
+        cp: [{value: this.beneficiario2?.cp?.padStart(5, '0') ?? null, disabled: false}],
         colonia: [{value: this.beneficiario2?.colonia ?? null, disabled: false}],
         municipio: [{value: this.beneficiario2?.municipio ?? null, disabled: false}],
         estado: [{value: this.beneficiario2?.estado ?? null, disabled: false}],
@@ -533,8 +536,12 @@ export class PreRegistroContratacionNuevoConvenioComponent {
 
   aceptar(): void {
     if (![3, 2, 1].includes(+this.tipoConvenio)) return;
-    if ([3, 2].includes(+this.tipoConvenio)) {
-      this.guardarContratacion();
+    if (+this.tipoConvenio === 2) {
+      this.guardarContratacion(2);
+      return;
+    }
+    if (+this.tipoConvenio === 3) {
+      this.guardarContratacion(1);
       return;
     }
     this.guardarContratacionPA();
@@ -659,9 +666,9 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     return form.get('beneficiarios') as FormArray;
   }
 
-  guardarContratacion(): void {
+  guardarContratacion(id: number): void {
     this.cargadorService.activar();
-    this.seguimientoConvenioService.actualizaEstatusConvenioPersona(+this.idConvenio).pipe(
+    this.seguimientoConvenioService.actualizaEstatusConvenioPersona(+this.idConvenio, id).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {

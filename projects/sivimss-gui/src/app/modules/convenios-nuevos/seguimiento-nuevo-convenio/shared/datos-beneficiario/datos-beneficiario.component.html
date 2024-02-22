@@ -119,7 +119,7 @@
       <div class="col-md-6">
         <label class="control-label" for="nuevoDocumento">Modificar Documento<span class="req">*</span>:</label>
         <div (click)="handleClick('uploadFile')" class="file-container">
-          <input class="hidden" type="file" id="uploadFile" name="uploadFile" accept=".jpg, .jpeg, .png, .pdf"
+          <input class="hidden" type="file" [id]="'uploadFile' + ID" [name]="'uploadFile' + ID" accept=".jpg, .jpeg, .png, .pdf"
                  ngf-max-size="5MB" (change)="addAttachment($event)"/>
           <input id="nuevoDocumento" class="form-control" formControlName="nuevoDocumento" readonly/>
           <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>

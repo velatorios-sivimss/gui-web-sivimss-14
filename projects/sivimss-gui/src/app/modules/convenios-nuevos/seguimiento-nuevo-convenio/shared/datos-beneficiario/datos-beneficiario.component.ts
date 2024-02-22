@@ -245,7 +245,7 @@ export class DatosBeneficiarioComponent implements OnInit {
   }
 
   handleClick(controlName: string): void {
-    const elements = document.getElementById(controlName);
+    const elements = document.getElementById(controlName + this.ID);
     this.inputSeleccionado = controlName;
     elements?.click();
   }

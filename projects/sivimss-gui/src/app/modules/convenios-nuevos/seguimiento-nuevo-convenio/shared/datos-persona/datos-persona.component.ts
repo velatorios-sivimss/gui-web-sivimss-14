@@ -85,17 +85,15 @@ export class DatosPersonaComponent implements OnInit {
     const verDocINE = this.el.nativeElement.querySelector('#verDocINE') as HTMLInputElement;
     const verDocCURP = this.el.nativeElement.querySelector('#verDocCURP') as HTMLInputElement;
     const verDocRFC = this.el.nativeElement.querySelector('#verDocRFC') as HTMLInputElement;
-    const nombreCURP = this.parentContainer.control?.get('nombreDocumentoCURP')?.value;
-    const nombreINE = this.parentContainer.control?.get('nombreDocumentoINE')?.value;
-    const nombreRFC = this.parentContainer.control?.get('nombreDocumentoRFC')?.value;
+    console.log(verDocINE, verDocCURP, verDocRFC)
     if (verDocINE) {
-      verDocINE.value = nombreINE;
+      verDocINE.value = this.nombreINE;
     }
     if (verDocCURP) {
-      verDocCURP.value = nombreCURP;
+      verDocCURP.value = this.nombreCURP;
     }
     if (verDocRFC) {
-      verDocRFC.value = nombreRFC;
+      verDocRFC.value = this.nombreRFC;
     }
     this.cdr.detectChanges();
   }
@@ -197,7 +195,6 @@ export class DatosPersonaComponent implements OnInit {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'La matrícula es incorrecta.');
     }
   }
-
 
   validarCurp(): void {
     const curp = this.parentContainer.control?.get('curp')?.value;
