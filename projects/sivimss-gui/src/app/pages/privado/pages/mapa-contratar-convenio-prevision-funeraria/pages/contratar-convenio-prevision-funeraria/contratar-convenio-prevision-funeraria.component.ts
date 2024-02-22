@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
-import {FormGroup, Validators, FormBuilder} from '@angular/forms';
-import {OverlayPanel} from 'primeng/overlaypanel';
+import { Component, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { OverlayPanel } from 'primeng/overlaypanel';
 import {
   ModalRegistrarBeneficiarioComponent
 } from './components/modal-registrar-beneficiario/modal-registrar-beneficiario.component';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import {
   ModalEditarBeneficiarioComponent
 } from './components/modal-editar-beneficiario/modal-editar-beneficiario.component';
@@ -18,27 +18,27 @@ import {
 import {
   BusquedaConveniosPFServic
 } from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
-import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import {HttpErrorResponse} from '@angular/common/http';
-import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import {finalize} from 'rxjs';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { finalize } from 'rxjs';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   DatosGeneralesContratante
 } from '../../../consulta-convenio-prevision-funeraria/models/DatosGeneralesContratante.interface';
-import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {
   CATALOGO_ENFERMEDAD_PREEXISTENTE
 } from 'projects/sivimss-gui/src/app/modules/convenios-prevision-funeraria/constants/catalogos-funcion';
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
-import {Beneficiarios} from '../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
-import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
-import {SolicitudPagos} from "../../../../models/solicitud-pagos.interface";
-import {TransaccionPago} from "../../../../models/transaccion-pago.interface";
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { Beneficiarios } from '../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
+import { MensajesSistemaService } from "../../../../../../services/mensajes-sistema.service";
+import { SolicitudPagos } from "../../../../models/solicitud-pagos.interface";
+import { TransaccionPago } from "../../../../models/transaccion-pago.interface";
 
 @Component({
   selector: 'app-contratar-convenio-prevision-funeraria',
@@ -193,7 +193,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
       next: (respuesta: HttpRespuesta<any>): void => {
         const id = respuesta.datos.idPagoLinea;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
-        void this.router.navigate(['recibo-de-pago', id], {relativeTo: this.rutaActiva});
+        void this.router.navigate(['recibo-de-pago', id], { relativeTo: this.rutaActiva });
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -253,7 +253,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     const elemento_ref = document.querySelector('.realizar-pago');
     const e = document.getElementById('btn-realizar-pago');
     if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({referencia: 'NPF', monto: this.importe}));
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'NPF', monto: this.importe }));
     e?.click();
   }
 
@@ -490,7 +490,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
           disabled: false,
         },
         [Validators.nullValidator,
-          Validators.required],
+        Validators.required],
       ],
       promotor: [
         {
@@ -498,7 +498,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
           disabled: false,
         },
         [Validators.nullValidator,
-          Validators.required],
+        Validators.required],
       ],
     });
   }
@@ -607,7 +607,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
           disabled: false,
         },
         [Validators.nullValidator,
-          Validators.required],
+        Validators.required],
       ],
       promotor: [
         {
@@ -615,7 +615,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
           disabled: false,
         },
         [Validators.nullValidator,
-          Validators.required],
+        Validators.required],
       ],
     });
   }
@@ -1280,7 +1280,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     event.stopPropagation();
     this.refBeneficiario = this.dialogService.open(ModalRegistrarBeneficiarioComponent, {
       header: 'Registrar beneficiario',
-      style: {maxWidth: '876px', width: '100%'},
+      style: { maxWidth: '876px', width: '100%' },
       data: {
         idConvenio: this.idConvenioPf,
         parentesco: this.parentesco,
@@ -1304,7 +1304,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     event.stopPropagation();
     const ref = this.dialogService.open(ModalEditarBeneficiarioComponent, {
       header: 'Editar beneficiario',
-      style: {maxWidth: '876px', width: '100%'},
+      style: { maxWidth: '876px', width: '100%' },
       data: {
         item: this.itemBeneficiarios,
       },
@@ -1320,7 +1320,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     event.stopPropagation();
     const ref = this.dialogService.open(ModalDesactivarBeneficiarioComponent, {
       header: 'Desactivar beneficiario',
-      style: {maxWidth: '876px', width: '100%'},
+      style: { maxWidth: '876px', width: '100%' },
       data: {
         item: this.itemBeneficiarios,
       },
@@ -1362,7 +1362,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
             const datosEmpresa = respuesta.datos.datosEmpresaResponse;
             this.personasGrupo = respuesta.datos.personasEmpresa || [];
             this.totalElementos = this.personasGrupo.length;
-            this.coloniasEmpresa = [{label: datosEmpresa.colonia, value: datosEmpresa.colonia}]
+            this.coloniasEmpresa = [{ label: datosEmpresa.colonia, value: datosEmpresa.colonia }]
             this.datosGrupo.nombre.setValue(datosEmpresa.nombre);
             this.datosGrupo.razonSocial.setValue(datosEmpresa.razonSocial);
             this.datosGrupo.rfc.setValue(datosEmpresa.rfc);
@@ -1420,11 +1420,13 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   }
 
   guardarConvenio(): void {
+    if (!this.banderaCheckGrupo && this.confirmacionModalCerrar || !this.mostrarPorPersona) {
+      void this.router.navigate(['externo-privado/consultar-mis-servicios-en-linea']);
+    }
     this.confirmacionModalCerrar = true;
     this.mostrarMensajeGuardado = false;
-    this.cargarScript(() => {
-    });
-    this.subscripcionMotorPagos()
+    this.cargarScript(() => { });
+    this.subscripcionMotorPagos();
   }
 
   validarFolioConvenioEmpresa(): string {
@@ -1451,7 +1453,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   }
 
   validaBotonRealizarPago(): boolean {
-    if (this.banderaCheckGrupo == false && this.confirmacionModalCerrar) return false
+    if (!this.banderaCheckGrupo && this.confirmacionModalCerrar) return false
     return true
   }
 
