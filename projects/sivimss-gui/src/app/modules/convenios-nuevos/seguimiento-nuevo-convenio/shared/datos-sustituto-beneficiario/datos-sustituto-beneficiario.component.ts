@@ -62,8 +62,6 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     const nacionalidad = this.parentContainer.control?.get('nacionalidad')?.value;
     if (nacionalidad === 1) {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
-    } else {
-      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
     }
   }
 
@@ -131,7 +129,6 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
       this.parentContainer.control?.get('paisNacimiento')?.clearValidators();
     } else {
-      this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
       this.parentContainer.control?.get('lugarNacimiento')?.clearValidators();
     }
   }
