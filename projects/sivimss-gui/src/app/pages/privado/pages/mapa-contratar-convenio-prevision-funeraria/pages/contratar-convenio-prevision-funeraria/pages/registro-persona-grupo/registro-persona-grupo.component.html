@@ -309,7 +309,7 @@
                 </div>
                 <div class="row mb-8">
                     <div class="col-md-2">
-                        <label class="control-label" for="curp">Copia INE:</label>
+                        <label class="control-label" for="curp">Copia INE<span class="req">*</span>:</label>
                         <div (click)="handleClick('archivoIneUpload')" class="file-container">
                             <input class="hidden" type="file" id="archivoIneUpload" name="archivoIneUpload"
                                 [readonly]="readonlyInputs" accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB"
@@ -319,7 +319,7 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <label class="control-label" for="curp">Copia CURP:</label>
+                        <label class="control-label" for="curp">Copia CURP<span class="req">*</span>:</label>
                         <div (click)="handleClick('archivoCURPUpload')" class="file-container">
                             <input class="hidden" type="file" id="archivoCURPUpload" name="archivoCURPUpload"
                                 [readonly]="readonlyInputs" accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB"
@@ -330,7 +330,7 @@
                     </div>
 
                     <div class="col-md-2">
-                        <label class="control-label" for="rfc">Copia RFC:</label>
+                        <label class="control-label" for="rfc">Copia RFC<span class="req">*</span>:</label>
                         <div (click)="handleClick('archivoRFCUpload')" class="file-container">
                             <input class="hidden" type="file" id="archivoRFCUpload" name="archivoRFCUpload"
                                 [readonly]="readonlyInputs" accept=".jpg, .jpeg, .png, .pdf" ngf-max-size="5MB"
