@@ -380,10 +380,10 @@ export class DatosPersonaComponent implements OnInit {
         const nombreDocumentoCURP = this.parentContainer.control?.get('nombreDocumentoCURP')?.value;
         let nombreDocumento: string = 'documento';
         if (tipoDocumento === 1) {
-          nombreDocumento = nombreDocumentoCURP.split('.');
+          nombreDocumento = nombreDocumentoINE.split('.');
         }
         if (tipoDocumento === 2) {
-          nombreDocumento = nombreDocumentoINE.split('.');
+          nombreDocumento = nombreDocumentoCURP.split('.');
         }
         if (tipoDocumento === 3) {
           nombreDocumento = nombreDocumentoRFC.split('.');
