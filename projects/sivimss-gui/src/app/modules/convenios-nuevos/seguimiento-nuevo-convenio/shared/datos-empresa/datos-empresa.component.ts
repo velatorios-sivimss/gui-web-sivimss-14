@@ -127,7 +127,7 @@ export class DatosEmpresaComponent implements OnInit {
       correo: this.parentContainer.control?.get('correo')?.value,
       cp: this.parentContainer.control?.get('cp')?.value,
       estado: this.parentContainer.control?.get('estado')?.value,
-      idConvenioPF: this.parentContainer.control?.get('idConvenio')?.value,
+      idConvenioPF: this.parentContainer.control?.get('idConvenioPF')?.value,
       idDomicilio: this.parentContainer.control?.get('idDomicilio')?.value,
       idEmpresa: this.parentContainer.control?.get('idEmpresa')?.value,
       idPais: this.parentContainer.control?.get('pais')?.value,
