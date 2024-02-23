@@ -741,7 +741,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       numSex: this.contratacionNuevoConvenioForm.controls["titular"].get('sexo')?.value,
       oreoSex: this.contratacionNuevoConvenioForm.controls["titular"].get('otroSexo')?.value,
       primApellido: this.contratacionNuevoConvenioForm.controls["titular"].get('primerApellido')?.value,
-      rfc: this.contratacionNuevoConvenioForm.controls["titular"].get('crfcurp')?.value,
+      rfc: this.contratacionNuevoConvenioForm.controls["titular"].get('rfc')?.value,
       segApellido: this.contratacionNuevoConvenioForm.controls["titular"].get('segundoApellido')?.value,
       telefono: this.contratacionNuevoConvenioForm.controls["titular"].get('telefonoCelular')?.value,
       telefonoFij: this.contratacionNuevoConvenioForm.controls["titular"].get('telefonoFijo')?.value
@@ -749,14 +749,15 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   obtenerDatosSustituto(): null | SustitutoBeneficiario {
-    if (this.mismoSustituto) return null
+    if (this.mismoSustituto) return null;
+    const fecNac = this.contratacionNuevoConvenioForm.controls['sustituto'].get('fechaNacimiento')?.value;
     return {
       calle: this.contratacionNuevoConvenioForm.controls['sustituto'].get('calle')?.value,
       colonia: this.contratacionNuevoConvenioForm.controls['sustituto'].get('colonia')?.value,
       correo: this.contratacionNuevoConvenioForm.controls['sustituto'].get('correoElectronico')?.value,
       curp: this.contratacionNuevoConvenioForm.controls['sustituto'].get('curp')?.value,
       estado: this.contratacionNuevoConvenioForm.controls['sustituto'].get('estado')?.value,
-      fechaNac: this.contratacionNuevoConvenioForm.controls['sustituto'].get('fechaNacimiento')?.value,
+      fechaNac: moment(fecNac).format('YYYY-MM-DD'),
       idDomicilio: this.sustituto.idDomicilio,
       idEstado: this.contratacionNuevoConvenioForm.controls['sustituto'].get('lugarNacimiento')?.value,
       idPais: this.contratacionNuevoConvenioForm.controls['sustituto'].get('paisNacimiento')?.value,
@@ -792,6 +793,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       idBeneficiario = this.beneficiario2.idBeneficiario;
       idPersonaTitular = this.beneficiario2.idPersonaTitular;
     }
+    const fecNac = this.contratacionNuevoConvenioForm.controls['sustituto'].get('fechaNacimiento')?.value;
 
     return {
       calle: this.contratacionNuevoConvenioForm.controls[formulario].get('calle')?.value,
@@ -800,7 +802,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       cp: this.contratacionNuevoConvenioForm.controls[formulario].get('cp')?.value,
       curp: this.contratacionNuevoConvenioForm.controls[formulario].get('curp')?.value,
       estado: this.contratacionNuevoConvenioForm.controls[formulario].get('estado')?.value,
-      fecNacimiento: this.contratacionNuevoConvenioForm.controls[formulario].get('fechaNacimiento')?.value,
+      fecNacimiento: moment(fecNac).format('YYYY-MM-DD'),
       idBeneficiario,
       idDomicilio,
       idEstado: this.contratacionNuevoConvenioForm.controls[formulario].get('lugarNacimiento')?.value,
