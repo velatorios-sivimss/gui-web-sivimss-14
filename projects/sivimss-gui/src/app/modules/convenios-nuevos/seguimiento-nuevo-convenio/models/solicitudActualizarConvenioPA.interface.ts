@@ -1,8 +1,8 @@
 export interface SolicitudActualizarConvenioPA {
   plan: PlanPA,
   titularSustituto: SustitutoBeneficiario | null
-  beneficiario1: SustitutoBeneficiario | null
-  beneficiario2: SustitutoBeneficiario | null
+  beneficiario1: Beneficiario | null
+  beneficiario2: Beneficiario | null
 }
 
 export interface PlanPA {
@@ -52,11 +52,43 @@ export interface SustitutoBeneficiario {
   primerApe: string,
   segunApe: string,
   sexo: number,
-  fecNac: string,
+  fechaNac: string,
   idPais: number,
   telefonoFijo: string,
   telefono: string,
   correo: string,
   idEstado: number,
   otroSexo: string
+}
+
+export interface Beneficiario {
+  idBeneficiario: number | null;
+  curp: string;
+  rfc: string;
+  matricula: string;
+  nss: string;
+  nombre: string;
+  primerApellido: string;
+  segundoApellido: string;
+  idSexo: number;
+  sexo: string;
+  otroSexo: string;
+  fecNacimiento: string;
+  idPais: number;
+  pais: string;
+  idLugarNac: number | null;
+  lugarNac: string;
+  telFijo: string;
+  telCelular: string;
+  correo: string;
+  calle: string;
+  numExt: string;
+  numInt: string;
+  cp: string;
+  colonia: string;
+  municipio: string;
+  idEstado: number;
+  estado: string;
+  idPersonaTitular: number;
+  idDomicilio: number;
 }
