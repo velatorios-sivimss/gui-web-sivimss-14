@@ -36,5 +36,6 @@ export interface BeneficiarioResponse {
   docActa: number,
   docIne: number,
   nombreArchivo: string,
-  fechaNaciemiento: string
+  fechaNaciemiento: string,
+  idPersonaTitular: number
 }
