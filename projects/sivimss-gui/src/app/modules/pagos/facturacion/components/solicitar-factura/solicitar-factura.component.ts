@@ -109,7 +109,7 @@ export class SolicitarFacturaComponent implements OnInit {
       metodoPago: [{ value: null, disabled: false }, [Validators.required]],
       formaPago: [{ value: null, disabled: false }, [Validators.required]],
       observaciones1: [{ value: null, disabled: true }],
-      observaciones2: [{ value: null, disabled: false }, [Validators.required]],
+      observaciones2: [{ value: null, disabled: false }],
     });
   }
 
@@ -157,23 +157,29 @@ export class SolicitarFacturaComponent implements OnInit {
   }
 
   obtenerRecibosPago(): void {
-    const folio = this.registroFolios.find((item: Folio) => item.folio === this.solicitudForm.get('folio')?.value)
-    if (folio?.idRegistro) {
-      this.cargadorService.activar();
-      this.limpiarRecibosPago();
-      this.facturacionService.obtenerRecibosPago(folio?.idRegistro).pipe(
-        finalize(() => this.cargadorService.desactivar())
-      ).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.registrosRecibosPago = respuesta.datos;
-          this.recibosPago = mapearArregloTipoDropdown(respuesta.datos, 'folio', 'folio');
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error("ERROR: ", error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
+    if (this.pf?.tipoFactura?.value === 4) {
+      this.solicitudForm.get('numeroRecibo')?.setValidators(Validators.required);
+      const folio = this.registroFolios.find((item: Folio) => item.folio === this.solicitudForm.get('folio')?.value)
+      if (folio?.idRegistro) {
+        this.cargadorService.activar();
+        this.limpiarRecibosPago();
+        this.facturacionService.obtenerRecibosPago(folio?.idRegistro).pipe(
+          finalize(() => this.cargadorService.desactivar())
+        ).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            this.registrosRecibosPago = respuesta.datos;
+            this.recibosPago = mapearArregloTipoDropdown(respuesta.datos, 'folio', 'folio');
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error("ERROR: ", error);
+            this.mensajesSistemaService.mostrarMensajeError(error);
+          }
+        });
+      }
+    } else {
+      this.solicitudForm.get('numeroRecibo')?.clearValidators();
     }
+    this.solicitudForm.get('numeroRecibo')?.updateValueAndValidity();
   }
 
   limpiarFolios(): void {
@@ -214,12 +220,25 @@ export class SolicitarFacturaComponent implements OnInit {
 
   crearSolicitudDatosContratante(): SolicitudDatosContratante {
     const tipoFactura = this.solicitudForm.get('tipoFactura')?.value;
-    const numeroRecibo = this.solicitudForm.get('numeroRecibo')?.value;
-    const reciboPago = this.registrosRecibosPago.find((item: RecibosPago) => item.folio === numeroRecibo);
+
+    const folio = this.solicitudForm.get('folio')?.value;
+    const folioSeleccionado = this.registroFolios.find(f => f.folio === folio);
+
+    let idPagoBitacora: number = folioSeleccionado!.idPagoBitacora;
+    let idRegistro: number = folioSeleccionado!.idRegistro;
+
+    if (this.pf?.tipoFactura?.value === 4) {
+      const numeroRecibo = this.solicitudForm.get('numeroRecibo')?.value;
+      const reciboPago = this.registrosRecibosPago.find((item: RecibosPago) => item.folio === numeroRecibo);
+
+      idPagoBitacora = reciboPago!.idPagoSFPA;
+      idRegistro = reciboPago!.idRegistro;
+    }
+
     return {
       tipoFactura,
-      idPagoBitacora: reciboPago!.idPagoSFPA,
-      idRegistro: reciboPago!.idRegistro
+      idPagoBitacora,
+      idRegistro,
     }
   }
 
