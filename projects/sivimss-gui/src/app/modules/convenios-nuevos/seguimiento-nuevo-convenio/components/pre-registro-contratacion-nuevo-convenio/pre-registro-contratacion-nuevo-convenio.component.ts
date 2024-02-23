@@ -741,7 +741,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       numSex: this.contratacionNuevoConvenioForm.controls["titular"].get('sexo')?.value,
       oreoSex: this.contratacionNuevoConvenioForm.controls["titular"].get('otroSexo')?.value,
       primApellido: this.contratacionNuevoConvenioForm.controls["titular"].get('primerApellido')?.value,
-      rfc: this.contratacionNuevoConvenioForm.controls["titular"].get('crfcurp')?.value,
+      rfc: this.contratacionNuevoConvenioForm.controls["titular"].get('rfc')?.value,
       segApellido: this.contratacionNuevoConvenioForm.controls["titular"].get('segundoApellido')?.value,
       telefono: this.contratacionNuevoConvenioForm.controls["titular"].get('telefonoCelular')?.value,
       telefonoFij: this.contratacionNuevoConvenioForm.controls["titular"].get('telefonoFijo')?.value
