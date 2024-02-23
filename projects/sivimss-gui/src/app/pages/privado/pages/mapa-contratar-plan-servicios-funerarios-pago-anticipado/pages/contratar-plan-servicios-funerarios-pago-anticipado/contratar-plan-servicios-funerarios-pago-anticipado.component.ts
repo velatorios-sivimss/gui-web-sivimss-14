@@ -655,8 +655,11 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       next: (respuesta) => {
         const [datosUsuario] = respuesta.datos;
         if (!datosUsuario) return;
-        const [dia, mes, anio] = datosUsuario.fechaNacimiento.split('-');
-        const fecha = new Date(anio + '/' + mes + '/' + dia);
+        let fecha: Date | null = null;
+        if (!datosUsuario.fechaNacimiento) {
+          const [dia, mes, anio] = datosUsuario.fechaNacimiento.split('-');
+          fecha = new Date(anio + '/' + mes + '/' + dia);
+        }
         this.fdt.rfc.setValue(datosUsuario.rfc)
         this.fdt.nss.setValue(datosUsuario.nss)
         this.fdt.nombre.setValue(datosUsuario.nombre)
