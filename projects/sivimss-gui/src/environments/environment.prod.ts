@@ -9,7 +9,6 @@ export const environment = {
     notificaciones: 'mssivimss-notificaciones/v1/notificaciones/avisos',
     conveniosPF: 'mssivimss-ods-prefune-on/v1/',
     conveniosPSF: 'mssivimss-cpsf/v1',
-    token: 'msit_URL-NSSA'
   },
 
 
