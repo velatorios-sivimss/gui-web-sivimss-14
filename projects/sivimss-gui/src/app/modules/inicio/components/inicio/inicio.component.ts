@@ -1,5 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {environment} from "../../../../../environments/environment.prod";
 
 @Component({
   selector: 'app-inicio',
@@ -18,6 +19,8 @@ export class InicioComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadcrumbService.limpiar();
+    console.log(environment.api.token)
+    // console.log(window)
     this.anuncio = [
       {image: "slide1.jpg"},
       {image: "slide2.jpg"}
