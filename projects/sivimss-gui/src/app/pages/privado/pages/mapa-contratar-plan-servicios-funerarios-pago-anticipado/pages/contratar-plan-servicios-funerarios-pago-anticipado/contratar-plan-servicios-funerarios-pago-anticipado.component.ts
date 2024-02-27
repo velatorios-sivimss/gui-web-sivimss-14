@@ -30,6 +30,7 @@ import {Subscription} from 'rxjs';
 import {AutenticacionContratanteService} from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
 import {TransaccionPago} from '../../../../models/transaccion-pago.interface';
 import {SolicitudPagos} from '../../../../models/solicitud-pagos.interface';
+import { CATALOGO_NUMERO_PAGOS } from 'projects/sivimss-gui/src/app/modules/convenios-nuevos/seguimiento-nuevo-convenio/constants/catalogos';
 
 @Component({
   selector: 'app-contratar-plan-servicios-funerarios-pago-anticipado',
@@ -46,6 +47,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
 
   readonly NOT_FOUND_RENAPO: string = "CURP no válido.";
 
+  CATALOGO_NUMERO_PAGOS = CATALOGO_NUMERO_PAGOS;
   promotorForm!: FormGroup;
   datosTitularForm!: FormGroup;
   datosTitularSubstitutoForm!: FormGroup;
@@ -67,13 +69,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   catPromotores: TipoDropdown[] = [];
   colonias: TipoDropdown[][] = [[], [], [], []];
   paquetes: Paquete[] = [];
-  catNumPagos: { label: string; value: number }[] = [
-    {label: '1', value: 1},
-    {label: '3', value: 2},
-    {label: '6', value: 3},
-    {label: '9', value: 4},
-    {label: '12', value: 5},
-  ];
   paqueteSeleccionado!: Paquete;
   velatorio: string = '';
   idVelatorio: number | null = null;
@@ -995,7 +990,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       }
     }
 
-    const numPagoTmp = this.catNumPagos.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? 0;
+    const numPagoTmp = this.CATALOGO_NUMERO_PAGOS.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? 0;
     this.numPago = +numPagoTmp;
 
     let objetoTitular: ContratarPlanSFPA = {
