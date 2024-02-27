@@ -2,9 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { environment } from 'projects/sivimss-gui/src/environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { BaseService } from 'projects/sivimss-gui/src/app/utils/base-service';
 import { ContratarPlanSFPA } from '../models/servicios-funerarios.interface';
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
 
 interface ValidarRfcCurp {
   rfc?: string | null;
@@ -13,7 +16,7 @@ interface ValidarRfcCurp {
 
 @Injectable()
 export class ContratarPSFPAService extends BaseService<HttpRespuesta<any>, any> {
-  constructor(_http: HttpClient) {
+  constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.conveniosPSF}`, "", "", 1, "", "", "");
   }
 
@@ -59,5 +62,11 @@ export class ContratarPSFPAService extends BaseService<HttpRespuesta<any>, any> 
 
   obtenerDatosTitular(idVelatorio: number): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(this._base + `/linea-plan-sfpa/consulta-detalle-linea-plan-sfpa/contratante/${idVelatorio}`)
+  }
+
+  obtenerCatalogoMesesPago(): Observable<TipoDropdown[]> {
+    const catalogo_mesesPago =
+      this.authService.obtenerCatalogoDeLocalStorage('catalogo_mesesPago');
+    return of(mapearArregloTipoDropdown(catalogo_mesesPago, 'desc', 'id'));
   }
 }
