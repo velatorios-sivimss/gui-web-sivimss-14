@@ -20,6 +20,12 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
   _paquetes: string = 'buscar-paquetes';
   _baseParentesco: string = environment.api.conveniosPF;
 
+  obtenerCatalogoMesesPago(): Observable<TipoDropdown[]> {
+    const catalogo_mesesPago =
+      this.authService.obtenerCatalogoDeLocalStorage('catalogo_mesesPago');
+    return of(mapearArregloTipoDropdown(catalogo_mesesPago, 'desc', 'id'));
+  }
+
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
     return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
