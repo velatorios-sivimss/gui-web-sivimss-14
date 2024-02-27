@@ -20,6 +20,7 @@ export class InicioComponent implements OnInit {
   ngOnInit(): void {
     this.breadcrumbService.limpiar();
     console.log(environment.api.token)
+    console.log(environment.api.notificaciones)
     // console.log(window)
     this.anuncio = [
       {image: "slide1.jpg"},
