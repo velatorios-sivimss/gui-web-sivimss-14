@@ -7,7 +7,6 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
 import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo";
-import {CATALOGO_NUMERO_PAGOS} from "../../constants/catalogos";
 import {CommonModule} from "@angular/common";
 import {CalendarModule} from "primeng/calendar";
 import {ActivatedRoute} from "@angular/router";
@@ -42,7 +41,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
   estados: TipoDropdown[] = [];
   paquetes: TipoDropdown[] = [];
   colonias: TipoDropdown[] = [];
-  numeroPagos: TipoDropdown[] = CATALOGO_NUMERO_PAGOS;
+  numeroPagos: TipoDropdown[] = [];
   tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
   fechaActual: Date = new Date();
@@ -74,6 +73,8 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
     const catalogoEstado = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_estados');
     this.estados = mapearArregloTipoDropdown(catalogoEstado, 'desc', 'id');
+    const catalogoNumPagos = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_mesesPago');
+    this.numeroPagos = mapearArregloTipoDropdown(catalogoNumPagos, 'desc', 'id');
     const POSICION_PAQUETES: number = 1;
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     const paquetes = respuesta[POSICION_PAQUETES].datos;

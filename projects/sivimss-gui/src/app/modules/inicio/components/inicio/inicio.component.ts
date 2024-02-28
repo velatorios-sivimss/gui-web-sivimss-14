@@ -18,6 +18,7 @@ export class InicioComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadcrumbService.limpiar();
+
     this.anuncio = [
       {image: "slide1.jpg"},
       {image: "slide2.jpg"}

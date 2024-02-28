@@ -465,7 +465,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
       enfermedadPreExistente: [{value: +solicitante.enfermedadPre, disabled: true}],
       tipoPaquete: [{value: solicitante.idPaquete, disabled: false}, [Validators.required]],
       fechaNaciemiento: [{value: solicitante.fechaNaciemiento, disabled: true}],
-      idContraPaqPF: [{value: solicitante.idContraPaqPF, disabled: true}],
+      idContraPaqPF: [{value: solicitante.idPaqueteConvenio, disabled: true}],
       idContrantante: [{value: solicitante.idContratante, disabled: true}],
       idConvenioPF: [{value: this.idConvenio, disabled: true}],
       idDomicilio: [{value: solicitante.idDomicilio, disabled: true}],
@@ -519,7 +519,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
           nombreDocumento: [{value: beneficiario.nombreArchivo, disabled: true}],
           nuevoDocumento: [{value: null, disabled: false}],
           documento: [{value: null, disabled: false}],
-          idContraPaqPF: [{value: solicitante.idContraPaqPF, disabled: false}],
+          idContraPaqPF: [{value: solicitante.idPaqueteConvenio, disabled: false}],
         });
         if (solicitanteForm.get('beneficiarios')) {
           (solicitanteForm.get('beneficiarios') as FormArray).push(beneficiarioForm);

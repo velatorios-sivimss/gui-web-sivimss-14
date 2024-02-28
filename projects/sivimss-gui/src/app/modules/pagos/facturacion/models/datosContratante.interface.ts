@@ -13,7 +13,8 @@ export interface DatosContratante {
   totalPagado: number,
   totalServicios: number,
   idVelatorio: number,
-  finado: Finado
+  finado: Finado,
+  folio: string
 }
 
 interface Finado {

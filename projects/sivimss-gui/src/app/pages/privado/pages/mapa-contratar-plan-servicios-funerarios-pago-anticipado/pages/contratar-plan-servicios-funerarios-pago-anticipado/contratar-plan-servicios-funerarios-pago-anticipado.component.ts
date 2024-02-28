@@ -25,11 +25,12 @@ import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-arc
 import {
   ServiciosFunerariosService
 } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/services/servicios-funerarios.service';
-import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import {Subscription} from 'rxjs';
-import {AutenticacionContratanteService} from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
-import {TransaccionPago} from '../../../../models/transaccion-pago.interface';
-import {SolicitudPagos} from '../../../../models/solicitud-pagos.interface';
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import { Subscription } from 'rxjs';
+import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
+import { TransaccionPago } from '../../../../models/transaccion-pago.interface';
+import { SolicitudPagos } from '../../../../models/solicitud-pagos.interface';
+import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
 import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
 
 @Component({
@@ -67,14 +68,8 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   catalogoPaises: TipoDropdown[] = [];
   catPromotores: TipoDropdown[] = [];
   colonias: TipoDropdown[][] = [[], [], [], []];
+  numeroPagos: TipoDropdown[] = [];
   paquetes: Paquete[] = [];
-  catNumPagos: { label: string; value: number }[] = [
-    {label: '1', value: 1},
-    {label: '3', value: 2},
-    {label: '6', value: 3},
-    {label: '9', value: 4},
-    {label: '12', value: 5},
-  ];
   paqueteSeleccionado!: Paquete;
   velatorio: string = '';
   idVelatorio: number | null = null;
@@ -102,6 +97,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     private descargaArchivosService: DescargaArchivosService,
     private serviciosFunerariosService: ServiciosFunerariosService,
     private readonly autenticacionContratanteService: AutenticacionContratanteService,
+    private autenticacionService: AutenticacionService,
     private gestorCredencialesService: GestorCredencialesService
   ) {
   }
@@ -132,6 +128,11 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     if (this.subs) {
       this.subs.unsubscribe();
     }
+  }
+
+  cargarCatalogosLocalStorage(): void {
+    const catalogoNumPagos = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_mesesPago');
+    this.numeroPagos = mapearArregloTipoDropdown(catalogoNumPagos, 'desc', 'id');
   }
 
   inicializarFormPromotor(): void {
@@ -1007,7 +1008,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       }
     }
 
-    const numPagoTmp = this.catNumPagos.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? 0;
+    const numPagoTmp = this.numeroPagos.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? 0;
     this.numPago = +numPagoTmp;
 
     let objetoTitular: ContratarPlanSFPA = {
