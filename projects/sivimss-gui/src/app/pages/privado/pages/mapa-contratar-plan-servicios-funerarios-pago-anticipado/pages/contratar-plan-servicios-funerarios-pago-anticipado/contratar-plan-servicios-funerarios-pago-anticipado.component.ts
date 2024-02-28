@@ -30,6 +30,7 @@ import {Subscription} from 'rxjs';
 import {AutenticacionContratanteService} from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
 import {TransaccionPago} from '../../../../models/transaccion-pago.interface';
 import {SolicitudPagos} from '../../../../models/solicitud-pagos.interface';
+import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
 
 @Component({
   selector: 'app-contratar-plan-servicios-funerarios-pago-anticipado',
@@ -38,7 +39,7 @@ import {SolicitudPagos} from '../../../../models/solicitud-pagos.interface';
   styleUrls: [
     './contratar-plan-servicios-funerarios-pago-anticipado.component.scss',
   ],
-  providers: [DescargaArchivosService, ServiciosFunerariosService, ContratarPSFPAService]
+  providers: [DescargaArchivosService, ServiciosFunerariosService, ContratarPSFPAService, GestorCredencialesService]
 })
 export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   @ViewChild('overlayPanel')
@@ -101,6 +102,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     private descargaArchivosService: DescargaArchivosService,
     private serviciosFunerariosService: ServiciosFunerariosService,
     private readonly autenticacionContratanteService: AutenticacionContratanteService,
+    private gestorCredencialesService: GestorCredencialesService
   ) {
   }
 
@@ -159,13 +161,26 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   }
 
   iniciarPago(): void {
+    this.gestorCredencialesService.obtenerToken().subscribe({
+      next: (respuesta) => this.procesarToken(respuesta)
+    })
+
+  }
+
+  procesarToken(respuesta: HttpRespuesta<any>): void {
+    const [credenciales] = respuesta.datos;
     const elemento_ref = document.querySelector('.realizar-pago');
     const e = document.getElementById('btn-realizar-pago');
     if (!elemento_ref) return;
     elemento_ref.setAttribute('data-objeto', JSON.stringify({
       referencia: 'Mensualidad SFPA',
-      monto: this.montoTotalPagar
+      monto: this.montoTotalPagar,
+      mode: credenciales.mode,
+      code: credenciales.code,
+      key: credenciales.key
     }));
+    this.cargarScript(() => {});
+    this.subscripcionMotorPagos();
     e?.click();
   }
 
@@ -886,9 +901,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         this.idPagoSFPA = respuesta.datos?.idPagoMensual;
         this.montoTotalPagar = +respuesta.datos?.pagoMensual;
         if (respuesta.datos?.reporte) {
-          this.cargarScript(() => {
-          });
-          this.subscripcionMotorPagos()
           const file = new Blob(
             [this.descargaArchivosService.base64_2Blob(
               respuesta.datos.reporte,
