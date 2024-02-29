@@ -141,7 +141,7 @@ export class RegistroComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.required],
+          [Validators.nullValidator],
         ],
         telefono: [
           {
@@ -254,9 +254,13 @@ export class RegistroComponent implements OnInit {
   cambioNacionalidad() {
     this.datosGenerales.paisNacimiento.patchValue(null);
     this.datosGenerales.lugarNacimiento.patchValue(null);
+    this.datosGenerales.lugarNacimiento.clearValidators();
     if (this.datosGenerales.nacionalidad.value === 1) {
       this.datosGenerales.paisNacimiento.setValue(119);
+      this.datosGenerales.lugarNacimiento.setValidators(Validators.required);
     }
+
+    this.datosGenerales.lugarNacimiento.updateValueAndValidity();
   }
 
   obtenerCP(coloniaSeleccionada?: string | undefined): void {
