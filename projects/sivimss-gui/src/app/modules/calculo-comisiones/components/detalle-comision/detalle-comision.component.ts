@@ -164,7 +164,8 @@ export class DetalleComisionComponent implements OnInit {
       const filtros: FiltroComisiones = this.filtrosCalculoComision();
       this.calculoComisionesService.obtenerDetalleComisiones(filtros).pipe(
         map(respuesta => {
-            if (!respuesta.datos.content[0]) throw new Error("Invalid Value");
+            const error: string = 'No se encontró información relacionada a tu búsqueda.';
+            if (!respuesta.datos.content[0]) throw new Error(error);
             return respuesta;
           }
         ),
