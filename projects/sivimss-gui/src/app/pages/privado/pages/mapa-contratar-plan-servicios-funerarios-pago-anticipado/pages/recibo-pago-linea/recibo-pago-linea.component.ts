@@ -11,7 +11,6 @@ import {MensajesSistemaService} from "../../../../../../services/mensajes-sistem
 import {
   BusquedaConveniosPFServic
 } from "../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service";
-import {PDFDocumentProxy} from 'ng2-pdf-viewer';
 
 interface RegistroRecibo {
   idPagoLinea: number,
@@ -59,7 +58,7 @@ export class ReciboPagoLineaComponent implements OnInit {
   }
 
   cargarCatalogos(): void {
-    this.recibo = this.activatedRoute.snapshot.data["respuesta"].datos;
+    this.recibo = this.activatedRoute.snapshot.data["respuesta"][0].datos;
     this.activatedRoute.paramMap.subscribe({
       next: (params: ParamMap): void => {
         this.idFolio = params.get('idFolio') as unknown as number
