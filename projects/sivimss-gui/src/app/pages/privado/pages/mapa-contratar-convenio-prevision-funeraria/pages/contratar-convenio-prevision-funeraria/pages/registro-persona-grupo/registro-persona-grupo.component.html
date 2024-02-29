@@ -258,7 +258,7 @@
                 <h2 class="subtitulo-base">Paquetes</h2>
                 <ng-container formGroupName="formPaquete">
                     <div class="paquetes">
-                        <div class="paquete" *ngFor="let item of paquetes;">
+                        <div class="paquete" *ngFor="let item of paquetes; let i = index">
                             <div class="paquete-titulo">
                               <p-radioButton [inputId]="'item.idPaquete'" name="paquete" [value]="item.idPaquete"  formControlName="paquete"
                                              (click)="seleccionaPaquete(item.idPaquete)"></p-radioButton>
@@ -270,9 +270,9 @@
                                     </li>
                                 </ul>
                                 <div class="iconos">
-                                    <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                                    <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
-                                    <img src="assets/images/sivimss-externos/material-symbols_candle.svg" alt="">
+                                    <img alt="candle1" src="assets/images/sivimss-externos/material-symbols_candle.svg">
+                                    <img alt="candle2" src='{{ "assets/images/sivimss-externos/material-symbols_candle" + (i > 0 ? "" : "-2") + ".svg" }}'>
+                                    <img alt="candle3" src='{{ "assets/images/sivimss-externos/material-symbols_candle" + (i > 1 ? "" : "-2") + ".svg" }}'>
                                 </div>
                             </div>
                         </div>
