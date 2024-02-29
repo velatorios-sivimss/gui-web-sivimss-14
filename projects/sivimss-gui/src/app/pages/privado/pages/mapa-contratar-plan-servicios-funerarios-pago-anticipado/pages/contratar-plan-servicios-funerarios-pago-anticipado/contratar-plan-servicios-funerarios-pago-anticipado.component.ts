@@ -118,6 +118,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         this.obtenerEstados();
         this.obtenerPromotores();
         this.obtenerPaquete();
+        this.cargarCatalogosLocalStorage();
         this.handleGestionPromotor();
         // this.consultarCurp(0);
         this.consultarCurpInicial();

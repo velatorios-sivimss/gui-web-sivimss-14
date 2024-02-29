@@ -1,10 +1,11 @@
-const dataObj = JSON.parse(btnOpenCheckout.getAttribute('data-objeto'));
+let btnPagoCheckout = document.querySelector('.realizar-pago');
+const pago = JSON.parse(btnPagoCheckout.getAttribute('data-objeto'));
 
 let paymentCheckout = new PaymentCheckout.modal({
-  client_app_code: dataObj.code, // Application Code de las credenciales CLIENT
-  client_app_key: dataObj.key, // Application Key de las credenciales CLIENT
+  client_app_code: pago.code, // Application Code de las credenciales CLIENT
+  client_app_key: pago.key, // Application Key de las credenciales CLIENT
   locale: 'es', // Idioma preferido del usuario (es, en, pt). El inglés se usará por defecto
-  env_mode: dataObj.mode, // `prod`, `stg`, `local` para cambiar de ambiente. Por defecto es `stg`
+  env_mode: pago.mode, // `prod`, `stg`, `local` para cambiar de ambiente. Por defecto es `stg`
   onOpen: function () {},
   onClose: function (event) {
     console.log(event)
