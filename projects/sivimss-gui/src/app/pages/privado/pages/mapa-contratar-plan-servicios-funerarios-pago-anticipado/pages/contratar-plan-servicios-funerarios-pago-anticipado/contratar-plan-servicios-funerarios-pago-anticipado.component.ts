@@ -120,7 +120,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         this.obtenerPaquete();
         this.cargarCatalogosLocalStorage();
         this.handleGestionPromotor();
-        // this.consultarCurp(0);
         this.consultarCurpInicial();
       });
   }
@@ -433,7 +432,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
             TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
         } else {
           let fecha: Date | null = null;
-          if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined) {
+          if (respuesta.datos.fechaNacimiento) {
             let [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
             fecha = new Date(+anio, +mes - 1, +dia);
           }
@@ -673,10 +672,11 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         const [datosUsuario] = respuesta.datos;
         if (!datosUsuario) return;
         let fecha: Date | null = null;
-        if (!datosUsuario.fechaNacimiento) {
+        if (datosUsuario.fechaNacimiento) {
           const [dia, mes, anio] = datosUsuario.fechaNacimiento.split('-');
           fecha = new Date(anio + '/' + mes + '/' + dia);
         }
+        console.log(fecha)
         this.fdt.rfc.setValue(datosUsuario.rfc)
         this.fdt.nss.setValue(datosUsuario.nss)
         this.fdt.nombre.setValue(datosUsuario.nombre)
