@@ -312,6 +312,7 @@ export class RegistroComponent implements OnInit {
         next: (respuesta: HttpRespuesta<IContratanteRegistrado[] | any>) => {
           this.datosGenerales.curp.setErrors({ 'incorrect': true });
           if (respuesta.mensaje === 'EXITO') {
+            this.ajustarForm();
             this.datosGenerales.curp.setErrors(null);
             const datosUsuario = respuesta.datos;
             const [dia, mes, anio] = datosUsuario.fechNac.split('-');
