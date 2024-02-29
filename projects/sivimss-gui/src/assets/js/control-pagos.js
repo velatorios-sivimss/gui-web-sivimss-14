@@ -40,6 +40,8 @@ let paymentCheckout = new PaymentCheckout.modal({
 });
 
 var eventValue = function () {
+  let btnCheckout = document.querySelector('.realizar-pago');
+  const dataObj = JSON.parse(btnCheckout.getAttribute('data-objeto'));
 
   // Open Checkout with further options:
   paymentCheckout.open({

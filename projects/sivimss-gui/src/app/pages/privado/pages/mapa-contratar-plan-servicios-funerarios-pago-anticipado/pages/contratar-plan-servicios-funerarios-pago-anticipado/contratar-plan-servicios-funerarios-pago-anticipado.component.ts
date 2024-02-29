@@ -676,7 +676,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
           const [dia, mes, anio] = datosUsuario.fechaNacimiento.split('-');
           fecha = new Date(anio + '/' + mes + '/' + dia);
         }
-        console.log(fecha)
         this.fdt.rfc.setValue(datosUsuario.rfc)
         this.fdt.nss.setValue(datosUsuario.nss)
         this.fdt.nombre.setValue(datosUsuario.nombre)
