@@ -1,61 +1,60 @@
 <div class="container-sivimss px-5 registro-en-linea my-5">
-    <app-titulo-principal titulo="CONSULTAR EL ESTATUS DE MI ORDEN DE SERVICIO">
-        <app-btn-regresar routerLink="../consultar-mis-servicios-en-linea"></app-btn-regresar>
-    </app-titulo-principal>
+  <app-titulo-principal titulo="CONSULTAR EL ESTATUS DE MI ORDEN DE SERVICIO">
+    <app-btn-regresar routerLink="../consultar-mis-servicios-en-linea"></app-btn-regresar>
+  </app-titulo-principal>
 
-    <p-table styleClass="mt-5 mb-8" [value]="ordenesServicios" [paginator]="ordenesServicios.length > 0"
-        [rows]="cantElementosPorPagina" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-        [resizableColumns]="true" [lazy]="true" [columnResizeMode]="'expand'"
-        (onLazyLoad)="paginar($event)"
-        >
-        <ng-template pTemplate="header">
-            <tr>
-                <th scope="col">Folio ODS</th>
-                <th scope="col">Nombre del contratante</th>
-                <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-convenio>
-            <tr>
-                <td>{{convenio.folio}}</td>
-                <td>{{convenio.nombreContratante}}</td>
-                <td style="border-left: 1px solid #b0b0b0;">
-                    <div class="contenedor-celda-iconos">
-                        <a (click)="verDetalleOrden(convenio.idOrden)">
-                            <i class="pi pi-eye"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <th colspan="7" class="p-2 text-center font-bold text-xl" id="consulta_ods_sin_resultados">
-                    No se encontró información relacionada a tu búsqueda
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorleft">
-            <div class="paginator-template">
-                <span class="total-elements">{{ordenesServicios.length}} de {{totalElementos}}</span>
-            </div>
-        </ng-template>
-    </p-table>
-    
+  <p-table styleClass="mt-5 mb-8" [value]="ordenesServicios" [paginator]="ordenesServicios.length > 0"
+           [rows]="cantElementosPorPagina" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           [resizableColumns]="true" [lazy]="true" [columnResizeMode]="'expand'"
+           (onLazyLoad)="paginar($event)"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">Folio ODS</th>
+        <th scope="col">Nombre del contratante</th>
+        <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-convenio>
+      <tr>
+        <td>{{ convenio.folio }}</td>
+        <td>{{ convenio.nombreContratante }}</td>
+        <td style="border-left: 1px solid #b0b0b0;">
+          <div class="contenedor-celda-iconos">
+            <a (click)="verDetalleOrden(convenio.idOrden)">
+              <i class="pi pi-eye"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="7" class="p-2 text-center font-bold text-xl" id="consulta_ods_sin_resultados">
+          No se encontró información relacionada a tu búsqueda
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{ ordenesServicios.length }} de {{ totalElementos }}</span>
+      </div>
+    </ng-template>
+  </p-table>
 </div>
 
 
 <p-dialog [(visible)]="mostrarModalFaltaOrdenes" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-    [closable]="false" [draggable]="false" [resizable]="false" header="Convenios">
-    <ng-template pTemplate="content">
-        <div>
-            <p class="text-center"><b>Aún no cuentas con una Orden de servicio (ODS) generada</b></p>
-            <p class="mt-2 text-center">Puedes registrarlo en línea o puedes asistir a tu velatorio más cercano.</p>
-        </div>
-    </ng-template>
-    <ng-template pTemplate="footer">
-        <div class="flex justify-content-center">
-            <button class="btn btn-primary btn-md" (click)="mostrarModalFaltaOrdenes = false;">Aceptar</button>
-        </div>
-    </ng-template>
+          [closable]="false" [draggable]="false" [resizable]="false" header="Convenios">
+  <ng-template pTemplate="content">
+    <div>
+      <p class="text-center"><b>Aún no cuentas con una Orden de servicio (ODS) generada.</b></p>
+      <p class="mt-2 text-center">Puedes acudir a tu Velatorio más cercano para contratar algún servicio funerario.</p>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalFaltaOrdenes = false;">Aceptar</button>
+    </div>
+  </ng-template>
 </p-dialog>
