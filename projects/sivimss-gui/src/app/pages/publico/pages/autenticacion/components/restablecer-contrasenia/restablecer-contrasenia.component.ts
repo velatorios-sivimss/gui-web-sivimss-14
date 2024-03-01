@@ -9,6 +9,7 @@ import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/se
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { PATRON_CONTRASENIA } from 'projects/sivimss-gui/src/app/utils/regex';
+import { MensajesRespuestaAutenticacion } from 'projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum';
 // import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
 
 @Component({
@@ -17,9 +18,16 @@ import { PATRON_CONTRASENIA } from 'projects/sivimss-gui/src/app/utils/regex';
   styleUrls: ['./restablecer-contrasenia.component.scss'],
 })
 export class RestablecerContraseniaComponent implements OnInit {
+  readonly SEGUNDOS_TEMPORIZADOR_INTENTOS: number = 300;
+
   form!: FormGroup;
   mostrarModalFormatoContrasenia: boolean = false;
   usuario: string = '';
+  minutosTemporizadorIntentos: string = '';
+  segundosTemporizadorIntentos: string = '';
+  mostrarModalIntentosFallidos: boolean = false;
+  usuarioIncorrecto: boolean = false;
+  contraseniaIncorrecta: boolean = false;
 
   constructor(
     public autenticacionContratanteService: AutenticacionContratanteService,
@@ -40,8 +48,8 @@ export class RestablecerContraseniaComponent implements OnInit {
   inicializarForm(): void {
     this.form = this.formBuilder.group(
       {
-        usuario: [{ value: this.usuario ?? this.autenticacionContratanteService.usuario, disabled: true }, [Validators.required]],
-        contraseniaAnterior: [{ value: this.autenticacionContratanteService.contrasenia, disabled: true }],
+        usuario: [{ value: this.usuario ?? this.autenticacionContratanteService.usuario, disabled: false }, [Validators.required]],
+        contraseniaAnterior: [{ value: this.autenticacionContratanteService.contrasenia, disabled: false }],
         contraseniaNueva: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
         contraseniaConfirmacion: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
       },
@@ -53,49 +61,67 @@ export class RestablecerContraseniaComponent implements OnInit {
     if (this.f.contraseniaNueva.value == null ||
       this.f.contraseniaNueva.value.trim() == '' ||
       this.f.contraseniaConfirmacion.value == null ||
-      this.f.contraseniaConfirmacion.value.trim() == ''){
+      this.f.contraseniaConfirmacion.value.trim() == '') {
       this.alertaService.mostrar(TipoAlerta.Error, 'Las contraseñas no pueden ir vacías.');
       this.f.contraseniaNueva.patchValue(null);
       this.f.contraseniaConfirmacion.patchValue(null);
       return;
     }
-    if(
+    if (
       this.form.errors?.contraseniasDiferentes &&
       this.f.contraseniaNueva.value !== null &&
       this.f.contraseniaNueva.value !== '' &&
       this.f.contraseniaConfirmacion.value !== null &&
       this.f.contraseniaConfirmacion.value !== ''
-    ){
+    ) {
       this.alertaService.mostrar(TipoAlerta.Error, 'Las contraseñas ingresadas no coinciden.');
       this.f.contraseniaNueva.patchValue(null);
       this.f.contraseniaConfirmacion.patchValue(null);
       return;
     }
-
-
-
     const form = this.form.getRawValue();
+    this.usuarioIncorrecto = false;
     this.loaderService.activar();
     this.autenticacionContratanteService
-      .actualizarContraseniaNewLogin(form.usuario, '', form.contraseniaNueva)
+      .actualizarContraseniaNewLogin(form.usuario, form.contraseniaAnterior, form.contraseniaNueva)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<unknown>): void => {
-          if (respuesta.codigo === 200) {
-            this.alertaService.mostrar(
-              TipoAlerta.Exito,
-              'Contraseña actualizada correctamente.'
-            );
-            void this.router.navigate(['/externo-publico/autenticacion/inicio-sesion'], {
-              relativeTo: this.activatedRoute,
-            });
+          if (respuesta.error) {
+            this.procesarRespuesta(respuesta.mensaje);
+            return;
           }
+          this.alertaService.mostrar(
+            TipoAlerta.Exito,
+            'Contraseña actualizada correctamente.'
+          );
+          void this.router.navigate(['/externo-publico/autenticacion/inicio-sesion'], {
+            relativeTo: this.activatedRoute,
+          });
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, 'Error al guardar la información. Intenta nuevamente.');
         },
       });
+  }
+
+  procesarRespuesta(respuesta: string): void {
+    switch (respuesta) {
+      case MensajesRespuestaAutenticacion.CredencialesIncorrectas:
+        this.form.get('contraseniaAnterior')?.reset();
+        this.contraseniaIncorrecta = !this.contraseniaIncorrecta;
+        break;
+      case MensajesRespuestaAutenticacion.UsuarioNoExiste:
+        this.form.get('usuario')?.reset();
+        this.form.get('contraseniaAnterior')?.reset();
+        this.usuarioIncorrecto = !this.usuarioIncorrecto;
+        break;
+      case MensajesRespuestaAutenticacion.CantidadMaximaIntentosFallidos:
+        this.mostrarModalIntentosFallidos = true;
+        this.empezarTemporizadorPorExcederIntentos();
+        break;
+    }
   }
 
   validarContrasenia(): void {
@@ -107,6 +133,29 @@ export class RestablecerContraseniaComponent implements OnInit {
     this.form.get('contraseniaNueva')?.patchValue(null);
     this.form.get('contraseniaConfirmacion')?.patchValue(null);
     this.mostrarModalFormatoContrasenia = !this.mostrarModalFormatoContrasenia;
+  }
+
+  empezarTemporizadorPorExcederIntentos(): void {
+    let duracionEnSegundos: number = this.existeTemporizadorEnCurso() ? Number(localStorage.getItem('segundos_temporizador_intentos_sivimss')) : this.SEGUNDOS_TEMPORIZADOR_INTENTOS;
+    let refTemporador: NodeJS.Timer = setInterval((): void => {
+      let minutos: string | number = Math.floor(duracionEnSegundos / 60);
+      let segundos: string | number = duracionEnSegundos % 60;
+      minutos = minutos < 10 ? '0' + minutos : minutos;
+      segundos = segundos < 10 ? '0' + segundos : segundos;
+      this.minutosTemporizadorIntentos = minutos as string;
+      this.segundosTemporizadorIntentos = segundos as string;
+      duracionEnSegundos--;
+      localStorage.setItem('segundos_temporizador_intentos_sivimss', String(duracionEnSegundos));
+      if (duracionEnSegundos < 0) {
+        clearInterval(refTemporador);
+        localStorage.removeItem('segundos_temporizador_intentos_sivimss');
+        this.mostrarModalIntentosFallidos = false;
+      }
+    }, 1000);
+  }
+
+  existeTemporizadorEnCurso(): boolean {
+    return localStorage.getItem('segundos_temporizador_intentos_sivimss') !== null;
   }
 
   get f() {
