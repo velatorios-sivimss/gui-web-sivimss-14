@@ -322,12 +322,21 @@ export class RegistroComponent implements OnInit {
             this.datosGenerales.segundoApellido.setValue(datosUsuario.apellido2);
             this.datosGenerales.sexo.setValue(datosUsuario.sexo === "MUJER" ? 1 : 2);
             this.datosGenerales.fechaNacimiento.setValue(fecha);
+            if (datosUsuario.nacionalidad.includes('MEXICO') || datosUsuario.nacionalidad.includes('MEX')) {
+              this.datosGenerales.nacionalidad.setValue(1);
+            } else {
+              this.datosGenerales.nacionalidad.setValue(2);
+            }
+            this.consultarLugarNacimiento(datosUsuario.desEntidadNac);
 
             this.datosGenerales.nombre.disable();
             this.datosGenerales.primerApellido.disable();
             this.datosGenerales.segundoApellido.disable();
             this.datosGenerales.sexo.disable();
             this.datosGenerales.fechaNacimiento.disable();
+            this.datosGenerales.nacionalidad.disable();
+            this.datosGenerales.paisNacimiento.disable();
+            this.datosGenerales.lugarNacimiento.disable();
 
             this.idUsuario = null;
             this.idContratante = null;
@@ -377,6 +386,39 @@ export class RegistroComponent implements OnInit {
       });
     }
   }
+
+  consultarLugarNacimiento(entidad: string): void {
+    const entidadEditada = this.accentsTidy(entidad);
+    if (entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')) {
+      this.datosGenerales.lugarNacimiento.setValue(11);
+      return
+    }
+    if (entidadEditada.toUpperCase().includes('DISTRITO FEDERAL') || entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')) {
+      this.datosGenerales.lugarNacimiento.setValue(7);
+      return
+    }
+    this.catalogoEstados.forEach((element: any) => {
+      const entidadIteracion = this.accentsTidy(element.label);
+      if (entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())) {
+        this.datosGenerales.lugarNacimiento.setValue(element.value);
+      }
+    })
+  }
+
+  accentsTidy(s: string): string {
+    let r = s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g), "a");
+    r = r.replace(new RegExp(/æ/g), "ae");
+    r = r.replace(new RegExp(/ç/g), "c");
+    r = r.replace(new RegExp(/[èéêë]/g), "e");
+    r = r.replace(new RegExp(/[ìíîï]/g), "i");
+    r = r.replace(new RegExp(/ñ/g), "n");
+    r = r.replace(new RegExp(/[òóôõö]/g), "o");
+    r = r.replace(new RegExp(/œ/g), "oe");
+    r = r.replace(new RegExp(/[ùúûü]/g), "u");
+    r = r.replace(new RegExp(/[ýÿ]/g), "y");
+    return r;
+  };
 
   validarRfc() {
     if (this.datosGenerales.rfc.value === '' || !this.datosGenerales.rfc.value) {
