@@ -317,11 +317,18 @@ export class RegistroComponent implements OnInit {
             const datosUsuario = respuesta.datos;
             const [dia, mes, anio] = datosUsuario.fechNac.split('-');
             const fecha = new Date(anio + '/' + mes + '/' + dia);
-            this.datosGenerales.nombre.setValue(datosUsuario.nombre)
-            this.datosGenerales.primerApellido.setValue(datosUsuario.apellido1)
-            this.datosGenerales.segundoApellido.setValue(datosUsuario.apellido2)
-            this.datosGenerales.sexo.setValue(datosUsuario.sexo === "MUJER" ? 1 : 2)
+            this.datosGenerales.nombre.setValue(datosUsuario.nombre);
+            this.datosGenerales.primerApellido.setValue(datosUsuario.apellido1);
+            this.datosGenerales.segundoApellido.setValue(datosUsuario.apellido2);
+            this.datosGenerales.sexo.setValue(datosUsuario.sexo === "MUJER" ? 1 : 2);
             this.datosGenerales.fechaNacimiento.setValue(fecha);
+
+            this.datosGenerales.nombre.disable();
+            this.datosGenerales.primerApellido.disable();
+            this.datosGenerales.segundoApellido.disable();
+            this.datosGenerales.sexo.disable();
+            this.datosGenerales.fechaNacimiento.disable();
+
             this.idUsuario = null;
             this.idContratante = null;
             this.idPersona = null;
@@ -376,10 +383,6 @@ export class RegistroComponent implements OnInit {
       this.datosGenerales.rfc.setErrors(null);
       this.datosGenerales.rfc.clearValidators();
       this.datosGenerales.rfc.updateValueAndValidity();
-      this.form.reset();
-      this.form.enable();
-      this.domicilio.municipio.disable();
-      this.domicilio.estado.disable();
     } else {
       this.datosGenerales.rfc.setValidators(Validators.maxLength(13));
       this.datosGenerales.rfc.updateValueAndValidity();
@@ -389,48 +392,6 @@ export class RegistroComponent implements OnInit {
         this.datosGenerales.rfc.value !== null) {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
         this.datosGenerales.rfc.setErrors({ 'incorrect': true });
-      } else {
-        this.registroService.validarCurpRfc({ rfc: this.datosGenerales.rfc.value, curp: null }).subscribe({
-          next: (respuesta: HttpRespuesta<any>) => {
-            this.datosGenerales.rfc.setErrors({ 'incorrect': true });
-            if (respuesta.mensaje === 'USUARIO REGISTRADO') {
-              const datosUsuario = respuesta.datos[0];
-              // Si idUsuario es null solo falta crear el usuario - Se debe pre-llenar formulario
-              this.datosGenerales.curp.setValue(datosUsuario.curp);
-              this.datosGenerales.nss.setValue(datosUsuario.nss);
-              this.datosGenerales.rfc.setValue(datosUsuario.rfc);
-              this.datosGenerales.nombre.setValue(datosUsuario.nomPersona);
-              this.datosGenerales.primerApellido.setValue(datosUsuario.paterno);
-              this.datosGenerales.segundoApellido.setValue(datosUsuario.materno);
-              this.datosGenerales.fechaNacimiento.setValue(datosUsuario.fecNacimiento);
-              this.datosGenerales.sexo.setValue(datosUsuario.idSexo);
-              this.datosGenerales.otro.setValue(datosUsuario.otroSexo);
-              this.datosGenerales.nacionalidad.setValue(datosUsuario.idPais === 119 ? 1 : 2);
-              this.datosGenerales.paisNacimiento.setValue(datosUsuario.idPais);
-              this.datosGenerales.lugarNacimiento.setValue(datosUsuario.idLugarNac);
-              this.datosGenerales.telefono.setValue(datosUsuario.tel);
-              this.datosGenerales.correo.setValue(datosUsuario.correo);
-              this.datosGenerales.correoConfirmacion.setValue(datosUsuario.correo);
-
-              this.domicilio.calle.setValue(datosUsuario.calle);
-              this.domicilio.numeroInterior.setValue(datosUsuario.numInt);
-              this.domicilio.numeroExterior.setValue(datosUsuario.numExt);
-              this.domicilio.codigoPostal.setValue(datosUsuario.cp);
-              this.obtenerCP(datosUsuario.colonia);
-              this.idUsuario = datosUsuario?.idUsuario ?? null;
-              this.idContratante = datosUsuario?.idContratante;
-              this.idPersona = datosUsuario?.idPersona;
-
-              this.form.disable();
-              this.datosGenerales.rfc.enable();
-            } else {
-              this.datosGenerales.rfc.setErrors(null);
-            }
-          },
-          error: (error: HttpErrorResponse) => {
-            console.error("ERROR: ", error);
-          }
-        });
       }
     }
   }
