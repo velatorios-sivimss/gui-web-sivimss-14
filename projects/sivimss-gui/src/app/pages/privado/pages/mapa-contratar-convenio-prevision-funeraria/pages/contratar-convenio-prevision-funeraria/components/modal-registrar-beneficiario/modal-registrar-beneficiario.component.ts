@@ -419,7 +419,7 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
       case 187:
         this.alertaService.mostrar(
           TipoAlerta.Error,
-          'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
+          'Error al consultar la información.'
         );
         break;
       case 802:
