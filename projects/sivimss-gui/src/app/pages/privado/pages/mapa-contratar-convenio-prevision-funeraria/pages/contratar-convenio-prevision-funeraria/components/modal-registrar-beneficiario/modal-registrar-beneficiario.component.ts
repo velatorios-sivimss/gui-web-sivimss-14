@@ -241,6 +241,7 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
 
   calcularEdad(): void {
     this.f.edad.setValue(moment().diff(moment(this.f.fecha.value), 'years'));
+    this.f.fechaNacimiento.setValue(moment(this.f.fecha.value).format('YYYY-MM-DD'));
     this.validarEdad();
   }
 
@@ -466,7 +467,6 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
-            console.log(respuesta.mensaje);
             this.mostrarMensaje(Number(respuesta.mensaje));
             return;
           }
