@@ -1,27 +1,27 @@
-import {Component, OnInit, Renderer2, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {OverlayPanel} from 'primeng/overlaypanel';
-import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import {ContratarPSFPAService} from '../../services/contratar-psfpa.service';
-import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import {HttpErrorResponse} from '@angular/common/http';
-import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { Component, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { OverlayPanel } from 'primeng/overlaypanel';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { ContratarPSFPAService } from '../../services/contratar-psfpa.service';
+import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {
   CATALOGO_NACIONALIDAD,
   CATALOGO_SEXO
 } from "projects/sivimss-gui/src/app/modules/contratantes/constants/catalogos-complementarios";
-import {finalize} from 'rxjs/operators';
-import {mapearArregloTipoDropdown, validarUsuarioLogueadoOnline} from 'projects/sivimss-gui/src/app/utils/funciones';
-import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import {PATRON_CORREO, PATRON_CURP, PATRON_RFC} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {CURP} from 'projects/sivimss-gui/src/app/utils/regex';
+import { finalize } from 'rxjs/operators';
+import { mapearArregloTipoDropdown, validarUsuarioLogueadoOnline } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { PATRON_CORREO, PATRON_CURP, PATRON_RFC } from 'projects/sivimss-gui/src/app/utils/constantes';
+import { CURP } from 'projects/sivimss-gui/src/app/utils/regex';
 import * as moment from "moment";
-import {ContratarPlanSFPA, Paquete} from '../../models/servicios-funerarios.interface';
-import {RegistroService} from 'projects/sivimss-gui/src/app/pages/publico/pages/registro/services/registro.service';
-import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { ContratarPlanSFPA, Paquete } from '../../models/servicios-funerarios.interface';
+import { RegistroService } from 'projects/sivimss-gui/src/app/pages/publico/pages/registro/services/registro.service';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {
   ServiciosFunerariosService
 } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/services/servicios-funerarios.service';
@@ -31,7 +31,7 @@ import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/se
 import { TransaccionPago } from '../../../../models/transaccion-pago.interface';
 import { SolicitudPagos } from '../../../../models/solicitud-pagos.interface';
 import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
-import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
+import { GestorCredencialesService } from "../../../../../../services/gestor-credenciales.service";
 
 @Component({
   selector: 'app-contratar-plan-servicios-funerarios-pago-anticipado',
@@ -137,8 +137,8 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
 
   inicializarFormPromotor(): void {
     this.promotorForm = this.formBuilder.group({
-      gestionadoPorPromotor: [{value: false, disabled: false}, [Validators.nullValidator]],
-      promotor: [{value: null, disabled: false}, [Validators.nullValidator]],
+      gestionadoPorPromotor: [{ value: false, disabled: false }, [Validators.nullValidator]],
+      promotor: [{ value: null, disabled: false }, [Validators.nullValidator]],
     });
 
     this.handleGestionPromotor();
@@ -180,7 +180,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       code: credenciales.code,
       key: credenciales.key
     }));
-    this.cargarScript(() => {});
+    this.cargarScript(() => { });
     this.subscripcionMotorPagos();
     e?.click();
   }
@@ -211,7 +211,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       next: (respuesta: HttpRespuesta<any>): void => {
         const id = respuesta.datos.idPagoLinea;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
-        void this.router.navigate(['recibo-de-pago', id], {relativeTo: this.activatedRoute});
+        void this.router.navigate(['recibo-de-pago', id], { relativeTo: this.activatedRoute });
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -254,115 +254,115 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         value: this.usuarioEnSesion?.curp,
         disabled: true
       }, [Validators.required, Validators.pattern(PATRON_CURP)]],
-      rfc: [{value: null, disabled: true}, [Validators.required, Validators.pattern(PATRON_RFC)]],
-      matricula: [{value: null, disabled: true}],
-      nss: [{value: null, disabled: true}, [Validators.required]],
-      nombre: [{value: null, disabled: true}, [Validators.required]],
-      primerApellido: [{value: null, disabled: true}, [Validators.required]],
-      segundoApellido: [{value: null, disabled: true}, [Validators.required]],
-      sexo: [{value: null, disabled: true}, [Validators.required]],
-      otroSexo: [{value: null, disabled: true}],
-      fechaNacimiento: [{value: null, disabled: true}, [Validators.required]],
-      nacionalidad: [{value: null, disabled: true}],
-      lugarNacimiento: [{value: null, disabled: true}, [Validators.required]],
-      paisNacimiento: [{value: null, disabled: true}],
-      telefono: [{value: null, disabled: false}, [Validators.required]],
-      telefonoFijo: [{value: null, disabled: false}, [Validators.required]],
-      correoElectronico: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
-      cp: [{value: null, disabled: false}, [Validators.required]],
-      calle: [{value: null, disabled: false}, [Validators.required]],
-      numeroInterior: [{value: null, disabled: false}],
-      numeroExterior: [{value: null, disabled: false}, [Validators.required]],
-      colonia: [{value: null, disabled: false}, [Validators.required]],
-      municipio: [{value: null, disabled: true}, [Validators.required]],
-      estado: [{value: null, disabled: true}, [Validators.required]],
-      paquete: [{value: null, disabled: false}, [Validators.required]],
-      numeroPago: [{value: null, disabled: false}, [Validators.required]],
+      rfc: [{ value: null, disabled: true }, [Validators.required, Validators.pattern(PATRON_RFC)]],
+      matricula: [{ value: null, disabled: true }],
+      nss: [{ value: null, disabled: true }, [Validators.required]],
+      nombre: [{ value: null, disabled: true }, [Validators.required]],
+      primerApellido: [{ value: null, disabled: true }, [Validators.required]],
+      segundoApellido: [{ value: null, disabled: true }, [Validators.required]],
+      sexo: [{ value: null, disabled: true }, [Validators.required]],
+      otroSexo: [{ value: null, disabled: true }],
+      fechaNacimiento: [{ value: null, disabled: true }, [Validators.required]],
+      nacionalidad: [{ value: null, disabled: true }],
+      lugarNacimiento: [{ value: null, disabled: true }, [Validators.required]],
+      paisNacimiento: [{ value: null, disabled: true }],
+      telefono: [{ value: null, disabled: false }, [Validators.required]],
+      telefonoFijo: [{ value: null, disabled: false }, [Validators.required]],
+      correoElectronico: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CORREO)]],
+      cp: [{ value: null, disabled: false }, [Validators.required]],
+      calle: [{ value: null, disabled: false }, [Validators.required]],
+      numeroInterior: [{ value: null, disabled: false }],
+      numeroExterior: [{ value: null, disabled: false }, [Validators.required]],
+      colonia: [{ value: null, disabled: false }, [Validators.required]],
+      municipio: [{ value: null, disabled: true }, [Validators.required]],
+      estado: [{ value: null, disabled: true }, [Validators.required]],
+      paquete: [{ value: null, disabled: false }, [Validators.required]],
+      numeroPago: [{ value: null, disabled: false }, [Validators.required]],
     });
   }
 
   inicializarFormDatosTitularSubstituto(): void {
     this.datosTitularSubstitutoForm = this.formBuilder.group({
-      datosIguales: [{value: false, disabled: false}, [Validators.required]],
-      curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
-      rfc: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_RFC)]],
-      matricula: [{value: null, disabled: false}],
-      nss: [{value: null, disabled: false}, [Validators.required]],
-      nombre: [{value: null, disabled: false}, [Validators.required]],
-      primerApellido: [{value: null, disabled: false}, [Validators.required]],
-      segundoApellido: [{value: null, disabled: false}, [Validators.required]],
-      sexo: [{value: null, disabled: false}, [Validators.required]],
-      otroSexo: [{value: null, disabled: false}],
-      fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
-      nacionalidad: [{value: null, disabled: false}],
-      lugarNacimiento: [{value: null, disabled: false}, [Validators.required]],
-      paisNacimiento: [{value: null, disabled: false}],
-      telefono: [{value: null, disabled: false}, [Validators.required]],
-      telefonoFijo: [{value: null, disabled: false}, []],
-      correoElectronico: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
-      cp: [{value: null, disabled: false}, [Validators.required]],
-      calle: [{value: null, disabled: false}, [Validators.required]],
-      numeroInterior: [{value: null, disabled: false}],
-      numeroExterior: [{value: null, disabled: false}, [Validators.required]],
-      colonia: [{value: null, disabled: false}, [Validators.required]],
-      municipio: [{value: null, disabled: true}, [Validators.required]],
-      estado: [{value: null, disabled: true}, [Validators.required]],
+      datosIguales: [{ value: false, disabled: false }, [Validators.required]],
+      curp: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CURP)]],
+      rfc: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_RFC)]],
+      matricula: [{ value: null, disabled: false }],
+      nss: [{ value: null, disabled: false }, [Validators.required]],
+      nombre: [{ value: null, disabled: false }, [Validators.required]],
+      primerApellido: [{ value: null, disabled: false }, [Validators.required]],
+      segundoApellido: [{ value: null, disabled: false }, [Validators.required]],
+      sexo: [{ value: null, disabled: false }, [Validators.required]],
+      otroSexo: [{ value: null, disabled: false }],
+      fechaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
+      nacionalidad: [{ value: null, disabled: false }],
+      lugarNacimiento: [{ value: null, disabled: false }, [Validators.required]],
+      paisNacimiento: [{ value: null, disabled: false }],
+      telefono: [{ value: null, disabled: false }, [Validators.required]],
+      telefonoFijo: [{ value: null, disabled: false }, []],
+      correoElectronico: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CORREO)]],
+      cp: [{ value: null, disabled: false }, [Validators.required]],
+      calle: [{ value: null, disabled: false }, [Validators.required]],
+      numeroInterior: [{ value: null, disabled: false }],
+      numeroExterior: [{ value: null, disabled: false }, [Validators.required]],
+      colonia: [{ value: null, disabled: false }, [Validators.required]],
+      municipio: [{ value: null, disabled: true }, [Validators.required]],
+      estado: [{ value: null, disabled: true }, [Validators.required]],
     });
   }
 
   inicializarFormDatosBeneficiario1(): void {
     this.datosBeneficiario1Form = this.formBuilder.group({
-      curp: [{value: null, disabled: false}, [Validators.maxLength(18), Validators.pattern(CURP)]],
-      rfc: [{value: null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
-      matricula: [{value: null, disabled: false}],
-      nss: [{value: null, disabled: false}, []],
-      nombre: [{value: null, disabled: false}, []],
-      primerApellido: [{value: null, disabled: false}, []],
-      segundoApellido: [{value: null, disabled: false}, []],
-      sexo: [{value: null, disabled: false}, []],
-      otroSexo: [{value: null, disabled: false}],
-      fechaNacimiento: [{value: null, disabled: false}, []],
-      nacionalidad: [{value: null, disabled: false}],
-      lugarNacimiento: [{value: null, disabled: false}, []],
-      paisNacimiento: [{value: null, disabled: false}],
-      telefono: [{value: null, disabled: false}, []],
-      telefonoFijo: [{value: null, disabled: false}, []],
-      correoElectronico: [{value: null, disabled: false}, [Validators.pattern(PATRON_CORREO)]],
-      cp: [{value: null, disabled: false}, []],
-      calle: [{value: null, disabled: false}, []],
-      numeroInterior: [{value: null, disabled: false}],
-      numeroExterior: [{value: null, disabled: false}, []],
-      colonia: [{value: null, disabled: false}, []],
-      municipio: [{value: null, disabled: true}, []],
-      estado: [{value: null, disabled: true}, []],
+      curp: [{ value: null, disabled: false }, [Validators.maxLength(18), Validators.pattern(CURP)]],
+      rfc: [{ value: null, disabled: false }, [Validators.pattern(PATRON_RFC)]],
+      matricula: [{ value: null, disabled: false }],
+      nss: [{ value: null, disabled: false }, []],
+      nombre: [{ value: null, disabled: false }, []],
+      primerApellido: [{ value: null, disabled: false }, []],
+      segundoApellido: [{ value: null, disabled: false }, []],
+      sexo: [{ value: null, disabled: false }, []],
+      otroSexo: [{ value: null, disabled: false }],
+      fechaNacimiento: [{ value: null, disabled: false }, []],
+      nacionalidad: [{ value: null, disabled: false }],
+      lugarNacimiento: [{ value: null, disabled: false }, []],
+      paisNacimiento: [{ value: null, disabled: false }],
+      telefono: [{ value: null, disabled: false }, []],
+      telefonoFijo: [{ value: null, disabled: false }, []],
+      correoElectronico: [{ value: null, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
+      cp: [{ value: null, disabled: false }, []],
+      calle: [{ value: null, disabled: false }, []],
+      numeroInterior: [{ value: null, disabled: false }],
+      numeroExterior: [{ value: null, disabled: false }, []],
+      colonia: [{ value: null, disabled: false }, []],
+      municipio: [{ value: null, disabled: true }, []],
+      estado: [{ value: null, disabled: true }, []],
     });
   }
 
   inicializarFormDatosBeneficiario2(): void {
     this.datosBeneficiario2Form = this.formBuilder.group({
-      curp: [{value: null, disabled: false}, [Validators.maxLength(18), Validators.pattern(CURP)]],
-      rfc: [{value: null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
-      matricula: [{value: null, disabled: false}],
-      nss: [{value: null, disabled: false}, []],
-      nombre: [{value: null, disabled: false}, []],
-      primerApellido: [{value: null, disabled: false}, []],
-      segundoApellido: [{value: null, disabled: false}, []],
-      sexo: [{value: null, disabled: false}, []],
-      otroSexo: [{value: null, disabled: false}],
-      fechaNacimiento: [{value: null, disabled: false}, []],
-      nacionalidad: [{value: null, disabled: false}],
-      lugarNacimiento: [{value: null, disabled: false}, []],
-      paisNacimiento: [{value: null, disabled: false}],
-      telefono: [{value: null, disabled: false}, []],
-      telefonoFijo: [{value: null, disabled: false}, []],
-      correoElectronico: [{value: null, disabled: false}, [Validators.pattern(PATRON_CORREO)]],
-      cp: [{value: null, disabled: false}, []],
-      calle: [{value: null, disabled: false}, []],
-      numeroInterior: [{value: null, disabled: false}],
-      numeroExterior: [{value: null, disabled: false}, []],
-      colonia: [{value: null, disabled: false}, []],
-      municipio: [{value: null, disabled: true}, []],
-      estado: [{value: null, disabled: true}, []],
+      curp: [{ value: null, disabled: false }, [Validators.maxLength(18), Validators.pattern(CURP)]],
+      rfc: [{ value: null, disabled: false }, [Validators.pattern(PATRON_RFC)]],
+      matricula: [{ value: null, disabled: false }],
+      nss: [{ value: null, disabled: false }, []],
+      nombre: [{ value: null, disabled: false }, []],
+      primerApellido: [{ value: null, disabled: false }, []],
+      segundoApellido: [{ value: null, disabled: false }, []],
+      sexo: [{ value: null, disabled: false }, []],
+      otroSexo: [{ value: null, disabled: false }],
+      fechaNacimiento: [{ value: null, disabled: false }, []],
+      nacionalidad: [{ value: null, disabled: false }],
+      lugarNacimiento: [{ value: null, disabled: false }, []],
+      paisNacimiento: [{ value: null, disabled: false }],
+      telefono: [{ value: null, disabled: false }, []],
+      telefonoFijo: [{ value: null, disabled: false }, []],
+      correoElectronico: [{ value: null, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
+      cp: [{ value: null, disabled: false }, []],
+      calle: [{ value: null, disabled: false }, []],
+      numeroInterior: [{ value: null, disabled: false }],
+      numeroExterior: [{ value: null, disabled: false }, []],
+      colonia: [{ value: null, disabled: false }, []],
+      municipio: [{ value: null, disabled: true }, []],
+      estado: [{ value: null, disabled: true }, []],
     });
   }
 
@@ -430,22 +430,25 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         if (!respuesta.datos) {
           this.alertaService.mostrar(
             TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
+            formularioEnUso[posicion].nss.setValue(null);
         } else {
-          let fecha: Date | null = null;
-          if (respuesta.datos.fechaNacimiento) {
-            let [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
-            fecha = new Date(+anio, +mes - 1, +dia);
+          if (posicion !== 0) {
+            let fecha: Date | null = null;
+            if (respuesta.datos.fechaNacimiento) {
+              let [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
+              fecha = new Date(+anio, +mes - 1, +dia);
+            }
+            let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
+            formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
+            formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
+            formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+            formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
+            formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
+            formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
+            formularioEnUso[posicion].sexo.setValue(sexo);
+            formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
+            formularioEnUso[posicion].nacionalidad.setValue(1);
           }
-          let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
-          formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
-          formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
-          formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
-          formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
-          formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
-          formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
-          formularioEnUso[posicion].sexo.setValue(sexo);
-          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-          formularioEnUso[posicion].nacionalidad.setValue(1);
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -628,11 +631,11 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       const regex: RegExp = new RegExp(/^([A-Z,Ñ&]{3,4}(\d{2})(0[1-9]|1[0-2])(0[1-9]|1\d|2\d|3[0-1])[A-Z|\d]{3})$/);
       if (!regex.test(formGroupName.rfc.value)) {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
-        formGroupName.rfc.setErrors({'incorrect': true});
+        formGroupName.rfc.setErrors({ 'incorrect': true });
       } else {
-        this.registroService.validarCurpRfc({rfc: formGroupName.rfc.value, curp: null}).subscribe({
+        this.registroService.validarCurpRfc({ rfc: formGroupName.rfc.value, curp: null }).subscribe({
           next: (respuesta: HttpRespuesta<any>) => {
-            formGroupName.rfc.setErrors({'incorrect': true});
+            formGroupName.rfc.setErrors({ 'incorrect': true });
             if (respuesta.mensaje === 'USUARIO REGISTRADO') {
               this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C ya se encuentra registrado.');
               formGroupName.rfc.patchValue(null);
@@ -691,6 +694,9 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
           this.fdt.lugarNacimiento.setValue(datosUsuario.idEstadoNacimiento)
         } else {
           this.fdt.nacionalidad.setValue(2);
+        }
+        if (!datosUsuario.nss) {
+          this.fdt.nss.enable();
         }
       }
     })
@@ -777,12 +783,12 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   };
 
   consultarRfc(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts];
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].rfc.value) return;
     if (formularioEnUso[posicion].rfc?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
     }
-    return
+    return;
   }
 
   consultarLugarNacimiento(entidad: string, posicion: number): void {
@@ -815,7 +821,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       this.fdts.datosIguales.setValue(false);
       return
     }
-    this.colonias[1] = [{label: this.fdt.colonia.value, value: this.fdt.colonia.value}]
+    this.colonias[1] = [{ label: this.fdt.colonia.value, value: this.fdt.colonia.value }]
     this.cajaValidacionDatosExistentes[2] = this.cajaValidacionDatosExistentes[0];
     this.cajaValidacionDatosExistentes[3] = this.cajaValidacionDatosExistentes[1];
     this.datosTitularSubstitutoForm.disable();
@@ -906,7 +912,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
             [this.descargaArchivosService.base64_2Blob(
               respuesta.datos.reporte,
               this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-            {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
+            { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
           const url = window.URL.createObjectURL(file);
           window.open(url);
         }

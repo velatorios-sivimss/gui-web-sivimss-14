@@ -78,7 +78,7 @@ export class RegistroComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.nullValidator],
+          [Validators.required, Validators.maxLength(13)],
         ],
         nombre: [
           {
@@ -423,19 +423,18 @@ export class RegistroComponent implements OnInit {
   validarRfc() {
     if (this.datosGenerales.rfc.value === '' || !this.datosGenerales.rfc.value) {
       this.datosGenerales.rfc.setErrors(null);
-      this.datosGenerales.rfc.clearValidators();
-      this.datosGenerales.rfc.updateValueAndValidity();
+      this.datosGenerales.rfc.setValidators([Validators.required, Validators.maxLength(13)]);
     } else {
-      this.datosGenerales.rfc.setValidators(Validators.maxLength(13));
-      this.datosGenerales.rfc.updateValueAndValidity();
       const regex: RegExp = new RegExp(/^([A-Z,Ñ&]{3,4}(\d{2})(0[1-9]|1[0-2])(0[1-9]|1\d|2\d|3[0-1])[A-Z|\d]{3})$/);
       if (!regex.test(this.datosGenerales.rfc.value) &&
         this.datosGenerales.rfc.value !== '' &&
         this.datosGenerales.rfc.value !== null) {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
         this.datosGenerales.rfc.setErrors({ 'incorrect': true });
+        this.datosGenerales.rfc.setValue(null);
       }
     }
+    this.datosGenerales.rfc.updateValueAndValidity();
   }
 
   validarEmail() {
