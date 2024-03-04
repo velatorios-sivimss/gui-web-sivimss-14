@@ -777,12 +777,12 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   };
 
   consultarRfc(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts];
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].rfc.value) return;
     if (formularioEnUso[posicion].rfc?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
     }
-    return
+    return;
   }
 
   consultarLugarNacimiento(entidad: string, posicion: number): void {
