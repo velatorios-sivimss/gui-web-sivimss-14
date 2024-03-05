@@ -14,11 +14,12 @@ import { TransaccionPago } from '../../../../models/transaccion-pago.interface';
 import { SolicitudPagos } from '../../../../models/solicitud-pagos.interface';
 import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
 import * as moment from 'moment';
+import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
 @Component({
   selector: 'app-mi-plan-servicios-funerarios-pago-anticipado',
   templateUrl: './mi-plan-servicios-funerarios-pago-anticipado.component.html',
   styleUrls: ['./mi-plan-servicios-funerarios-pago-anticipado.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, GestorCredencialesService]
 })
 export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit {
   readonly ESTATUS_POR_PAGAR: number = 8;
@@ -40,15 +41,14 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
     private renderer: Renderer2,
     private router: Router,
     private consultaConveniosService: BusquedaConveniosPFServic,
+    private gestorCredencialesService: GestorCredencialesService
   ) { }
 
   ngOnInit(): void {
-    let timeoutTmp = setTimeout(() => {
-      this.cargarScript(() => { });
-      this.subscripcionMotorPagos();
-      clearTimeout(timeoutTmp);
-    }, 300);
     this.detalleConvenio();
+    this.gestorCredencialesService.obtenerToken().subscribe({
+      next: (respuesta) => this.procesarToken(respuesta)
+    });
   }
 
   cargarScript(callback: () => void): void {
@@ -69,16 +69,24 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   }
 
   iniciarPago(): void {
-    const elemento_ref = document.querySelector('.realizar-pago');
-    const e = document.getElementById('btn-realizar-pago');
-    if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto',
-      JSON.stringify({
-        referencia: 'Mensualidad SFPA',
-        monto: this.registroPagar.importeAcumulado
-      }));
-    e?.click();
+
   }
+
+  procesarToken(respuesta: HttpRespuesta<any>): void {
+    const [credenciales] = respuesta.datos;
+    this.cargarScript(() => {});
+    const elemento_ref = document.querySelector('.realizar-pago');
+    if (!elemento_ref) return;
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({
+      referencia: 'Mensualidad SFPA',
+      monto: this.registroPagar.importeAcumulado,
+      mode: credenciales.mode,
+      code: credenciales.code,
+      key: credenciales.key
+    }));
+    this.subscripcionMotorPagos();
+  }
+
 
   subscripcionMotorPagos(): void {
     // Escucha el evento personalizado
