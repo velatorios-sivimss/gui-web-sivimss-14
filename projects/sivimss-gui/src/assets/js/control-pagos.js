@@ -1,18 +1,19 @@
-let btnPagoCheckout = document.querySelector('.realizar-pago');
-const pago = JSON.parse(btnPagoCheckout.getAttribute('data-objeto'));
+let btnOpenCheckout = document.querySelector('.realizar-pago');
+const pago = JSON.parse(btnOpenCheckout.getAttribute('data-objeto'));
 
 let paymentCheckout = new PaymentCheckout.modal({
   client_app_code: pago.code, // Application Code de las credenciales CLIENT
   client_app_key: pago.key, // Application Key de las credenciales CLIENT
   locale: 'es', // Idioma preferido del usuario (es, en, pt). El inglés se usará por defecto
   env_mode: pago.mode, // `prod`, `stg`, `local` para cambiar de ambiente. Por defecto es `stg`
-  onOpen: function () {},
+  onOpen: function () {
+  },
   onClose: function (event) {
     console.log(event)
   },
   onResponse: function (response) { // Funcionalidad a invocar cuando se completa el proceso de pago
     console.log(response)
-    const evento = new CustomEvent('datosRecibidos', { detail: response });
+    const evento = new CustomEvent('datosRecibidos', {detail: response});
     document.dispatchEvent(evento);
 
     /*
@@ -57,10 +58,8 @@ var eventValue = function () {
     //conf_invalid_card_type_message: 'Tarjeta invalida para esta operación' // Opcional: Define un mensaje personalizado para mostrar para los tipos de tarjeta no válidos.
   });
 }
-
-let btnOpenCheckout = document.querySelector('.realizar-pago');
-
 btnOpenCheckout.addEventListener('click', eventValue);
+
 
 // Cerrar el Checkout en la navegación de la página:
 window.addEventListener('popstate', function () {

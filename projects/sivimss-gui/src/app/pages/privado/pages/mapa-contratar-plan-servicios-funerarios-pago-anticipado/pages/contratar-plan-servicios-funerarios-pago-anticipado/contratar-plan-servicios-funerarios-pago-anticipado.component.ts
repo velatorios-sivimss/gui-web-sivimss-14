@@ -164,14 +164,13 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   iniciarPago(): void {
     this.gestorCredencialesService.obtenerToken().subscribe({
       next: (respuesta) => this.procesarToken(respuesta)
-    })
-
+    });
   }
 
   procesarToken(respuesta: HttpRespuesta<any>): void {
     const [credenciales] = respuesta.datos;
+    this.cargarScript(() => { });
     const elemento_ref = document.querySelector('.realizar-pago');
-    const e = document.getElementById('btn-realizar-pago');
     if (!elemento_ref) return;
     elemento_ref.setAttribute('data-objeto', JSON.stringify({
       referencia: 'Mensualidad SFPA',
@@ -180,9 +179,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       code: credenciales.code,
       key: credenciales.key
     }));
-    this.cargarScript(() => { });
     this.subscripcionMotorPagos();
-    e?.click();
   }
 
   subscripcionMotorPagos(): void {
@@ -916,6 +913,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
           const url = window.URL.createObjectURL(file);
           window.open(url);
         }
+        this.iniciarPago();
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
