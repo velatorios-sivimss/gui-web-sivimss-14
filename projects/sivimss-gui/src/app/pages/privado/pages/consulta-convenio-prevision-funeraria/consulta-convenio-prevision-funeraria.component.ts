@@ -17,10 +17,12 @@ import { BusquedaPrevision } from './models/BusquedaPrevision.interface';
 import { TransaccionPago } from "../../models/transaccion-pago.interface";
 import { SolicitudPagos } from "../../models/solicitud-pagos.interface";
 import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
+import {GestorCredencialesService} from "../../../../services/gestor-credenciales.service";
 @Component({
   selector: 'app-consulta-convenio-prevision-funeraria',
   templateUrl: './consulta-convenio-prevision-funeraria.component.html',
   styleUrls: ['./consulta-convenio-prevision-funeraria.component.scss'],
+  providers: [GestorCredencialesService]
 })
 export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   numPaginaActual: number = 0;
@@ -52,6 +54,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
     private router: Router,
     private rutaActiva: ActivatedRoute,
     private renderer: Renderer2,
+    private gestorCredencialesService: GestorCredencialesService
   ) { }
   ngOnInit(): void {
     // this.busqueda();
@@ -132,7 +135,6 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
 
   cargarScript(callback: () => void): void {
     const elementoId: string = 'realizar-pago';
-
     if (!document.getElementById(elementoId)) {
       const body: HTMLElement = document.body;
       const elemento_ref = this.renderer.createElement('script');
@@ -146,6 +148,15 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
     } else {
       callback();
     }
+  }
+
+  iniciarPago(): void {
+    const elemento_ref = document.querySelector('.realizar-pago');
+    const e = document.getElementById('btn-realizar-pago');
+    if (!elemento_ref) return;
+    this.overlayPanel.hide();
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'NPF', monto: this.importe }));
+    e?.click();
   }
 
   subscripcionMotorPagos(): void {
@@ -200,17 +211,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       numAprobacion: pago.transaction.authorization_code, // pagos
       numTarjeta: pago.card.number, // pagos number
       referencia: pago.transaction.id // pagos transaction_reference
-
     }
-  }
-
-  iniciarPago(): void {
-    const elemento_ref = document.querySelector('.realizar-pago');
-    const e = document.getElementById('btn-realizar-pago');
-    if (!elemento_ref) return;
-    this.overlayPanel.hide();
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'NPF', monto: this.importe }));
-    e?.click();
   }
 
   abrirPanel(event: MouseEvent, itemConvenio: BusquedaPrevision): void {
@@ -228,12 +229,26 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
     }
     if (idEstatus == 5) {
       this.realizarPago = true;
-      setTimeout(() => {
-        this.cargarScript(() => { });
-        this.subscripcionMotorPagos()
-      }, 300)
+      this.gestorCredencialesService.obtenerToken().subscribe({
+        next: (respuesta) => this.procesarToken(respuesta)
+      });
     }
     this.overlayPanel.toggle(event);
+  }
+
+  procesarToken(respuesta: HttpRespuesta<any>): void {
+    const [credenciales] = respuesta.datos;
+    this.cargarScript(() => {});
+    const elemento_ref = document.querySelector('.realizar-pago');
+    if (!elemento_ref) return;
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({
+      referencia: 'NPF',
+      monto: this.importe,
+      mode: credenciales.mode,
+      code: credenciales.code,
+      key: credenciales.key
+    }));
+    this.subscripcionMotorPagos();
   }
 
   verPlanPreFune(): void {
