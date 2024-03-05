@@ -68,10 +68,6 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
     }
   }
 
-  iniciarPago(): void {
-
-  }
-
   procesarToken(respuesta: HttpRespuesta<any>): void {
     const [credenciales] = respuesta.datos;
     this.cargarScript(() => {});
