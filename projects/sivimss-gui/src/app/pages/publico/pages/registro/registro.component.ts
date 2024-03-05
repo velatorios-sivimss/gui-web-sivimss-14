@@ -10,7 +10,7 @@ import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/fu
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { IContratanteRegistrado, IRegistrarContratante } from './models/registro-contratante.interface';
-import { PATRON_CURP } from 'projects/sivimss-gui/src/app/utils/constantes';
+import { PATRON_CORREO, PATRON_CURP } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import * as moment from 'moment';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -155,14 +155,14 @@ export class RegistroComponent implements OnInit {
             value: null,
             disabled: false,
           },
-          [Validators.required, Validators.pattern('[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-zA-Z]{2,3}')],
+          [Validators.required, Validators.pattern(PATRON_CORREO)],
         ],
         correoConfirmacion: [
           {
             value: null,
             disabled: false,
           },
-          [Validators.required, Validators.pattern('[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-zA-Z]{2,3}')],
+          [Validators.required, Validators.pattern(PATRON_CORREO)],
         ],
       }),
       domicilio: this.formBuilder.group({

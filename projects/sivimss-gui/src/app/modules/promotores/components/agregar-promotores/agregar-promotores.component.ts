@@ -17,6 +17,7 @@ import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import * as moment from 'moment';
 import { PromotoresService } from '../../services/promotores.service';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { PATRON_CORREO } from 'projects/sivimss-gui/src/app/utils/constantes';
 
 interface HttpResponse {
   respuesta: string;
@@ -83,7 +84,7 @@ export class AgregarPromotoresComponent implements OnInit {
       velatorio: [{ value: null, disabled: false }, [Validators.required]],
       categoria: [{ value: null, disabled: false }, [Validators.maxLength(20)]],
       antiguedad: [{ value: null, disabled: true }, [Validators.maxLength(50)]],
-      correo: [{ value: null, disabled: false }, [Validators.maxLength(30), Validators.pattern('[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}')]],
+      correo: [{ value: null, disabled: false }, [Validators.maxLength(30), Validators.pattern(PATRON_CORREO)]],
       puesto: [{ value: null, disabled: false }, [Validators.maxLength(20), Validators.required]],
       diasDescanso: [{ value: null, disabled: false }, []],
       estatus: [{ value: true, disabled: true }, []],
