@@ -48,8 +48,8 @@ export class RestablecerContraseniaComponent implements OnInit {
   inicializarForm(): void {
     this.form = this.formBuilder.group(
       {
-        usuario: [{ value: this.usuario ?? this.autenticacionContratanteService.usuario, disabled: false }, [Validators.required]],
-        contraseniaAnterior: [{ value: this.autenticacionContratanteService.contrasenia, disabled: false }],
+        usuario: [{ value: null, disabled: false }, [Validators.required]],
+        contraseniaAnterior: [{ value: null, disabled: false }],
         contraseniaNueva: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
         contraseniaConfirmacion: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
       },

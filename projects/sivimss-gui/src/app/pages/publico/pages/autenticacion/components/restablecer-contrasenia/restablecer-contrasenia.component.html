@@ -6,7 +6,7 @@
     <div class="form-group mb-3">
       <label class="control-label" for="usuario">Usuario<span class="req">*</span>:</label>
       <div class="form-icon">
-        <input class="form-control" id="usuario" formControlName="usuario"
+        <input class="form-control" id="usuario" formControlName="usuario" autocomplete="false"
                placeholder="Usuario" type="text">
       </div>
       <span class="campo-obligatorio"
@@ -18,7 +18,7 @@
       <label class="control-label" for="contraseniaAnterior">Contraseña anterior<span class="req">*</span>:</label>
       <div class="form-icon">
         <input #contraseniaAnterior class="form-control" id="contraseniaAnterior" formControlName="contraseniaAnterior"
-               placeholder="Nueva contraseña" type="password" [minlength]="8" [maxlength]="15">
+               placeholder="Nueva contraseña" type="password" [minlength]="8" [maxlength]="15" autocomplete="false">
         <i class="cursor-pointer icon pi pi-eye"
            (click)="contraseniaAnterior.type = contraseniaAnterior.type==='password'?'text':'password'"></i>
       </div>
@@ -31,7 +31,7 @@
     <div class="form-group mb-3">
       <label class="control-label" for="contraseniaNueva">Nueva contraseña<span class="req">*</span>:</label>
       <div class="form-icon">
-        <input #contraseniaNueva class="form-control" id="contraseniaNueva" formControlName="contraseniaNueva" autocomplete="off"
+        <input #contraseniaNueva class="form-control" id="contraseniaNueva" formControlName="contraseniaNueva" autocomplete="false"
                placeholder="Nueva contraseña" type="password" [minlength]="8" [maxlength]="15" (blur)="validarContrasenia()">
         <i class="cursor-pointer icon pi pi-eye"
            (click)="contraseniaNueva.type = contraseniaNueva.type==='password'?'text':'password'"></i>

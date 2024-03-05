@@ -16,6 +16,7 @@ import {PromotoresService} from '../../services/promotores.service';
 import {finalize} from 'rxjs';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {HttpErrorResponse} from '@angular/common/http';
+import { PATRON_CORREO } from 'projects/sivimss-gui/src/app/utils/constantes';
 
 interface HttpResponse {
   respuesta: string;
@@ -118,7 +119,7 @@ export class ModificarPromotoresComponent implements OnInit {
       correo: [{
         value: null,
         disabled: false
-      }, [Validators.maxLength(30), Validators.pattern('[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}')]],
+      }, [Validators.maxLength(30), Validators.pattern(PATRON_CORREO)]],
       puesto: [{value: null, disabled: false}, [Validators.maxLength(20), Validators.required]],
       diasDescanso: [{value: null, disabled: false}, []],
       estatus: [{value: true, disabled: true}, []],
