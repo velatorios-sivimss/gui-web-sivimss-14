@@ -393,7 +393,7 @@
           <button class="btn btn-primary btn-md ml-4" type="submit" [disabled]="!this.formPersona.valid"
                   *ngIf="mostrarBontonGaurdarPersona">Guardar
           </button>
-          <button class="btn ml-4 btn-gold btn-md" type="button" *ngIf="!mostrarBontonGaurdarPersona"
+          <button class="btn ml-4 btn-gold btn-md" type="button" *ngIf="!mostrarBontonGaurdarPersona && mostrarBotonTerminar"
                   (click)="mostrarMensajeGuardado = true">Terminar contratación
           </button>
           <div [hidden]="validaBotonRealizarPago()">

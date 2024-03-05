@@ -83,6 +83,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   muestraOtraEnfermedad: boolean = false;
   mostrarBontonGaurdarPersona: boolean = true;
   mostrarBotonAgregarBeneficiario: boolean = false;
+  mostrarBotonTerminar: boolean = true;
   deshabilitarTipo: boolean = false;
 
   TIPO_CONTRATACION_PERSONA: string = 'persona';
@@ -1453,6 +1454,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     }
     this.confirmacionModalCerrar = true;
     this.mostrarMensajeGuardado = false;
+    this.mostrarBotonTerminar = false;
     this.gestorCredencialesService.obtenerToken().subscribe({
       next: (respuesta) => this.procesarToken(respuesta)
     });
@@ -1490,6 +1492,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     this.confirmacionGuardado = false;
     this.tipoContratacion.includes('grupo') ? this.guardarEmpresa() : this.guardarPersona()
   }
+
+
 
   ngOnDestroy(): void {
     if (this.refBeneficiario) {
