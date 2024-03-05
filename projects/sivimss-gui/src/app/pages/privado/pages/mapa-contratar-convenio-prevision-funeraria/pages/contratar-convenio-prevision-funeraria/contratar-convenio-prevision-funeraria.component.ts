@@ -39,11 +39,13 @@ import {Beneficiarios} from '../../../consulta-convenio-prevision-funeraria/mode
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 import {SolicitudPagos} from "../../../../models/solicitud-pagos.interface";
 import {TransaccionPago} from "../../../../models/transaccion-pago.interface";
+import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
 
 @Component({
   selector: 'app-contratar-convenio-prevision-funeraria',
   templateUrl: './contratar-convenio-prevision-funeraria.component.html',
   styleUrls: ['./contratar-convenio-prevision-funeraria.component.scss'],
+  providers: [GestorCredencialesService]
 })
 export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnDestroy {
   formPersona!: FormGroup;
@@ -81,6 +83,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   muestraOtraEnfermedad: boolean = false;
   mostrarBontonGaurdarPersona: boolean = true;
   mostrarBotonAgregarBeneficiario: boolean = false;
+  mostrarBotonTerminar: boolean = true;
   deshabilitarTipo: boolean = false;
 
   TIPO_CONTRATACION_PERSONA: string = 'persona';
@@ -131,6 +134,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     private mensajesSistemaService: MensajesSistemaService,
     private readonly router: Router,
     private renderer: Renderer2,
+    private gestorCredencialesService: GestorCredencialesService
   ) {
   }
 
@@ -247,12 +251,19 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     }
   }
 
-  iniciarPago(): void {
+  procesarToken(respuesta: HttpRespuesta<any>): void {
+    const [credenciales] = respuesta.datos;
+    this.cargarScript(() => {});
     const elemento_ref = document.querySelector('.realizar-pago');
-    const e = document.getElementById('btn-realizar-pago');
     if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({referencia: 'NPF', monto: this.importe}));
-    e?.click();
+    elemento_ref.setAttribute('data-objeto', JSON.stringify({
+      referencia: 'NPF',
+      monto: this.importe,
+      mode: credenciales.mode,
+      code: credenciales.code,
+      key: credenciales.key
+    }));
+    this.subscripcionMotorPagos();
   }
 
   crearFormPersona(): FormGroup {
@@ -1443,9 +1454,10 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     }
     this.confirmacionModalCerrar = true;
     this.mostrarMensajeGuardado = false;
-    this.cargarScript(() => {
+    this.mostrarBotonTerminar = false;
+    this.gestorCredencialesService.obtenerToken().subscribe({
+      next: (respuesta) => this.procesarToken(respuesta)
     });
-    this.subscripcionMotorPagos();
   }
 
   validarFolioConvenioEmpresa(): string {
@@ -1480,6 +1492,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     this.confirmacionGuardado = false;
     this.tipoContratacion.includes('grupo') ? this.guardarEmpresa() : this.guardarPersona()
   }
+
+
 
   ngOnDestroy(): void {
     if (this.refBeneficiario) {
