@@ -841,6 +841,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     this.fdts.calle.setValue(this.fdt.calle.value);
     this.fdts.numeroInterior.setValue(this.fdt.numeroInterior.value);
     this.fdts.numeroExterior.setValue(this.fdt.numeroExterior.value);
+    console.log(this.fdts.numeroExterior.value)
     this.fdts.colonia.setValue(this.fdt.colonia.value);
     this.fdts.municipio.setValue(this.fdt.municipio.value);
     this.fdts.estado.setValue(this.fdt.estado.value);
