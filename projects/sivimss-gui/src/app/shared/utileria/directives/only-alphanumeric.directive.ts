@@ -1,4 +1,4 @@
-import {Directive, ElementRef, HostListener, Output, EventEmitter, Renderer2, forwardRef} from '@angular/core';
+import {Directive, ElementRef, HostListener, Renderer2, forwardRef} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Directive({
@@ -9,7 +9,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     multi: true
   }]
 })
-export class AlphanumericDirective implements ControlValueAccessor{
+export class AlphanumericDirective implements ControlValueAccessor {
   private onChange!: (val: string) => void;
   private onTouched!: () => void;
   private value!: string;
