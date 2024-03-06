@@ -387,16 +387,17 @@ export class ModalAgregarServicioComponent
         fila: this.fila,
         proveedor: this.proveedor,
         datosFormulario: this.form.value,
-        coordOrigen: this.coordOrigen,
-        coordDestino: this.coordDestino,
+        coordOrigen: this.coordOrigen.length == 0 ? [null,null] : this.coordOrigen,
+        coordDestino: this.coordDestino.length == 0 ? [null,null] : this.coordDestino,
         costoExtraKilometros: this.costoExtraKilometros,
       };
     } else if (this.proviene == 'servicios') {
         salida = {
+          datosFormulario: this.form.value,
           cantidad: '1',
           concepto: this.concepto,
-          coordOrigen: this.coordOrigen,
-          coordDestino: this.coordDestino,
+          coordOrigen: this.coordOrigen.length == 0 ? [null,null] : this.coordOrigen,
+          coordDestino: this.coordDestino.length == 0 ? [null,null] : this.coordDestino,
           proveedor: this.proveedor,
           fila: -1,
           grupo: this.grupo,
