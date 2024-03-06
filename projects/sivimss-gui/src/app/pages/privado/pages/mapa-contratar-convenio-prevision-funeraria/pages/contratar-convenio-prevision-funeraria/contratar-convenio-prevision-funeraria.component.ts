@@ -40,6 +40,7 @@ import {MensajesSistemaService} from "../../../../../../services/mensajes-sistem
 import {SolicitudPagos} from "../../../../models/solicitud-pagos.interface";
 import {TransaccionPago} from "../../../../models/transaccion-pago.interface";
 import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
+import * as moment from "moment";
 
 @Component({
   selector: 'app-contratar-convenio-prevision-funeraria',
@@ -92,7 +93,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   folioConvenio: string = '';
   nombreCompleto: string = '';
   delegacion: string = '';
-  fecha: string = '';
+  fecha: string = moment(new Date()).format('DD-MM-YYYY');
   inputSeleccionado: string = '';
 
   nombreIne: string | null = null;
@@ -654,7 +655,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
               ' ' +
               this.datosGeneralesContrante.segundoApellido;
             this.delegacion = this.datosGeneralesContrante.delegacion;
-            this.fecha = this.datosGeneralesContrante.fecha;
             this.llenarForm(this.datosGeneralesContrante);
           } else this.mostrarMensaje(Number(respuesta.mensaje));
         },
