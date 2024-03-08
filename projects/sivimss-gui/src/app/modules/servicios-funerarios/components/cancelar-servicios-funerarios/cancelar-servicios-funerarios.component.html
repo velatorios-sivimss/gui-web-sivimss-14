@@ -340,7 +340,7 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Datos Beneficiario 1</ng-template>
       <ng-template pTemplate="content">
-        <app-table-panel class="mb-6">
+        <app-table-panel class="mb-6" *ngIf="fdb1.curp.value else SinBeneficiarioEspecifico">
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
@@ -479,7 +479,7 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Datos Beneficiario 2</ng-template>
       <ng-template pTemplate="content">
-        <app-table-panel class="mb-6">
+        <app-table-panel class="mb-6" *ngIf="fdb2.curp.value else SinBeneficiarioEspecifico">
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
@@ -653,3 +653,11 @@
     Aceptar
   </button>
 </div>
+
+<ng-template pTemplate="content" #SinBeneficiarioEspecifico>
+  <div class="row table-panel-row">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">Información de beneficiario no registrada.</p>
+    </div>
+  </div>
+</ng-template>
