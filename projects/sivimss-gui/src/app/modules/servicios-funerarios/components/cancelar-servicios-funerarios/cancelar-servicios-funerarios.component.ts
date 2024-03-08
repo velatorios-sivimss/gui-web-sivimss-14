@@ -78,8 +78,6 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
   }
 
   inicializarFormDatosTitular(titular: any): void {
-    const [anio, mes, dia] = titular.titularesBeneficiarios[0].fecNacimiento.split('-');
-    const fecha = new Date(anio + '/' + mes + '/' + dia);
     this.datosTitularForm = this.formBuilder.group({
       curp: [{ value: titular.titularesBeneficiarios[0].curp, disabled: true }, []],
       rfc: [{ value: titular.titularesBeneficiarios[0].rfc, disabled: true }, []],
@@ -90,11 +88,12 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
       segundoApellido: [{ value: titular.titularesBeneficiarios[0].segundoApellido, disabled: true }, []],
       sexo: [{ value: +titular.titularesBeneficiarios[0].sexo, disabled: true }, []],
       otroSexo: [{ value: titular.titularesBeneficiarios[0].otroSexo, disabled: true }],
-      fechaNacimiento: [{ value: fecha, disabled: true }, []],
+      fechaNacimiento: [{ value: titular.titularesBeneficiarios[0].fecNacimiento, disabled: true }, []],
       nacionalidad: [{ value: +titular?.titularesBeneficiarios[0].idPais == 119 ? 1 : 2, disabled: true }, []],
       lugarNacimiento: [{ value: +titular?.titularesBeneficiarios[0].idEstado ?? null, disabled: true }, []],
       paisNacimiento: [{ value: +titular?.titularesBeneficiarios[0].idPais ?? null, disabled: true }],
       telefono: [{ value: titular.titularesBeneficiarios[0].telefono, disabled: false }, []],
+      telefonoFijo: [{ value: titular.titularesBeneficiarios[0].telefono, disabled: false }, []],
       correoElectronico: [{ value: titular.titularesBeneficiarios[0].correo, disabled: false }, []],
       cp: [{ value: titular.titularesBeneficiarios[0].cp.codigoPostal, disabled: true }, []],
       calle: [{ value: titular.titularesBeneficiarios[0].cp.desCalle, disabled: false }, []],
@@ -109,8 +108,6 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
   }
 
   inicializarFormDatosTitularSubstituto(titularSubstituto: any): void {
-    const [anio, mes, dia] = titularSubstituto.titularesBeneficiarios[0].fecNacimiento.split('-');
-    let fecha = new Date(anio + '/' + mes + '/' + dia);
     let objetoContratante: Persona = {
       persona: null,
       rfc: titularSubstituto.titularesBeneficiarios[0].rfc,
@@ -122,11 +119,10 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
       segundoApellido: titularSubstituto.titularesBeneficiarios[0].segundoApellido,
       sexo: +titularSubstituto.titularesBeneficiarios[0].sexo,
       otroSexo: titularSubstituto.titularesBeneficiarios[0].otroSexo,
-      fecNacimiento: String(fecha),
+      fecNacimiento: titularSubstituto.titularesBeneficiarios[0].fecNacimiento,
       idPais: titularSubstituto.titularesBeneficiarios[0].idPais,
       idEstado: titularSubstituto.titularesBeneficiarios[0].idEstado,
       telefono: titularSubstituto.titularesBeneficiarios[0].telefono,
-      telefonoFijo: titularSubstituto?.titularesBeneficiarios[0].telefono,
       correo: titularSubstituto.titularesBeneficiarios[0].correo,
       tipoPersona: titularSubstituto.titularesBeneficiarios[0].tipoPersona,
       ine: titularSubstituto.titularesBeneficiarios[0].ine,
@@ -142,9 +138,6 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
     };
 
     if (titularSubstituto.titularesBeneficiarios.length > 1) {
-      const [anio, mes, dia] = titularSubstituto.titularesBeneficiarios[1].fecNacimiento.split('-');
-      fecha = new Date(anio + '/' + mes + '/' + dia);
-
       objetoContratante = {
         persona: null,
         rfc: titularSubstituto.titularesBeneficiarios[1].rfc,
@@ -156,11 +149,10 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
         segundoApellido: titularSubstituto.titularesBeneficiarios[1].segundoApellido,
         sexo: +titularSubstituto.titularesBeneficiarios[1].sexo,
         otroSexo: titularSubstituto.titularesBeneficiarios[1].otroSexo,
-        fecNacimiento: String(fecha),
+        fecNacimiento: titularSubstituto.titularesBeneficiarios[1].fecNacimiento,
         idPais: titularSubstituto.titularesBeneficiarios[1].idPais,
         idEstado: titularSubstituto.titularesBeneficiarios[1].idEstado,
         telefono: titularSubstituto.titularesBeneficiarios[1].telefono,
-        telefonoFijo: titularSubstituto?.titularesBeneficiarios[1].telefono,
         correo: titularSubstituto.titularesBeneficiarios[1].correo,
         tipoPersona: titularSubstituto.titularesBeneficiarios[1].tipoPersona,
         ine: titularSubstituto.titularesBeneficiarios[1].ine,
@@ -207,11 +199,6 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
   }
 
   inicializarFormDatosBeneficiario1(beneficiario: any): void {
-    let fecha: Date | null = null;
-    if (beneficiario.titularesBeneficiarios[2]?.fecNacimiento) {
-      const [anio, mes, dia] = beneficiario.titularesBeneficiarios[2]?.fecNacimiento.split('-');
-      fecha = new Date(anio + '/' + mes + '/' + dia);
-    }
     this.datosBeneficiario1Form = this.formBuilder.group({
       curp: [{ value: beneficiario.titularesBeneficiarios[2]?.curp, disabled: true }, []],
       rfc: [{ value: beneficiario.titularesBeneficiarios[2]?.rfc, disabled: true }, []],
@@ -222,7 +209,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
       segundoApellido: [{ value: beneficiario.titularesBeneficiarios[2]?.segundoApellido, disabled: true }, []],
       sexo: [{ value: +beneficiario.titularesBeneficiarios[2]?.sexo, disabled: true }, []],
       otroSexo: [{ value: beneficiario.titularesBeneficiarios[2]?.otroSexo, disabled: true }],
-      fechaNacimiento: [{ value: fecha, disabled: true }, []],
+      fechaNacimiento: [{ value: beneficiario.titularesBeneficiarios[2]?.fecNacimiento, disabled: true }, []],
       nacionalidad: [{ value: +beneficiario?.titularesBeneficiarios[2]?.idPais == 119 ? 1 : 2, disabled: true }, []],
       lugarNacimiento: [{ value: +beneficiario?.titularesBeneficiarios[2]?.idEstado ?? null, disabled: true }, []],
       paisNacimiento: [{ value: +beneficiario?.titularesBeneficiarios[2]?.idPais ?? null, disabled: true }],
