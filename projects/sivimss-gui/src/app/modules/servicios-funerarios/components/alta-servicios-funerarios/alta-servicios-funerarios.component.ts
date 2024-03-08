@@ -575,7 +575,9 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse): void => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
+        const ERROR: string = 'La matrícula es incorrecta';
+        const ERROR_SISTEMA: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje)
+        this.alertaService.mostrar(TipoAlerta.Error, ERROR_SISTEMA || ERROR);
       }
     });
   }
