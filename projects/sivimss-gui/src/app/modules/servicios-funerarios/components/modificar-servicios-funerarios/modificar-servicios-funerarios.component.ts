@@ -295,8 +295,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       numeroInterior: [{ value: beneficiario?.cp?.numInterior, disabled: false }],
       numeroExterior: [{ value: beneficiario?.cp?.numExterior, disabled: false }, []],
       colonia: [{ value: beneficiario?.cp?.desColonia, disabled: false }, []],
-      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: false }, []],
-      estado: [{ value: beneficiario?.cp?.desEstado, disabled: false }, []],
+      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: true }, []],
+      estado: [{ value: beneficiario?.cp?.desEstado, disabled: true }, []],
     });
   }
 
@@ -327,8 +327,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       numeroInterior: [{ value: beneficiario?.cp?.numInterior, disabled: false }],
       numeroExterior: [{ value: beneficiario?.cp?.numExterior, disabled: false }, []],
       colonia: [{ value: beneficiario?.cp?.desColonia, disabled: false }, []],
-      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: false }, []],
-      estado: [{ value: beneficiario?.cp?.desEstado, disabled: false }, []],
+      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: true }, []],
+      estado: [{ value: beneficiario?.cp?.desEstado, disabled: true }, []],
     });
   }
 
@@ -544,6 +544,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
           this.alertaService.mostrar(
             TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
           formularioEnUso[posicion].nss.setErrors({ 'incorrect': true });
+
+          // if (posicion )
           formularioEnUso[posicion].curp.setValue(null);
           formularioEnUso[posicion].rfc.setValue(null);
           formularioEnUso[posicion].nss.setValue(null);
