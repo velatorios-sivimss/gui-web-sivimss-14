@@ -79,7 +79,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
   inicializarFormDatosTitular(titular: any): void {
     const [datosTitular] = titular.titularesBeneficiarios;
     const [anio, mes, dia] = datosTitular.fecNacimiento.split('-');
-    const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
+    const fecha: string = anio + '/' + mes + '/' + dia;
     this.datosTitularForm = this.formBuilder.group({
       curp: [{ value: datosTitular.curp, disabled: true }, []],
       rfc: [{ value: datosTitular.rfc, disabled: true }, []],
@@ -112,7 +112,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
   inicializarFormDatosTitularSubstituto(titularSubstituto: any): void {
     const [datosSustituto] = titularSubstituto.titularesBeneficiarios;
     const [anio, mes, dia] = datosSustituto.fecNacimiento.split('-');
-    let fecha = new Date(anio + '/' + mes + '/' + dia);
+    let fecha: string = anio + '/' + mes + '/' + dia;
     let objetoContratante: Persona = {
       persona: null,
       rfc: datosSustituto.rfc,
@@ -124,7 +124,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
       segundoApellido: datosSustituto.segundoApellido,
       sexo: +datosSustituto.sexo,
       otroSexo: datosSustituto.otroSexo,
-      fecNacimiento: String(fecha),
+      fecNacimiento: fecha,
       idPais: datosSustituto.idPais,
       idEstado: datosSustituto.idEstado,
       telefono: datosSustituto.telefono,
@@ -145,7 +145,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
 
     if (titularSubstituto.titularesBeneficiarios.length > 1) {
       const [anio, mes, dia] = titularSubstituto.titularesBeneficiarios[1].fecNacimiento.split('-');
-      fecha = new Date(anio + '/' + mes + '/' + dia);
+      fecha = anio + '/' + mes + '/' + dia;
 
       objetoContratante = {
         persona: null,
@@ -158,7 +158,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
         segundoApellido: titularSubstituto.titularesBeneficiarios[1].segundoApellido,
         sexo: +titularSubstituto.titularesBeneficiarios[1].sexo,
         otroSexo: titularSubstituto.titularesBeneficiarios[1].otroSexo,
-        fecNacimiento: String(fecha),
+        fecNacimiento: fecha,
         idPais: titularSubstituto.titularesBeneficiarios[1].idPais,
         idEstado: titularSubstituto.titularesBeneficiarios[1].idEstado,
         telefono: titularSubstituto.titularesBeneficiarios[1].telefono,
