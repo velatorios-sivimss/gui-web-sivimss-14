@@ -295,8 +295,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       numeroInterior: [{ value: beneficiario?.cp?.numInterior, disabled: false }],
       numeroExterior: [{ value: beneficiario?.cp?.numExterior, disabled: false }, []],
       colonia: [{ value: beneficiario?.cp?.desColonia, disabled: false }, []],
-      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: false }, []],
-      estado: [{ value: beneficiario?.cp?.desEstado, disabled: false }, []],
+      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: true }, []],
+      estado: [{ value: beneficiario?.cp?.desEstado, disabled: true }, []],
     });
   }
 
@@ -327,8 +327,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       numeroInterior: [{ value: beneficiario?.cp?.numInterior, disabled: false }],
       numeroExterior: [{ value: beneficiario?.cp?.numExterior, disabled: false }, []],
       colonia: [{ value: beneficiario?.cp?.desColonia, disabled: false }, []],
-      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: false }, []],
-      estado: [{ value: beneficiario?.cp?.desEstado, disabled: false }, []],
+      municipio: [{ value: beneficiario?.cp?.desMunicipio, disabled: true }, []],
+      estado: [{ value: beneficiario?.cp?.desEstado, disabled: true }, []],
     });
   }
 
@@ -544,32 +544,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
           this.alertaService.mostrar(
             TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
           formularioEnUso[posicion].nss.setErrors({ 'incorrect': true });
-          formularioEnUso[posicion].curp.setValue(null);
-          formularioEnUso[posicion].rfc.setValue(null);
-          formularioEnUso[posicion].nss.setValue(null);
-          formularioEnUso[posicion].nombre.setValue(null);
-          formularioEnUso[posicion].primerApellido.setValue(null);
-          formularioEnUso[posicion].segundoApellido.setValue(null);
-          formularioEnUso[posicion].sexo.setValue(null);
-          formularioEnUso[posicion].fechaNacimiento.setValue(null);
-          formularioEnUso[posicion].nacionalidad.setValue(null);
         } else {
-          let fecha: Date | null = null;
-          if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined) {
-            let [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
-            fecha = new Date(+anio, +mes - 1, +dia);
-          }
-          let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
           formularioEnUso[posicion].nss.setErrors(null);
-          formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
-          formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
-          formularioEnUso[posicion].nss.setValue(respuesta.datos.nss);
-          formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
-          formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
-          formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
-          formularioEnUso[posicion].sexo.setValue(sexo);
-          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-          formularioEnUso[posicion].nacionalidad.setValue(1);
         }
       },
       error: (error: HttpErrorResponse) => {
