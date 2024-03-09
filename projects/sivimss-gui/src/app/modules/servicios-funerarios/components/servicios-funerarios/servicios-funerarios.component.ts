@@ -1,33 +1,37 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from '../../../../utils/constantes';
-import { TipoDropdown } from '../../../../models/tipo-dropdown';
-import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
-import { BreadcrumbService } from '../../../../shared/breadcrumb/services/breadcrumb.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from '../../../../utils/constantes';
+import {TipoDropdown} from '../../../../models/tipo-dropdown';
+import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
+import {BreadcrumbService} from '../../../../shared/breadcrumb/services/breadcrumb.service';
 import {
   ConsultaPaginado,
   GenerarReporte,
 } from '../../models/servicios-funerarios.interface';
-import { LazyLoadEvent } from 'primeng/api';
+import {LazyLoadEvent} from 'primeng/api';
 import {
   AlertaService,
   TipoAlerta,
 } from '../../../../shared/alerta/services/alerta.service';
-import { MensajesSistemaService } from '../../../../services/mensajes-sistema.service';
-import { ServiciosFunerariosConsultaService } from '../../services/servicios-funerarios-consulta.service';
-import { LoaderService } from '../../../../shared/loader/services/loader.service';
-import { finalize } from 'rxjs/operators';
-import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { mapearArregloTipoDropdown } from '../../../../utils/funciones';
-import { PaginadoInterface } from '../../models/paginado.interface';
+import {MensajesSistemaService} from '../../../../services/mensajes-sistema.service';
+import {ServiciosFunerariosConsultaService} from '../../services/servicios-funerarios-consulta.service';
+import {LoaderService} from '../../../../shared/loader/services/loader.service';
+import {finalize} from 'rxjs/operators';
+import {HttpRespuesta} from '../../../../models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {
+  mapearArregloTipoDropdown,
+  obtenerDelegacionUsuarioLogueado,
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado
+} from '../../../../utils/funciones';
+import {PaginadoInterface} from '../../models/paginado.interface';
 import * as moment from 'moment';
-import { OpcionesArchivos } from '../../../../models/opciones-archivos.interface';
-import { DescargaArchivosService } from '../../../../services/descarga-archivos.service';
-import { of } from 'rxjs';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {OpcionesArchivos} from '../../../../models/opciones-archivos.interface';
+import {DescargaArchivosService} from '../../../../services/descarga-archivos.service';
+import {of} from 'rxjs';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 
 @Component({
   selector: 'app-servicios-funerarios',
@@ -47,7 +51,7 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   filtroForm!: FormGroup;
 
-  fechaActual = new Date();
+  fechaActual: Date = new Date();
 
   nivel: TipoDropdown[] = [];
   delegacion: TipoDropdown[] = [];
@@ -66,7 +70,6 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   mensajeCriterioBusqueda: string = '';
   aceptarCriteriosBusqueda: boolean = false;
-  // obtenerNuevosDatos: boolean = true;
   cargaInicial: boolean = true;
   filtros!: PaginadoInterface;
 
@@ -80,7 +83,8 @@ export class ServiciosFunerariosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private serviciosFunerariosService: ServiciosFunerariosConsultaService,
     private readonly loaderService: LoaderService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
@@ -94,27 +98,18 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
+    const nivel: number = +this.rolLocalStorage.idOficina;
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +this.rolLocalStorage.idOficina, disabled: true }],
-      delegacion: [
-        {
-          value: +this.rolLocalStorage.idDelegacion ?? null,
-          disabled: +this.rolLocalStorage.idOficina >= 2,
-        },
-      ],
-      velatorio: [
-        {
-          value: +this.rolLocalStorage.idVelatorio ?? null,
-          disabled: +this.rolLocalStorage.idOficina === 3,
-        },
-      ],
-      folioPlanSFPA: [{ value: null, disabled: false }],
-      rfc: [{ value: null, disabled: false }],
-      curp: [{ value: null, disabled: false }],
-      estatus: [{ value: null, disabled: false }],
-      afiliado: [{ value: null, disabled: false }],
-      rangoInicio: [{ value: null, disabled: false }],
-      rangoFin: [{ value: null, disabled: false }],
+      nivel: [{value: nivel, disabled: true}],
+      delegacion: [{value: +this.rolLocalStorage.idDelegacion ?? null, disabled: nivel >= 2,}],
+      velatorio: [{value: +this.rolLocalStorage.idVelatorio ?? null, disabled: nivel === 3}],
+      folioPlanSFPA: [{value: null, disabled: false}],
+      rfc: [{value: null, disabled: false}],
+      curp: [{value: null, disabled: false}],
+      estatus: [{value: null, disabled: false}],
+      afiliado: [{value: null, disabled: false}],
+      rangoInicio: [{value: null, disabled: false}],
+      rangoFin: [{value: null, disabled: false}],
     });
   }
 
@@ -129,21 +124,14 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   limpiar(): void {
     this.filtroForm.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(
-      localStorage.getItem('usuario') as string
-    );
-    this.ff.nivel.setValue(+usuario?.idOficina);
-
-    if (+usuario?.idOficina >= 2) {
-      this.ff.delegacion.setValue(+usuario?.idDelegacion);
-    }
-
-    if (+usuario?.idOficina === 3) {
-      this.ff.velatorio.setValue(+usuario?.idVelatorio);
-    }
-
-    // this.paginar(undefined, true);
-    this.servicioFunerario = [];
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const nivel: number = obtenerNivelUsuarioLogueado(usuario)
+    this.ff.nivel.setValue(nivel);
+    const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);
+    this.ff.delegacion.setValue(delegacion);
+    const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
+    this.ff.velatorio.setValue(velatorio);
+    this.paginar(undefined, true);
   }
 
   paginar(event?: LazyLoadEvent, obtenerNuevosDatos?: boolean): void {
@@ -413,19 +401,19 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   detallePago(): void {
     this.router.navigate(['servicios-funerarios/detalle-pago'], {
-      queryParams: { idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA },
+      queryParams: {idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA},
     });
   }
 
   cancelarPago(): void {
     this.router.navigate(['servicios-funerarios/cancelar-pago'], {
-      queryParams: { idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA },
+      queryParams: {idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA},
     });
   }
 
   modificarPago(): void {
     this.router.navigate(['servicios-funerarios/modificar-pago'], {
-      queryParams: { idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA },
+      queryParams: {idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA},
     });
   }
 

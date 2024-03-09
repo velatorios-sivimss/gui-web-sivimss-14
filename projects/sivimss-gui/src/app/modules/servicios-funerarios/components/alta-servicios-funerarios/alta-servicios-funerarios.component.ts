@@ -1,28 +1,28 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
 
-import { MenuItem } from "primeng/api";
+import {MenuItem} from "primeng/api";
 import * as moment from "moment";
 
-import { ServiciosFunerariosService } from "../../services/servicios-funerarios.service";
-import { MENU_STEPPER } from "../../constants/menu-steppers";
-import { SERVICIO_BREADCRUMB_CLEAR } from "../../constants/breadcrumb";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
-import { PATRON_CORREO, PATRON_CURP, PATRON_RFC } from "../../../../utils/constantes";
-import { mapearArregloTipoDropdown } from "../../../../utils/funciones";
-import { finalize } from "rxjs";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { HttpErrorResponse } from "@angular/common/http";
-import { CatalogoPaquetes } from "../../models/catalogos.interface";
-import { AgregarPlanSFPA, NSS } from "../../models/servicios-funerarios.interface";
-import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
-import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface";
-import { CURP } from 'projects/sivimss-gui/src/app/utils/regex';
+import {ServiciosFunerariosService} from "../../services/servicios-funerarios.service";
+import {MENU_STEPPER} from "../../constants/menu-steppers";
+import {SERVICIO_BREADCRUMB_CLEAR} from "../../constants/breadcrumb";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {PATRON_CORREO, PATRON_CURP, PATRON_RFC} from "../../../../utils/constantes";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {finalize} from "rxjs";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {CatalogoPaquetes} from "../../models/catalogos.interface";
+import {AgregarPlanSFPA, NSS} from "../../models/servicios-funerarios.interface";
+import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {CURP} from 'projects/sivimss-gui/src/app/utils/regex';
 
 
 @Component({
@@ -50,8 +50,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   datosBeneficiario1Form!: FormGroup;
   datosBeneficiario2Form!: FormGroup;
 
-  sexo: TipoDropdown[] = [{ value: 1, label: 'Mujer' }, { value: 2, label: 'Hombre' }, { value: 3, label: 'Otro' }];
-  nacionalidad: TipoDropdown[] = [{ value: 1, label: 'Mexicana' }, { value: 2, label: 'Extranjera' }];
+  sexo: TipoDropdown[] = [{value: 1, label: 'Mujer'}, {value: 2, label: 'Hombre'}, {value: 3, label: 'Otro'}];
+  nacionalidad: TipoDropdown[] = [{value: 1, label: 'Mexicana'}, {value: 2, label: 'Extranjera'}];
   estados: TipoDropdown[] = [];
   paises: TipoDropdown[] = [];
   tipoPaquete: TipoDropdown[] = [];
@@ -110,8 +110,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   inicializarFormPromotor(): void {
     this.promotorForm = this.formBuilder.group({
-      gestionadoPorPromotor: [{ value: false, disabled: false }, [Validators.required]],
-      promotor: [{ value: null, disabled: false }, [Validators.required]],
+      gestionadoPorPromotor: [{value: false, disabled: false}, [Validators.required]],
+      promotor: [{value: null, disabled: false}, [Validators.required]],
     });
 
     this.handleGestionPromotor();
@@ -119,116 +119,116 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   inicializarFormDatosTitular(): void {
     this.datosTitularForm = this.formBuilder.group({
-      curp: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_RFC)]],
-      matricula: [{ value: null, disabled: false }],
-      nss: [{ value: null, disabled: false }, [Validators.required]],
-      nombre: [{ value: null, disabled: false }, [Validators.required]],
-      primerApellido: [{ value: null, disabled: false }, [Validators.required]],
-      segundoApellido: [{ value: null, disabled: false }, [Validators.required]],
-      sexo: [{ value: null, disabled: false }, [Validators.required]],
-      otroSexo: [{ value: null, disabled: false }],
-      fechaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
-      nacionalidad: [{ value: null, disabled: false }],
-      lugarNacimiento: [{ value: null, disabled: false }, []],
-      paisNacimiento: [{ value: null, disabled: false }],
-      telefono: [{ value: null, disabled: false }, [Validators.required]],
-      telefonoFijo: [{ value: null, disabled: false }, [Validators.required]],
-      correoElectronico: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: null, disabled: false }, [Validators.required]],
-      calle: [{ value: null, disabled: false }, [Validators.required]],
-      numeroInterior: [{ value: null, disabled: false }],
-      numeroExterior: [{ value: null, disabled: false }, [Validators.required]],
-      colonia: [{ value: null, disabled: false }, [Validators.required]],
-      municipio: [{ value: null, disabled: true }, [Validators.required]],
-      estado: [{ value: null, disabled: true }, [Validators.required]],
-      tipoPaquete: [{ value: null, disabled: false }, [Validators.required]],
-      numeroPago: [{ value: null, disabled: false }, [Validators.required]],
+      curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
+      rfc: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_RFC)]],
+      matricula: [{value: null, disabled: false}],
+      nss: [{value: null, disabled: false}, [Validators.required]],
+      nombre: [{value: null, disabled: false}, [Validators.required]],
+      primerApellido: [{value: null, disabled: false}, [Validators.required]],
+      segundoApellido: [{value: null, disabled: false}, [Validators.required]],
+      sexo: [{value: null, disabled: false}, [Validators.required]],
+      otroSexo: [{value: null, disabled: false}],
+      fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
+      nacionalidad: [{value: null, disabled: false}],
+      lugarNacimiento: [{value: null, disabled: false}, []],
+      paisNacimiento: [{value: null, disabled: false}],
+      telefono: [{value: null, disabled: false}, [Validators.required]],
+      telefonoFijo: [{value: null, disabled: false}, [Validators.required]],
+      correoElectronico: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
+      cp: [{value: null, disabled: false}, [Validators.required]],
+      calle: [{value: null, disabled: false}, [Validators.required]],
+      numeroInterior: [{value: null, disabled: false}],
+      numeroExterior: [{value: null, disabled: false}, [Validators.required]],
+      colonia: [{value: null, disabled: false}, [Validators.required]],
+      municipio: [{value: null, disabled: true}, [Validators.required]],
+      estado: [{value: null, disabled: true}, [Validators.required]],
+      tipoPaquete: [{value: null, disabled: false}, [Validators.required]],
+      numeroPago: [{value: null, disabled: false}, [Validators.required]],
     });
   }
 
   inicializarFormDatosTitularSubstituto(): void {
     this.datosTitularSubstitutoForm = this.formBuilder.group({
-      datosIguales: [{ value: null, disabled: false }, [Validators.required]],
-      curp: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CURP)]],
-      rfc: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_RFC)]],
-      matricula: [{ value: null, disabled: false }],
-      nss: [{ value: null, disabled: false }, [Validators.required]],
-      nombre: [{ value: null, disabled: false }, [Validators.required]],
-      primerApellido: [{ value: null, disabled: false }, [Validators.required]],
-      segundoApellido: [{ value: null, disabled: false }, [Validators.required]],
-      sexo: [{ value: null, disabled: false }, [Validators.required]],
-      otroSexo: [{ value: null, disabled: false }],
-      fechaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
-      nacionalidad: [{ value: null, disabled: false }],
-      lugarNacimiento: [{ value: null, disabled: false }, []],
-      paisNacimiento: [{ value: null, disabled: false }],
-      telefono: [{ value: null, disabled: false }, [Validators.required]],
-      telefonoFijo: [{ value: null, disabled: false }, []],
-      correoElectronico: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: null, disabled: false }, [Validators.required]],
-      calle: [{ value: null, disabled: false }, [Validators.required]],
-      numeroInterior: [{ value: null, disabled: false }],
-      numeroExterior: [{ value: null, disabled: false }, [Validators.required]],
-      colonia: [{ value: null, disabled: false }, [Validators.required]],
-      municipio: [{ value: null, disabled: true }, [Validators.required]],
-      estado: [{ value: null, disabled: true }, [Validators.required]],
+      datosIguales: [{value: null, disabled: false}, [Validators.required]],
+      curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
+      rfc: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_RFC)]],
+      matricula: [{value: null, disabled: false}],
+      nss: [{value: null, disabled: false}, [Validators.required]],
+      nombre: [{value: null, disabled: false}, [Validators.required]],
+      primerApellido: [{value: null, disabled: false}, [Validators.required]],
+      segundoApellido: [{value: null, disabled: false}, [Validators.required]],
+      sexo: [{value: null, disabled: false}, [Validators.required]],
+      otroSexo: [{value: null, disabled: false}],
+      fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
+      nacionalidad: [{value: null, disabled: false}],
+      lugarNacimiento: [{value: null, disabled: false}, []],
+      paisNacimiento: [{value: null, disabled: false}],
+      telefono: [{value: null, disabled: false}, [Validators.required]],
+      telefonoFijo: [{value: null, disabled: false}, []],
+      correoElectronico: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
+      cp: [{value: null, disabled: false}, [Validators.required]],
+      calle: [{value: null, disabled: false}, [Validators.required]],
+      numeroInterior: [{value: null, disabled: false}],
+      numeroExterior: [{value: null, disabled: false}, [Validators.required]],
+      colonia: [{value: null, disabled: false}, [Validators.required]],
+      municipio: [{value: null, disabled: true}, [Validators.required]],
+      estado: [{value: null, disabled: true}, [Validators.required]],
     });
   }
 
   inicializarFormDatosBeneficiario1(): void {
     this.datosBeneficiario1Form = this.formBuilder.group({
-      curp: [{ value: null, disabled: false }, [Validators.maxLength(18), Validators.pattern(CURP)]],
-      rfc: [{ value: null, disabled: false }, [Validators.pattern(PATRON_RFC)]],
-      matricula: [{ value: null, disabled: false }],
-      nss: [{ value: null, disabled: false }, []],
-      nombre: [{ value: null, disabled: false }, []],
-      primerApellido: [{ value: null, disabled: false }, []],
-      segundoApellido: [{ value: null, disabled: false }, []],
-      sexo: [{ value: null, disabled: false }, []],
-      otroSexo: [{ value: null, disabled: false }],
-      fechaNacimiento: [{ value: null, disabled: false }, []],
-      nacionalidad: [{ value: null, disabled: false }],
-      lugarNacimiento: [{ value: null, disabled: false }, []],
-      paisNacimiento: [{ value: null, disabled: false }],
-      telefono: [{ value: null, disabled: false }, []],
-      telefonoFijo: [{ value: null, disabled: false }, []],
-      correoElectronico: [{ value: null, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: null, disabled: false }, []],
-      calle: [{ value: null, disabled: false }, []],
-      numeroInterior: [{ value: null, disabled: false }],
-      numeroExterior: [{ value: null, disabled: false }, []],
-      colonia: [{ value: null, disabled: false }, []],
-      municipio: [{ value: null, disabled: true }, []],
-      estado: [{ value: null, disabled: true }, []],
+      curp: [{value: null, disabled: false}, [Validators.maxLength(18), Validators.pattern(CURP)]],
+      rfc: [{value: null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
+      matricula: [{value: null, disabled: false}],
+      nss: [{value: null, disabled: false}, []],
+      nombre: [{value: null, disabled: false}, []],
+      primerApellido: [{value: null, disabled: false}, []],
+      segundoApellido: [{value: null, disabled: false}, []],
+      sexo: [{value: null, disabled: false}, []],
+      otroSexo: [{value: null, disabled: false}],
+      fechaNacimiento: [{value: null, disabled: false}, []],
+      nacionalidad: [{value: null, disabled: false}],
+      lugarNacimiento: [{value: null, disabled: false}, []],
+      paisNacimiento: [{value: null, disabled: false}],
+      telefono: [{value: null, disabled: false}, []],
+      telefonoFijo: [{value: null, disabled: false}, []],
+      correoElectronico: [{value: null, disabled: false}, [Validators.pattern(PATRON_CORREO)]],
+      cp: [{value: null, disabled: false}, []],
+      calle: [{value: null, disabled: false}, []],
+      numeroInterior: [{value: null, disabled: false}],
+      numeroExterior: [{value: null, disabled: false}, []],
+      colonia: [{value: null, disabled: false}, []],
+      municipio: [{value: null, disabled: true}, []],
+      estado: [{value: null, disabled: true}, []],
     });
   }
 
   inicializarFormDatosBeneficiario2(): void {
     this.datosBeneficiario2Form = this.formBuilder.group({
-      curp: [{ value: null, disabled: false }, [Validators.maxLength(18), Validators.pattern(CURP)]],
-      rfc: [{ value: null, disabled: false }, [Validators.pattern(PATRON_RFC)]],
-      matricula: [{ value: null, disabled: false }],
-      nss: [{ value: null, disabled: false }, []],
-      nombre: [{ value: null, disabled: false }, []],
-      primerApellido: [{ value: null, disabled: false }, []],
-      segundoApellido: [{ value: null, disabled: false }, []],
-      sexo: [{ value: null, disabled: false }, []],
-      otroSexo: [{ value: null, disabled: false }],
-      fechaNacimiento: [{ value: null, disabled: false }, []],
-      nacionalidad: [{ value: null, disabled: false }],
-      lugarNacimiento: [{ value: null, disabled: false }, []],
-      paisNacimiento: [{ value: null, disabled: false }],
-      telefono: [{ value: null, disabled: false }, []],
-      telefonoFijo: [{ value: null, disabled: false }, []],
-      correoElectronico: [{ value: null, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
-      cp: [{ value: null, disabled: false }, []],
-      calle: [{ value: null, disabled: false }, []],
-      numeroInterior: [{ value: null, disabled: false }],
-      numeroExterior: [{ value: null, disabled: false }, []],
-      colonia: [{ value: null, disabled: false }, []],
-      municipio: [{ value: null, disabled: true }, []],
-      estado: [{ value: null, disabled: true }, []],
+      curp: [{value: null, disabled: false}, [Validators.maxLength(18), Validators.pattern(CURP)]],
+      rfc: [{value: null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
+      matricula: [{value: null, disabled: false}],
+      nss: [{value: null, disabled: false}, []],
+      nombre: [{value: null, disabled: false}, []],
+      primerApellido: [{value: null, disabled: false}, []],
+      segundoApellido: [{value: null, disabled: false}, []],
+      sexo: [{value: null, disabled: false}, []],
+      otroSexo: [{value: null, disabled: false}],
+      fechaNacimiento: [{value: null, disabled: false}, []],
+      nacionalidad: [{value: null, disabled: false}],
+      lugarNacimiento: [{value: null, disabled: false}, []],
+      paisNacimiento: [{value: null, disabled: false}],
+      telefono: [{value: null, disabled: false}, []],
+      telefonoFijo: [{value: null, disabled: false}, []],
+      correoElectronico: [{value: null, disabled: false}, [Validators.pattern(PATRON_CORREO)]],
+      cp: [{value: null, disabled: false}, []],
+      calle: [{value: null, disabled: false}, []],
+      numeroInterior: [{value: null, disabled: false}],
+      numeroExterior: [{value: null, disabled: false}, []],
+      colonia: [{value: null, disabled: false}, []],
+      municipio: [{value: null, disabled: true}, []],
+      estado: [{value: null, disabled: true}, []],
     });
   }
 
@@ -242,9 +242,34 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     formularios[posicion].setValue(formularios[posicion].value.toLowerCase());
   }
 
+  limpiarCURP(posicion: number): void {
+    const formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
+    formularioEnUso[posicion].nombre.setValue(null);
+    formularioEnUso[posicion].nombre.enable();
+    formularioEnUso[posicion].primerApellido.setValue(null);
+    formularioEnUso[posicion].primerApellido.enable();
+    formularioEnUso[posicion].segundoApellido.setValue(null);
+    formularioEnUso[posicion].segundoApellido.enable();
+    formularioEnUso[posicion].sexo.setValue(null);
+    formularioEnUso[posicion].sexo.enable();
+    formularioEnUso[posicion].otroSexo.setValue(null);
+    formularioEnUso[posicion].otroSexo.enable();
+    formularioEnUso[posicion].fechaNacimiento.setValue(null);
+    formularioEnUso[posicion].fechaNacimiento.enable();
+    formularioEnUso[posicion].nacionalidad.setValue(null);
+    formularioEnUso[posicion].nacionalidad.enable();
+    formularioEnUso[posicion].lugarNacimiento.setValue(null);
+    formularioEnUso[posicion].lugarNacimiento.enable();
+    formularioEnUso[posicion].paisNacimiento.setValue(null);
+    formularioEnUso[posicion].paisNacimiento.enable();
+  }
+
   consultarCurp(posicion: number): void {
     let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    if (!formularioEnUso[posicion].curp.value) return;
+    if (!formularioEnUso[posicion].curp.value) {
+      this.limpiarCURP(posicion);
+      return;
+    }
     if (formularioEnUso[posicion].curp?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
       return;
@@ -256,33 +281,44 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       this.serviciosFunerariosService.consultarCURP(formularioEnUso[posicion].curp.value).pipe(
         finalize(() => this.cargadorService.desactivar())
       ).subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
+        next: (respuesta: HttpRespuesta<any>): void => {
           if (respuesta.mensaje.includes('interno')) {
-            const [anio, mes, dia] = respuesta.datos[0].fechaNacimiento.split('-');
-            const fecha = new Date(anio + '/' + mes + '/' + dia);
-            formularioEnUso[posicion].nombre.setValue(respuesta.datos[0].nomPersona)
-            formularioEnUso[posicion].primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno)
-            formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno)
-            formularioEnUso[posicion].sexo.setValue(respuesta.datos[0].numSexo)
-            formularioEnUso[posicion].otroSexo.setValue(respuesta.datos[0]?.desOtroSexo)
+            const [informacion] = respuesta.datos;
+            const [anio, mes, dia] = informacion.fechaNacimiento.split('-');
+            const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
+            formularioEnUso[posicion].nombre.setValue(informacion.nomPersona);
+            formularioEnUso[posicion].nombre.disable();
+            formularioEnUso[posicion].primerApellido.setValue(informacion.nomPersonaPaterno);
+            formularioEnUso[posicion].primerApellido.disable();
+            formularioEnUso[posicion].segundoApellido.setValue(informacion.nomPersonaMaterno);
+            formularioEnUso[posicion].segundoApellido.disable();
+            formularioEnUso[posicion].sexo.setValue(informacion.numSexo);
+            formularioEnUso[posicion].sexo.disable();
+            formularioEnUso[posicion].otroSexo.setValue(informacion?.desOtroSexo);
+            formularioEnUso[posicion].otroSexo.disable();
             formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-            formularioEnUso[posicion].telefono.setValue(respuesta.datos[0].desTelefono)
-            formularioEnUso[posicion].correoElectronico.setValue(respuesta.datos[0].desCorreo)
-            formularioEnUso[posicion].cp.setValue(respuesta.datos[0].DesCodigoPostal)
-            formularioEnUso[posicion].calle.setValue(respuesta.datos[0].desCalle)
-            formularioEnUso[posicion].numeroInterior.setValue(respuesta.datos[0].numInterior)
-            formularioEnUso[posicion].numeroExterior.setValue(respuesta.datos[0].numExterior)
-            formularioEnUso[posicion].colonia.setValue(respuesta.datos[0].desColonia)
-            if (+respuesta.datos[0].idPais == 119 || !+respuesta.datos[0].idPais) {
+            formularioEnUso[posicion].fechaNacimiento.disable();
+            formularioEnUso[posicion].telefono.setValue(informacion.desTelefono)
+            formularioEnUso[posicion].correoElectronico.setValue(informacion.desCorreo)
+            formularioEnUso[posicion].cp.setValue(informacion.DesCodigoPostal)
+            formularioEnUso[posicion].calle.setValue(informacion.desCalle)
+            formularioEnUso[posicion].numeroInterior.setValue(informacion.numInterior)
+            formularioEnUso[posicion].numeroExterior.setValue(informacion.numExterior)
+            formularioEnUso[posicion].colonia.setValue(informacion.desColonia)
+            if (+informacion.idPais == 119 || !+informacion.idPais) {
               formularioEnUso[posicion].nacionalidad.setValue(1);
-              formularioEnUso[posicion].lugarNacimiento.setValue(respuesta.datos[0].idEstado)
+              formularioEnUso[posicion].nacionalidad.disable();
+              formularioEnUso[posicion].lugarNacimiento.setValue(informacion.idEstado)
+              formularioEnUso[posicion].lugarNacimiento.disable()
             } else {
               formularioEnUso[posicion].nacionalidad.setValue(2);
-              formularioEnUso[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
+              formularioEnUso[posicion].nacionalidad.disable();
+              formularioEnUso[posicion].paisNacimiento.setValue(informacion.idPais)
+              formularioEnUso[posicion].paisNacimiento.disable()
             }
-            respuesta.datos[0].rfc ? formularioEnUso[posicion].rfc.setValue(respuesta.datos[0].rfc) :
+            informacion.rfc ? formularioEnUso[posicion].rfc.setValue(informacion.rfc) :
               formularioEnUso[posicion].rfc.setValue(formularioEnUso[posicion].rfc.value);
-            respuesta.datos[0].nss ? formularioEnUso[posicion].nss.setValue(respuesta.datos[0].nss) :
+            informacion.nss ? formularioEnUso[posicion].nss.setValue(informacion.nss) :
               formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
             this.consultarCodigoPostal(posicion);
             this.cambiarNacionalidad(posicion);
@@ -294,35 +330,37 @@ export class AltaServiciosFunerariosComponent implements OnInit {
             this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
             return
           }
-          const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
-          const fecha = new Date(anio + '/' + mes + '/' + dia);
-          formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
-          formularioEnUso[posicion].primerApellido.setValue(
-            respuesta.datos.apellido1
-          );
-          formularioEnUso[posicion].segundoApellido.setValue(
-            respuesta.datos.apellido2
-          );
+          const {nombre, apellido1, apellido2, sexo, fechNac, nacionalidad, desEntidadNac} = respuesta.datos;
+          const [dia, mes, anio] = fechNac.split('/');
+          const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
+          formularioEnUso[posicion].nombre.setValue(nombre);
+          formularioEnUso[posicion].nombre.disable();
+          formularioEnUso[posicion].primerApellido.setValue(apellido1);
+          formularioEnUso[posicion].primerApellido.disable();
+          formularioEnUso[posicion].segundoApellido.setValue(apellido2);
+          formularioEnUso[posicion].segundoApellido.disable();
           formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-          if (respuesta.datos.sexo.includes('HOMBRE')) {
+          formularioEnUso[posicion].fechaNacimiento.disable();
+          if (sexo.includes('HOMBRE')) {
             formularioEnUso[posicion].sexo.setValue(2);
+            formularioEnUso[posicion].sexo.disable();
           }
-          if (respuesta.datos.sexo.includes('MUJER')) {
+          if (sexo.includes('MUJER')) {
             formularioEnUso[posicion].sexo.setValue(1);
+            formularioEnUso[posicion].sexo.disable();
           }
-          if (
-            respuesta.datos.nacionalidad.includes('MEXICO') ||
-            respuesta.datos.nacionalidad.includes('MEX')
-          ) {
+          if (nacionalidad.includes('MEXICO') || nacionalidad.includes('MEX')) {
             formularioEnUso[posicion].nacionalidad.setValue(1);
+            formularioEnUso[posicion].nacionalidad.disable();
           } else {
             formularioEnUso[posicion].nacionalidad.setValue(2);
+            formularioEnUso[posicion].nacionalidad.disable();
           }
-          this.consultarLugarNacimiento(respuesta.datos.desEntidadNac, posicion);
+          this.consultarLugarNacimiento(desEntidadNac, posicion);
         },
-        error: (error: HttpErrorResponse) => {
-          this.alertaService.mostrar(TipoAlerta.Error,
-            this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
+        error: (error: HttpErrorResponse): void => {
+          const ERROR: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(52)
+          this.alertaService.mostrar(TipoAlerta.Error, ERROR);
         }
       })
     }
@@ -427,16 +465,19 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     const entidadEditada = this.accentsTidy(entidad);
     if (entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')) {
       formularioEnUso[posicion].lugarNacimiento.setValue(11);
+      formularioEnUso[posicion].lugarNacimiento.disable();
       return
     }
     if (entidadEditada.toUpperCase().includes('DISTRITO FEDERAL') || entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')) {
       formularioEnUso[posicion].lugarNacimiento.setValue(7);
+      formularioEnUso[posicion].lugarNacimiento.disable();
       return
     }
     this.estados.forEach((element: any) => {
-      const entidadIteracion = this.accentsTidy(element.label);
+      const entidadIteracion: string = this.accentsTidy(element.label);
       if (entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())) {
         formularioEnUso[posicion].lugarNacimiento.setValue(element.value);
+        formularioEnUso[posicion].lugarNacimiento.disable();
       }
     })
   }
@@ -460,7 +501,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     if (this.fp.gestionadoPorPromotor.value) {
       this.fp.promotor.enable();
       this.fp.promotor.setValidators(Validators.required);
-      this.promotorForm.markAllAsTouched();
     } else {
       this.fp.promotor.setValue(null);
       this.fp.promotor.disable();
@@ -535,7 +575,9 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse): void => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
+        const ERROR: string = 'La matrícula es incorrecta';
+        const ERROR_SISTEMA: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje)
+        this.alertaService.mostrar(TipoAlerta.Error, ERROR_SISTEMA || ERROR);
       }
     });
   }
@@ -549,35 +591,10 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<NSS>) => {
         if (!respuesta.datos) {
-          this.alertaService.mostrar(
-            TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || "El Número de Seguridad Social no existe.");
-          formularioEnUso[posicion].nss.setErrors({ 'incorrect': true });
-          formularioEnUso[posicion].curp.setValue(null);
-          formularioEnUso[posicion].rfc.setValue(null);
+          const ERROR: string = "El Número de Seguridad Social no existe.";
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || ERROR);
+          formularioEnUso[posicion].nss.setErrors({'incorrect': true});
           formularioEnUso[posicion].nss.setValue(null);
-          formularioEnUso[posicion].nombre.setValue(null);
-          formularioEnUso[posicion].primerApellido.setValue(null);
-          formularioEnUso[posicion].segundoApellido.setValue(null);
-          formularioEnUso[posicion].sexo.setValue(null);
-          formularioEnUso[posicion].fechaNacimiento.setValue(null);
-          formularioEnUso[posicion].nacionalidad.setValue(null);
-        } else {
-          let fecha: Date | null = null;
-          if (respuesta.datos.fechaNacimiento && respuesta.datos.fechaNacimiento !== undefined) {
-            let [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
-            fecha = new Date(+anio, +mes - 1, +dia);
-          }
-          let sexo: number = respuesta.datos.sexo?.idSexo == 1 ? 2 : 1;
-          formularioEnUso[posicion].nss.setErrors(null);
-          formularioEnUso[posicion].curp.setValue(respuesta.datos.curp);
-          formularioEnUso[posicion].rfc.setValue(respuesta.datos.rfc);
-          formularioEnUso[posicion].nss.setValue(respuesta.datos.nss);
-          formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
-          formularioEnUso[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
-          formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido);
-          formularioEnUso[posicion].sexo.setValue(sexo);
-          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-          formularioEnUso[posicion].nacionalidad.setValue(1);
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -757,22 +774,22 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.serviciosFunerariosService.insertarPlanSFPA(objetoGuardar).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        this.alertaService.mostrar(TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(30) +
-          " del convenio con folio " + respuesta.mensaje);
-        const file = new Blob(
-          [this.descargaArchivosService.base64_2Blob(
-            respuesta.datos,
-            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
-        const url = window.URL.createObjectURL(file);
-        window.open(url)
-        this.router.navigate(['../servicios-funerarios']);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
+        next: (respuesta: HttpRespuesta<any>) => {
+          this.alertaService.mostrar(TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(30) +
+            " del convenio con folio " + respuesta.mensaje);
+          const file = new Blob(
+            [this.descargaArchivosService.base64_2Blob(
+              respuesta.datos,
+              this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+            {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
+          const url = window.URL.createObjectURL(file);
+          window.open(url)
+          this.router.navigate(['../servicios-funerarios']);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
+        }
       }
-    }
     )
   }
 
