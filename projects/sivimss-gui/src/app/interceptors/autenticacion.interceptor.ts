@@ -21,7 +21,7 @@ export class AutenticacionInterceptor implements HttpInterceptor {
     /** INICIA: Prueba para interceptar peticion de servicios externo y reemplazarla por un protocolo http */
     if (request.url.includes("mssivimss-ser-externos") || request.url.includes("serviciosdigitalesinterno")) {
       request = request.clone({
-        url: request.url.replace('http://','https://')
+        url: request.url.replace('https://','http://')
       })
     }
     /** TERMINA: Prueba para interceptar peticion de servicios externo y reemplazarla por un protocolo http */
