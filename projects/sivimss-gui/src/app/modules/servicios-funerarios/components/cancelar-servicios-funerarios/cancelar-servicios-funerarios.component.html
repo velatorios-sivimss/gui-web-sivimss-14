@@ -278,7 +278,7 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Teléfono:</label>
-                <span>{{fdts.telefonoFijo.value}}</span>
+                <span *ngIf="fdts.telefono.value && fdts.telefono.value !== 'null'">{{fdts.telefono.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
@@ -417,7 +417,7 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Teléfono:</label>
-                <span>{{fdb1.telefonoFijo.value}}</span>
+                <span *ngIf="fdb1.telefono.value && fdb1.telefono.value !== 'null'">{{fdb1.telefono.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
@@ -556,7 +556,7 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Teléfono:</label>
-                <span>{{fdb2.telefonoFijo.value}}</span>
+                <span *ngIf="fdb2.telefono.value && fdb2.telefono.value !== 'null'">{{fdb2.telefono.value}}</span>
               </div>
             </div>
             <div class="col-md-3">
@@ -616,30 +616,6 @@
       </ng-template>
     </p-accordionTab>
   </p-accordion>
-
-  <!-- <div class="border-panel mb-5">
-    <div class="row">
-        <div class="col-md-6">
-            <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
-            <div class="flex">
-                <div class="flex align-items-center mx-2">
-                    <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true" [disabled]="true">
-                    </p-radioButton>
-                    <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
-                </div>
-                <div class="flex align-items-center mx-2">
-                    <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false" [disabled]="true">
-                    </p-radioButton>
-                    <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <label class="control-label" for="promotor">Promotor:</label>
-        </div>
-    </div>
-</div> -->
-
   <div class="flex justify-content-center">
     <div class="col-md-6">
       <p class="text-center">¿Estás seguro de cancelar este Plan de Servicios Funerarios Pago Anticipado del convenio con folio {{folioConvenio}}?</p>

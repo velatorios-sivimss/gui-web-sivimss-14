@@ -57,6 +57,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
         this.folioConvenio = respuesta.datos.numFolioPlanSFPA;
         this.nombreVelatorio = respuesta.datos.desIdVelatorio;
         this.fecIngresa = respuesta.datos.fecIngreso;
+
         this.inicializarFormPromotor();
         this.inicializarFormDatosTitular(respuesta.datos);
         this.inicializarFormDatosTitularSubstituto(respuesta.datos ? respuesta.datos : null);
@@ -210,11 +211,6 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
   }
 
   inicializarFormDatosBeneficiario1(beneficiario: any): void {
-    let fecha: Date | null = null;
-    if (beneficiario.titularesBeneficiarios[2]?.fecNacimiento) {
-      const [anio, mes, dia] = beneficiario.titularesBeneficiarios[2]?.fecNacimiento.split('-');
-      fecha = new Date(anio + '/' + mes + '/' + dia);
-    }
     this.datosBeneficiario1Form = this.formBuilder.group({
       curp: [{ value: beneficiario.titularesBeneficiarios[2]?.curp, disabled: true }, []],
       rfc: [{ value: beneficiario.titularesBeneficiarios[2]?.rfc, disabled: true }, []],
@@ -225,7 +221,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
       segundoApellido: [{ value: beneficiario.titularesBeneficiarios[2]?.segundoApellido, disabled: true }, []],
       sexo: [{ value: +beneficiario.titularesBeneficiarios[2]?.sexo, disabled: true }, []],
       otroSexo: [{ value: beneficiario.titularesBeneficiarios[2]?.otroSexo, disabled: true }],
-      fechaNacimiento: [{ value: fecha, disabled: true }, []],
+      fechaNacimiento: [{ value: beneficiario.titularesBeneficiarios[2]?.fecNacimiento, disabled: true }, []],
       nacionalidad: [{ value: +beneficiario?.titularesBeneficiarios[2]?.idPais == 119 ? 1 : 2, disabled: true }, []],
       lugarNacimiento: [{ value: +beneficiario?.titularesBeneficiarios[2]?.idEstado ?? null, disabled: true }, []],
       paisNacimiento: [{ value: +beneficiario?.titularesBeneficiarios[2]?.idPais ?? null, disabled: true }],
