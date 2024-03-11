@@ -4,7 +4,7 @@
 </div>
 
 <div class="border-panel">
-  <form [formGroup]="filtroForm">
+  <form [formGroup]="filtroForm" (submit)="buscar()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="nivel">Nivel:</label>
@@ -43,7 +43,8 @@
       <div class="col-md-3">
         <label class="control-label" for="estatus">Estatus del Plan SFPA:</label>
         <p-dropdown id="estatus" class="form-control" formControlName="estatus"
-                    placeholder="Selecciona el estatus" [options]="estatus" [filter]="true" filterBy="label"></p-dropdown>
+                    placeholder="Selecciona el estatus" [options]="estatus" [filter]="true"
+                    filterBy="label"></p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
@@ -55,19 +56,23 @@
       <div class="col-md-3">
         <label class="control-label" for="rangoInicio">Fecha inicio:</label>
         <p-calendar id="rangoInicio" styleClass="form-control" formControlName="rangoInicio" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha inicio" [maxDate]="fechaActual"></p-calendar>
+                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha inicio"
+                    [maxDate]="filtroForm.get('rangoFin')?.value || fechaAnterior"
+                    (onSelect)="validarMismaFechaInicioFin()"></p-calendar>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="rangoInicio">Fecha fin:</label>
         <p-calendar id="rangoFin" styleClass="form-control" formControlName="rangoFin" [showIcon]="true"
-                    [maxDate]="fechaActual" dateFormat="dd/mm/yy" placeholder="Ingresa fecha fin"></p-calendar>
+                    [maxDate]="fechaActual" dateFormat="dd/mm/yy" placeholder="Ingresa fecha fin"
+                    [minDate]="filtroForm.get('rangoInicio')?.value"
+                    (onSelect)="validarMismaFechaInicioFin()"></p-calendar>
       </div>
     </div>
   </form>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
-      <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar()">Buscar</button>
+      <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">Limpiar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
     </div>
   </div>
 </div>
@@ -100,14 +105,14 @@
     </ng-template>
     <ng-template pTemplate="body" let-servicioFunerario>
       <tr>
-        <td> {{servicioFunerario.NUM_FOLIO_PLAN_SFPA}} </td>
-        <td> {{servicioFunerario.TITULAR}}</td>
-        <td> {{servicioFunerario.ESTADO}} </td>
-        <td> {{servicioFunerario.CORREO_ELECTRONICO ? servicioFunerario.CORREO_ELECTRONICO : null}} </td>
-        <td> {{servicioFunerario.PAQUETE}} </td>
-        <td> {{servicioFunerario.NUMERO_PAGO}} </td>
-        <td> {{servicioFunerario.ESTATUS_PLAN_SFPA}} </td>
-        <td> {{servicioFunerario.ESTATUS_PAGO_ANTICIPADO}} </td>
+        <td> {{ servicioFunerario.NUM_FOLIO_PLAN_SFPA }}</td>
+        <td> {{ servicioFunerario.TITULAR }}</td>
+        <td> {{ servicioFunerario.ESTADO }}</td>
+        <td> {{ servicioFunerario.CORREO_ELECTRONICO ? servicioFunerario.CORREO_ELECTRONICO : null }}</td>
+        <td> {{ servicioFunerario.PAQUETE }}</td>
+        <td> {{ servicioFunerario.NUMERO_PAGO }}</td>
+        <td> {{ servicioFunerario.ESTATUS_PLAN_SFPA }}</td>
+        <td> {{ servicioFunerario.ESTATUS_PAGO_ANTICIPADO }}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
             <div class="contenedor-celda-iconos">
@@ -130,7 +135,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{servicioFunerario.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{ servicioFunerario.length }} de {{ totalElementos }}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -167,7 +172,7 @@
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+      <span class="text-justify">{{ mensajeArchivoConfirmacion }}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
@@ -199,7 +204,7 @@
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{mensajeCriterioBusqueda}}</span>
+      <span class="text-justify">{{ mensajeCriterioBusqueda }}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
