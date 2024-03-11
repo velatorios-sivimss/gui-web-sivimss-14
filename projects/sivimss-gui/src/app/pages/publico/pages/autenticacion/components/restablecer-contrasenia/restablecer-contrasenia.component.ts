@@ -109,6 +109,7 @@ export class RestablecerContraseniaComponent implements OnInit {
   procesarRespuesta(respuesta: string): void {
     switch (respuesta) {
       case MensajesRespuestaAutenticacion.CredencialesIncorrectas:
+      case MensajesRespuestaAutenticacion.CredencialesDesiguales:
         this.form.get('contraseniaAnterior')?.reset();
         this.contraseniaIncorrecta = !this.contraseniaIncorrecta;
         break;

@@ -50,7 +50,9 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
   overlayPanelBody!: OverlayPanel;  
 
   readonly POSICION_METODO_PAGO: number = 0;
+  readonly MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
+  mostrarModalDescargaExitosa: boolean = false;
   fechaActual = moment().format('YYYY-MM-DD');
   detallePago: DetallePago[] = [];
   detallePagoBitacora!: PagosBitacora;
@@ -167,14 +169,17 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
       finalize(()=>this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        let link = this.renderer.createElement('a');
-        const file = respuesta;
-        const url = window.URL.createObjectURL(file);
-        const extensionArchivo =  configuracionArchivo.ext ? 'documento.xlsx' : 'documento.pdf'
-        link.setAttribute('download', extensionArchivo);
-        link.setAttribute('href', url);
-        link.click();
-        link.remove();
+        if (respuesta) {
+          let link = this.renderer.createElement('a');
+          const file = respuesta;
+          const url = window.URL.createObjectURL(file);
+          const extensionArchivo =  configuracionArchivo.ext ? 'documento.xlsx' : 'documento.pdf'
+          link.setAttribute('download', extensionArchivo);
+          link.setAttribute('href', url);
+          link.click();
+          link.remove();
+          this.mostrarModalDescargaExitosa = true;
+        }
       },
       error: (error: HttpErrorResponse): void => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
