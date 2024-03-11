@@ -477,12 +477,12 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   };
 
   consultarRfc(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts];
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].rfc.value) return;
     if (formularioEnUso[posicion].rfc?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
     }
-    return
+    return;
   }
 
   validarUsuarioAfiliado(curp: string, rfc: string, nss: string): void {
@@ -515,7 +515,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   consultarMatricula(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts];
+    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].matricula.value) return;
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarMatriculaSiap(formularioEnUso[posicion].matricula.value).pipe(
