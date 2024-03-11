@@ -1,5 +1,5 @@
-import {Component, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
-import { DialogService } from 'primeng/dynamicdialog';
+import {Component, Input, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ModalEliminarPagoComponent } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-eliminar-pago/modal-eliminar-pago.component';
 import { ModalRealizarPagoComponent } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-realizar-pago/modal-realizar-pago.component';
@@ -40,24 +40,23 @@ import * as moment from "moment";
   styleUrls: ['./detalle-servicios-funerarios.component.scss'],
   providers: [DialogService, DescargaArchivosService],
 })
-export class DetalleServiciosFunerariosComponent implements OnInit {
+export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
   @Input() servicioFunerario: ServiciosFunerariosInterface[] = [];
 
   @ViewChild(OverlayPanel)
   overlayPanelHeader!: OverlayPanel;
 
   @ViewChild(OverlayPanel)
-  overlayPanelBody!: OverlayPanel;
-  fechaActual = moment().format('YYYY-MM-DD')
-  ;
+  overlayPanelBody!: OverlayPanel;  
 
   readonly POSICION_METODO_PAGO: number = 0;
 
+  fechaActual = moment().format('YYYY-MM-DD');
   detallePago: DetallePago[] = [];
   detallePagoBitacora!: PagosBitacora;
   PagosBitacora: PagosBitacora[] = [];
   metodosPago!: TipoDropdown[];
-
+  detalleRef!: DynamicDialogRef;
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
@@ -194,7 +193,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   }
 
   abrirModalModificarPago(): void {
-    const ref = this.dialogService.open(ModalModificarPagosComponent, {
+    this.detalleRef = this.dialogService.open(ModalModificarPagosComponent, {
       header: 'Modificar pago',
       style: {
         maxWidth: '876px',
@@ -206,7 +205,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
         detalleRegistro: this.detallePagoBitacora,
       },
     });
-    ref.onClose.subscribe((val: boolean) => {
+    this.detalleRef.onClose.subscribe((val: boolean) => {
       if (val) {
         this.consultarDetallePago(
           Number(this.route.snapshot.queryParams.idPlanSfpa)
@@ -328,6 +327,12 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       idPagoSfpa:this.item.idPagoSFPA,
       "parcialidad":`${parcialidad} de ${total}`,
       "importeRecibo":this.item.importePagado.toString()
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.detalleRef) {
+      this.detalleRef.destroy();
     }
   }
 
