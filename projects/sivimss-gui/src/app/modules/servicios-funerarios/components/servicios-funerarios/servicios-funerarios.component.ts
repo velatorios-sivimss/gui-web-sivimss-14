@@ -135,24 +135,6 @@ export class ServiciosFunerariosComponent implements OnInit {
     this.paginarPorFiltros(obtenerNuevosDatos);
   }
 
-  buscar(): void {
-    const rangoInicio = this.filtroForm.get('rangoInicio')?.value;
-    const rangoFin = this.filtroForm.get('rangoFin')?.value;
-    if (rangoInicio && rangoFin) {
-      if (rangoInicio >= rangoFin) {
-        const ERROR: string = 'La fecha inicial no puede ser mayor que la fecha final.';
-        this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR);
-        return;
-      }
-    }
-    if (this.filtroForm.pristine) {
-      this.mensajeCriterioBusqueda = this.mensajesSistemaService.obtenerMensajeSistemaPorId(22);
-      this.aceptarCriteriosBusqueda = true;
-      return;
-    }
-    this.paginar();
-  }
-
   paginarPorFiltros(obtenerNuevosDatos: boolean = false): void {
     this.servicioFunerario = [];
     if (obtenerNuevosDatos || this.cargaInicial) {
