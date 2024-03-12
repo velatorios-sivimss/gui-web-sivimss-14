@@ -496,16 +496,18 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.serviciosFunerariosService.consultarNSS(this.formularios[posicion].nss.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos) return;
-        const ERROR: string = "El Número de Seguridad Social no existe.";
-        const ERROR_SISTEMA: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
-        this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR_SISTEMA || ERROR);
-        this.formularios[posicion].nss.setErrors({'incorrect': true});
-        this.formularios[posicion].nss.setValue(null);
-      },
+      next: (respuesta: HttpRespuesta<any>) => this.procesarRespuestaValidaNSS(respuesta, posicion),
       error: (error: HttpErrorResponse) => this.procesarRespuestaErrorNSS()
     });
+  }
+
+  procesarRespuestaValidaNSS(respuesta: HttpRespuesta<any>, posicion: number): void {
+    if (respuesta.datos) return;
+    const ERROR: string = "El Número de Seguridad Social no existe.";
+    const ERROR_SISTEMA: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
+    this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR_SISTEMA || ERROR);
+    this.formularios[posicion].nss.setErrors({'incorrect': true});
+    this.formularios[posicion].nss.setValue(null);
   }
 
   procesarRespuestaErrorNSS(): void {
