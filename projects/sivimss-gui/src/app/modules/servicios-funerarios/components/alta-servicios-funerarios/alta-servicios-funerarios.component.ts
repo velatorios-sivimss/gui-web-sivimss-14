@@ -85,7 +85,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private serviciosFunerariosService: ServiciosFunerariosService,
     private route: ActivatedRoute,
-    private router: Router,
+    private router: Router
   ) {
   }
 
@@ -104,8 +104,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.inicializarFormPromotor();
     this.inicializarFormDatosTitular();
     this.inicializarFormDatosTitularSubstituto();
-    this.inicializarFormDatosBeneficiario1();
-    this.inicializarFormDatosBeneficiario2();
+    this.datosBeneficiario1Form = this.crearDatosBeneficiarios();
+    this.datosBeneficiario2Form = this.crearDatosBeneficiarios();
   }
 
 
@@ -177,36 +177,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     });
   }
 
-  inicializarFormDatosBeneficiario1(): void {
-    this.datosBeneficiario1Form = this.formBuilder.group({
-      curp: [{value: null, disabled: false}, [Validators.maxLength(18), Validators.pattern(CURP)]],
-      rfc: [{value: null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
-      matricula: [{value: null, disabled: false}],
-      nss: [{value: null, disabled: false}, []],
-      nombre: [{value: null, disabled: false}, []],
-      primerApellido: [{value: null, disabled: false}, []],
-      segundoApellido: [{value: null, disabled: false}, []],
-      sexo: [{value: null, disabled: false}, []],
-      otroSexo: [{value: null, disabled: false}],
-      fechaNacimiento: [{value: null, disabled: false}, []],
-      nacionalidad: [{value: null, disabled: false}],
-      lugarNacimiento: [{value: null, disabled: false}, []],
-      paisNacimiento: [{value: null, disabled: false}],
-      telefono: [{value: null, disabled: false}, []],
-      telefonoFijo: [{value: null, disabled: false}, []],
-      correoElectronico: [{value: null, disabled: false}, [Validators.pattern(PATRON_CORREO)]],
-      cp: [{value: null, disabled: false}, []],
-      calle: [{value: null, disabled: false}, []],
-      numeroInterior: [{value: null, disabled: false}],
-      numeroExterior: [{value: null, disabled: false}, []],
-      colonia: [{value: null, disabled: false}, []],
-      municipio: [{value: null, disabled: true}, []],
-      estado: [{value: null, disabled: true}, []],
-    });
-  }
-
-  inicializarFormDatosBeneficiario2(): void {
-    this.datosBeneficiario2Form = this.formBuilder.group({
+  crearDatosBeneficiarios(): FormGroup {
+    return this.formBuilder.group({
       curp: [{value: null, disabled: false}, [Validators.maxLength(18), Validators.pattern(CURP)]],
       rfc: [{value: null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
       matricula: [{value: null, disabled: false}],
