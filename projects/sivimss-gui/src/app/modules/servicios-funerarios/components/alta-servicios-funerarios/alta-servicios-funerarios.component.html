@@ -22,14 +22,14 @@
           <div class="col-md-3">
             <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
             <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
-                   (change)="convertirMayusculas(0)" (blur)="consultarCurp(0)" maxlength="18">
+                   onInput="this.value = this.value.toUpperCase()" (blur)="consultarCurp(0)" maxlength="18">
             <span class="campo-obligatorio"
                   *ngIf="fdt.curp?.errors?.required && (fdt.curp?.dirty || fdt.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="rfc">R.F.C.<span class="req">*</span>:</label>
             <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
-                   (change)="convertirMayusculas(1)" (blur)="consultarRfc(0)" maxlength="13">
+                   onInput="this.value = this.value.toUpperCase()" (blur)="consultarRfc(0)" maxlength="13">
             <span class="campo-obligatorio"
                   *ngIf="fdt.rfc?.errors?.required && (fdt.rfc?.dirty || fdt.rfc?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -143,7 +143,7 @@
             <label class="control-label" for="correoElectronico">Correo electrónico<span
               class="req">*</span>:</label>
             <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
-                   placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(0)"
+                   placeholder="Ingresa el correo electrónico" onInput="this.value = this.value.toLowerCase()"
                    (blur)="consultarCorreo(0)">
             <span class="campo-obligatorio"
                   *ngIf="fdt.correoElectronico?.errors?.required && (fdt.correoElectronico?.dirty || fdt.correoElectronico?.touched)">Este campo es obligatorio *.</span>
@@ -259,14 +259,14 @@
           <div class="col-md-3">
             <label class="control-label" for="curpContratante">CURP<span class="req">*</span>:</label>
             <input id="curpContratante" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
-                   (change)="convertirMayusculas(2)" (blur)="consultarCurp(1)" maxlength="18">
+                   onInput="this.value = this.value.toUpperCase()" (blur)="consultarCurp(1)" maxlength="18">
             <span class="campo-obligatorio"
                   *ngIf="fdts.curp?.errors?.required && (fdts.curp?.dirty || fdts.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="rfcContratante">R.F.C.<span class="req">*</span>:</label>
             <input id="rfcContratante" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
-                   (change)="convertirMayusculas(3)" (blur)="consultarRfc(1)" maxlength="13">
+                   onInput="this.value = this.value.toUpperCase()" (blur)="consultarRfc(1)" maxlength="13">
             <span class="campo-obligatorio"
                   *ngIf="fdts.rfc?.errors?.required && (fdts.rfc?.dirty || fdts.rfc?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -379,7 +379,7 @@
             <label class="control-label" for="correoElectronicoContratante">Correo electrónico<span
               class="req">*</span>:</label>
             <input id="correoElectronicoContratante" class="form-control" formControlName="correoElectronico"
-                   placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(1)"
+                   placeholder="Ingresa el correo electrónico" onInput="this.value = this.value.toLowerCase()"
                    (blur)="consultarCorreo(1)">
             <span class="campo-obligatorio"
                   *ngIf="fdts.correoElectronico?.errors?.required && (fdts.correoElectronico?.dirty || fdts.correoElectronico?.touched)">Este campo es obligatorio *.</span>
@@ -458,14 +458,14 @@
           <div class="col-md-3">
             <label class="control-label" for="curpBeneficiario1Int">CURP:</label>
             <input id="curpBeneficiario1Int" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
-                   (change)="convertirMayusculas(4)" (blur)="consultarCurp(2)" maxlength="18">
+                   onInput="this.value = this.value.toUpperCase()" (blur)="consultarCurp(2)" maxlength="18">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.curp?.errors?.required && (fdb1.curp?.dirty || fdb1.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="rfcBeneficiario1Int">R.F.C.:</label>
             <input id="rfcBeneficiario1Int" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
-                   (change)="convertirMayusculas(5)" (blur)="validarRfc(2)" maxlength="13">
+                   onInput="this.value = this.value.toUpperCase()" (blur)="validarRfc(2)" maxlength="13">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.rfc?.errors?.required && (fdb1.rfc?.dirty || fdb1.rfc?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -576,7 +576,7 @@
           <div class="col-md-6">
             <label class="control-label" for="correoElectronicoBeneficiario1Int">Correo electrónico:</label>
             <input id="correoElectronicoBeneficiario1Int" class="form-control" formControlName="correoElectronico"
-                   placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(2)"
+                   placeholder="Ingresa el correo electrónico" onInput="this.value = this.value.toLowerCase()"
                    (blur)="consultarCorreo(2)">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.correoElectronico?.errors?.required && (fdb1.correoElectronico?.dirty || fdb1.correoElectronico?.touched)">Este campo es obligatorio *.</span>
@@ -657,14 +657,14 @@
           <div class="col-md-3">
             <label class="control-label" for="curpBeneficiario2Int">CURP:</label>
             <input id="curpBeneficiario2Int" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
-                   (change)="convertirMayusculas(6)" (blur)="consultarCurp(3)" maxlength="18">
+                   onInput="this.value = this.value.toUpperCase()" (blur)="consultarCurp(3)" maxlength="18">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.curp?.errors?.required && (fdb2.curp?.dirty || fdb2.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="rfcBeneficiario2Int">R.F.C.:</label>
             <input id="rfcBeneficiario2Int" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
-                   (change)="convertirMayusculas(7)" (blur)="validarRfc(3)" maxlength="13">
+                   onInput="this.value = this.value.toUpperCase()" (blur)="validarRfc(3)" maxlength="13">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.rfc?.errors?.required && (fdb2.rfc?.dirty || fdb2.rfc?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -775,7 +775,7 @@
           <div class="col-md-6">
             <label class="control-label" for="correoElectronicoBeneficiario2Int">Correo electrónico:</label>
             <input id="correoElectronicoBeneficiario2Int" class="form-control" formControlName="correoElectronico"
-                   placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(3)"
+                   placeholder="Ingresa el correo electrónico" onInput="this.value = this.value.toLowerCase()"
                    (blur)="consultarCorreo(3)">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.correoElectronico?.errors?.required && (fdb2.correoElectronico?.dirty || fdb2.correoElectronico?.touched)">Este campo es obligatorio *.</span>

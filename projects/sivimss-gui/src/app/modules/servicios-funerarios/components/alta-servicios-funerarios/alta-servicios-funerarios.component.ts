@@ -233,16 +233,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     });
   }
 
-  convertirMayusculas(posicion: number): void {
-    let formularios = [this.fdt.curp, this.fdt.rfc, this.fdts.curp, this.fdts.rfc, this.fdb1.curp, this.fdb1.rfc, this.fdb2.curp, this.fdb2.rfc];
-    formularios[posicion].setValue(formularios[posicion].value.toUpperCase());
-  }
-
-  convertirMinusculas(posicion: number): void {
-    let formularios = [this.fdt.correoElectronico, this.fdts.correoElectronico, this.fdb1.correoElectronico, this.fdb2.correoElectronico];
-    formularios[posicion].setValue(formularios[posicion].value.toLowerCase());
-  }
-
   limpiarCURP(posicion: number): void {
     const formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     formularioEnUso[posicion].nombre.setValue(null);
