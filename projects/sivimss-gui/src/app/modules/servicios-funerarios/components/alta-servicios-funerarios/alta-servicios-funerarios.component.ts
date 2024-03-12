@@ -50,6 +50,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   datosBeneficiario1Form!: FormGroup;
   datosBeneficiario2Form!: FormGroup;
 
+  tipoContratacion: TipoDropdown[] = [{value: 1, label: 'Por persona'}];
   sexo: TipoDropdown[] = [{value: 1, label: 'Mujer'}, {value: 2, label: 'Hombre'}, {value: 3, label: 'Otro'}];
   nacionalidad: TipoDropdown[] = [{value: 1, label: 'Mexicana'}, {value: 2, label: 'Extranjera'}];
   estados: TipoDropdown[] = [];
@@ -89,15 +90,15 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let respuesta = this.route.snapshot.data['respuesta'];
+    const respuesta = this.route.snapshot.data['respuesta'];
     this.estados = respuesta[this.POSICION_ESTADOS];
     this.paises = respuesta[this.POSICION_PAISES];
-    this.numeroPago = mapearArregloTipoDropdown(
-      respuesta[this.POSICION_NUMERO_PAGOS].datos, 'DES_TIPO_PAGO_MENSUAL', 'ID_TIPO_PAGO_MENSUAL');
-    this.tipoPaquete = mapearArregloTipoDropdown(respuesta[this.POSICION_PAQUETE].datos,
-      'nomPaquete', 'idPaquete');
-    this.catPromotores = mapearArregloTipoDropdown(respuesta[this.POSICION_PROMOTOR].datos,
-      'NOMBRE', 'ID_PROMOTOR');
+    const numeroPagos = respuesta[this.POSICION_NUMERO_PAGOS].datos
+    this.numeroPago = mapearArregloTipoDropdown(numeroPagos, 'DES_TIPO_PAGO_MENSUAL', 'ID_TIPO_PAGO_MENSUAL');
+    const tipoPaquetes = respuesta[this.POSICION_PAQUETE].datos
+    this.tipoPaquete = mapearArregloTipoDropdown(tipoPaquetes, 'nomPaquete', 'idPaquete');
+    const catPromotores = respuesta[this.POSICION_PROMOTOR].datos;
+    this.catPromotores = mapearArregloTipoDropdown(catPromotores, 'NOMBRE', 'ID_PROMOTOR');
     this.paqueteBackUp = respuesta[this.POSICION_PAQUETE].datos;
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
     this.inicializarFormPromotor();

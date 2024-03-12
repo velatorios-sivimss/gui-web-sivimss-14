@@ -6,7 +6,7 @@
   <div class="col-md-3">
     <label class="control-label" for="tipoContratacion">Tipo de contratación<span class="req">*</span>:</label>
     <p-dropdown #dd id="tipoContratacion" class="form-control" placeholder="Selecciona el estatus"
-                [options]="[{id:1,label:'Por persona'}]" [optionValue]="'1'" [disabled]="true"></p-dropdown>
+                [options]="tipoContratacion" [optionValue]="'1'" [disabled]="true"></p-dropdown>
   </div>
 </div>
 <p-accordion styleClass="sivimss-accordion">
@@ -40,7 +40,8 @@
           </div>
           <div class="col-md-3">
             <label class="control-label" for="nss">NSS<span class="req">*</span>:</label>
-            <input id="nss" class="form-control" formControlName="nss" placeholder="Ingresa el NSS" minlength="11" maxlength="11"
+            <input id="nss" class="form-control" formControlName="nss" placeholder="Ingresa el NSS" minlength="11"
+                   maxlength="11"
                    (blur)="consultarNSS(0)">
             <span class="campo-obligatorio"
                   *ngIf="fdt.nss?.errors?.required && (fdt.nss?.dirty || fdt.nss?.touched)">Este campo es obligatorio *.</span>
@@ -417,7 +418,8 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" for="coloniaContratante">Colonia<span class="req">*</span>:</label>
-            <p-dropdown id="coloniaContratante" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+            <p-dropdown id="coloniaContratante" class="form-control" formControlName="colonia"
+                        placeholder="Ingresa la colonia"
                         [options]="colonias[1]" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fdts.colonia?.errors?.required && (fdts.colonia?.dirty || fdts.colonia?.touched)">Este campo es obligatorio *.</span>
@@ -565,7 +567,8 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="telefonoBeneficiario1Int">Teléfono:</label>
-            <input id="telefonoBeneficiario1Int" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
+            <input id="telefonoBeneficiario1Int" class="form-control" formControlName="telefono" numbersOnly
+                   maxlength="10"
                    placeholder="Ingresa el teléfono">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.telefono?.errors?.required && (fdb1.telefono?.dirty || fdb1.telefono?.touched)">Este campo es obligatorio *.</span>
@@ -583,7 +586,8 @@
         <div class="row mb-3">
           <div class="col-md-3">
             <label class="control-label" for="calleBeneficiario1Int">Calle:</label>
-            <input id="calleBeneficiario1Int" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
+            <input id="calleBeneficiario1Int" class="form-control" formControlName="calle"
+                   placeholder="Ingresa la calle"
                    maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.calle?.errors?.required && (fdb1.calle?.dirty || fdb1.calle?.touched)">Este campo es obligatorio *.</span>
@@ -597,7 +601,8 @@
           </div>
           <div class="col-md-3">
             <label class="control-label" for="numeroInteriorBeneficiario1Int">Número interior:</label>
-            <input id="numeroInteriorBeneficiario1Int" class="form-control" formControlName="numeroInterior" maxlength="10"
+            <input id="numeroInteriorBeneficiario1Int" class="form-control" formControlName="numeroInterior"
+                   maxlength="10"
                    placeholder="Ingresa el número interior">
           </div>
           <div class="col-md-3">
@@ -611,7 +616,8 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" for="coloniaBeneficiario1Int">Colonia:</label>
-            <p-dropdown id="coloniaBeneficiario1Int" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+            <p-dropdown id="coloniaBeneficiario1Int" class="form-control" formControlName="colonia"
+                        placeholder="Ingresa la colonia"
                         [options]="colonias[2]" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fdb1.colonia?.errors?.required && (fdb1.colonia?.dirty || fdb1.colonia?.touched)">Este campo es obligatorio *.</span>
@@ -625,7 +631,8 @@
           </div>
           <div class="col-md-4">
             <label class="control-label" for="estadoBeneficiario1Int">Estado:</label>
-            <input id="estadoBeneficiario1Int" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
+            <input id="estadoBeneficiario1Int" class="form-control" formControlName="estado"
+                   placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.estado?.errors?.required && (fdb1.estado?.dirty || fdb1.estado?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -759,7 +766,8 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="telefonoBeneficiario2Int">Teléfono:</label>
-            <input id="telefonoBeneficiario2Int" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
+            <input id="telefonoBeneficiario2Int" class="form-control" formControlName="telefono" numbersOnly
+                   maxlength="10"
                    placeholder="Ingresa el teléfono">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.telefono?.errors?.required && (fdb2.telefono?.dirty || fdb2.telefono?.touched)">Este campo es obligatorio *.</span>
@@ -777,7 +785,8 @@
         <div class="row mb-3">
           <div class="col-md-3">
             <label class="control-label" for="calleBeneficiario2Int">Calle:</label>
-            <input id="calleBeneficiario2Int" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
+            <input id="calleBeneficiario2Int" class="form-control" formControlName="calle"
+                   placeholder="Ingresa la calle"
                    maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.calle?.errors?.required && (fdb2.calle?.dirty || fdb2.calle?.touched)">Este campo es obligatorio *.</span>
@@ -791,7 +800,8 @@
           </div>
           <div class="col-md-3">
             <label class="control-label" for="numeroInteriorBeneficiario2Int">Número interior:</label>
-            <input id="numeroInteriorBeneficiario2Int" class="form-control" formControlName="numeroInterior" maxlength="10"
+            <input id="numeroInteriorBeneficiario2Int" class="form-control" formControlName="numeroInterior"
+                   maxlength="10"
                    placeholder="Ingresa el número interior">
           </div>
           <div class="col-md-3">
@@ -805,7 +815,8 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" for="coloniaBeneficiario2Int">Colonia:</label>
-            <p-dropdown id="coloniaBeneficiario2Int" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+            <p-dropdown id="coloniaBeneficiario2Int" class="form-control" formControlName="colonia"
+                        placeholder="Ingresa la colonia"
                         [options]="colonias[3]" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fdb2.colonia?.errors?.required && (fdb2.colonia?.dirty || fdb2.colonia?.touched)">Este campo es obligatorio *.</span>
@@ -819,7 +830,8 @@
           </div>
           <div class="col-md-4">
             <label class="control-label" for="estadoBeneficiario2Int">Estado:</label>
-            <input id="estadoBeneficiario2Int" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
+            <input id="estadoBeneficiario2Int" class="form-control" formControlName="estado"
+                   placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.estado?.errors?.required && (fdb2.estado?.dirty || fdb2.estado?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -837,33 +849,34 @@
 <form [formGroup]="promotorForm">
   <div class="border-panel mb-5">
     <div class="row">
-        <div class="col-md-6">
-            <label class="control-label">¿El servicio fue gestionado por un promotor?<span class="req">*</span></label>
-            <div class="flex">
-                <div class="flex align-items-center mx-2">
-                    <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
-                        formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
-                      </p-radioButton>
-                    <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
-                </div>
-                <div class="flex align-items-center mx-2">
-                    <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false"
-                        formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
-                      </p-radioButton>
-                    <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
-                </div>
-            </div>
-            <span class="campo-obligatorio"
-                  *ngIf="fp.gestionadoPorPromotor?.errors?.required && (fp.gestionadoPorPromotor?.dirty || fp.gestionadoPorPromotor?.touched)">Este campo es obligatorio *.</span>
+      <div class="col-md-6">
+        <label class="control-label">¿El servicio fue gestionado por un promotor?<span class="req">*</span></label>
+        <div class="flex">
+          <div class="flex align-items-center mx-2">
+            <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
+                           formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
+            </p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+          </div>
+          <div class="flex align-items-center mx-2">
+            <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false"
+                           formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
+            </p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+          </div>
         </div>
-        <div class="col-md-6">
-            <label class="control-label" for="promotor">Promotor:<span class="req" *ngIf="fp.gestionadoPorPromotor.value">*</span></label>
-            <p-dropdown id="promotor" class="form-control" formControlName="promotor"
-                placeholder="Selecciona promotor" [options]="catPromotores" [filter]="true"
-                filterBy="label"></p-dropdown>
-            <span class="campo-obligatorio"
-                  *ngIf="fp.promotor?.errors?.required && (fp.promotor?.dirty || fp.promotor?.touched)">Este campo es obligatorio *.</span>
-        </div>
+        <span class="campo-obligatorio"
+              *ngIf="fp.gestionadoPorPromotor?.errors?.required && (fp.gestionadoPorPromotor?.dirty || fp.gestionadoPorPromotor?.touched)">Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="promotor">Promotor:<span class="req"
+                                                                   *ngIf="fp.gestionadoPorPromotor.value">*</span></label>
+        <p-dropdown id="promotor" class="form-control" formControlName="promotor"
+                    placeholder="Selecciona promotor" [options]="catPromotores" [filter]="true"
+                    filterBy="label"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fp.promotor?.errors?.required && (fp.promotor?.dirty || fp.promotor?.touched)">Este campo es obligatorio *.</span>
+      </div>
     </div>
   </div>
 </form>
@@ -894,7 +907,7 @@
 <p-dialog header="" [(visible)]="confirmarAceptarPaquete" [style]="{maxWidth:'544px',width: '100%'}"
           [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true">
   <div class="row">
-    <p class="text-justify">{{infoPaqueteSeleccionado}}</p>
+    <p class="text-justify">{{ infoPaqueteSeleccionado }}</p>
   </div>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
@@ -907,7 +920,7 @@
 <p-dialog header="" [(visible)]="confirmacionDatosExistentes" [style]="{maxWidth:'544px',width: '100%'}"
           [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true">
   <div class="row">
-    <p class="text-center">{{mensajeDatosExistentes}}</p>
+    <p class="text-center">{{ mensajeDatosExistentes }}</p>
   </div>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
