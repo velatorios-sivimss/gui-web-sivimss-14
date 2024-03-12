@@ -19,7 +19,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {CatalogoPaquetes} from "../../models/catalogos.interface";
-import {AgregarPlanSFPA, NSS} from "../../models/servicios-funerarios.interface";
+import {AgregarPlanSFPA} from "../../models/servicios-funerarios.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {CURP} from 'projects/sivimss-gui/src/app/utils/regex';
@@ -206,42 +206,40 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   limpiarCURP(posicion: number): void {
-    const formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    formularioEnUso[posicion].nombre.setValue(null);
-    formularioEnUso[posicion].nombre.enable();
-    formularioEnUso[posicion].primerApellido.setValue(null);
-    formularioEnUso[posicion].primerApellido.enable();
-    formularioEnUso[posicion].segundoApellido.setValue(null);
-    formularioEnUso[posicion].segundoApellido.enable();
-    formularioEnUso[posicion].sexo.setValue(null);
-    formularioEnUso[posicion].sexo.enable();
-    formularioEnUso[posicion].otroSexo.setValue(null);
-    formularioEnUso[posicion].otroSexo.enable();
-    formularioEnUso[posicion].fechaNacimiento.setValue(null);
-    formularioEnUso[posicion].fechaNacimiento.enable();
-    formularioEnUso[posicion].nacionalidad.setValue(null);
-    formularioEnUso[posicion].nacionalidad.enable();
-    formularioEnUso[posicion].lugarNacimiento.setValue(null);
-    formularioEnUso[posicion].lugarNacimiento.enable();
-    formularioEnUso[posicion].paisNacimiento.setValue(null);
-    formularioEnUso[posicion].paisNacimiento.enable();
+    this.formularios[posicion].nombre.setValue(null);
+    this.formularios[posicion].nombre.enable();
+    this.formularios[posicion].primerApellido.setValue(null);
+    this.formularios[posicion].primerApellido.enable();
+    this.formularios[posicion].segundoApellido.setValue(null);
+    this.formularios[posicion].segundoApellido.enable();
+    this.formularios[posicion].sexo.setValue(null);
+    this.formularios[posicion].sexo.enable();
+    this.formularios[posicion].otroSexo.setValue(null);
+    this.formularios[posicion].otroSexo.enable();
+    this.formularios[posicion].fechaNacimiento.setValue(null);
+    this.formularios[posicion].fechaNacimiento.enable();
+    this.formularios[posicion].nacionalidad.setValue(null);
+    this.formularios[posicion].nacionalidad.enable();
+    this.formularios[posicion].lugarNacimiento.setValue(null);
+    this.formularios[posicion].lugarNacimiento.enable();
+    this.formularios[posicion].paisNacimiento.setValue(null);
+    this.formularios[posicion].paisNacimiento.enable();
   }
 
   consultarCurp(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    if (!formularioEnUso[posicion].curp.value) {
+    if (!this.formularios[posicion].curp.value) {
       this.limpiarCURP(posicion);
       return;
     }
-    if (formularioEnUso[posicion].curp?.errors?.pattern) {
+    if (this.formularios[posicion].curp?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
       return;
     }
     if (![0, 1].includes(posicion)) return;
     this.limpiarFormulario(posicion);
-    this.validarUsuarioTitular(formularioEnUso[posicion].curp.value, "", "", posicion);
+    this.validarUsuarioTitular(this.formularios[posicion].curp.value, "", "", posicion);
     this.cargadorService.activar();
-    this.serviciosFunerariosService.consultarCURP(formularioEnUso[posicion].curp.value).pipe(
+    this.serviciosFunerariosService.consultarCURP(this.formularios[posicion].curp.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -249,40 +247,40 @@ export class AltaServiciosFunerariosComponent implements OnInit {
           const [informacion] = respuesta.datos;
           const [anio, mes, dia] = informacion.fechaNacimiento.split('-');
           const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
-          formularioEnUso[posicion].nombre.setValue(informacion.nomPersona);
-          formularioEnUso[posicion].nombre.disable();
-          formularioEnUso[posicion].primerApellido.setValue(informacion.nomPersonaPaterno);
-          formularioEnUso[posicion].primerApellido.disable();
-          formularioEnUso[posicion].segundoApellido.setValue(informacion.nomPersonaMaterno);
-          formularioEnUso[posicion].segundoApellido.disable();
-          formularioEnUso[posicion].sexo.setValue(informacion.numSexo);
-          formularioEnUso[posicion].sexo.disable();
-          formularioEnUso[posicion].otroSexo.setValue(informacion?.desOtroSexo);
-          formularioEnUso[posicion].otroSexo.disable();
-          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-          formularioEnUso[posicion].fechaNacimiento.disable();
-          formularioEnUso[posicion].telefono.setValue(informacion.desTelefono)
-          formularioEnUso[posicion].correoElectronico.setValue(informacion.desCorreo)
-          formularioEnUso[posicion].cp.setValue(informacion.DesCodigoPostal)
-          formularioEnUso[posicion].calle.setValue(informacion.desCalle)
-          formularioEnUso[posicion].numeroInterior.setValue(informacion.numInterior)
-          formularioEnUso[posicion].numeroExterior.setValue(informacion.numExterior)
-          formularioEnUso[posicion].colonia.setValue(informacion.desColonia)
+          this.formularios[posicion].nombre.setValue(informacion.nomPersona);
+          this.formularios[posicion].nombre.disable();
+          this.formularios[posicion].primerApellido.setValue(informacion.nomPersonaPaterno);
+          this.formularios[posicion].primerApellido.disable();
+          this.formularios[posicion].segundoApellido.setValue(informacion.nomPersonaMaterno);
+          this.formularios[posicion].segundoApellido.disable();
+          this.formularios[posicion].sexo.setValue(informacion.numSexo);
+          this.formularios[posicion].sexo.disable();
+          this.formularios[posicion].otroSexo.setValue(informacion?.desOtroSexo);
+          this.formularios[posicion].otroSexo.disable();
+          this.formularios[posicion].fechaNacimiento.setValue(fecha);
+          this.formularios[posicion].fechaNacimiento.disable();
+          this.formularios[posicion].telefono.setValue(informacion.desTelefono)
+          this.formularios[posicion].correoElectronico.setValue(informacion.desCorreo)
+          this.formularios[posicion].cp.setValue(informacion.DesCodigoPostal)
+          this.formularios[posicion].calle.setValue(informacion.desCalle)
+          this.formularios[posicion].numeroInterior.setValue(informacion.numInterior)
+          this.formularios[posicion].numeroExterior.setValue(informacion.numExterior)
+          this.formularios[posicion].colonia.setValue(informacion.desColonia)
           if (+informacion.idPais == 119 || !+informacion.idPais) {
-            formularioEnUso[posicion].nacionalidad.setValue(1);
-            formularioEnUso[posicion].nacionalidad.disable();
-            formularioEnUso[posicion].lugarNacimiento.setValue(informacion.idEstado)
-            formularioEnUso[posicion].lugarNacimiento.disable()
+            this.formularios[posicion].nacionalidad.setValue(1);
+            this.formularios[posicion].nacionalidad.disable();
+            this.formularios[posicion].lugarNacimiento.setValue(informacion.idEstado)
+            this.formularios[posicion].lugarNacimiento.disable()
           } else {
-            formularioEnUso[posicion].nacionalidad.setValue(2);
-            formularioEnUso[posicion].nacionalidad.disable();
-            formularioEnUso[posicion].paisNacimiento.setValue(informacion.idPais)
-            formularioEnUso[posicion].paisNacimiento.disable()
+            this.formularios[posicion].nacionalidad.setValue(2);
+            this.formularios[posicion].nacionalidad.disable();
+            this.formularios[posicion].paisNacimiento.setValue(informacion.idPais)
+            this.formularios[posicion].paisNacimiento.disable()
           }
-          informacion.rfc ? formularioEnUso[posicion].rfc.setValue(informacion.rfc) :
-            formularioEnUso[posicion].rfc.setValue(formularioEnUso[posicion].rfc.value);
-          informacion.nss ? formularioEnUso[posicion].nss.setValue(informacion.nss) :
-            formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+          informacion.rfc ? this.formularios[posicion].rfc.setValue(informacion.rfc) :
+            this.formularios[posicion].rfc.setValue(this.formularios[posicion].rfc.value);
+          informacion.nss ? this.formularios[posicion].nss.setValue(informacion.nss) :
+            this.formularios[posicion].nss.setValue(this.formularios[posicion].nss.value);
           this.consultarCodigoPostal(posicion);
           this.cambiarNacionalidad(posicion);
           this.cambiarNacionalidad2(posicion);
@@ -295,28 +293,28 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         const {nombre, apellido1, apellido2, sexo, fechNac, nacionalidad, desEntidadNac} = respuesta.datos;
         const [dia, mes, anio] = fechNac.split('/');
         const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
-        formularioEnUso[posicion].nombre.setValue(nombre);
-        formularioEnUso[posicion].nombre.disable();
-        formularioEnUso[posicion].primerApellido.setValue(apellido1);
-        formularioEnUso[posicion].primerApellido.disable();
-        formularioEnUso[posicion].segundoApellido.setValue(apellido2);
-        formularioEnUso[posicion].segundoApellido.disable();
-        formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-        formularioEnUso[posicion].fechaNacimiento.disable();
+        this.formularios[posicion].nombre.setValue(nombre);
+        this.formularios[posicion].nombre.disable();
+        this.formularios[posicion].primerApellido.setValue(apellido1);
+        this.formularios[posicion].primerApellido.disable();
+        this.formularios[posicion].segundoApellido.setValue(apellido2);
+        this.formularios[posicion].segundoApellido.disable();
+        this.formularios[posicion].fechaNacimiento.setValue(fecha);
+        this.formularios[posicion].fechaNacimiento.disable();
         if (sexo.includes('HOMBRE')) {
-          formularioEnUso[posicion].sexo.setValue(2);
-          formularioEnUso[posicion].sexo.disable();
+          this.formularios[posicion].sexo.setValue(2);
+          this.formularios[posicion].sexo.disable();
         }
         if (sexo.includes('MUJER')) {
-          formularioEnUso[posicion].sexo.setValue(1);
-          formularioEnUso[posicion].sexo.disable();
+          this.formularios[posicion].sexo.setValue(1);
+          this.formularios[posicion].sexo.disable();
         }
         if (nacionalidad.includes('MEXICO') || nacionalidad.includes('MEX')) {
-          formularioEnUso[posicion].nacionalidad.setValue(1);
-          formularioEnUso[posicion].nacionalidad.disable();
+          this.formularios[posicion].nacionalidad.setValue(1);
+          this.formularios[posicion].nacionalidad.disable();
         } else {
-          formularioEnUso[posicion].nacionalidad.setValue(2);
-          formularioEnUso[posicion].nacionalidad.disable();
+          this.formularios[posicion].nacionalidad.setValue(2);
+          this.formularios[posicion].nacionalidad.disable();
         }
         this.consultarLugarNacimiento(desEntidadNac, posicion);
       },
@@ -330,56 +328,53 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   validarRfc(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    if (!formularioEnUso[posicion].rfc.value) return;
-    if (formularioEnUso[posicion].rfc?.errors?.pattern) {
+    if (!this.formularios[posicion].rfc.value) return;
+    if (this.formularios[posicion].rfc?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
     }
-    return
   }
 
   consultarRfc(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    if (!formularioEnUso[posicion].rfc.value) return;
-    if (formularioEnUso[posicion].rfc?.errors?.pattern) {
+    if (!this.formularios[posicion].rfc.value) return;
+    if (this.formularios[posicion].rfc?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
       return;
     }
     this.limpiarFormulario(posicion);
-    this.validarUsuarioTitular("", formularioEnUso[posicion].rfc.value, "", posicion);
+    this.validarUsuarioTitular("", this.formularios[posicion].rfc.value, "", posicion);
     this.cargadorService.activar();
-    this.serviciosFunerariosService.consultarRFC(formularioEnUso[posicion].rfc.value).pipe(
+    this.serviciosFunerariosService.consultarRFC(this.formularios[posicion].rfc.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.mensaje.includes('interno')) {
           const [anio, mes, dia] = respuesta.datos[0].fechaNacimiento.split('-');
           const fecha = new Date(anio + '/' + mes + '/' + dia);
-          formularioEnUso[posicion].curp.setValue(respuesta.datos[0].curp)
-          formularioEnUso[posicion].nombre.setValue(respuesta.datos[0].nomPersona)
-          formularioEnUso[posicion].primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno)
-          formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno)
-          formularioEnUso[posicion].sexo.setValue(respuesta.datos[0].numSexo)
-          formularioEnUso[posicion].otroSexo.setValue(respuesta.datos[0]?.desOtroSexo)
-          formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-          formularioEnUso[posicion].telefono.setValue(respuesta.datos[0].desTelefono)
-          formularioEnUso[posicion].correoElectronico.setValue(respuesta.datos[0].desCorreo)
-          formularioEnUso[posicion].cp.setValue(respuesta.datos[0].DesCodigoPostal)
-          formularioEnUso[posicion].calle.setValue(respuesta.datos[0].desCalle)
-          formularioEnUso[posicion].numeroInterior.setValue(respuesta.datos[0].numInterior)
-          formularioEnUso[posicion].numeroExterior.setValue(respuesta.datos[0].numExterior)
-          formularioEnUso[posicion].colonia.setValue(respuesta.datos[0].desColonia)
+          this.formularios[posicion].curp.setValue(respuesta.datos[0].curp)
+          this.formularios[posicion].nombre.setValue(respuesta.datos[0].nomPersona)
+          this.formularios[posicion].primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno)
+          this.formularios[posicion].segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno)
+          this.formularios[posicion].sexo.setValue(respuesta.datos[0].numSexo)
+          this.formularios[posicion].otroSexo.setValue(respuesta.datos[0]?.desOtroSexo)
+          this.formularios[posicion].fechaNacimiento.setValue(fecha);
+          this.formularios[posicion].telefono.setValue(respuesta.datos[0].desTelefono)
+          this.formularios[posicion].correoElectronico.setValue(respuesta.datos[0].desCorreo)
+          this.formularios[posicion].cp.setValue(respuesta.datos[0].DesCodigoPostal)
+          this.formularios[posicion].calle.setValue(respuesta.datos[0].desCalle)
+          this.formularios[posicion].numeroInterior.setValue(respuesta.datos[0].numInterior)
+          this.formularios[posicion].numeroExterior.setValue(respuesta.datos[0].numExterior)
+          this.formularios[posicion].colonia.setValue(respuesta.datos[0].desColonia)
           if (+respuesta.datos[0].idPais == 119 || !+respuesta.datos[0].idPais) {
-            formularioEnUso[posicion].nacionalidad.setValue(1);
-            formularioEnUso[posicion].lugarNacimiento.setValue(respuesta.datos[0].idEstado)
+            this.formularios[posicion].nacionalidad.setValue(1);
+            this.formularios[posicion].lugarNacimiento.setValue(respuesta.datos[0].idEstado)
           } else {
-            formularioEnUso[posicion].nacionalidad.setValue(2);
-            formularioEnUso[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
+            this.formularios[posicion].nacionalidad.setValue(2);
+            this.formularios[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
           }
-          respuesta.datos[0].rfc ? formularioEnUso[posicion].rfc.setValue(respuesta.datos[0].rfc) :
-            formularioEnUso[posicion].rfc.setValue(formularioEnUso[posicion].rfc.value);
-          respuesta.datos[0].nss ? formularioEnUso[posicion].nss.setValue(respuesta.datos[0].nss) :
-            formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+          respuesta.datos[0].rfc ? this.formularios[posicion].rfc.setValue(respuesta.datos[0].rfc) :
+            this.formularios[posicion].rfc.setValue(this.formularios[posicion].rfc.value);
+          respuesta.datos[0].nss ? this.formularios[posicion].nss.setValue(respuesta.datos[0].nss) :
+            this.formularios[posicion].nss.setValue(this.formularios[posicion].nss.value);
           this.consultarCodigoPostal(posicion);
           this.cambiarNacionalidad(posicion);
           this.cambiarNacionalidad2(posicion);
@@ -392,55 +387,55 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         }
         const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
         const fecha = new Date(anio + '/' + mes + '/' + dia);
-        formularioEnUso[posicion].nombre.setValue(respuesta.datos.nombre);
-        formularioEnUso[posicion].primerApellido.setValue(
+        this.formularios[posicion].nombre.setValue(respuesta.datos.nombre);
+        this.formularios[posicion].primerApellido.setValue(
           respuesta.datos.apellido1
         );
-        formularioEnUso[posicion].segundoApellido.setValue(
+        this.formularios[posicion].segundoApellido.setValue(
           respuesta.datos.apellido2
         );
-        formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
+        this.formularios[posicion].fechaNacimiento.setValue(fecha);
         if (respuesta.datos.sexo.includes('HOMBRE')) {
-          formularioEnUso[posicion].sexo.setValue(2);
+          this.formularios[posicion].sexo.setValue(2);
         }
         if (respuesta.datos.sexo.includes('MUJER')) {
-          formularioEnUso[posicion].sexo.setValue(1);
+          this.formularios[posicion].sexo.setValue(1);
         }
         if (
           respuesta.datos.nacionalidad.includes('MEXICO') ||
           respuesta.datos.nacionalidad.includes('MEX')
         ) {
-          formularioEnUso[posicion].nacionalidad.setValue(1);
+          this.formularios[posicion].nacionalidad.setValue(1);
         } else {
-          formularioEnUso[posicion].nacionalidad.setValue(2);
+          this.formularios[posicion].nacionalidad.setValue(2);
         }
         this.consultarLugarNacimiento(respuesta.datos.desEntidadNac, posicion);
       },
-      error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error,
-          this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
-      }
-    })
+      error: (error: HttpErrorResponse) => this.manejarSolicitudErrorRFC()
+    });
+  }
+
+  manejarSolicitudErrorRFC(): void {
+    this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
   }
 
   consultarLugarNacimiento(entidad: string, posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     const entidadEditada = this.accentsTidy(entidad);
     if (entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')) {
-      formularioEnUso[posicion].lugarNacimiento.setValue(11);
-      formularioEnUso[posicion].lugarNacimiento.disable();
+      this.formularios[posicion].lugarNacimiento.setValue(11);
+      this.formularios[posicion].lugarNacimiento.disable();
       return
     }
     if (entidadEditada.toUpperCase().includes('DISTRITO FEDERAL') || entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')) {
-      formularioEnUso[posicion].lugarNacimiento.setValue(7);
-      formularioEnUso[posicion].lugarNacimiento.disable();
+      this.formularios[posicion].lugarNacimiento.setValue(7);
+      this.formularios[posicion].lugarNacimiento.disable();
       return
     }
     this.estados.forEach((element: any) => {
       const entidadIteracion: string = this.accentsTidy(element.label);
       if (entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())) {
-        formularioEnUso[posicion].lugarNacimiento.setValue(element.value);
-        formularioEnUso[posicion].lugarNacimiento.disable();
+        this.formularios[posicion].lugarNacimiento.setValue(element.value);
+        this.formularios[posicion].lugarNacimiento.disable();
       }
     })
   }
@@ -518,7 +513,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   consultarCorreo(posicion: number): void {
-    let formularios = [this.fdt.correoElectronico, this.fdts.correoElectronico, this.fdb1.correoElectronico, this.fdb2.correoElectronico];
+    const formularios = [this.fdt.correoElectronico, this.fdts.correoElectronico, this.fdb1.correoElectronico, this.fdb2.correoElectronico];
     if (!formularios[posicion].value) return;
     if (formularios[posicion]?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
@@ -526,10 +521,9 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   consultarMatricula(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    if (!formularioEnUso[posicion].matricula.value) return;
+    if (!this.formularios[posicion].matricula.value) return;
     this.cargadorService.activar();
-    this.serviciosFunerariosService.consultarMatriculaSiap(formularioEnUso[posicion].matricula.value).pipe(
+    this.serviciosFunerariosService.consultarMatriculaSiap(this.formularios[posicion].matricula.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaValidaMatricula(respuesta),
@@ -549,28 +543,29 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   consultarNSS(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    if (!formularioEnUso[posicion].nss.value) return;
+    if (!this.formularios[posicion].nss.value) return;
     this.cargadorService.activar();
-    this.serviciosFunerariosService.consultarNSS(formularioEnUso[posicion].nss.value).pipe(
+    this.serviciosFunerariosService.consultarNSS(this.formularios[posicion].nss.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<NSS>) => {
-        if (!respuesta.datos) {
-          const ERROR: string = "El Número de Seguridad Social no existe.";
-          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje) || ERROR);
-          formularioEnUso[posicion].nss.setErrors({'incorrect': true});
-          formularioEnUso[posicion].nss.setValue(null);
-        }
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos) return;
+        const ERROR: string = "El Número de Seguridad Social no existe.";
+        const ERROR_SISTEMA: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
+        this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR_SISTEMA || ERROR);
+        this.formularios[posicion].nss.setErrors({'incorrect': true});
+        this.formularios[posicion].nss.setValue(null);
       },
-      error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
-      }
+      error: (error: HttpErrorResponse) => this.procesarRespuestaErrorNSS()
     });
   }
 
+  procesarRespuestaErrorNSS(): void {
+    this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
+  }
+
   sinEspacioDoble(posicion: number): void {
-    let formularios = [
+    const formularios = [
       this.fdt.nombre, this.fdt.primerApellido, this.fdt.segundoApellido,
       this.fdts.nombre, this.fdts.primerApellido, this.fdts.segundoApellido,
       this.fdb1.nombre, this.fdb1.primerApellido, this.fdb1.segundoApellido,
@@ -582,12 +577,12 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   cambiarSexo(posicion: number): void {
-    let formulariosOtroSexo = [this.fdt.otroSexo, this.fdts.otroSexo, this.fdb1.otroSexo, this.fdb2.otroSexo];
+    const formulariosOtroSexo = [this.fdt.otroSexo, this.fdts.otroSexo, this.fdb1.otroSexo, this.fdb2.otroSexo];
     formulariosOtroSexo[posicion].patchValue(null);
   }
 
   cambiarNacionalidad(posicion: number): void {
-    let formularios = [this.fdt.paisNacimiento, this.fdt.lugarNacimiento, this.fdts.paisNacimiento, this.fdts.lugarNacimiento];
+    const formularios = [this.fdt.paisNacimiento, this.fdt.lugarNacimiento, this.fdts.paisNacimiento, this.fdts.lugarNacimiento];
     if (posicion === 0) {
       if (this.fdt.nacionalidad.value == 1) {
         formularios[0].reset();
@@ -610,7 +605,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   cambiarNacionalidad2(posicion: number): void {
-    let formularios = [this.fdb1.paisNacimiento, this.fdb1.lugarNacimiento, this.fdb2.paisNacimiento, this.fdb2.lugarNacimiento];
+    const formularios = [this.fdb1.paisNacimiento, this.fdb1.lugarNacimiento, this.fdb2.paisNacimiento, this.fdb2.lugarNacimiento];
     if (posicion === 0) {
       if (this.fdb1.nacionalidad.value == 1) {
         formularios[0].reset();
@@ -627,29 +622,28 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   consultarCodigoPostal(posicion: number): void {
-    let formularios = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    if (!formularios[posicion].cp.value) {
+    if (!this.formularios[posicion].cp.value) {
       return;
     }
     this.cargadorService.activar();
-    this.serviciosFunerariosService.consutaCP(formularios[posicion].cp.value)
+    this.serviciosFunerariosService.consutaCP(this.formularios[posicion].cp.value)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
             this.colonias[posicion] = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
-            formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
-            formularios[posicion].municipio.setValue(
+            this.formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
+            this.formularios[posicion].municipio.setValue(
               respuesta.datos[0].municipio.nombre
             );
-            formularios[posicion].estado.setValue(
+            this.formularios[posicion].estado.setValue(
               respuesta.datos[0].municipio.entidadFederativa.nombre
             );
             return;
           }
-          formularios[posicion].colonia.patchValue(null);
-          formularios[posicion].municipio.patchValue(null);
-          formularios[posicion].estado.patchValue(null);
+          this.formularios[posicion].colonia.patchValue(null);
+          this.formularios[posicion].municipio.patchValue(null);
+          this.formularios[posicion].estado.patchValue(null);
         },
         error: (error: HttpErrorResponse) => {
           console.log(error);
@@ -699,33 +693,32 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   limpiarFormulario(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
-    formularioEnUso[posicion].nombre.patchValue(null);
-    formularioEnUso[posicion].primerApellido.patchValue(null);
-    formularioEnUso[posicion].segundoApellido.patchValue(null);
-    formularioEnUso[posicion].sexo.patchValue(null);
-    formularioEnUso[posicion].otroSexo.patchValue(null);
-    formularioEnUso[posicion].fechaNacimiento.patchValue(null);
-    formularioEnUso[posicion].nacionalidad.patchValue(null);
-    formularioEnUso[posicion].lugarNacimiento.patchValue(null);
-    formularioEnUso[posicion].paisNacimiento.patchValue(null);
-    formularioEnUso[posicion].telefono.patchValue(null);
-    formularioEnUso[posicion].correoElectronico.patchValue(null);
-    formularioEnUso[posicion].cp.patchValue(null);
-    formularioEnUso[posicion].calle.patchValue(null);
-    formularioEnUso[posicion].numeroInterior.patchValue(null);
-    formularioEnUso[posicion].numeroExterior.patchValue(null);
-    formularioEnUso[posicion].colonia.patchValue(null);
-    formularioEnUso[posicion].municipio.patchValue(null);
-    formularioEnUso[posicion].estado.patchValue(null);
+    this.formularios[posicion].nombre.patchValue(null);
+    this.formularios[posicion].primerApellido.patchValue(null);
+    this.formularios[posicion].segundoApellido.patchValue(null);
+    this.formularios[posicion].sexo.patchValue(null);
+    this.formularios[posicion].otroSexo.patchValue(null);
+    this.formularios[posicion].fechaNacimiento.patchValue(null);
+    this.formularios[posicion].nacionalidad.patchValue(null);
+    this.formularios[posicion].lugarNacimiento.patchValue(null);
+    this.formularios[posicion].paisNacimiento.patchValue(null);
+    this.formularios[posicion].telefono.patchValue(null);
+    this.formularios[posicion].correoElectronico.patchValue(null);
+    this.formularios[posicion].cp.patchValue(null);
+    this.formularios[posicion].calle.patchValue(null);
+    this.formularios[posicion].numeroInterior.patchValue(null);
+    this.formularios[posicion].numeroExterior.patchValue(null);
+    this.formularios[posicion].colonia.patchValue(null);
+    this.formularios[posicion].municipio.patchValue(null);
+    this.formularios[posicion].estado.patchValue(null);
 
     if (posicion === 0) {
-      formularioEnUso[posicion].telefonoFijo.patchValue(null);
+      this.formularios[posicion].telefonoFijo.patchValue(null);
     }
   }
 
   mostrarInfoPaqueteSeleccionado(): void {
-    let objetoPaquete = this.paqueteBackUp.filter((paquete: any) => {
+    const objetoPaquete = this.paqueteBackUp.filter((paquete: any) => {
       return paquete.idPaquete == +this.fdt.tipoPaquete.value
     });
     this.infoPaqueteSeleccionado = objetoPaquete[0].descPaquete;
@@ -946,6 +939,10 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   get fdb2() {
     return this.datosBeneficiario2Form.controls;
+  }
+
+  get formularios() {
+    return [this.fdt, this.fdts, this.fdb1, this.fdb2];
   }
 
   validarBotonGuardar(): boolean {
