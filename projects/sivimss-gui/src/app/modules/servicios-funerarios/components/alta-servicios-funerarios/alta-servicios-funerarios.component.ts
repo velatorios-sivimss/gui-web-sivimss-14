@@ -242,84 +242,90 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.serviciosFunerariosService.consultarCURP(this.formularios[posicion].curp.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        if (respuesta.mensaje.includes('interno')) {
-          const [informacion] = respuesta.datos;
-          const [anio, mes, dia] = informacion.fechaNacimiento.split('-');
-          const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
-          this.formularios[posicion].nombre.setValue(informacion.nomPersona);
-          this.formularios[posicion].nombre.disable();
-          this.formularios[posicion].primerApellido.setValue(informacion.nomPersonaPaterno);
-          this.formularios[posicion].primerApellido.disable();
-          this.formularios[posicion].segundoApellido.setValue(informacion.nomPersonaMaterno);
-          this.formularios[posicion].segundoApellido.disable();
-          this.formularios[posicion].sexo.setValue(informacion.numSexo);
-          this.formularios[posicion].sexo.disable();
-          this.formularios[posicion].otroSexo.setValue(informacion?.desOtroSexo);
-          this.formularios[posicion].otroSexo.disable();
-          this.formularios[posicion].fechaNacimiento.setValue(fecha);
-          this.formularios[posicion].fechaNacimiento.disable();
-          this.formularios[posicion].telefono.setValue(informacion.desTelefono)
-          this.formularios[posicion].correoElectronico.setValue(informacion.desCorreo)
-          this.formularios[posicion].cp.setValue(informacion.DesCodigoPostal)
-          this.formularios[posicion].calle.setValue(informacion.desCalle)
-          this.formularios[posicion].numeroInterior.setValue(informacion.numInterior)
-          this.formularios[posicion].numeroExterior.setValue(informacion.numExterior)
-          this.formularios[posicion].colonia.setValue(informacion.desColonia)
-          if (+informacion.idPais == 119 || !+informacion.idPais) {
-            this.formularios[posicion].nacionalidad.setValue(1);
-            this.formularios[posicion].nacionalidad.disable();
-            this.formularios[posicion].lugarNacimiento.setValue(informacion.idEstado)
-            this.formularios[posicion].lugarNacimiento.disable()
-          } else {
-            this.formularios[posicion].nacionalidad.setValue(2);
-            this.formularios[posicion].nacionalidad.disable();
-            this.formularios[posicion].paisNacimiento.setValue(informacion.idPais)
-            this.formularios[posicion].paisNacimiento.disable()
-          }
-          informacion.rfc ? this.formularios[posicion].rfc.setValue(informacion.rfc) :
-            this.formularios[posicion].rfc.setValue(this.formularios[posicion].rfc.value);
-          informacion.nss ? this.formularios[posicion].nss.setValue(informacion.nss) :
-            this.formularios[posicion].nss.setValue(this.formularios[posicion].nss.value);
-          this.consultarCodigoPostal(posicion);
-          this.cambiarNacionalidad(posicion);
-          this.cambiarNacionalidad2(posicion);
-          return;
-        }
-        if (respuesta.datos?.message?.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
-          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
-          return
-        }
-        const {nombre, apellido1, apellido2, sexo, fechNac, nacionalidad, desEntidadNac} = respuesta.datos;
-        const [dia, mes, anio] = fechNac.split('/');
-        const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
-        this.formularios[posicion].nombre.setValue(nombre);
-        this.formularios[posicion].nombre.disable();
-        this.formularios[posicion].primerApellido.setValue(apellido1);
-        this.formularios[posicion].primerApellido.disable();
-        this.formularios[posicion].segundoApellido.setValue(apellido2);
-        this.formularios[posicion].segundoApellido.disable();
-        this.formularios[posicion].fechaNacimiento.setValue(fecha);
-        this.formularios[posicion].fechaNacimiento.disable();
-        if (sexo.includes('HOMBRE')) {
-          this.formularios[posicion].sexo.setValue(2);
-          this.formularios[posicion].sexo.disable();
-        }
-        if (sexo.includes('MUJER')) {
-          this.formularios[posicion].sexo.setValue(1);
-          this.formularios[posicion].sexo.disable();
-        }
-        if (nacionalidad.includes('MEXICO') || nacionalidad.includes('MEX')) {
-          this.formularios[posicion].nacionalidad.setValue(1);
-          this.formularios[posicion].nacionalidad.disable();
-        } else {
-          this.formularios[posicion].nacionalidad.setValue(2);
-          this.formularios[posicion].nacionalidad.disable();
-        }
-        this.consultarLugarNacimiento(desEntidadNac, posicion);
-      },
+      next: (respuesta: HttpRespuesta<any>): void => this.manejoRespuestaValidaCURP(respuesta, posicion),
       error: (): void => this.manejoRespuestaErrorCURP()
     });
+  }
+
+  manejoRespuestaValidaCURP(respuesta: HttpRespuesta<any>, posicion: number): void {
+    if (respuesta.mensaje.includes('interno')) {
+      this.manejoRespuestaValidaCURPInterno(respuesta, posicion);
+      return;
+    }
+    if (respuesta.datos?.message?.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+      return
+    }
+    const {nombre, apellido1, apellido2, sexo, fechNac, nacionalidad, desEntidadNac} = respuesta.datos;
+    const [dia, mes, anio] = fechNac.split('/');
+    const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
+    this.formularios[posicion].nombre.setValue(nombre);
+    this.formularios[posicion].nombre.disable();
+    this.formularios[posicion].primerApellido.setValue(apellido1);
+    this.formularios[posicion].primerApellido.disable();
+    this.formularios[posicion].segundoApellido.setValue(apellido2);
+    this.formularios[posicion].segundoApellido.disable();
+    this.formularios[posicion].fechaNacimiento.setValue(fecha);
+    this.formularios[posicion].fechaNacimiento.disable();
+    if (sexo.includes('HOMBRE')) {
+      this.formularios[posicion].sexo.setValue(2);
+      this.formularios[posicion].sexo.disable();
+    }
+    if (sexo.includes('MUJER')) {
+      this.formularios[posicion].sexo.setValue(1);
+      this.formularios[posicion].sexo.disable();
+    }
+    if (nacionalidad.includes('MEXICO') || nacionalidad.includes('MEX')) {
+      this.formularios[posicion].nacionalidad.setValue(1);
+      this.formularios[posicion].nacionalidad.disable();
+    } else {
+      this.formularios[posicion].nacionalidad.setValue(2);
+      this.formularios[posicion].nacionalidad.disable();
+    }
+    this.consultarLugarNacimiento(desEntidadNac, posicion);
+  }
+
+  manejoRespuestaValidaCURPInterno(respuesta: HttpRespuesta<any>, posicion: number): void {
+    const [informacion] = respuesta.datos;
+    const [anio, mes, dia] = informacion.fechaNacimiento.split('-');
+    const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
+    this.formularios[posicion].nombre.setValue(informacion.nomPersona);
+    this.formularios[posicion].nombre.disable();
+    this.formularios[posicion].primerApellido.setValue(informacion.nomPersonaPaterno);
+    this.formularios[posicion].primerApellido.disable();
+    this.formularios[posicion].segundoApellido.setValue(informacion.nomPersonaMaterno);
+    this.formularios[posicion].segundoApellido.disable();
+    this.formularios[posicion].sexo.setValue(informacion.numSexo);
+    this.formularios[posicion].sexo.disable();
+    this.formularios[posicion].otroSexo.setValue(informacion?.desOtroSexo);
+    this.formularios[posicion].otroSexo.disable();
+    this.formularios[posicion].fechaNacimiento.setValue(fecha);
+    this.formularios[posicion].fechaNacimiento.disable();
+    this.formularios[posicion].telefono.setValue(informacion.desTelefono)
+    this.formularios[posicion].correoElectronico.setValue(informacion.desCorreo)
+    this.formularios[posicion].cp.setValue(informacion.DesCodigoPostal)
+    this.formularios[posicion].calle.setValue(informacion.desCalle)
+    this.formularios[posicion].numeroInterior.setValue(informacion.numInterior)
+    this.formularios[posicion].numeroExterior.setValue(informacion.numExterior)
+    this.formularios[posicion].colonia.setValue(informacion.desColonia)
+    if (+informacion.idPais == 119 || !+informacion.idPais) {
+      this.formularios[posicion].nacionalidad.setValue(1);
+      this.formularios[posicion].nacionalidad.disable();
+      this.formularios[posicion].lugarNacimiento.setValue(informacion.idEstado)
+      this.formularios[posicion].lugarNacimiento.disable()
+    } else {
+      this.formularios[posicion].nacionalidad.setValue(2);
+      this.formularios[posicion].nacionalidad.disable();
+      this.formularios[posicion].paisNacimiento.setValue(informacion.idPais)
+      this.formularios[posicion].paisNacimiento.disable()
+    }
+    informacion.rfc ? this.formularios[posicion].rfc.setValue(informacion.rfc) :
+      this.formularios[posicion].rfc.setValue(this.formularios[posicion].rfc.value);
+    informacion.nss ? this.formularios[posicion].nss.setValue(informacion.nss) :
+      this.formularios[posicion].nss.setValue(this.formularios[posicion].nss.value);
+    this.consultarCodigoPostal(posicion);
+    this.cambiarNacionalidad(posicion);
+    this.cambiarNacionalidad2(posicion);
   }
 
   manejoRespuestaErrorCURP(): void {
