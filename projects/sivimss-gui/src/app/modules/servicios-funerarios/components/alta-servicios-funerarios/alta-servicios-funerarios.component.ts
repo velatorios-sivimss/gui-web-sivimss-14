@@ -855,11 +855,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   redireccionarModificar(): void {
     void this.router.navigate(['./servicios-funerarios/modificar-pago'],
-      {
-        queryParams: {
-          idPlanSfpa: this.idPlanSfpaExistente
-        }
-      });
+      {queryParams: {idPlanSfpa: this.idPlanSfpaExistente}});
   }
 
   regresar(): void {
@@ -896,10 +892,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   validarBotonGuardar(): boolean {
-    if (this.datosTitularForm.invalid || this.datosTitularSubstitutoForm.invalid || this.promotorForm.invalid ||
-      this.cajaValidacionDatosExistentes.includes(true)) {
-      return true;
-    }
-    return false;
+    return this.datosTitularForm.invalid || this.datosTitularSubstitutoForm.invalid || this.promotorForm.invalid ||
+      this.cajaValidacionDatosExistentes.includes(true);
   }
 }
