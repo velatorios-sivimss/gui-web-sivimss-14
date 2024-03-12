@@ -237,96 +237,96 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
       return;
     }
-    if (posicion === 0 || posicion === 1) {
-      this.limpiarFormulario(posicion);
-      this.validarUsuarioTitular(formularioEnUso[posicion].curp.value, "", "", posicion);
-      this.cargadorService.activar();
-      this.serviciosFunerariosService.consultarCURP(formularioEnUso[posicion].curp.value).pipe(
-        finalize(() => this.cargadorService.desactivar())
-      ).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          if (respuesta.mensaje.includes('interno')) {
-            const [informacion] = respuesta.datos;
-            const [anio, mes, dia] = informacion.fechaNacimiento.split('-');
-            const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
-            formularioEnUso[posicion].nombre.setValue(informacion.nomPersona);
-            formularioEnUso[posicion].nombre.disable();
-            formularioEnUso[posicion].primerApellido.setValue(informacion.nomPersonaPaterno);
-            formularioEnUso[posicion].primerApellido.disable();
-            formularioEnUso[posicion].segundoApellido.setValue(informacion.nomPersonaMaterno);
-            formularioEnUso[posicion].segundoApellido.disable();
-            formularioEnUso[posicion].sexo.setValue(informacion.numSexo);
-            formularioEnUso[posicion].sexo.disable();
-            formularioEnUso[posicion].otroSexo.setValue(informacion?.desOtroSexo);
-            formularioEnUso[posicion].otroSexo.disable();
-            formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-            formularioEnUso[posicion].fechaNacimiento.disable();
-            formularioEnUso[posicion].telefono.setValue(informacion.desTelefono)
-            formularioEnUso[posicion].correoElectronico.setValue(informacion.desCorreo)
-            formularioEnUso[posicion].cp.setValue(informacion.DesCodigoPostal)
-            formularioEnUso[posicion].calle.setValue(informacion.desCalle)
-            formularioEnUso[posicion].numeroInterior.setValue(informacion.numInterior)
-            formularioEnUso[posicion].numeroExterior.setValue(informacion.numExterior)
-            formularioEnUso[posicion].colonia.setValue(informacion.desColonia)
-            if (+informacion.idPais == 119 || !+informacion.idPais) {
-              formularioEnUso[posicion].nacionalidad.setValue(1);
-              formularioEnUso[posicion].nacionalidad.disable();
-              formularioEnUso[posicion].lugarNacimiento.setValue(informacion.idEstado)
-              formularioEnUso[posicion].lugarNacimiento.disable()
-            } else {
-              formularioEnUso[posicion].nacionalidad.setValue(2);
-              formularioEnUso[posicion].nacionalidad.disable();
-              formularioEnUso[posicion].paisNacimiento.setValue(informacion.idPais)
-              formularioEnUso[posicion].paisNacimiento.disable()
-            }
-            informacion.rfc ? formularioEnUso[posicion].rfc.setValue(informacion.rfc) :
-              formularioEnUso[posicion].rfc.setValue(formularioEnUso[posicion].rfc.value);
-            informacion.nss ? formularioEnUso[posicion].nss.setValue(informacion.nss) :
-              formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
-            this.consultarCodigoPostal(posicion);
-            this.cambiarNacionalidad(posicion);
-            this.cambiarNacionalidad2(posicion);
-            return;
-          }
-
-          if (respuesta.datos?.message?.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
-            this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
-            return
-          }
-          const {nombre, apellido1, apellido2, sexo, fechNac, nacionalidad, desEntidadNac} = respuesta.datos;
-          const [dia, mes, anio] = fechNac.split('/');
+    if (![0, 1].includes(posicion)) return;
+    this.limpiarFormulario(posicion);
+    this.validarUsuarioTitular(formularioEnUso[posicion].curp.value, "", "", posicion);
+    this.cargadorService.activar();
+    this.serviciosFunerariosService.consultarCURP(formularioEnUso[posicion].curp.value).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.mensaje.includes('interno')) {
+          const [informacion] = respuesta.datos;
+          const [anio, mes, dia] = informacion.fechaNacimiento.split('-');
           const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
-          formularioEnUso[posicion].nombre.setValue(nombre);
+          formularioEnUso[posicion].nombre.setValue(informacion.nomPersona);
           formularioEnUso[posicion].nombre.disable();
-          formularioEnUso[posicion].primerApellido.setValue(apellido1);
+          formularioEnUso[posicion].primerApellido.setValue(informacion.nomPersonaPaterno);
           formularioEnUso[posicion].primerApellido.disable();
-          formularioEnUso[posicion].segundoApellido.setValue(apellido2);
+          formularioEnUso[posicion].segundoApellido.setValue(informacion.nomPersonaMaterno);
           formularioEnUso[posicion].segundoApellido.disable();
+          formularioEnUso[posicion].sexo.setValue(informacion.numSexo);
+          formularioEnUso[posicion].sexo.disable();
+          formularioEnUso[posicion].otroSexo.setValue(informacion?.desOtroSexo);
+          formularioEnUso[posicion].otroSexo.disable();
           formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
           formularioEnUso[posicion].fechaNacimiento.disable();
-          if (sexo.includes('HOMBRE')) {
-            formularioEnUso[posicion].sexo.setValue(2);
-            formularioEnUso[posicion].sexo.disable();
-          }
-          if (sexo.includes('MUJER')) {
-            formularioEnUso[posicion].sexo.setValue(1);
-            formularioEnUso[posicion].sexo.disable();
-          }
-          if (nacionalidad.includes('MEXICO') || nacionalidad.includes('MEX')) {
+          formularioEnUso[posicion].telefono.setValue(informacion.desTelefono)
+          formularioEnUso[posicion].correoElectronico.setValue(informacion.desCorreo)
+          formularioEnUso[posicion].cp.setValue(informacion.DesCodigoPostal)
+          formularioEnUso[posicion].calle.setValue(informacion.desCalle)
+          formularioEnUso[posicion].numeroInterior.setValue(informacion.numInterior)
+          formularioEnUso[posicion].numeroExterior.setValue(informacion.numExterior)
+          formularioEnUso[posicion].colonia.setValue(informacion.desColonia)
+          if (+informacion.idPais == 119 || !+informacion.idPais) {
             formularioEnUso[posicion].nacionalidad.setValue(1);
             formularioEnUso[posicion].nacionalidad.disable();
+            formularioEnUso[posicion].lugarNacimiento.setValue(informacion.idEstado)
+            formularioEnUso[posicion].lugarNacimiento.disable()
           } else {
             formularioEnUso[posicion].nacionalidad.setValue(2);
             formularioEnUso[posicion].nacionalidad.disable();
+            formularioEnUso[posicion].paisNacimiento.setValue(informacion.idPais)
+            formularioEnUso[posicion].paisNacimiento.disable()
           }
-          this.consultarLugarNacimiento(desEntidadNac, posicion);
-        },
-        error: (error: HttpErrorResponse): void => {
-          const ERROR: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(52)
-          this.alertaService.mostrar(TipoAlerta.Error, ERROR);
+          informacion.rfc ? formularioEnUso[posicion].rfc.setValue(informacion.rfc) :
+            formularioEnUso[posicion].rfc.setValue(formularioEnUso[posicion].rfc.value);
+          informacion.nss ? formularioEnUso[posicion].nss.setValue(informacion.nss) :
+            formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
+          this.consultarCodigoPostal(posicion);
+          this.cambiarNacionalidad(posicion);
+          this.cambiarNacionalidad2(posicion);
+          return;
         }
-      })
-    }
+        if (respuesta.datos?.message?.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+          return
+        }
+        const {nombre, apellido1, apellido2, sexo, fechNac, nacionalidad, desEntidadNac} = respuesta.datos;
+        const [dia, mes, anio] = fechNac.split('/');
+        const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
+        formularioEnUso[posicion].nombre.setValue(nombre);
+        formularioEnUso[posicion].nombre.disable();
+        formularioEnUso[posicion].primerApellido.setValue(apellido1);
+        formularioEnUso[posicion].primerApellido.disable();
+        formularioEnUso[posicion].segundoApellido.setValue(apellido2);
+        formularioEnUso[posicion].segundoApellido.disable();
+        formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
+        formularioEnUso[posicion].fechaNacimiento.disable();
+        if (sexo.includes('HOMBRE')) {
+          formularioEnUso[posicion].sexo.setValue(2);
+          formularioEnUso[posicion].sexo.disable();
+        }
+        if (sexo.includes('MUJER')) {
+          formularioEnUso[posicion].sexo.setValue(1);
+          formularioEnUso[posicion].sexo.disable();
+        }
+        if (nacionalidad.includes('MEXICO') || nacionalidad.includes('MEX')) {
+          formularioEnUso[posicion].nacionalidad.setValue(1);
+          formularioEnUso[posicion].nacionalidad.disable();
+        } else {
+          formularioEnUso[posicion].nacionalidad.setValue(2);
+          formularioEnUso[posicion].nacionalidad.disable();
+        }
+        this.consultarLugarNacimiento(desEntidadNac, posicion);
+      },
+      error: (): void => this.manejoRespuestaErrorCURP()
+    });
+  }
+
+  manejoRespuestaErrorCURP(): void {
+    const ERROR: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(52)
+    this.alertaService.mostrar(TipoAlerta.Error, ERROR);
   }
 
   validarRfc(posicion: number): void {
@@ -532,17 +532,20 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.serviciosFunerariosService.consultarMatriculaSiap(formularioEnUso[posicion].matricula.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        if (!respuesta.datos) {
-          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(70));
-        }
-      },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'La matrícula es incorrecta';
-        const ERROR_SISTEMA: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje)
-        this.alertaService.mostrar(TipoAlerta.Error, ERROR_SISTEMA || ERROR);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaValidaMatricula(respuesta),
+      error: (error: HttpErrorResponse): void => this.procesarRespuestaErrorMatricula(error)
     });
+  }
+
+  procesarRespuestaValidaMatricula(respuesta: HttpRespuesta<any>): void {
+    if (respuesta.datos) return;
+    this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(70));
+  }
+
+  procesarRespuestaErrorMatricula(error: HttpErrorResponse): void {
+    const ERROR: string = 'La matrícula es incorrecta';
+    const ERROR_SISTEMA: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje)
+    this.alertaService.mostrar(TipoAlerta.Error, ERROR_SISTEMA || ERROR);
   }
 
   consultarNSS(posicion: number): void {
