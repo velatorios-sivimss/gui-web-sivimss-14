@@ -88,8 +88,8 @@
   <p-table styleClass="mt-5 mb-8" [value]="servicioFunerario"
            [paginator]="servicioFunerario.length > 0" [rows]="cantElementosPorPagina"
            [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="paginar($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
-
+           (onLazyLoad)="paginar($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
+           appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn scope="col">Folio Plan SFPA</th>
@@ -100,21 +100,21 @@
         <th pResizableColumn scope="col">Número de pagos</th>
         <th pResizableColumn scope="col">Estatus de Plan SFPA PA</th>
         <th pResizableColumn scope="col">Estatus pago</th>
-        <th pResizableColumn scope="col"></th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-servicioFunerario>
       <tr>
-        <td> {{ servicioFunerario.NUM_FOLIO_PLAN_SFPA }}</td>
-        <td> {{ servicioFunerario.TITULAR }}</td>
-        <td> {{ servicioFunerario.ESTADO }}</td>
-        <td> {{ servicioFunerario.CORREO_ELECTRONICO ? servicioFunerario.CORREO_ELECTRONICO : null }}</td>
-        <td> {{ servicioFunerario.PAQUETE }}</td>
-        <td> {{ servicioFunerario.NUMERO_PAGO }}</td>
-        <td> {{ servicioFunerario.ESTATUS_PLAN_SFPA }}</td>
+        <td> {{ servicioFunerario.numFolio }}</td>
+        <td> {{ servicioFunerario.nombreCompleto }}</td>
+        <td> {{ servicioFunerario.estado }}</td>
+        <td> {{ servicioFunerario.correo }}</td>
+        <td> {{ servicioFunerario.paquete }}</td>
+        <td> {{ servicioFunerario.noPago }}</td>
+        <td> {{ servicioFunerario.estatusPlan }}</td>
         <td> {{ servicioFunerario.ESTATUS_PAGO_ANTICIPADO }}</td>
         <td>
-          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'20px'}">
             <div class="contenedor-celda-iconos">
               <a (click)="abrirPanel($event,servicioFunerario)">
                 <img
