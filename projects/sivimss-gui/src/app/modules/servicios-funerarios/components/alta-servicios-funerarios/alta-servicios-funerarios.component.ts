@@ -352,73 +352,15 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.serviciosFunerariosService.consultarRFC(this.formularios[posicion].rfc.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.mensaje.includes('interno')) {
-          const [anio, mes, dia] = respuesta.datos[0].fechaNacimiento.split('-');
-          const fecha = new Date(anio + '/' + mes + '/' + dia);
-          this.formularios[posicion].curp.setValue(respuesta.datos[0].curp)
-          this.formularios[posicion].nombre.setValue(respuesta.datos[0].nomPersona)
-          this.formularios[posicion].primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno)
-          this.formularios[posicion].segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno)
-          this.formularios[posicion].sexo.setValue(respuesta.datos[0].numSexo)
-          this.formularios[posicion].otroSexo.setValue(respuesta.datos[0]?.desOtroSexo)
-          this.formularios[posicion].fechaNacimiento.setValue(fecha);
-          this.formularios[posicion].telefono.setValue(respuesta.datos[0].desTelefono)
-          this.formularios[posicion].correoElectronico.setValue(respuesta.datos[0].desCorreo)
-          this.formularios[posicion].cp.setValue(respuesta.datos[0].DesCodigoPostal)
-          this.formularios[posicion].calle.setValue(respuesta.datos[0].desCalle)
-          this.formularios[posicion].numeroInterior.setValue(respuesta.datos[0].numInterior)
-          this.formularios[posicion].numeroExterior.setValue(respuesta.datos[0].numExterior)
-          this.formularios[posicion].colonia.setValue(respuesta.datos[0].desColonia)
-          if (+respuesta.datos[0].idPais == 119 || !+respuesta.datos[0].idPais) {
-            this.formularios[posicion].nacionalidad.setValue(1);
-            this.formularios[posicion].lugarNacimiento.setValue(respuesta.datos[0].idEstado)
-          } else {
-            this.formularios[posicion].nacionalidad.setValue(2);
-            this.formularios[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
-          }
-          respuesta.datos[0].rfc ? this.formularios[posicion].rfc.setValue(respuesta.datos[0].rfc) :
-            this.formularios[posicion].rfc.setValue(this.formularios[posicion].rfc.value);
-          respuesta.datos[0].nss ? this.formularios[posicion].nss.setValue(respuesta.datos[0].nss) :
-            this.formularios[posicion].nss.setValue(this.formularios[posicion].nss.value);
-          this.consultarCodigoPostal(posicion);
-          this.cambiarNacionalidad(posicion);
-          this.cambiarNacionalidad2(posicion);
-          return;
-        }
-
-        if (respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
-          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
-          return
-        }
-        const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
-        const fecha = new Date(anio + '/' + mes + '/' + dia);
-        this.formularios[posicion].nombre.setValue(respuesta.datos.nombre);
-        this.formularios[posicion].primerApellido.setValue(
-          respuesta.datos.apellido1
-        );
-        this.formularios[posicion].segundoApellido.setValue(
-          respuesta.datos.apellido2
-        );
-        this.formularios[posicion].fechaNacimiento.setValue(fecha);
-        if (respuesta.datos.sexo.includes('HOMBRE')) {
-          this.formularios[posicion].sexo.setValue(2);
-        }
-        if (respuesta.datos.sexo.includes('MUJER')) {
-          this.formularios[posicion].sexo.setValue(1);
-        }
-        if (
-          respuesta.datos.nacionalidad.includes('MEXICO') ||
-          respuesta.datos.nacionalidad.includes('MEX')
-        ) {
-          this.formularios[posicion].nacionalidad.setValue(1);
-        } else {
-          this.formularios[posicion].nacionalidad.setValue(2);
-        }
-        this.consultarLugarNacimiento(respuesta.datos.desEntidadNac, posicion);
-      },
+      next: (respuesta: HttpRespuesta<any>) => this.manejarSolicitudValidaRFC(respuesta),
       error: (error: HttpErrorResponse) => this.manejarSolicitudErrorRFC()
     });
+  }
+
+  manejarSolicitudValidaRFC(respuesta: HttpRespuesta<any>): void {
+    if (respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+    }
   }
 
   manejarSolicitudErrorRFC(): void {
@@ -426,7 +368,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   consultarLugarNacimiento(entidad: string, posicion: number): void {
-    const entidadEditada = this.accentsTidy(entidad);
+    const entidadEditada: string = this.accentsTidy(entidad);
     if (entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')) {
       this.formularios[posicion].lugarNacimiento.setValue(11);
       this.formularios[posicion].lugarNacimiento.disable();
