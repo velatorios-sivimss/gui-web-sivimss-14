@@ -144,7 +144,7 @@ export interface Sexo {
 export interface SolicitudCreacionSFPA {
   plan: SolicitudPlan,
   contratante: SolicitudContratante,
-  titularSubstituto: SolicitudSubstituto,
+  titularSubstituto: SolicitudSubstituto | null,
   beneficiario1: SolicitudBeneficiario | null,
   beneficiario2: SolicitudBeneficiario | null
 }
@@ -155,12 +155,12 @@ export interface SolicitudPlan {
   idPaquete: number,
   monPrecio: string,
   idTipoPagoMensual: number,
-  pagoMensual: number,
+  pagoMensual: string,
   indTitularSubstituto: number,
   indModificarTitularSubstituto: number,
   indPromotor: number,
   idPromotor: number | null,
-  idVelatorio: number,
+  idVelatorio: number | null,
   idEstatusPlan: number
 }
 
@@ -183,7 +183,6 @@ export interface SolicitudContratante {
   telefono: string,
   telefonoFijo: string,
   correo: string,
-  tipoPersona: string,
   ine: null,
   idDomicilio: null,
   desCalle: string,
@@ -211,9 +210,8 @@ export interface SolicitudSubstituto {
   idPais: number,
   idEstado: number,
   telefono: string,
-  telefonoFijo: string,
+  telefonoFijo: string | null,
   correo: string,
-  tipoPersona: string,
   ine: null,
   idDomicilio: null,
   desCalle: string,
@@ -243,7 +241,6 @@ export interface SolicitudBeneficiario {
   telefono: string,
   telefonoFijo: string,
   correo: string,
-  tipoPersona: string,
   ine: null,
   idDomicilio: null,
   desCalle: string,

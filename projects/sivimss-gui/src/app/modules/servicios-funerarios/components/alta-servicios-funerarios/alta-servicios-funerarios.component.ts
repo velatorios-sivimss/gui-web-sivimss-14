@@ -13,16 +13,23 @@ import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcru
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {PATRON_CORREO, PATRON_CURP, PATRON_RFC} from "../../../../utils/constantes";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown, obtenerVelatorioUsuarioLogueado} from "../../../../utils/funciones";
 import {finalize} from "rxjs";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {CatalogoPaquetes} from "../../models/catalogos.interface";
-import {AgregarPlanSFPA} from "../../models/servicios-funerarios.interface";
+import {
+  AgregarPlanSFPA,
+  SolicitudBeneficiario,
+  SolicitudContratante,
+  SolicitudPlan, SolicitudSubstituto
+} from "../../models/servicios-funerarios.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {CURP} from 'projects/sivimss-gui/src/app/utils/regex';
+import {UsuarioContratante} from "../../../contratantes/models/usuario-contratante.interface";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 
 @Component({
@@ -855,6 +862,167 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     if (objetoBeneficiario2.curp && objetoBeneficiario2.curp !== '') objetoTitular.titularesBeneficiarios.push(objetoBeneficiario2);
 
     return objetoTitular;
+  }
+
+  generarPlan(): SolicitudPlan {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
+    const numeroPago = this.fdt.numeroPago.value;
+    const numPago: string = this.numeroPago.find((e: TipoDropdown) => e.value === numeroPago)?.label ?? '';
+    return {
+      idEstatusPlan: 0,
+      idPaquete: this.fdt.tipoPaquete.value,
+      idPlanSfpa: null,
+      idPromotor: this.fp.promotor.value,
+      idTipoContratacion: 1,
+      idTipoPagoMensual: this.fdt.numeroPago.value,
+      idVelatorio: velatorio,
+      indModificarTitularSubstituto: 0,
+      indPromotor: this.fp.gestionadoPorPromotor.value ? 1 : 0,
+      indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0,
+      monPrecio: this.consultarMonPrecio().toString(),
+      pagoMensual: numPago
+    }
+  }
+
+  generarSustituto(): SolicitudSubstituto | null {
+    if (this.fdts.datosIguales.value) return null;
+    const sustituto = this.datosTitularSubstitutoForm.getRawValue();
+    let fecNacimiento = sustituto.fechaNacimiento
+    if (fecNacimiento) fecNacimiento = moment(fecNacimiento).format('yyyy-MM-DD');
+    return {
+      codigoPostal: sustituto.cp,
+      correo: sustituto.correoElectronico,
+      curp: sustituto.curp,
+      desCalle: sustituto.calle,
+      desColonia: sustituto.colonia,
+      desEstado: sustituto.estado,
+      desMunicipio: sustituto.municipio,
+      fecNacimiento,
+      idDomicilio: null,
+      idEstado: sustituto.lugarNacimiento,
+      idPais: sustituto.paisNacimiento,
+      idPersona: null,
+      idSexo: sustituto.sexo,
+      ine: null,
+      matricula: sustituto.matricula,
+      nomPersona: sustituto.nombre,
+      nss: sustituto.nss,
+      numExterior: sustituto.numeroExterior,
+      numInterior: sustituto.numeroInterior,
+      otroSexo: sustituto.otroSexo,
+      persona: "titular substituto",
+      primerApellido: sustituto.primerApellido,
+      rfc: sustituto.rfc,
+      segundoApellido: sustituto.segundoApellido,
+      telefono: sustituto.telefono,
+      telefonoFijo: null,
+    }
+  }
+
+  generarContratante(): SolicitudContratante {
+    const contratante = this.datosTitularForm.getRawValue();
+    let fecNacimiento = contratante.fechaNacimiento
+    if (fecNacimiento) fecNacimiento = moment(fecNacimiento).format('yyyy-MM-DD');
+    return {
+      codigoPostal: contratante.cp,
+      correo: contratante.correoElectronico,
+      curp: contratante.curp,
+      desCalle: contratante.calle,
+      desColonia: contratante.colonia,
+      desEstado: contratante.estado,
+      desMunicipio: contratante.municipio,
+      fecNacimiento,
+      idContratante: null,
+      idDomicilio: null,
+      idEstado: contratante.lugarNacimiento,
+      idPais: contratante.paisNacimiento,
+      idPersona: null,
+      idSexo: contratante.sexo,
+      ine: null,
+      matricula: contratante.matricula,
+      nomPersona: contratante.nombre,
+      nss: contratante.nss,
+      numExterior: contratante.numeroExterior,
+      numInterior: contratante.numeroInterior,
+      otroSexo: contratante.otroSexo,
+      persona: "titular",
+      primerApellido: contratante.primerApellido,
+      rfc: contratante.rfc,
+      segundoApellido: contratante.segundoApellido,
+      telefono: contratante.telefono,
+      telefonoFijo: contratante.telefonoFijo,
+    }
+  }
+
+  generarBeneficiario1(): SolicitudBeneficiario | null {
+    const beneficiario1 = this.datosBeneficiario1Form.getRawValue();
+    if (!beneficiario1.curp) return null;
+    let fecNacimiento = beneficiario1.fechaNacimiento
+    if (fecNacimiento) fecNacimiento = moment(fecNacimiento).format('yyyy-MM-DD');
+    return {
+      codigoPostal: beneficiario1.cp,
+      correo: beneficiario1.correoElectronico,
+      curp: beneficiario1.curp,
+      desCalle: beneficiario1.calle,
+      desColonia: beneficiario1.colonia,
+      desEstado: beneficiario1.estado,
+      desMunicipio: beneficiario1.municipio,
+      fecNacimiento,
+      idDomicilio: null,
+      idEstado: beneficiario1.lugarNacimiento,
+      idPais: beneficiario1.paisNacimiento,
+      idPersona: null,
+      idSexo: beneficiario1.sexo,
+      ine: null,
+      matricula: beneficiario1.matricula,
+      nomPersona: beneficiario1.nombre,
+      nss: beneficiario1.nss,
+      numExterior: beneficiario1.numeroExterior,
+      numInterior: beneficiario1.numeroInterior,
+      otroSexo: beneficiario1.otroSexo,
+      persona: 'beneficiario 1',
+      primerApellido: beneficiario1.primerApellido,
+      rfc: beneficiario1.rfc,
+      segundoApellido: beneficiario1.segundoApellido,
+      telefono: beneficiario1.telefono,
+      telefonoFijo: '',
+    }
+  }
+
+  generarBeneficiario2(): SolicitudBeneficiario | null {
+    const beneficiario2 = this.datosBeneficiario2Form.getRawValue();
+    if (!beneficiario2.curp) return null;
+    let fecNacimiento = beneficiario2.fechaNacimiento
+    if (fecNacimiento) fecNacimiento = moment(fecNacimiento).format('yyyy-MM-DD');
+    return {
+      codigoPostal: beneficiario2.cp,
+      correo: beneficiario2.correoElectronico,
+      curp: beneficiario2.curp,
+      desCalle: beneficiario2.calle,
+      desColonia: beneficiario2.colonia,
+      desEstado: beneficiario2.estado,
+      desMunicipio: beneficiario2.municipio,
+      fecNacimiento,
+      idDomicilio: null,
+      idEstado: beneficiario2.lugarNacimiento,
+      idPais: beneficiario2.paisNacimiento,
+      idPersona: null,
+      idSexo: beneficiario2.sexo,
+      ine: null,
+      matricula: beneficiario2.matricula,
+      nomPersona: beneficiario2.nombre,
+      nss: beneficiario2.nss,
+      numExterior: beneficiario2.numeroExterior,
+      numInterior: beneficiario2.numeroInterior,
+      otroSexo: beneficiario2.otroSexo,
+      persona: 'beneficiario 2',
+      primerApellido: beneficiario2.primerApellido,
+      rfc: beneficiario2.rfc,
+      segundoApellido: beneficiario2.segundoApellido,
+      telefono: beneficiario2.telefono,
+      telefonoFijo: '',
+    }
   }
 
   consultarMonPrecio(): number {
