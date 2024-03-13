@@ -22,7 +22,7 @@ import {CatalogoPaquetes} from "../../models/catalogos.interface";
 import {
   AgregarPlanSFPA,
   SolicitudBeneficiario,
-  SolicitudContratante,
+  SolicitudContratante, SolicitudCreacionSFPA,
   SolicitudPlan, SolicitudSubstituto
 } from "../../models/servicios-funerarios.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
@@ -352,7 +352,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
       return;
     }
-    this.limpiarFormulario(posicion);
     this.validarUsuarioTitular("", this.formularios[posicion].rfc.value, "", posicion);
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarRFC(this.formularios[posicion].rfc.value).pipe(
@@ -364,6 +363,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   manejarSolicitudValidaRFC(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos.message) return;
     if (respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
     }
@@ -454,7 +454,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
           } else if (rfc === "") {
             this.cajaValidacionDatosExistentes[2] = true;
           }
-
           this.existeDatoRegistrado = true;
           this.confirmacionDatosExistentes = true;
           this.mensajeDatosExistentes = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje)
@@ -691,7 +690,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   guardar(): void {
-    const objetoGuardar: AgregarPlanSFPA = this.generarObjetoPlanSFPA();
+    const objetoGuardar: SolicitudCreacionSFPA = this.generarObjetoPlanSFPA();
     this.confirmarGuardado = false;
     this.cargadorService.activar();
     this.serviciosFunerariosService.insertarPlanSFPA(objetoGuardar).pipe(
@@ -720,148 +719,14 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   }
 
-  generarObjetoPlanSFPA(): AgregarPlanSFPA {
-    let objetoTitularSubstituto = {
-      persona: 'titular substituto', //Si es la misma persona no mandar este objeto
-      rfc: this.fdts.rfc.value,
-      curp: this.fdts.curp.value,
-      matricula: this.fdts.matricula?.value ?? "",
-      nss: this.fdts.nss.value,
-      nomPersona: this.fdts.nombre.value,
-      primerApellido: this.fdts.primerApellido.value,
-      segundoApellido: this.fdts.segundoApellido.value,
-      sexo: this.fdts.sexo.value,
-      otroSexo: this.fdts.otroSexo?.value ?? "",
-      fecNacimiento: moment(this.fdts.fechaNacimiento.value).format('yyyy-MM-DD'),
-      idPais: this.fdts.paisNacimiento?.value ?? 119,
-      idEstado: this.fdts.lugarNacimiento?.value ?? null,
-      telefono: this.fdts.telefono.value,
-      telefonoFijo: null,
-      correo: this.fdts.correoElectronico.value,
-      tipoPersona: "",
-      ine: null,
-      cp: {
-        desCalle: this.fdts.calle.value,
-        numExterior: this.fdts.numeroExterior.value,
-        numInterior: this.fdts.numeroInterior?.value ?? "",
-        codigoPostal: this.fdts.cp.value,
-        desColonia: this.fdts.colonia.value,
-        desMunicipio: this.fdts.municipio.value,
-        desEstado: this.fdts.estado.value,
-      }
+  generarObjetoPlanSFPA(): SolicitudCreacionSFPA {
+    return {
+      plan: this.generarPlan(),
+      contratante: this.generarContratante(),
+      titularSubstituto: this.generarSustituto(),
+      beneficiario1: this.generarBeneficiario1(),
+      beneficiario2: this.generarBeneficiario2()
     }
-
-    let objetoBeneficiario1 = {
-      persona: 'beneficiario 1',
-      rfc: this.fdb1.rfc.value,
-      curp: this.fdb1.curp.value,
-      matricula: this.fdb1.matricula?.value ?? "",
-      nss: this.fdb1.nss.value,
-      nomPersona: this.fdb1.nombre.value,
-      primerApellido: this.fdb1.primerApellido.value,
-      segundoApellido: this.fdb1.segundoApellido.value,
-      sexo: this.fdb1.sexo.value,
-      otroSexo: this.fdb1.otroSexo?.value ?? "",
-      fecNacimiento: this.fdb1.fechaNacimiento.value ? moment(this.fdb1.fechaNacimiento.value).format('yyyy-MM-DD') : null,
-      idPais: this.fdb1.paisNacimiento?.value ?? 119,
-      idEstado: this.fdb1.lugarNacimiento?.value ?? null,
-      telefono: this.fdb1.telefono.value,
-      telefonoFijo: null,
-      correo: this.fdb1.correoElectronico.value,
-      tipoPersona: "",
-      ine: null,
-      cp: {
-        desCalle: this.fdb1.calle.value,
-        numExterior: this.fdb1.numeroExterior.value,
-        numInterior: this.fdb1.numeroInterior?.value ?? "",
-        codigoPostal: this.fdb1.cp.value,
-        desColonia: this.fdb1.colonia.value,
-        desMunicipio: this.fdb1.municipio.value,
-        desEstado: this.fdb1.estado.value,
-      }
-    }
-
-    let objetoBeneficiario2 = {
-      persona: 'beneficiario 2',
-      rfc: this.fdb2.rfc.value,
-      curp: this.fdb2.curp.value,
-      matricula: this.fdb2.matricula?.value ?? "",
-      nss: this.fdb2.nss.value,
-      nomPersona: this.fdb2.nombre.value,
-      primerApellido: this.fdb2.primerApellido.value,
-      segundoApellido: this.fdb2.segundoApellido.value,
-      sexo: this.fdb2.sexo.value,
-      otroSexo: this.fdb2.otroSexo?.value ?? "",
-      fecNacimiento: this.fdb2.fechaNacimiento.value ? moment(this.fdb2.fechaNacimiento.value).format('yyyy-MM-DD') : null,
-      idPais: this.fdb2.paisNacimiento?.value ?? 119,
-      idEstado: this.fdb2.lugarNacimiento?.value ?? null,
-      telefono: this.fdb2.telefono.value,
-      telefonoFijo: null,
-      correo: this.fdb2.correoElectronico.value,
-      tipoPersona: "",
-      ine: null,
-      cp: {
-        desCalle: this.fdb2.calle.value,
-        numExterior: this.fdb2.numeroExterior.value,
-        numInterior: this.fdb2.numeroInterior?.value ?? "",
-        codigoPostal: this.fdb2.cp.value,
-        desColonia: this.fdb2.colonia.value,
-        desMunicipio: this.fdb2.municipio.value,
-        desEstado: this.fdb2.estado.value,
-      }
-    }
-
-    const numPago = this.numeroPago.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? '';
-
-    let objetoTitular: AgregarPlanSFPA = {
-      idTipoContratacion: 1,
-      idPaquete: this.fdt.tipoPaquete.value,
-      idTipoPagoMensual: this.fdt.numeroPago.value,
-      numPagoMensual: +numPago,
-      indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0, //Cuando te vas a contratante SI 1 no 0
-      indModificarTitularSubstituto: 0, //Cuando es alta se manda en 0 acualizar es 1
-      monPrecio: this.consultarMonPrecio(),
-      indPromotor: this.fp.gestionadoPorPromotor.value ? 1 : 0,// si = 1, No = 0
-      idPromotor: this.fp.promotor.value,
-      titularesBeneficiarios: [
-        {
-          persona: 'titular',
-          rfc: this.fdt.rfc.value,
-          curp: this.fdt.curp.value,
-          matricula: this.fdt.matricula?.value ?? "",
-          nss: this.fdt.nss.value,
-          nomPersona: this.fdt.nombre.value,
-          primerApellido: this.fdt.primerApellido.value,
-          segundoApellido: this.fdt.segundoApellido.value,
-          sexo: this.fdt.sexo.value,
-          otroSexo: this.fdt.otroSexo?.value ?? "",
-          fecNacimiento: this.fdt.fechaNacimiento.value ? moment(this.fdt.fechaNacimiento.value).format('yyyy-MM-DD') : null,
-          idPais: this.fdt.paisNacimiento?.value ?? 119,
-          idEstado: this.fdt.lugarNacimiento?.value ?? null,
-          telefono: this.fdt.telefono.value,
-          telefonoFijo: this.fdt.telefonoFijo.value,
-          correo: this.fdt.correoElectronico.value,
-          tipoPersona: "",
-          ine: null,
-          cp: {
-            desCalle: this.fdt.calle.value,
-            numExterior: this.fdt.numeroExterior.value,
-            numInterior: this.fdt.numeroInterior?.value ?? "",
-            codigoPostal: this.fdt.cp.value,
-            desColonia: this.fdt.colonia.value,
-            desMunicipio: this.fdt.municipio.value,
-            desEstado: this.fdt.estado.value,
-          }
-        }
-      ]
-    }
-    if (objetoTitular.indTitularSubstituto == 0) {
-      objetoTitular.titularesBeneficiarios.push(objetoTitularSubstituto)
-    }
-    if (objetoBeneficiario1.curp && objetoBeneficiario1.curp !== '') objetoTitular.titularesBeneficiarios.push(objetoBeneficiario1);
-    if (objetoBeneficiario2.curp && objetoBeneficiario2.curp !== '') objetoTitular.titularesBeneficiarios.push(objetoBeneficiario2);
-
-    return objetoTitular;
   }
 
   generarPlan(): SolicitudPlan {
