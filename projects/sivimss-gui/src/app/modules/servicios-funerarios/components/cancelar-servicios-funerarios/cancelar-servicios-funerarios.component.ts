@@ -51,7 +51,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
   ngOnInit(): void {
     this.actualizarBreadcrumb();
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
-    this.idPlanSfpa = Number(this.route.snapshot.queryParams.idPlanSfpa);
+    this.idPlanSfpa = +this.route.snapshot.queryParams.idPlanSfpa;
     this.consultarFormulario();
   }
 
@@ -90,23 +90,23 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
       .cancelarPlanSfpa(+this.idPlanSfpa)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Plan SFPA cancelado correctamente');
-          this.router.navigate(["servicios-funerarios"]);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-              +error.error.mensaje
-            )
-          );
-        },
+        next: () => this.procesarRespuestaCorrecta(),
+        error: (error: HttpErrorResponse) => this.procesarRespuestaErronea(error),
       });
   }
 
+  procesarRespuestaCorrecta(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Plan SFPA cancelado correctamente');
+    void this.router.navigate(["servicios-funerarios"]);
+  }
+
+  procesarRespuestaErronea(error: HttpErrorResponse): void {
+    this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje)
+    );
+  }
+
   cancelar(): void {
-    this.router.navigate(["servicios-funerarios"]);
+    void this.router.navigate(["servicios-funerarios"]);
   }
 
 }
