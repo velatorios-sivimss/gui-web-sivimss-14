@@ -1,0 +1,81 @@
+export interface ResponseDetalleServicios {
+  plan: ResponsePlanServicios,
+  contratante: ResponseContratanteServicios,
+  titularSubstituto: null,
+  beneficiario1: ResponseBeneficiarioServicios | null,
+  beneficiario2: ResponseBeneficiarioServicios | null
+}
+
+export interface ResponsePlanServicios {
+  nombrePaquete: string,
+  nombrePromotor: string,
+  idPaquete: number,
+  costoPaquete: number,
+  indTitularSubstituto: boolean,
+  pago: number,
+  indPromotor: boolean,
+  idPromotor: number
+}
+
+export interface ResponseContratanteServicios {
+  "idNacionalidad": number,
+  "numInterior": string,
+  "idPais": number,
+  "segundoApellido": string,
+  "numFolio": string,
+  "otroSexo": string,
+  "nombreCompleto": string,
+  "nss": string,
+  "nacionalidad": string,
+  "idSexo": number,
+  "idContratante": number,
+  "correo": string,
+  "idPlanSfpa": number,
+  "idPersona": number,
+  "curp": string,
+  "desEstado": string,
+  "desMunicipio": string,
+  "nomPersona": string,
+  "primerApellido": string,
+  "codigoPostal": string,
+  "numExterior": string,
+  "desColonia": string,
+  "rfc": string,
+  "idDomicilio": number,
+  "fechaNac": string,
+  "idEstado": number,
+  "desCalle": string,
+  "matricula": string,
+  "sexo": string
+}
+
+export interface ResponseBeneficiarioServicios {
+  "idNacionalidad": number,
+  "numInterior": string,
+  "idPais": number,
+  "segundoApellido": string,
+  "otroSexo": string,
+  "nombreCompleto": string,
+  "idTitularBeneficiario": number,
+  "nss": string,
+  "nacionalidad": string,
+  "idSexo": number,
+  "correo": string,
+  "idPlanSfpa": number,
+  "idPersona": number,
+  "curp": string,
+  "desEstado": string,
+  "desMunicipio": string,
+  "nomPersona": string,
+  "primerApellido": string,
+  "codigoPostal": string,
+  "numExterior": string,
+  "desColonia": string,
+  "rfc": string,
+  "idDomicilio": string,
+  "fechaNac": string,
+  "idEstado": number,
+  "desCalle": string,
+  "matricula": string,
+  "sexo": string
+}
