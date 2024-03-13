@@ -283,7 +283,7 @@ export class ServiciosFunerariosComponent implements OnInit {
     this.loaderService.activar();
     const configuracionArchivo: OpcionesArchivos = {};
     this.serviciosFunerariosService
-      .consultarContrato(this.servicioSeleccionado.ID_PLAN_SFPA)
+      .consultarContrato(this.servicioSeleccionado.idPlanSfpa)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
@@ -338,20 +338,20 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   detallePago(): void {
     void this.router.navigate(['servicios-funerarios/detalle-pago'],
-      {queryParams: {idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA}});
+      {queryParams: {idPlanSfpa: this.servicioSeleccionado.idPlanSfpa}});
   }
 
   cancelarPago(): void {
     void this.router.navigate(['servicios-funerarios/cancelar-pago'],
-      {queryParams: {idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA}});
+      {queryParams: {idPlanSfpa: this.servicioSeleccionado.idPlanSfpa}});
   }
 
   modificarPago(): void {
     void this.router.navigate(['servicios-funerarios/modificar-pago'],
-      {queryParams: {idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA}});
+      {queryParams: {idPlanSfpa: this.servicioSeleccionado.idPlanSfpa}});
   }
 
   validarEstatusPlan(): boolean {
-    return !this.servicioSeleccionado.ESTATUS_PLAN_SFPA?.toUpperCase().includes('CANCELADO');
+    return !this.servicioSeleccionado.estatusPlan?.toUpperCase().includes('CANCELADO');
   }
 }
