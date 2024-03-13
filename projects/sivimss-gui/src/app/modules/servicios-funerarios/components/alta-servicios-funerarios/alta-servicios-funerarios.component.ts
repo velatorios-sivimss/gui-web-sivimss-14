@@ -235,7 +235,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
       return;
     }
-    if (![0, 1].includes(posicion)) return;
     this.limpiarFormulario(posicion);
     this.validarUsuarioTitular(this.formularios[posicion].curp.value, "", "", posicion);
     this.cargadorService.activar();
@@ -573,32 +572,41 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   consultarCodigoPostal(posicion: number): void {
     if (!this.formularios[posicion].cp.value) {
+      this.limpiarCodigoPostal(posicion);
       return;
     }
     this.cargadorService.activar();
     this.serviciosFunerariosService.consutaCP(this.formularios[posicion].cp.value)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta) {
-            this.colonias[posicion] = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
-            this.formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
-            this.formularios[posicion].municipio.setValue(
-              respuesta.datos[0].municipio.nombre
-            );
-            this.formularios[posicion].estado.setValue(
-              respuesta.datos[0].municipio.entidadFederativa.nombre
-            );
-            return;
-          }
-          this.formularios[posicion].colonia.patchValue(null);
-          this.formularios[posicion].municipio.patchValue(null);
-          this.formularios[posicion].estado.patchValue(null);
-        },
+        next: (respuesta: HttpRespuesta<any>) => this.manejarRespuestaValidaCP(respuesta, posicion),
         error: (error: HttpErrorResponse) => {
           console.log(error);
         }
       });
+  }
+
+  limpiarCodigoPostal(posicion: number): void {
+    this.formularios[posicion].colonia.patchValue(null);
+    this.formularios[posicion].municipio.patchValue(null);
+    this.formularios[posicion].estado.patchValue(null);
+  }
+
+  manejarRespuestaValidaCP(respuesta: HttpRespuesta<any>, posicion: number): void {
+    if (respuesta) {
+      this.colonias[posicion] = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
+      this.formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
+      this.formularios[posicion].municipio.setValue(
+        respuesta.datos[0].municipio.nombre
+      );
+      this.formularios[posicion].estado.setValue(
+        respuesta.datos[0].municipio.entidadFederativa.nombre
+      );
+      return;
+    }
+    this.formularios[posicion].colonia.patchValue(null);
+    this.formularios[posicion].municipio.patchValue(null);
+    this.formularios[posicion].estado.patchValue(null);
   }
 
   datosIguales(esIgual: boolean): void {
