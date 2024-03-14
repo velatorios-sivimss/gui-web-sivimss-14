@@ -46,6 +46,7 @@ export interface ResponseContratanteServicios {
   numFolio: string,
   numInterior: string,
   otroSexo: string,
+  pais: string,
   primerApellido: string,
   rfc: string,
   segundoApellido: string,

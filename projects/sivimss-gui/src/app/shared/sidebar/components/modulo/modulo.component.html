@@ -5,7 +5,7 @@
   </div>
   <div class="modulos" *ngIf="modulo.modulos && modulo.modulos.length > 0 && abierto">
     <ng-container *ngFor="let moduloHijo of modulo.modulos">
-      <app-modulo [modulo]="moduloHijo" *ngIf="nivel === 1 && !permisosCentral.includes(moduloHijo.idModulo)">
+      <app-modulo [modulo]="moduloHijo" *ngIf="nivel === 1 && !permisosCentral.includes(moduloHijo.idModulo) || nivel !== 1">
       </app-modulo>
     </ng-container>
   </div>

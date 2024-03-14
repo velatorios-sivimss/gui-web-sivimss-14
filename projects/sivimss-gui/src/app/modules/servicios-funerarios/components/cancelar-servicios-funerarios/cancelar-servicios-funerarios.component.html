@@ -107,10 +107,16 @@
                 <span>{{ datosContratante.nacionalidad }}</span>
               </div>
             </div>
-            <div class="col-md-3" *ngIf="datosContratante.idEstado !== 0">
+            <div class="col-md-3" *ngIf="datosContratante.idNacionalidad === 1">
               <div class="table-panel-column">
                 <label>Lugar de nacimiento:</label>
                 <span>{{ datosContratante.estado }}</span>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="datosContratante.idNacionalidad === 2">
+              <div class="table-panel-column">
+                <label>País de nacimiento:</label>
+                <span>{{ datosContratante.pais }}</span>
               </div>
             </div>
           </div>
@@ -266,10 +272,16 @@
                 <span>{{ datosSustituto.nacionalidad }}</span>
               </div>
             </div>
-            <div class="col-md-3" *ngIf="datosSustituto.idEstado !== 0">
+            <div class="col-md-3" *ngIf="datosSustituto.idNacionalidad === 1">
               <div class="table-panel-column">
                 <label>Lugar de nacimiento:</label>
                 <span>{{ datosSustituto.estado }}</span>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="datosSustituto.idNacionalidad === 2">
+              <div class="table-panel-column">
+                <label>País de nacimiento:</label>
+                <span>{{ datosSustituto.pais }}</span>
               </div>
             </div>
           </div>

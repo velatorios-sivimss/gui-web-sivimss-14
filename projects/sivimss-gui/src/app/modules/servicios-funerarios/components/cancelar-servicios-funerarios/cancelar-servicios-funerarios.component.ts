@@ -68,6 +68,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
     this.datosBeneficiario2 = consulta.datos.beneficiario2
     this.datosSustituto = consulta.datos.sustituto ? consulta.datos.sustituto : consulta.datos.contratante;
     this.rellenarDatosLugarNacimiento();
+    this.rellenarDatosPaisNacimiento();
   }
 
   rellenarDatosLugarNacimiento(): void {
@@ -80,7 +81,18 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
     if (idEstadoSustituto !== 0) {
       this.datosSustituto.estado = estados.find((estado) => estado.value === idEstadoSustituto)?.label || '';
     }
+  }
 
+  rellenarDatosPaisNacimiento(): void {
+    const paises: TipoDropdown[] = this.route.snapshot.data['respuesta'][this.POSICION_PAISES];
+    const idPaisContratante: number = this.datosContratante.idPais;
+    const idPaisSustituto: number = this.datosSustituto.idPais;
+    if (idPaisContratante !== 0) {
+      this.datosContratante.pais = paises.find((pais) => pais.value === idPaisContratante)?.label || '';
+    }
+    if (idPaisSustituto !== 0) {
+      this.datosSustituto.pais = paises.find((pais) => pais.value === idPaisSustituto)?.label || '';
+    }
   }
 
   inicializarFormPromotor(): void {
