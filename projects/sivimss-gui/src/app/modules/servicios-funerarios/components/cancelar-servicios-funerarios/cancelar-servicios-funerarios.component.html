@@ -417,10 +417,16 @@
                 <span>{{ datosBeneficiario1.nacionalidad }}</span>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" *ngIf="datosBeneficiario1.idNacionalidad === 1">
               <div class="table-panel-column">
                 <label>Lugar de nacimiento:</label>
-                <span></span>
+                <span>{{ datosBeneficiario1.estado }}</span>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="datosBeneficiario1.idNacionalidad === 2">
+              <div class="table-panel-column">
+                <label>País de nacimiento:</label>
+                <span>{{ datosBeneficiario1.pais }}</span>
               </div>
             </div>
           </div>
@@ -556,10 +562,16 @@
                 <span>{{ datosBeneficiario2.nacionalidad }}</span>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" *ngIf="datosBeneficiario2.idNacionalidad === 1">
               <div class="table-panel-column">
                 <label>Lugar de nacimiento:</label>
-                <span></span>
+                <span>{{ datosBeneficiario2.estado }}</span>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="datosBeneficiario2.idNacionalidad === 2">
+              <div class="table-panel-column">
+                <label>País de nacimiento:</label>
+                <span>{{ datosBeneficiario2.pais }}</span>
               </div>
             </div>
           </div>

@@ -85,4 +85,6 @@ export interface ResponseBeneficiarioServicios {
   segundoApellido: string,
   sexo: string,
   telefono: string,
+  estado: string,
+  pais: string
 }

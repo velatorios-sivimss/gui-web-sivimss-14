@@ -75,11 +75,19 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
     const estados: TipoDropdown[] = this.route.snapshot.data['respuesta'][this.POSICION_ESTADOS];
     const idEstadoContratante: number = this.datosContratante.idEstado;
     const idEstadoSustituto: number = this.datosSustituto.idEstado;
+    const idBeneficiario1: number = this.datosBeneficiario1 ? this.datosBeneficiario1.idEstado : 0;
+    const idBeneficiario2: number = this.datosBeneficiario2 ? this.datosBeneficiario2.idEstado : 0;
     if (idEstadoContratante !== 0) {
       this.datosContratante.estado = estados.find((estado) => estado.value === idEstadoContratante)?.label || '';
     }
     if (idEstadoSustituto !== 0) {
       this.datosSustituto.estado = estados.find((estado) => estado.value === idEstadoSustituto)?.label || '';
+    }
+    if (idBeneficiario1 !== 0) {
+      this.datosBeneficiario1.estado = estados.find((estado) => estado.value === idBeneficiario1)?.label || '';
+    }
+    if (idBeneficiario2 !== 0) {
+      this.datosBeneficiario2.estado = estados.find((estado) => estado.value === idBeneficiario2)?.label || '';
     }
   }
 
@@ -87,11 +95,19 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
     const paises: TipoDropdown[] = this.route.snapshot.data['respuesta'][this.POSICION_PAISES];
     const idPaisContratante: number = this.datosContratante.idPais;
     const idPaisSustituto: number = this.datosSustituto.idPais;
+    const idBeneficiario1: number = this.datosBeneficiario1 ? this.datosBeneficiario1.idPais : 0;
+    const idBeneficiario2: number = this.datosBeneficiario2 ? this.datosBeneficiario2.idPais : 0;
     if (idPaisContratante !== 0) {
       this.datosContratante.pais = paises.find((pais) => pais.value === idPaisContratante)?.label || '';
     }
     if (idPaisSustituto !== 0) {
       this.datosSustituto.pais = paises.find((pais) => pais.value === idPaisSustituto)?.label || '';
+    }
+    if (idBeneficiario1 !== 0) {
+      this.datosBeneficiario1.pais = paises.find((pais) => pais.value === idBeneficiario1)?.label || '';
+    }
+    if (idBeneficiario2 !== 0) {
+      this.datosBeneficiario2.pais = paises.find((pais) => pais.value === idBeneficiario2)?.label || '';
     }
   }
 
