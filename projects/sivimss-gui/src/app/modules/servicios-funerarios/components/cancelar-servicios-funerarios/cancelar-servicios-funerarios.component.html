@@ -107,10 +107,10 @@
                 <span>{{ datosContratante.nacionalidad }}</span>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" *ngIf="datosContratante.idEstado !== 0">
               <div class="table-panel-column">
                 <label>Lugar de nacimiento:</label>
-                <span></span>
+                <span>{{ datosContratante.estado }}</span>
               </div>
             </div>
           </div>
@@ -266,10 +266,10 @@
                 <span>{{ datosSustituto.nacionalidad }}</span>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" *ngIf="datosSustituto.idEstado !== 0">
               <div class="table-panel-column">
                 <label>Lugar de nacimiento:</label>
-                <span></span>
+                <span>{{ datosSustituto.estado }}</span>
               </div>
             </div>
           </div>

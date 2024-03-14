@@ -13,6 +13,7 @@ import {
   ResponseBeneficiarioServicios, ResponseContratanteServicios,
   ResponsePlanServicios
 } from "../../models/response-detalle-servicios.interface";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
 
 @Component({
   selector: 'app-cancelar-servicios-funerarios',
@@ -33,6 +34,10 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
   datosPlan!: ResponsePlanServicios;
   datosContratante!: ResponseContratanteServicios;
   datosSustituto!: any;
+
+  readonly POSICION_CONSULTA: number = 0;
+  readonly POSICION_ESTADOS: number = 1;
+  readonly POSICION_PAISES: number = 2;
 
   constructor(
     private alertaService: AlertaService,
@@ -56,12 +61,26 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
 
   consultarFormulario(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
+    const consulta = respuesta[this.POSICION_CONSULTA];
+    this.datosPlan = consulta.datos.plan;
+    this.datosContratante = consulta.datos.contratante;
+    this.datosBeneficiario1 = consulta.datos.beneficiario1;
+    this.datosBeneficiario2 = consulta.datos.beneficiario2
+    this.datosSustituto = consulta.datos.sustituto ? consulta.datos.sustituto : consulta.datos.contratante;
+    this.rellenarDatosLugarNacimiento();
+  }
 
-    this.datosPlan = respuesta[0].datos.plan;
-    this.datosContratante = respuesta[0].datos.contratante;
-    this.datosBeneficiario1 = respuesta[0].datos.beneficiario1;
-    this.datosBeneficiario2 = respuesta[0].datos.beneficiario2
-    this.datosSustituto = respuesta[0].datos.sustituto ? respuesta[0].datos.sustituto : respuesta[0].datos.contratante;
+  rellenarDatosLugarNacimiento(): void {
+    const estados: TipoDropdown[] = this.route.snapshot.data['respuesta'][this.POSICION_ESTADOS];
+    const idEstadoContratante: number = this.datosContratante.idEstado;
+    const idEstadoSustituto: number = this.datosSustituto.idEstado;
+    if (idEstadoContratante !== 0) {
+      this.datosContratante.estado = estados.find((estado) => estado.value === idEstadoContratante)?.label || '';
+    }
+    if (idEstadoSustituto !== 0) {
+      this.datosSustituto.estado = estados.find((estado) => estado.value === idEstadoSustituto)?.label || '';
+    }
+
   }
 
   inicializarFormPromotor(): void {
