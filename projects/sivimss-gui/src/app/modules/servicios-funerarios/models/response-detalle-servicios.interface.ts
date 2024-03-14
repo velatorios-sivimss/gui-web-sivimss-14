@@ -27,6 +27,7 @@ export interface ResponseContratanteServicios {
   desColonia: string,
   desEstado: string,
   desMunicipio: string,
+  estado: string,
   fechaNac: string,
   idContratante: number,
   idDomicilio: number,

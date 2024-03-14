@@ -56,11 +56,12 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
 
   consultarFormulario(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
-    this.datosPlan = respuesta.datos.plan;
-    this.datosContratante = respuesta.datos.contratante;
-    this.datosBeneficiario1 = respuesta.datos.beneficiario1;
-    this.datosBeneficiario2 = respuesta.datos.beneficiario2
-    this.datosSustituto = respuesta.datos.sustituto ? respuesta.datos.sustituto : respuesta.datos.contratante;
+
+    this.datosPlan = respuesta[0].datos.plan;
+    this.datosContratante = respuesta[0].datos.contratante;
+    this.datosBeneficiario1 = respuesta[0].datos.beneficiario1;
+    this.datosBeneficiario2 = respuesta[0].datos.beneficiario2
+    this.datosSustituto = respuesta[0].datos.sustituto ? respuesta[0].datos.sustituto : respuesta[0].datos.contratante;
   }
 
   inicializarFormPromotor(): void {

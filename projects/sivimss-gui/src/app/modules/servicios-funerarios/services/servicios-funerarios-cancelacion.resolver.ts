@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {RouterStateSnapshot, ActivatedRouteSnapshot} from '@angular/router';
-import {Observable} from 'rxjs';
-import {HttpRespuesta} from "../../../models/http-respuesta.interface";
+import {forkJoin, Observable} from 'rxjs';
 import {ServiciosFunerariosService} from "./servicios-funerarios.service";
 
 @Injectable()
@@ -10,8 +9,11 @@ export class ServiciosFunerariosCancelacionResolver {
   constructor(private serviciosFunerariosService: ServiciosFunerariosService,) {
   }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<HttpRespuesta<any>> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const idPlanSfpa: number = +route.queryParams.idPlanSfpa;
-    return this.serviciosFunerariosService.consultarPlanSFPA(idPlanSfpa);
+    const consulta$ = this.serviciosFunerariosService.consultarPlanSFPA(idPlanSfpa);
+    const catEstados$ = this.serviciosFunerariosService.obtenerCatalogoEstados();
+    const catPaises$ = this.serviciosFunerariosService.obtenerCatalogoPais();
+    return forkJoin([consulta$, catEstados$, catPaises$]);
   }
 }
