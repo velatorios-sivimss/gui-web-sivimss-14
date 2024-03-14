@@ -41,7 +41,8 @@ export class ServiciosFunerariosComponent implements OnInit {
   readonly POSICION_NIVELES: number = 1;
   readonly POSICION_ESTATUS: number = 2;
 
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  rolLocalStorage: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+  nivelUsuario: number = 0;
 
   filtroForm!: FormGroup;
 
@@ -80,6 +81,7 @@ export class ServiciosFunerariosComponent implements OnInit {
     private readonly loaderService: LoaderService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
+    this.nivelUsuario = obtenerNivelUsuarioLogueado(this.rolLocalStorage);
   }
 
   ngOnInit(): void {

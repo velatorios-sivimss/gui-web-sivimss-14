@@ -80,9 +80,11 @@
 <section class="my-6">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Planes SFPA</h2>
-    <button *appValidaRol="['AGREGAR_PLAN_SFPA','ALTA']" type="button" class="btn btn-primary btn-lg"
-            routerLink="registrar-nuevo-plan-sfpa">Agregar nuevo plan SFPA
-    </button>
+    <ng-container *ngIf="nivelUsuario !== 1">
+      <button *appValidaRol="['AGREGAR_PLAN_SFPA','ALTA']" type="button" class="btn btn-primary btn-lg"
+              routerLink="registrar-nuevo-plan-sfpa">Agregar nuevo plan SFPA
+      </button>
+    </ng-container>
   </div>
 
   <p-table styleClass="mt-5 mb-8" [value]="servicioFunerario"
