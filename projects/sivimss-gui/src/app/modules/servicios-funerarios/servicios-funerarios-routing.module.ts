@@ -18,6 +18,7 @@ import {ServiciosFunerariosResolver} from "./services/servicios-funerarios.resol
 import {ServiciosFunerariosConsultaResolver} from "./services/servicios-funerarios-consulta.resolver";
 import {DetallePagoResolver} from "./services/detalle-pago.resolver";
 import {ServiciosFunerariosCancelacionResolver} from "./services/servicios-funerarios-cancelacion.resolver";
+import {ValidaNivelGuard} from "../../guards/valida-nivel.guard";
 
 const routes: Routes = [
   {
@@ -53,7 +54,13 @@ const routes: Routes = [
     component: AltaServiciosFunerariosComponent,
     resolve: {
       respuesta: ServiciosFunerariosResolver
-    }
+    },
+    data: {
+      validaNivel: {
+        nivel: 1
+      }
+    },
+    canActivate: [ValidaNivelGuard]
   }
 ];
 
