@@ -33,6 +33,7 @@ import { DialogModule } from 'primeng/dialog';
 import { BadgeModule } from 'primeng/badge';
 import { OverlayModule } from 'primeng/overlay';
 import { AutenticacionContratanteService } from './services/autenticacion-contratante.service';
+import {ValidaNivelGuard} from "./guards/valida-nivel.guard";
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json');
@@ -89,6 +90,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     PermiteUsuarioLogueadoGuard,
     BloqueaUsuarioLogueadoGuard,
     ValidaRolGuard,
+    ValidaNivelGuard,
     BnNgIdleService,
     MensajesSistemaService,
     { provide: TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION, useValue: 300 }, // Tiempo en segundos

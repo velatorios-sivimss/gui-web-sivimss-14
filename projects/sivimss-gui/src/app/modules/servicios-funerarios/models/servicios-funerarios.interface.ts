@@ -40,15 +40,15 @@ export interface DetallePago {
 }
 
 export interface ConsultaPaginado {
-  ESTADO: string | null,
-  ESTATUS_PLAN_SFPA: string | null,
-  ID_PLAN_SFPA: number | null,
-  TITULAR: string | null,
-  NUM_FOLIO_PLAN_SFPA: string | null,
-  NUMERO_PAGO: string | null,
-  PAQUETE: string | null,
-  CORREO_ELECTRONICO: string | null,
-  ESTATUS_PAGO_ANTICIPADO: string | null,
+  idPlanSfpa: number | null,
+  estatusPago: string | null,
+  estatusPlan: string | null,
+  estado: string | null,
+  correo: string | null,
+  numFolio: string | null,
+  nombreCompleto: string | null,
+  noPago: string | null,
+  paquete: string | null
 }
 
 export interface GenerarReporte {
@@ -139,4 +139,115 @@ export interface Sexo {
   descripcion?: string;
   genero?: number;
   idSexo?: number;
+}
+
+export interface SolicitudCreacionSFPA {
+  plan: SolicitudPlan,
+  contratante: SolicitudContratante,
+  titularSubstituto: SolicitudSubstituto | null,
+  beneficiario1: SolicitudBeneficiario | null,
+  beneficiario2: SolicitudBeneficiario | null
+}
+
+export interface SolicitudPlan {
+  idPlanSfpa: null,
+  idTipoContratacion: number,
+  idPaquete: number,
+  monPrecio: string,
+  idTipoPagoMensual: number,
+  pagoMensual: string,
+  indTitularSubstituto: number,
+  indModificarTitularSubstituto: number,
+  indPromotor: number,
+  idPromotor: number | null,
+  idVelatorio: number | null,
+  idEstatusPlan: number
+}
+
+export interface SolicitudContratante {
+  persona: 'titular',
+  idContratante: null,
+  idPersona: null,
+  rfc: string,
+  curp: string,
+  matricula: string,
+  nss: string,
+  nomPersona: string,
+  primerApellido: string,
+  segundoApellido: string,
+  idSexo: number,
+  otroSexo: string,
+  fecNacimiento: string,
+  idPais: number,
+  idEstado: number,
+  telefono: string,
+  telefonoFijo: string,
+  correo: string,
+  ine: null,
+  idDomicilio: null,
+  desCalle: string,
+  numExterior: string,
+  numInterior: string,
+  codigoPostal: string,
+  desColonia: string,
+  desMunicipio: string,
+  desEstado: string
+}
+
+export interface SolicitudSubstituto {
+  persona: "titular substituto",
+  idPersona: null,
+  rfc: string,
+  curp: string,
+  matricula: string,
+  nss: string,
+  nomPersona: string,
+  primerApellido: string,
+  segundoApellido: string,
+  idSexo: number,
+  otroSexo: string,
+  fecNacimiento: string,
+  idPais: number,
+  idEstado: number,
+  telefono: string,
+  telefonoFijo: string | null,
+  correo: string,
+  ine: null,
+  idDomicilio: null,
+  desCalle: string,
+  numExterior: string,
+  numInterior: string,
+  codigoPostal: string,
+  desColonia: string,
+  desMunicipio: string,
+  desEstado: string
+}
+
+export interface SolicitudBeneficiario {
+  persona: 'beneficiario 2' | 'beneficiario 1',
+  idPersona: null,
+  rfc: string,
+  curp: string,
+  matricula: string,
+  nss: string,
+  nomPersona: string,
+  primerApellido: string,
+  segundoApellido: string,
+  idSexo: number,
+  otroSexo: string,
+  fecNacimiento: string,
+  idPais: number,
+  idEstado: number,
+  telefono: string,
+  telefonoFijo: string,
+  correo: string,
+  ine: null,
+  idDomicilio: null,
+  desCalle: string,
+  numExterior: string,
+  numInterior: string,
+  codigoPostal: string,
+  desColonia: string,
+  desMunicipio: string,
+  desEstado: string
 }
