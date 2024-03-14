@@ -48,6 +48,7 @@ export interface ResponseContratanteServicios {
   segundoApellido: string,
   sexo: string,
   telefonoFijo: string,
+  telefono: string
 }
 
 export interface ResponseBeneficiarioServicios {

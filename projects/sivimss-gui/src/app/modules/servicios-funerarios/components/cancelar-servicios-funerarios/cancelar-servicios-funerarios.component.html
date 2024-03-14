@@ -28,8 +28,7 @@
   </div>
 </app-table-panel>
 
-<!--Esta es la tabla de detalles al confirmar-->
-<ng-container *ngIf="true">
+<ng-container>
   <div class="row table-panel-row">
     <div class="col-md-12">
       <div class="table-panel-column flex-row align-items-center">
@@ -119,7 +118,7 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Teléfono celular:</label>
-                <span></span>
+                <span>{{ datosContratante.telefono }}</span>
               </div>
             </div>
             <div class="col-md-3">
@@ -157,7 +156,7 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>C.P:</label>
-                <span>{{ datosContratante.codigoPostal }}</span>
+                <span>{{ datosContratante.codigoPostal.padStart(5, '0') }}</span>
               </div>
             </div>
           </div>
@@ -206,25 +205,25 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>CURP:</label>
-                <span></span>
+                <span>{{ datosSustituto.curp }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>RFC:</label>
-                <span></span>
+                <span>{{ datosSustituto.rfc }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Matrícula:</label>
-                <span></span>
+                <span>{{ datosSustituto.matricula }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>NSS:</label>
-                <span></span>
+                <span>{{ datosSustituto.nss }}</span>
               </div>
             </div>
           </div>
@@ -232,19 +231,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Nombre(s):</label>
-                <span></span>
+                <span>{{ datosSustituto.nombreCompleto }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Primer apellido:</label>
-                <span></span>
+                <span>{{ datosSustituto.primerApellido }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Segundo apellido:</label>
-                <span></span>
+                <span>{{ datosSustituto.segundoApellido }}</span>
               </div>
             </div>
           </div>
@@ -252,19 +251,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Fecha de nacimiento:</label>
-                <span></span>
+                <span>{{ datosSustituto.fechaNac }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Sexo:</label>
-                <span></span>
+                <span>{{ datosSustituto.sexo }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Nacionalidad:</label>
-                <span></span>
+                <span>{{ datosSustituto.nacionalidad }}</span>
               </div>
             </div>
             <div class="col-md-3">
@@ -278,13 +277,13 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Teléfono:</label>
-                <span></span>
+                <span>{{ datosSustituto.telefono }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Correo electrónico:</label>
-                <span></span>
+                <span>{{ datosSustituto.correo }}</span>
               </div>
             </div>
           </div>
@@ -292,25 +291,25 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Calle:</label>
-                <span></span>
+                <span>{{ datosSustituto.desCalle }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Número exterior:</label>
-                <span></span>
+                <span>{{ datosSustituto.numExterior }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Número interior:</label>
-                <span></span>
+                <span>{{ datosSustituto.numInterior }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>C.P:</label>
-                <span></span>
+                <span>{{ datosSustituto.codigoPostal.padStart(5, '0') }}</span>
               </div>
             </div>
           </div>
@@ -318,19 +317,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Colonia:</label>
-                <span></span>
+                <span>{{ datosSustituto.desColonia }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Municipio:</label>
-                <span></span>
+                <span>{{ datosSustituto.desMunicipio }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Estado:</label>
-                <span></span>
+                <span>{{ datosSustituto.desEstado }}</span>
               </div>
             </div>
           </div>

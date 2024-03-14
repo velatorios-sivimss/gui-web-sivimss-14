@@ -35,6 +35,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
   datosBeneficiario2!: ResponseBeneficiarioServicios;
   datosPlan!: ResponsePlanServicios;
   datosContratante!: ResponseContratanteServicios;
+  datosSustituto!: any;
 
   constructor(
     private alertaService: AlertaService,
@@ -50,27 +51,19 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
+    this.inicializarFormPromotor();
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
     this.idPlanSfpa = +this.route.snapshot.queryParams.idPlanSfpa;
     this.consultarFormulario();
   }
 
   consultarFormulario(): void {
-    this.cargadorService.activar();
-    this.serviciosFunerariosService.consultarPlanSFPA(this.idPlanSfpa).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        this.datosPlan = respuesta.datos.plan;
-        this.datosContratante = respuesta.datos.contratante;
-        this.datosBeneficiario1 = respuesta.datos.beneficiario1;
-        this.datosBeneficiario2 = respuesta.datos.beneficiario2
-        this.inicializarFormPromotor();
-      },
-      error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
-      }
-    });
+    const respuesta = this.route.snapshot.data['respuesta'];
+    this.datosPlan = respuesta.datos.plan;
+    this.datosContratante = respuesta.datos.contratante;
+    this.datosBeneficiario1 = respuesta.datos.beneficiario1;
+    this.datosBeneficiario2 = respuesta.datos.beneficiario2
+    this.datosSustituto = respuesta.datos.sustituto ? respuesta.datos.sustituto : respuesta.datos.contratante;
   }
 
   inicializarFormPromotor(): void {
