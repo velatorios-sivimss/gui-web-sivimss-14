@@ -354,4 +354,8 @@ export class ServiciosFunerariosComponent implements OnInit {
   validarEstatusPlan(): boolean {
     return !this.servicioSeleccionado.estatusPlan?.toUpperCase().includes('CANCELADO');
   }
+
+  validarEstatusPlanModificar(): boolean {
+    return !['CANCELADO', 'PRE-REGISTRO'].includes(this.servicioSeleccionado.estatusPlan?.toUpperCase() || '');
+  }
 }
