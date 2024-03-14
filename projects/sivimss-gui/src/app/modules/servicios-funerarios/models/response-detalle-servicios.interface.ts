@@ -14,7 +14,9 @@ export interface ResponsePlanServicios {
   indTitularSubstituto: boolean,
   nombrePaquete: string,
   nombrePromotor: string,
-  pago: number
+  pago: number,
+  velatorio: string,
+  noPagos: string
 }
 
 export interface ResponseContratanteServicios {

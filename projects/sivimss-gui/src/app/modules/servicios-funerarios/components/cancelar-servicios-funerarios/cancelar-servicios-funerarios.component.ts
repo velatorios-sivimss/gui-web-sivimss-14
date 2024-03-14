@@ -7,13 +7,10 @@ import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {ServiciosFunerariosService} from '../../services/servicios-funerarios.service';
 import {finalize} from 'rxjs';
-import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {HttpErrorResponse} from '@angular/common/http';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {Persona} from "../../models/servicios-funerarios.interface";
 import {
-  ResponseBeneficiarioServicios,
-  ResponseContratanteServicios,
+  ResponseBeneficiarioServicios, ResponseContratanteServicios,
   ResponsePlanServicios
 } from "../../models/response-detalle-servicios.interface";
 
