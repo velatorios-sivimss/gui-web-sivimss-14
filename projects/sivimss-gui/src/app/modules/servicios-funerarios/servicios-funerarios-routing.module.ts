@@ -1,5 +1,5 @@
 import {NgModule} from "@angular/core";
-import {RouterModule,Routes} from "@angular/router";
+import {RouterModule, Routes} from "@angular/router";
 
 import {ServiciosFunerariosComponent} from "./components/servicios-funerarios/servicios-funerarios.component";
 import {
@@ -17,49 +17,61 @@ import {
 import {ServiciosFunerariosResolver} from "./services/servicios-funerarios.resolver";
 import {ServiciosFunerariosConsultaResolver} from "./services/servicios-funerarios-consulta.resolver";
 import {DetallePagoResolver} from "./services/detalle-pago.resolver";
+import {ServiciosFunerariosCancelacionResolver} from "./services/servicios-funerarios-cancelacion.resolver";
+import {ValidaNivelGuard} from "../../guards/valida-nivel.guard";
 
 const routes: Routes = [
   {
-    path:'',
+    path: '',
     component: ServiciosFunerariosComponent,
     resolve: {
       respuesta: ServiciosFunerariosConsultaResolver
     }
   },
   {
-    path:'detalle-pago',
+    path: 'detalle-pago',
     component: DetalleServiciosFunerariosComponent,
     resolve: {
       respuesta: DetallePagoResolver
     }
   },
   {
-    path:'cancelar-pago',
+    path: 'cancelar-pago',
     component: CancelarServiciosFunerariosComponent,
+    resolve: {
+      respuesta: ServiciosFunerariosCancelacionResolver
+    }
   },
   {
-    path:'modificar-pago',
+    path: 'modificar-pago',
     component: ModificarServiciosFunerariosComponent,
     resolve: {
       respuesta: ServiciosFunerariosResolver
     }
   },
   {
-    path:'registrar-nuevo-plan-sfpa',
+    path: 'registrar-nuevo-plan-sfpa',
     component: AltaServiciosFunerariosComponent,
     resolve: {
       respuesta: ServiciosFunerariosResolver
-    }
+    },
+    data: {
+      validaNivel: {
+        nivel: 1
+      }
+    },
+    canActivate: [ValidaNivelGuard]
   }
 ];
 
 @NgModule({
-  imports:[RouterModule.forChild(routes)],
-  exports:[RouterModule],
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
   providers: [
     ServiciosFunerariosResolver,
     ServiciosFunerariosConsultaResolver,
-    DetallePagoResolver
+    DetallePagoResolver,
+    ServiciosFunerariosCancelacionResolver
   ]
 })
 

@@ -4,7 +4,7 @@
 </div>
 
 <div class="border-panel">
-  <form [formGroup]="filtroForm">
+  <form [formGroup]="filtroForm" (ngSubmit)="paginar()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="nivel">Nivel:</label>
@@ -43,7 +43,8 @@
       <div class="col-md-3">
         <label class="control-label" for="estatus">Estatus del Plan SFPA:</label>
         <p-dropdown id="estatus" class="form-control" formControlName="estatus"
-                    placeholder="Selecciona el estatus" [options]="estatus" [filter]="true" filterBy="label"></p-dropdown>
+                    placeholder="Selecciona el estatus" [options]="estatus" [filter]="true"
+                    filterBy="label"></p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
@@ -55,36 +56,42 @@
       <div class="col-md-3">
         <label class="control-label" for="rangoInicio">Fecha inicio:</label>
         <p-calendar id="rangoInicio" styleClass="form-control" formControlName="rangoInicio" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha inicio" [maxDate]="fechaActual"></p-calendar>
+                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha inicio"
+                    [maxDate]="filtroForm.get('rangoFin')?.value || fechaAnterior"
+                    (onSelect)="validarMismaFechaInicioFin()"></p-calendar>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="rangoInicio">Fecha fin:</label>
         <p-calendar id="rangoFin" styleClass="form-control" formControlName="rangoFin" [showIcon]="true"
-                    [maxDate]="fechaActual" dateFormat="dd/mm/yy" placeholder="Ingresa fecha fin"></p-calendar>
+                    [maxDate]="fechaActual" dateFormat="dd/mm/yy" placeholder="Ingresa fecha fin"
+                    [minDate]="filtroForm.get('rangoInicio')?.value"
+                    (onSelect)="validarMismaFechaInicioFin()"></p-calendar>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar</button>
       </div>
     </div>
   </form>
-  <div class="row mt-6">
-    <div class="col-md-12 flex justify-content-end">
-      <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar()">Buscar</button>
-    </div>
-  </div>
 </div>
 
 <section class="my-6">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Planes SFPA</h2>
-    <button *appValidaRol="['AGREGAR_PLAN_SFPA','ALTA']" type="button" class="btn btn-primary btn-lg"
-            routerLink="registrar-nuevo-plan-sfpa">Agregar nuevo plan SFPA
-    </button>
+    <ng-container *ngIf="nivelUsuario !== 1">
+      <button *appValidaRol="['AGREGAR_PLAN_SFPA','ALTA']" type="button" class="btn btn-primary btn-lg"
+              routerLink="registrar-nuevo-plan-sfpa">Agregar nuevo plan SFPA
+      </button>
+    </ng-container>
   </div>
 
   <p-table styleClass="mt-5 mb-8" [value]="servicioFunerario"
            [paginator]="servicioFunerario.length > 0" [rows]="cantElementosPorPagina"
            [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="paginar($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
-
+           (onLazyLoad)="paginar($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
+           appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn scope="col">Folio Plan SFPA</th>
@@ -95,21 +102,21 @@
         <th pResizableColumn scope="col">Número de pagos</th>
         <th pResizableColumn scope="col">Estatus de Plan SFPA PA</th>
         <th pResizableColumn scope="col">Estatus pago</th>
-        <th pResizableColumn scope="col"></th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-servicioFunerario>
       <tr>
-        <td> {{servicioFunerario.NUM_FOLIO_PLAN_SFPA}} </td>
-        <td> {{servicioFunerario.TITULAR}}</td>
-        <td> {{servicioFunerario.ESTADO}} </td>
-        <td> {{servicioFunerario.CORREO_ELECTRONICO ? servicioFunerario.CORREO_ELECTRONICO : null}} </td>
-        <td> {{servicioFunerario.PAQUETE}} </td>
-        <td> {{servicioFunerario.NUMERO_PAGO}} </td>
-        <td> {{servicioFunerario.ESTATUS_PLAN_SFPA}} </td>
-        <td> {{servicioFunerario.ESTATUS_PAGO_ANTICIPADO}} </td>
+        <td> {{ servicioFunerario.numFolio }}</td>
+        <td> {{ servicioFunerario.nombreCompleto }}</td>
+        <td> {{ servicioFunerario.estado }}</td>
+        <td> {{ servicioFunerario.correo }}</td>
+        <td> {{ servicioFunerario.paquete }}</td>
+        <td> {{ servicioFunerario.noPago }}</td>
+        <td> {{ servicioFunerario.estatusPlan }}</td>
+        <td> {{ servicioFunerario.ESTATUS_PAGO_ANTICIPADO }}</td>
         <td>
-          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'20px'}">
             <div class="contenedor-celda-iconos">
               <a (click)="abrirPanel($event,servicioFunerario)">
                 <img
@@ -130,7 +137,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{servicioFunerario.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{ servicioFunerario.length }} de {{ totalElementos }}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -167,7 +174,7 @@
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+      <span class="text-justify">{{ mensajeArchivoConfirmacion }}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
@@ -199,7 +206,7 @@
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{mensajeCriterioBusqueda}}</span>
+      <span class="text-justify">{{ mensajeCriterioBusqueda }}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">

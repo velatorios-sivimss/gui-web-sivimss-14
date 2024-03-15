@@ -8,7 +8,7 @@
     <div class="col-md-12">
       <div class="table-panel-column flex-row">
         <span class="text-4xl">Convenio</span>
-        <span class="text-3xl font-bold inline-block ml-4">{{folioConvenio}}</span>
+        <span class="text-3xl font-bold inline-block ml-4">{{ datosContratante.numFolio }}</span>
       </div>
     </div>
   </div>
@@ -16,20 +16,19 @@
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Velatorio</label>
-        <span>{{nombreVelatorio}}</span>
+        <span>{{ datosPlan.velatorio }}</span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Fecha</label>
-        <span>{{fecIngresa}}</span>
+        <span>{{ fecIngresa }}</span>
       </div>
     </div>
   </div>
 </app-table-panel>
 
-<!--Esta es la tabla de detalles al confirmar-->
-<ng-container *ngIf="true">
+<ng-container>
   <div class="row table-panel-row">
     <div class="col-md-12">
       <div class="table-panel-column flex-row align-items-center">
@@ -47,25 +46,25 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>CURP:</label>
-                <span>{{fdt.curp.value}}</span>
+                <span>{{ datosContratante.curp }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>RFC:</label>
-                <span>{{fdt.rfc.value}}</span>
+                <span>{{ datosContratante.rfc }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Matrícula:</label>
-                <span>{{fdt.matricula.value}}</span>
+                <span>{{ datosContratante.matricula }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>NSS:</label>
-                <span>{{fdt.nss.value}}</span>
+                <span>{{ datosContratante.nss }}</span>
               </div>
             </div>
           </div>
@@ -73,19 +72,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Nombre(s):</label>
-                <span>{{fdt.nombre.value}}</span>
+                <span>{{ datosContratante.nombreCompleto }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Primer apellido:</label>
-                <span>{{fdt.primerApellido.value}}</span>
+                <span>{{ datosContratante.primerApellido }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Segundo apellido:</label>
-                <span>{{fdt.segundoApellido.value}}</span>
+                <span>{{ datosContratante.segundoApellido }}</span>
               </div>
             </div>
           </div>
@@ -93,25 +92,31 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Fecha de nacimiento:</label>
-                <span>{{fdt.fechaNacimiento.value}}</span>
+                <span>{{ datosContratante.fechaNac }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Sexo:</label>
-                <span>{{fdt.sexo.value}}</span>
+                <span>{{ datosContratante.sexo }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Nacionalidad:</label>
-                <span>{{fdt.nacionalidad.value}}</span>
+                <span>{{ datosContratante.nacionalidad }}</span>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" *ngIf="datosContratante.idNacionalidad === 1">
               <div class="table-panel-column">
                 <label>Lugar de nacimiento:</label>
-                <span>{{fdt.lugarNacimiento.value}}</span>
+                <span>{{ datosContratante.estado }}</span>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="datosContratante.idNacionalidad === 2">
+              <div class="table-panel-column">
+                <label>País de nacimiento:</label>
+                <span>{{ datosContratante.pais }}</span>
               </div>
             </div>
           </div>
@@ -119,19 +124,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Teléfono celular:</label>
-                <span>{{fdt.telefono.value}}</span>
+                <span>{{ datosContratante.telefono }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Teléfono:</label>
-                <span>{{fdt.telefonoFijo.value}}</span>
+                <span> {{ datosContratante.telefonoFijo }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Correo electrónico:</label>
-                <span>{{fdt.correoElectronico.value}}</span>
+                <span>{{ datosContratante.correo }}</span>
               </div>
             </div>
           </div>
@@ -139,25 +144,25 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Calle:</label>
-                <span>{{fdt.calle.value}}</span>
+                <span>{{ datosContratante.desCalle }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Número exterior:</label>
-                <span>{{fdt.numeroExterior.value}}</span>
+                <span>{{ datosContratante.numExterior }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Número interior:</label>
-                <span>{{fdt.numeroInterior.value}}</span>
+                <span>{{ datosContratante.numInterior }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>C.P:</label>
-                <span>{{fdt.cp.value}}</span>
+                <span>{{ datosContratante.codigoPostal.padStart(5, '0') }}</span>
               </div>
             </div>
           </div>
@@ -165,19 +170,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Colonia:</label>
-                <span>{{fdt.colonia.value}}</span>
+                <span>{{ datosContratante.desColonia }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Municipio:</label>
-                <span>{{fdt.municipio.value}}</span>
+                <span>{{ datosContratante.desMunicipio }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Estado:</label>
-                <span>{{fdt.estado.value}}</span>
+                <span>{{ datosContratante.desEstado }}</span>
               </div>
             </div>
           </div>
@@ -185,13 +190,13 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Tipo de paquete</label>
-                <span>{{fdt.tipoPaquete.value}}</span>
+                <span>{{ datosPlan.nombrePaquete }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>No. de pagos</label>
-                <span>{{fdt.numeroPago.value}}</span>
+                <span>{{ datosPlan.noPagos }}</span>
               </div>
             </div>
           </div>
@@ -206,25 +211,25 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>CURP:</label>
-                <span>{{fdts.curp.value}}</span>
+                <span>{{ datosSustituto.curp }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>RFC:</label>
-                <span>{{fdts.rfc.value}}</span>
+                <span>{{ datosSustituto.rfc }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Matrícula:</label>
-                <span>{{fdts.matricula.value}}</span>
+                <span>{{ datosSustituto.matricula }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>NSS:</label>
-                <span>{{fdts.nss.value}}</span>
+                <span>{{ datosSustituto.nss }}</span>
               </div>
             </div>
           </div>
@@ -232,19 +237,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Nombre(s):</label>
-                <span>{{fdts.nombre.value}}</span>
+                <span>{{ datosSustituto.nombreCompleto }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Primer apellido:</label>
-                <span>{{fdts.primerApellido.value}}</span>
+                <span>{{ datosSustituto.primerApellido }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Segundo apellido:</label>
-                <span>{{fdts.segundoApellido.value}}</span>
+                <span>{{ datosSustituto.segundoApellido }}</span>
               </div>
             </div>
           </div>
@@ -252,25 +257,31 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Fecha de nacimiento:</label>
-                <span>{{fdts.fechaNacimiento.value}}</span>
+                <span>{{ datosSustituto.fechaNac }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Sexo:</label>
-                <span>{{fdts.sexo.value}}</span>
+                <span>{{ datosSustituto.sexo }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Nacionalidad:</label>
-                <span>{{fdts.nacionalidad.value}}</span>
+                <span>{{ datosSustituto.nacionalidad }}</span>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" *ngIf="datosSustituto.idNacionalidad === 1">
               <div class="table-panel-column">
                 <label>Lugar de nacimiento:</label>
-                <span>{{fdts.lugarNacimiento.value}}</span>
+                <span>{{ datosSustituto.estado }}</span>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="datosSustituto.idNacionalidad === 2">
+              <div class="table-panel-column">
+                <label>País de nacimiento:</label>
+                <span>{{ datosSustituto.pais }}</span>
               </div>
             </div>
           </div>
@@ -278,13 +289,13 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Teléfono:</label>
-                <span>{{fdts.telefonoFijo.value}}</span>
+                <span>{{ datosSustituto.telefono }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Correo electrónico:</label>
-                <span>{{fdts.correoElectronico.value}}</span>
+                <span>{{ datosSustituto.correo }}</span>
               </div>
             </div>
           </div>
@@ -292,25 +303,25 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Calle:</label>
-                <span>{{fdts.calle.value}}</span>
+                <span>{{ datosSustituto.desCalle }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Número exterior:</label>
-                <span>{{fdts.numeroExterior.value}}</span>
+                <span>{{ datosSustituto.numExterior }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Número interior:</label>
-                <span>{{fdts.numeroInterior.value}}</span>
+                <span>{{ datosSustituto.numInterior }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>C.P:</label>
-                <span>{{fdts.cp.value}}</span>
+                <span>{{ datosSustituto.codigoPostal.padStart(5, '0') }}</span>
               </div>
             </div>
           </div>
@@ -318,19 +329,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Colonia:</label>
-                <span>{{fdts.colonia.value}}</span>
+                <span>{{ datosSustituto.desColonia }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Municipio:</label>
-                <span>{{fdts.municipio.value}}</span>
+                <span>{{ datosSustituto.desMunicipio }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Estado:</label>
-                <span>{{fdts.estado.value}}</span>
+                <span>{{ datosSustituto.desEstado }}</span>
               </div>
             </div>
           </div>
@@ -340,30 +351,30 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Datos Beneficiario 1</ng-template>
       <ng-template pTemplate="content">
-        <app-table-panel class="mb-6">
+        <app-table-panel class="mb-6" *ngIf="datosBeneficiario1 else SinBeneficiarioEspecifico">
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>CURP:</label>
-                <span>{{fdb1.curp.value}}</span>
+                <span>{{ datosBeneficiario1.curp }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>RFC:</label>
-                <span>{{fdb1.rfc.value}}</span>
+                <span>{{ datosBeneficiario1.rfc }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Matrícula:</label>
-                <span>{{fdb1.matricula.value}}</span>
+                <span>{{ datosBeneficiario1.matricula }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>NSS:</label>
-                <span>{{fdb1.nss.value}}</span>
+                <span>{{ datosBeneficiario1.nss }}</span>
               </div>
             </div>
           </div>
@@ -371,19 +382,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Nombre(s):</label>
-                <span>{{fdb1.nombre.value}}</span>
+                <span>{{ datosBeneficiario1.nombreCompleto }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Primer apellido:</label>
-                <span>{{fdb1.primerApellido.value}}</span>
+                <span>{{ datosBeneficiario1.primerApellido }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Segundo apellido:</label>
-                <span>{{fdb1.segundoApellido.value}}</span>
+                <span>{{ datosBeneficiario1.segundoApellido }}</span>
               </div>
             </div>
           </div>
@@ -391,25 +402,31 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Fecha de nacimiento:</label>
-                <span>{{fdb1.fechaNacimiento.value}}</span>
+                <span>{{ datosBeneficiario1.fechaNac }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Sexo:</label>
-                <span>{{fdb1.sexo.value}}</span>
+                <span>{{ datosBeneficiario1.sexo }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Nacionalidad:</label>
-                <span>{{fdb1.nacionalidad.value}}</span>
+                <span>{{ datosBeneficiario1.nacionalidad }}</span>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" *ngIf="datosBeneficiario1.idNacionalidad === 1">
               <div class="table-panel-column">
                 <label>Lugar de nacimiento:</label>
-                <span>{{fdb1.lugarNacimiento.value}}</span>
+                <span>{{ datosBeneficiario1.estado }}</span>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="datosBeneficiario1.idNacionalidad === 2">
+              <div class="table-panel-column">
+                <label>País de nacimiento:</label>
+                <span>{{ datosBeneficiario1.pais }}</span>
               </div>
             </div>
           </div>
@@ -417,13 +434,13 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Teléfono:</label>
-                <span>{{fdb1.telefonoFijo.value}}</span>
+                <span>{{ datosBeneficiario1.telefono }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Correo electrónico:</label>
-                <span>{{fdb1.correoElectronico.value}}</span>
+                <span>{{ datosBeneficiario1.correo }}</span>
               </div>
             </div>
           </div>
@@ -431,25 +448,25 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Calle:</label>
-                <span>{{fdb1.calle.value}}</span>
+                <span>{{ datosBeneficiario1.desCalle }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Número exterior:</label>
-                <span>{{fdb1.numeroExterior.value}}</span>
+                <span>{{ datosBeneficiario1.numExterior }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Número interior:</label>
-                <span>{{fdb1.numeroInterior.value}}</span>
+                <span>{{ datosBeneficiario1.numInterior }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>C.P:</label>
-                <span>{{fdb1.cp.value}}</span>
+                <span>{{ datosBeneficiario1.codigoPostal }}</span>
               </div>
             </div>
           </div>
@@ -457,19 +474,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Colonia:</label>
-                <span>{{fdb1.colonia.value}}</span>
+                <span>{{ datosBeneficiario1.desColonia }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Municipio:</label>
-                <span>{{fdb1.municipio.value}}</span>
+                <span>{{ datosBeneficiario1.desMunicipio }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Estado:</label>
-                <span>{{fdb1.estado.value}}</span>
+                <span>{{ datosBeneficiario1.desEstado }}</span>
               </div>
             </div>
           </div>
@@ -479,30 +496,30 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Datos Beneficiario 2</ng-template>
       <ng-template pTemplate="content">
-        <app-table-panel class="mb-6">
+        <app-table-panel class="mb-6" *ngIf="datosBeneficiario2 else SinBeneficiarioEspecifico">
           <div class="row table-panel-row">
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>CURP:</label>
-                <span>{{fdb2.curp.value}}</span>
+                <span>{{ datosBeneficiario2.curp }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>RFC:</label>
-                <span>{{fdb2.rfc.value}}</span>
+                <span>{{ datosBeneficiario2.rfc }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Matrícula:</label>
-                <span>{{fdb2.matricula.value}}</span>
+                <span>{{ datosBeneficiario2.matricula }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>NSS:</label>
-                <span>{{fdb2.nss.value}}</span>
+                <span>{{ datosBeneficiario2.nss }}</span>
               </div>
             </div>
           </div>
@@ -510,19 +527,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Nombre(s):</label>
-                <span>{{fdb2.nombre.value}}</span>
+                <span>{{ datosBeneficiario2.nombreCompleto }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Primer apellido:</label>
-                <span>{{fdb2.primerApellido.value}}</span>
+                <span>{{ datosBeneficiario2.primerApellido }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Segundo apellido:</label>
-                <span>{{fdb2.segundoApellido.value}}</span>
+                <span>{{ datosBeneficiario2.segundoApellido }}</span>
               </div>
             </div>
           </div>
@@ -530,25 +547,31 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Fecha de nacimiento:</label>
-                <span>{{fdb2.fechaNacimiento.value}}</span>
+                <span>{{ datosBeneficiario2.fechaNac }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Sexo:</label>
-                <span>{{fdb2.sexo.value}}</span>
+                <span>{{ datosBeneficiario2.sexo }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Nacionalidad:</label>
-                <span>{{fdb2.nacionalidad.value}}</span>
+                <span>{{ datosBeneficiario2.nacionalidad }}</span>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" *ngIf="datosBeneficiario2.idNacionalidad === 1">
               <div class="table-panel-column">
                 <label>Lugar de nacimiento:</label>
-                <span>{{fdb2.lugarNacimiento.value}}</span>
+                <span>{{ datosBeneficiario2.estado }}</span>
+              </div>
+            </div>
+            <div class="col-md-3" *ngIf="datosBeneficiario2.idNacionalidad === 2">
+              <div class="table-panel-column">
+                <label>País de nacimiento:</label>
+                <span>{{ datosBeneficiario2.pais }}</span>
               </div>
             </div>
           </div>
@@ -556,13 +579,13 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Teléfono:</label>
-                <span>{{fdb2.telefonoFijo.value}}</span>
+                <span>{{ datosBeneficiario2.telefono }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Correo electrónico:</label>
-                <span>{{fdb2.correoElectronico.value}}</span>
+                <span>{{ datosBeneficiario2.correo }}</span>
               </div>
             </div>
           </div>
@@ -570,25 +593,25 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Calle:</label>
-                <span>{{fdb2.calle.value}}</span>
+                <span>{{ datosBeneficiario2.desCalle }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Número exterior:</label>
-                <span>{{fdb2.numeroExterior.value}}</span>
+                <span>{{ datosBeneficiario2.numExterior }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Número interior:</label>
-                <span>{{fdb2.numeroInterior.value}}</span>
+                <span>{{ datosBeneficiario2.numInterior }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>C.P:</label>
-                <span>{{fdb2.cp.value}}</span>
+                <span>{{ datosBeneficiario2.codigoPostal }}</span>
               </div>
             </div>
           </div>
@@ -596,19 +619,19 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Colonia:</label>
-                <span>{{fdb2.colonia.value}}</span>
+                <span>{{ datosBeneficiario2.desColonia }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Municipio:</label>
-                <span>{{fdb2.municipio.value}}</span>
+                <span>{{ datosBeneficiario2.desMunicipio }}</span>
               </div>
             </div>
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Estado:</label>
-                <span>{{fdb2.estado.value}}</span>
+                <span>{{ datosBeneficiario2.desEstado }}</span>
               </div>
             </div>
           </div>
@@ -616,33 +639,10 @@
       </ng-template>
     </p-accordionTab>
   </p-accordion>
-
-  <!-- <div class="border-panel mb-5">
-    <div class="row">
-        <div class="col-md-6">
-            <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
-            <div class="flex">
-                <div class="flex align-items-center mx-2">
-                    <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true" [disabled]="true">
-                    </p-radioButton>
-                    <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
-                </div>
-                <div class="flex align-items-center mx-2">
-                    <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false" [disabled]="true">
-                    </p-radioButton>
-                    <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <label class="control-label" for="promotor">Promotor:</label>
-        </div>
-    </div>
-</div> -->
-
   <div class="flex justify-content-center">
     <div class="col-md-6">
-      <p class="text-center">¿Estás seguro de cancelar este Plan de Servicios Funerarios Pago Anticipado del convenio con folio {{folioConvenio}}?</p>
+      <p class="text-center">¿Estás seguro de cancelar este Plan de Servicios Funerarios Pago Anticipado del convenio
+        con folio {{ datosContratante.numFolio }}?</p>
     </div>
   </div>
 </ng-container>
@@ -653,3 +653,11 @@
     Aceptar
   </button>
 </div>
+
+<ng-template pTemplate="content" #SinBeneficiarioEspecifico>
+  <div class="row table-panel-row">
+    <div class="col-md-12 mt-4">
+      <p class="mensaje-cancelacion-orden font-14">Información de beneficiario no registrada.</p>
+    </div>
+  </div>
+</ng-template>
