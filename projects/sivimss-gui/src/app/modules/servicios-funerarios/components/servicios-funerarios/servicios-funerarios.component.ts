@@ -1,33 +1,31 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from '../../../../utils/constantes';
-import { TipoDropdown } from '../../../../models/tipo-dropdown';
-import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
-import { BreadcrumbService } from '../../../../shared/breadcrumb/services/breadcrumb.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from '../../../../utils/constantes';
+import {TipoDropdown} from '../../../../models/tipo-dropdown';
+import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
+import {BreadcrumbService} from '../../../../shared/breadcrumb/services/breadcrumb.service';
+import {ConsultaPaginado, GenerarReporte} from '../../models/servicios-funerarios.interface';
+import {LazyLoadEvent} from 'primeng/api';
+import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/alerta.service';
+import {MensajesSistemaService} from '../../../../services/mensajes-sistema.service';
+import {ServiciosFunerariosConsultaService} from '../../services/servicios-funerarios-consulta.service';
+import {LoaderService} from '../../../../shared/loader/services/loader.service';
+import {finalize} from 'rxjs/operators';
+import {HttpRespuesta} from '../../../../models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
 import {
-  ConsultaPaginado,
-  GenerarReporte,
-} from '../../models/servicios-funerarios.interface';
-import { LazyLoadEvent } from 'primeng/api';
-import {
-  AlertaService,
-  TipoAlerta,
-} from '../../../../shared/alerta/services/alerta.service';
-import { MensajesSistemaService } from '../../../../services/mensajes-sistema.service';
-import { ServiciosFunerariosConsultaService } from '../../services/servicios-funerarios-consulta.service';
-import { LoaderService } from '../../../../shared/loader/services/loader.service';
-import { finalize } from 'rxjs/operators';
-import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { mapearArregloTipoDropdown } from '../../../../utils/funciones';
-import { PaginadoInterface } from '../../models/paginado.interface';
+  mapearArregloTipoDropdown,
+  obtenerDelegacionUsuarioLogueado,
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado
+} from '../../../../utils/funciones';
+import {PaginadoInterface} from '../../models/paginado.interface';
 import * as moment from 'moment';
-import { OpcionesArchivos } from '../../../../models/opciones-archivos.interface';
-import { DescargaArchivosService } from '../../../../services/descarga-archivos.service';
-import { of } from 'rxjs';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {OpcionesArchivos} from '../../../../models/opciones-archivos.interface';
+import {DescargaArchivosService} from '../../../../services/descarga-archivos.service';
+import {of} from 'rxjs';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 
 @Component({
   selector: 'app-servicios-funerarios',
@@ -43,11 +41,12 @@ export class ServiciosFunerariosComponent implements OnInit {
   readonly POSICION_NIVELES: number = 1;
   readonly POSICION_ESTATUS: number = 2;
 
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  rolLocalStorage: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+  nivelUsuario: number = 0;
 
   filtroForm!: FormGroup;
 
-  fechaActual = new Date();
+  fechaActual: Date = new Date();
 
   nivel: TipoDropdown[] = [];
   delegacion: TipoDropdown[] = [];
@@ -66,9 +65,9 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   mensajeCriterioBusqueda: string = '';
   aceptarCriteriosBusqueda: boolean = false;
-  // obtenerNuevosDatos: boolean = true;
   cargaInicial: boolean = true;
   filtros!: PaginadoInterface;
+  fechaAnterior: Date = new Date();
 
   constructor(
     private route: ActivatedRoute,
@@ -80,13 +79,17 @@ export class ServiciosFunerariosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private serviciosFunerariosService: ServiciosFunerariosConsultaService,
     private readonly loaderService: LoaderService
-  ) { }
+  ) {
+    this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
+    this.nivelUsuario = obtenerNivelUsuarioLogueado(this.rolLocalStorage);
+  }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
     this.inicializarCatalogos();
     this.inicializarFiltroForm();
-    if (this.ff.delegacion.value) this.consultarVelatorios();
+    const delegacion = this.filtroForm.get('delegacion')?.value;
+    if (delegacion) this.consultarVelatorios();
   }
 
   actualizarBreadcrumb(): void {
@@ -94,27 +97,18 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
+    const nivel: number = +this.rolLocalStorage.idOficina;
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +this.rolLocalStorage.idOficina, disabled: true }],
-      delegacion: [
-        {
-          value: +this.rolLocalStorage.idDelegacion ?? null,
-          disabled: +this.rolLocalStorage.idOficina >= 2,
-        },
-      ],
-      velatorio: [
-        {
-          value: +this.rolLocalStorage.idVelatorio ?? null,
-          disabled: +this.rolLocalStorage.idOficina === 3,
-        },
-      ],
-      folioPlanSFPA: [{ value: null, disabled: false }],
-      rfc: [{ value: null, disabled: false }],
-      curp: [{ value: null, disabled: false }],
-      estatus: [{ value: null, disabled: false }],
-      afiliado: [{ value: null, disabled: false }],
-      rangoInicio: [{ value: null, disabled: false }],
-      rangoFin: [{ value: null, disabled: false }],
+      nivel: [{value: nivel, disabled: true}],
+      delegacion: [{value: +this.rolLocalStorage.idDelegacion ?? null, disabled: nivel >= 2,}],
+      velatorio: [{value: +this.rolLocalStorage.idVelatorio ?? null, disabled: nivel === 3}],
+      folioPlanSFPA: [{value: null, disabled: false}],
+      rfc: [{value: null, disabled: false}],
+      curp: [{value: null, disabled: false}],
+      estatus: [{value: null, disabled: false}],
+      afiliado: [{value: null, disabled: false}],
+      rangoInicio: [{value: null, disabled: false}],
+      rangoFin: [{value: null, disabled: false}],
     });
   }
 
@@ -122,31 +116,19 @@ export class ServiciosFunerariosComponent implements OnInit {
     const respuesta = this.route.snapshot.data['respuesta'];
     this.nivel = respuesta[this.POSICION_NIVELES];
     this.delegacion = respuesta[this.POSICION_DELEGACIONES];
-    this.estatus = respuesta[this.POSICION_ESTATUS].filter((elemento: any) => {
-      return elemento.label != 'CON ADEUDO';
-    });
+    this.estatus = respuesta[this.POSICION_ESTATUS].filter((elemento: any) => (elemento.label !== 'CON ADEUDO'));
   }
 
   limpiar(): void {
-    this.filtroForm.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(
-      localStorage.getItem('usuario') as string
-    );
-    this.ff.nivel.setValue(+usuario?.idOficina);
-
-    if (+usuario?.idOficina >= 2) {
-      this.ff.delegacion.setValue(+usuario?.idDelegacion);
-    }
-
-    if (+usuario?.idOficina === 3) {
-      this.ff.velatorio.setValue(+usuario?.idVelatorio);
-    }
-
-    // this.paginar(undefined, true);
-    this.servicioFunerario = [];
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const nivel: number = obtenerNivelUsuarioLogueado(usuario);
+    const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);
+    const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
+    this.filtroForm.reset({nivel, delegacion, velatorio});
+    this.paginar();
   }
 
-  paginar(event?: LazyLoadEvent, obtenerNuevosDatos?: boolean): void {
+  paginar(event?: LazyLoadEvent, obtenerNuevosDatos: boolean = true): void {
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     } else {
@@ -155,38 +137,7 @@ export class ServiciosFunerariosComponent implements OnInit {
     this.paginarPorFiltros(obtenerNuevosDatos);
   }
 
-  buscar(): void {
-    if (this.ff.rangoInicio.value && this.ff.rangoFin.value) {
-      if (this.ff.rangoInicio.value >= this.ff.rangoFin.value) {
-        this.alertaService.mostrar(
-          TipoAlerta.Precaucion,
-          'La fecha inicial no puede ser mayor que la fecha final.'
-        );
-        return;
-      }
-    }
-    if (
-      this.ff.velatorio.value == null &&
-      (this.ff.folioPlanSFPA.value == null ||
-        this.ff.folioPlanSFPA.value == '') &&
-      (this.ff.rfc.value == null || this.ff.rfc.value == '') &&
-      (this.ff.curp.value == null || this.ff.curp.value == '') &&
-      this.ff.estatus.value == null &&
-      (this.ff.afiliado.value == null || this.ff.afiliado.value == '') &&
-      (this.ff.rangoInicio.value == null || this.ff.rangoInicio.value == '') &&
-      (this.ff.rangoFin.value == null || this.ff.rangoFin.value == '')
-    ) {
-      this.mensajeCriterioBusqueda =
-        this.mensajesSistemaService.obtenerMensajeSistemaPorId(22);
-      this.aceptarCriteriosBusqueda = true;
-      // this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(22
-      //   || 'El servicio no responde, no permite más llamadas.'));
-      return;
-    }
-    this.paginar(undefined, true);
-  }
-
-  paginarPorFiltros(obtenerNuevosDatos?: boolean): void {
+  paginarPorFiltros(obtenerNuevosDatos: boolean = false): void {
     this.servicioFunerario = [];
     if (obtenerNuevosDatos || this.cargaInicial) {
       this.filtros = this.obtenerObjetoParaFiltrado();
@@ -197,110 +148,86 @@ export class ServiciosFunerariosComponent implements OnInit {
       .paginar(this.numPaginaActual, this.cantElementosPorPagina, this.filtros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          this.servicioFunerario = respuesta.datos.content || [];
-          this.totalElementos = respuesta.datos.totalElements || 0;
-        },
-        error: (error: HttpErrorResponse) => {
-          const errorMsg: string =
-            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-              parseInt(error.error.mensaje)
-            );
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            errorMsg || 'El servicio no responde, no permite más llamadas.'
-          );
-        },
+        next: (respuesta: HttpRespuesta<any>) => this.manejarRespuestaBusqueda(respuesta),
+        error: (error: HttpErrorResponse) => this.manejarMensajeError(error),
       });
   }
 
+  private manejarRespuestaBusqueda(respuesta: HttpRespuesta<any>): void {
+    this.servicioFunerario = respuesta.datos.content;
+    this.totalElementos = respuesta.datos.totalElements;
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
+  }
+
   obtenerObjetoParaFiltrado(): PaginadoInterface {
+    const fechaInicio = this.filtroForm.get('rangoInicio')?.value;
+    const fechaFin = this.filtroForm.get('rangoFin')?.value;
     return {
-      idVelatorio:
-        this.ff.velatorio.getRawValue()
-          ? String(this.ff.velatorio.getRawValue())
-          : null,
-      numFolioPlanSfpa:
-        this.ff.folioPlanSFPA.getRawValue() === ''
-          ? null
-          : this.ff.folioPlanSFPA.getRawValue(),
-      rfc: this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
-      curp:
-        this.ff.curp.getRawValue() === '' ? null : this.ff.curp.getRawValue(),
-      nombreAfiliado:
-        this.ff.afiliado.getRawValue() === ''
-          ? null
-          : this.ff.afiliado.getRawValue(),
-      idEstatusPlanSfpa: this.ff.estatus.value ?? null,
-      fechaInicio: this.ff.rangoInicio.value
-        ? moment(this.ff.rangoInicio.value).format('YYYY-MM-DD')
-        : null,
-      fechaFin: this.ff.rangoFin.value
-        ? moment(this.ff.rangoFin.value).format('YYYY-MM-DD')
-        : null,
+      idVelatorio: this.filtroForm.get('velatorio')?.value,
+      numFolioPlanSfpa: this.filtroForm.get('folioPlanSFPA')?.value,
+      rfc: this.filtroForm.get('rfc')?.value,
+      curp: this.filtroForm.get('curp')?.value,
+      nombreAfiliado: this.filtroForm.get('afiliado')?.value,
+      idEstatusPlanSfpa: this.filtroForm.get('estatus')?.value,
+      fechaInicio: this.recuperarFormatoFecha(fechaInicio),
+      fechaFin: this.recuperarFormatoFecha(fechaFin)
     };
   }
 
+  recuperarFormatoFecha(fecha: string): string | null {
+    if (!fecha) return null
+    return moment(fecha).format('YYYY-MM-DD');
+  }
+
   obtenerObjetoParaReporte(tipoReporte: string): GenerarReporte {
+    const fechaInicio = this.filtroForm.get('rangoInicio')?.value;
+    const fechaFin = this.filtroForm.get('rangoFin')?.value;
     return {
-      idVelatorio: this.ff.velatorio.getRawValue()
-        ? String(this.ff.velatorio.getRawValue())
-        : null,
-      numFolioPlanSfpa: this.ff.folioPlanSFPA.value ?? null,
-      rfc: this.ff.rfc.value ?? null,
-      curp: this.ff.curp.value ?? null,
-      nombreAfiliado: this.ff.afiliado.value ?? null,
-      idEstatusPlanSfpa: this.ff.estatus.value ?? null,
-      fechaInicio: this.ff.rangoInicio.value
-        ? moment(this.ff.rangoInicio.value).format('YYYY-MM-DD')
-        : null,
-      fechaFin: this.ff.rangoFin.value
-        ? moment(this.ff.rangoFin.value).format('YYYY-MM-DD')
-        : null,
-      tipoReporte: tipoReporte,
+      idVelatorio: this.filtroForm.get('velatorio')?.value,
+      numFolioPlanSfpa: this.filtroForm.get('folioPlanSFPA')?.value,
+      rfc: this.filtroForm.get('rfc')?.value,
+      curp: this.filtroForm.get('curp')?.value,
+      nombreAfiliado: this.filtroForm.get('afiliado')?.value,
+      idEstatusPlanSfpa: this.filtroForm.get('estatus')?.value,
+      fechaInicio: this.recuperarFormatoFecha(fechaInicio),
+      fechaFin: this.recuperarFormatoFecha(fechaFin),
+      tipoReporte
     };
   }
 
   validarMismaFechaInicioFin(): void {
     const fechaInicial = this.filtroForm.get('rangoInicio')?.value;
     const fechaFinal = this.filtroForm.get('rangoFin')?.value;
-    if ([fechaInicial, fechaFinal].some((f) => f === null)) return;
-    if (fechaInicial <= fechaFinal) return;
-    this.alertaService.mostrar(
-      TipoAlerta.Precaucion,
-      this.mensajesSistemaService.obtenerMensajeSistemaPorId(20)
-    );
+    if ([fechaInicial, fechaFinal].some(f => f === null)) return;
+    if (moment(fechaInicial).format('YYYY-MM-DD') !== moment(fechaFinal).format('YYYY-MM-DD')) return;
+    this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
     this.filtroForm.get('rangoInicio')?.patchValue(null);
     this.filtroForm.get('rangoFin')?.patchValue(null);
   }
 
   consultarVelatorios(): void {
     this.loaderService.activar();
+    const delegacion = this.filtroForm.get('delegacion')?.value;
     this.serviciosFunerariosService
-      .obtenerCatalogoVelatoriosPorDelegacion(this.ff.delegacion.value)
-      .pipe(finalize(() => this.loaderService.desactivar()))
+      .obtenerCatalogoVelatoriosPorDelegacion(delegacion).pipe(
+      finalize(() => this.loaderService.desactivar()))
       .subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          this.velatorio = mapearArregloTipoDropdown(
-            respuesta.datos,
-            'nomVelatorio',
-            'idVelatorio'
-          );
-        },
-        error: (error: HttpErrorResponse) => {
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-              +error.error.mensaje
-            )
-          );
-        },
+        next: (respuesta: HttpRespuesta<any>) => this.procesarRespuestaVelatorios(respuesta),
+        error: (error: HttpErrorResponse) => this.manejarMensajeError(error),
       });
+  }
+
+  procesarRespuestaVelatorios(respuesta: HttpRespuesta<any>): void {
+    this.velatorio = mapearArregloTipoDropdown(respuesta.datos, 'nomVelatorio', 'idVelatorio');
   }
 
   exportarArchivo(extension: string): void {
     this.loaderService.activar();
-    let filtros = this.obtenerObjetoParaReporte(extension);
+    const filtros: GenerarReporte = this.obtenerObjetoParaReporte(extension);
     const configuracionArchivo: OpcionesArchivos = {};
     if (extension.includes('xls')) {
       configuracionArchivo.ext = 'xlsx';
@@ -358,7 +285,7 @@ export class ServiciosFunerariosComponent implements OnInit {
     this.loaderService.activar();
     const configuracionArchivo: OpcionesArchivos = {};
     this.serviciosFunerariosService
-      .consultarContrato(this.servicioSeleccionado.ID_PLAN_SFPA)
+      .consultarContrato(this.servicioSeleccionado.idPlanSfpa)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
@@ -412,29 +339,25 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
   detallePago(): void {
-    this.router.navigate(['servicios-funerarios/detalle-pago'], {
-      queryParams: { idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA },
-    });
+    void this.router.navigate(['servicios-funerarios/detalle-pago'],
+      {queryParams: {idPlanSfpa: this.servicioSeleccionado.idPlanSfpa}});
   }
 
   cancelarPago(): void {
-    this.router.navigate(['servicios-funerarios/cancelar-pago'], {
-      queryParams: { idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA },
-    });
+    void this.router.navigate(['servicios-funerarios/cancelar-pago'],
+      {queryParams: {idPlanSfpa: this.servicioSeleccionado.idPlanSfpa}});
   }
 
   modificarPago(): void {
-    this.router.navigate(['servicios-funerarios/modificar-pago'], {
-      queryParams: { idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA },
-    });
+    void this.router.navigate(['servicios-funerarios/modificar-pago'],
+      {queryParams: {idPlanSfpa: this.servicioSeleccionado.idPlanSfpa}});
   }
 
   validarEstatusPlan(): boolean {
-    return !this.servicioSeleccionado.ESTATUS_PLAN_SFPA?.toUpperCase().includes('CANCELADO')
-
+    return !this.servicioSeleccionado.estatusPlan?.toUpperCase().includes('CANCELADO');
   }
 
-  get ff() {
-    return this.filtroForm.controls;
+  validarEstatusPlanModificar(): boolean {
+    return !['CANCELADO', 'PRE-REGISTRO'].includes(this.servicioSeleccionado.estatusPlan?.toUpperCase() || '');
   }
 }
