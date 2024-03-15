@@ -328,14 +328,13 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   consultarCurp(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
+    const formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].curp.value) return;
     if (formularioEnUso[posicion].curp?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
       return;
     }
     if (posicion !== 1) this.limpiarFormulario(posicion);
-    this.validarUsuarioAfiliado(formularioEnUso[posicion].curp.value, "", "");
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarCURP(formularioEnUso[posicion].curp.value).pipe(
       finalize(() => this.cargadorService.desactivar())
@@ -453,22 +452,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     return;
   }
 
-  validarUsuarioAfiliado(curp: string, rfc: string, nss: string): void {
-    this.cargadorService.activar();
-    this.serviciosFunerariosService.validarTitular(curp, rfc, nss).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos.length > 0) {
-          this.confirmacionDatosExistentes = true;
-          this.mensajeDatosExistentes = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje)
-        }
-      },
-      error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
-      }
-    });
-  }
 
   recargarPagina(): void {
     window.location.reload()
@@ -729,8 +712,9 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   generarSustituto(): SolicitudSubstituto | null {
-    if (this.fdts.datosIguales.value) return null;
+    if (!this.fdts.datosIguales.value) return null;
     const sustitutoMod = this.datosTitularSubstitutoForm.getRawValue();
+    if (sustitutoMod.curp === this.datosContratante.curp) return null;
     let fecNacimiento = sustitutoMod.fechaNacimiento
     if (fecNacimiento) fecNacimiento = moment(fecNacimiento).format('yyyy-MM-DD');
     return {
