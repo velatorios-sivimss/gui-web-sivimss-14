@@ -76,7 +76,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
     const idEstadoContratante: number = this.datosContratante.idEstado;
     const idEstadoSustituto: number = this.datosSustituto.idEstado;
     const idBeneficiario1: number = this.datosBeneficiario1 ? this.datosBeneficiario1.idEstado : 0;
-    const idBeneficiario2: number = this.datosBeneficiario2 ? this.datosBeneficiario2.idEstado : 0;
+    const idBeneficiario2: number = this.datosBeneficiario2 ? +this.datosBeneficiario2.idEstado : 0;
     if (idEstadoContratante !== 0) {
       this.datosContratante.estado = estados.find((estado) => estado.value === idEstadoContratante)?.label || '';
     }
@@ -96,7 +96,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
     const idPaisContratante: number = this.datosContratante.idPais;
     const idPaisSustituto: number = this.datosSustituto.idPais;
     const idBeneficiario1: number = this.datosBeneficiario1 ? this.datosBeneficiario1.idPais : 0;
-    const idBeneficiario2: number = this.datosBeneficiario2 ? this.datosBeneficiario2.idPais : 0;
+    const idBeneficiario2: number = this.datosBeneficiario2 ? +this.datosBeneficiario2.idPais : 0;
     if (idPaisContratante !== 0) {
       this.datosContratante.pais = paises.find((pais) => pais.value === idPaisContratante)?.label || '';
     }
