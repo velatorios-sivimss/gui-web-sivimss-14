@@ -82,12 +82,12 @@ export class ServiciosFunerariosComponent implements OnInit {
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
     this.nivelUsuario = obtenerNivelUsuarioLogueado(this.rolLocalStorage);
+    this.inicializarFiltroForm();
   }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
     this.inicializarCatalogos();
-    this.inicializarFiltroForm();
     const delegacion = this.filtroForm.get('delegacion')?.value;
     if (delegacion) this.consultarVelatorios();
   }
@@ -100,8 +100,8 @@ export class ServiciosFunerariosComponent implements OnInit {
     const nivel: number = +this.rolLocalStorage.idOficina;
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: nivel, disabled: true}],
-      delegacion: [{value: +this.rolLocalStorage.idDelegacion ?? null, disabled: nivel >= 2,}],
-      velatorio: [{value: +this.rolLocalStorage.idVelatorio ?? null, disabled: nivel === 3}],
+      delegacion: [{value: obtenerDelegacionUsuarioLogueado(this.rolLocalStorage), disabled: nivel >= 2,}],
+      velatorio: [{value: obtenerVelatorioUsuarioLogueado(this.rolLocalStorage), disabled: nivel === 3}],
       folioPlanSFPA: [{value: null, disabled: false}],
       rfc: [{value: null, disabled: false}],
       curp: [{value: null, disabled: false}],
