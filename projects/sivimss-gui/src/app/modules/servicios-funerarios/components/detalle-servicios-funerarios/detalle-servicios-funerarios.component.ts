@@ -47,7 +47,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
   overlayPanelHeader!: OverlayPanel;
 
   @ViewChild(OverlayPanel)
-  overlayPanelBody!: OverlayPanel;  
+  overlayPanelBody!: OverlayPanel;
 
   readonly POSICION_METODO_PAGO: number = 0;
   readonly MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
@@ -78,6 +78,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
   errorMsg =
     ' Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
   ocultarBitacora: boolean = false;
+  idPagoSFPA: any;
 
   constructor(
     private alertaService: AlertaService,
@@ -129,7 +130,12 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
   }
 
   abrirPanelBody(event: MouseEvent, detallePagoBitacora: PagosBitacora): void {
+    const importeActualizado = this.pagosRealizados.filter((pago:any) => {
+            return pago.idPagoSFPA == this.idPagoSFPA;
+    });
+    this.item.importeAcumulado = importeActualizado[0].importeAcumulado;
     this.detallePagoBitacora = detallePagoBitacora;
+    this.item.folio = this.datosGenerales.folio;
     this.overlayPanelBody.toggle(event);
   }
 
@@ -252,13 +258,15 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
     item: PagosRealizados
   ): void {
     this.item = item;
+    this.item.folio = this.datosGenerales.folio;
     emergente.toggle(event);
   }
 
   mostrarDetallePagos(detallePagoBitacora: PagosRealizados): void {
-    this.item = detallePagoBitacora;
-
     this.buscarPagosBitacora(Number(detallePagoBitacora.idPagoSFPA));
+    this.item = detallePagoBitacora;
+    this.idPagoSFPA = detallePagoBitacora.idPagoSFPA;
+
   }
 
   buscarPagosBitacora(idPagoSFPA: number): void {
