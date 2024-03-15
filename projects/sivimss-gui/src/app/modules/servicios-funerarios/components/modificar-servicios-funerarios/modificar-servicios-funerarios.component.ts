@@ -703,9 +703,9 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       idTipoContratacion: 1,
       idTipoPagoMensual: this.fdt.numeroPago.value,
       idVelatorio: velatorio,
-      indModificarTitularSubstituto: 0,
+      indModificarTitularSubstituto: this.fdts.datosIguales.value ? 0 : 1,
       indPromotor: this.fp.gestionadoPorPromotor.value ? 1 : 0,
-      indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0,
+      indTitularSubstituto: 0,
       monPrecio: this.consultarMonPrecio().toString(),
       pagoMensual: numPago
     }
