@@ -111,7 +111,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         const {datos} = respuesta;
         const plan: ResponsePlanServicios = datos.plan;
         // this.idPlanSfpa = datos.idPlanSfpa;
-        // this.folioConvenio = datos.numFolioPlanSFPA;
+        this.folioConvenio = plan.folioPlan;
         this.nombreVelatorio = plan.velatorio;
         this.fecIngresa = plan.fechaIngreso;
         const objetoTitular = datos.contratante;
@@ -119,7 +119,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         const objetoSubstituto = datos.titularSubstituto ? datos.titularSubstituto : objetoTitular;
 
         this.inicializarFormPromotor(plan.indPromotor, plan.idPromotor);
-        this.inicializarFormDatosTitular(plan.idPaquete, datos.idTipoPagoMensual, objetoTitular);
+        this.inicializarFormDatosTitular(plan.idPaquete, datos.idTipoPagoMensual, objetoTitular, plan.pago);
         this.inicializarFormDatosTitularSubstituto(plan.indTitularSubstituto, objetoSubstituto);
         this.inicializarFormDatosBeneficiario1(datos.beneficiario1);
         this.inicializarFormDatosBeneficiario2(datos.beneficiario2);
@@ -147,7 +147,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     this.handleGestionPromotor();
   }
 
-  inicializarFormDatosTitular(idPaquete: number, idTipoPagoMensual: number, titular: ResponseContratanteServicios): void {
+  inicializarFormDatosTitular(idPaquete: number, idTipoPagoMensual: number, titular: ResponseContratanteServicios, pago: number): void {
     let fecha: Date | null = null;
     if (titular.fechaNac) {
       const [anio, mes, dia] = titular.fechaNac.split('-');
@@ -181,8 +181,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       colonia: [{value: titular.desColonia, disabled: true}, [Validators.required]],
       municipio: [{value: titular.desMunicipio, disabled: true}, [Validators.required]],
       estado: [{value: titular.desEstado, disabled: true}, [Validators.required]],
-      tipoPaquete: [{value: idPaquete, disabled: false}, [Validators.required]],
-      numeroPago: [{value: idTipoPagoMensual, disabled: false}, [Validators.required]],
+      tipoPaquete: [{value: idPaquete, disabled: pago !== 0}, [Validators.required]],
+      numeroPago: [{value: idTipoPagoMensual, disabled: pago !== 0}, [Validators.required]],
     });
     this.idNumeroPagoOriginal = idTipoPagoMensual;
   }
@@ -250,7 +250,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       nombre: [{value: beneficiario?.nomPersona, disabled: true}, []],
       primerApellido: [{value: beneficiario?.primerApellido, disabled: true}, []],
       segundoApellido: [{value: beneficiario?.segundoApellido, disabled: true}, []],
-      sexo: [{value: beneficiario?.sexo ? +beneficiario?.sexo : null, disabled: true}, []],
+      sexo: [{value: beneficiario?.idSexo ? +beneficiario?.idSexo : null, disabled: true}, []],
       otroSexo: [{value: beneficiario?.otroSexo, disabled: true}],
       fechaNacimiento: [{value: fecha, disabled: true}, []],
       nacionalidad: [{value: beneficiario?.idPais == 119 ? 1 : 2, disabled: true}, []],
@@ -282,7 +282,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       nombre: [{value: beneficiario?.nomPersona, disabled: true}, []],
       primerApellido: [{value: beneficiario?.primerApellido, disabled: true}, []],
       segundoApellido: [{value: beneficiario?.segundoApellido, disabled: true}, []],
-      sexo: [{value: beneficiario?.sexo ? +beneficiario?.sexo : null, disabled: true}, []],
+      sexo: [{value: beneficiario?.idSexo ? +beneficiario?.idSexo : null, disabled: true}, []],
       otroSexo: [{value: beneficiario?.otroSexo, disabled: true}],
       fechaNacimiento: [{value: fecha, disabled: true}, []],
       nacionalidad: [{value: beneficiario?.idPais == 119 ? 1 : 2, disabled: true}, []],
