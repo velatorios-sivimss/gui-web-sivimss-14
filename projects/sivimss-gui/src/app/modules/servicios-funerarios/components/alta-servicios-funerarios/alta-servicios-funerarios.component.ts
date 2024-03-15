@@ -157,7 +157,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   inicializarFormDatosTitularSubstituto(): void {
     this.datosTitularSubstitutoForm = this.formBuilder.group({
-      datosIguales: [{value: null, disabled: false}, [Validators.required]],
+      datosIguales: [{value: false, disabled: false}, [Validators.required]],
       curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
       rfc: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_RFC)]],
       matricula: [{value: null, disabled: false}],

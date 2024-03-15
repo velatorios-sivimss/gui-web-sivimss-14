@@ -17,7 +17,8 @@ export interface ResponsePlanServicios {
   pago: number,
   velatorio: string,
   noPagos: string,
-  fechaIngreso: string
+  fechaIngreso: string,
+  folioPlan: string
 }
 
 export interface ResponseContratanteServicios {
