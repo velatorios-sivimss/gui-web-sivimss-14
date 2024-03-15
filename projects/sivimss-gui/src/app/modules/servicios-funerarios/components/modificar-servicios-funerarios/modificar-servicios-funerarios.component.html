@@ -8,7 +8,7 @@
     <div class="col-md-12">
       <div class="table-panel-column flex-row">
         <span class="text-4xl">Folio único del Plan SFPA</span>
-        <span class="text-3xl font-bold inline-block ml-4">{{folioConvenio}}</span>
+        <span class="text-3xl font-bold inline-block ml-4">{{ folioConvenio }}</span>
       </div>
     </div>
   </div>
@@ -16,13 +16,13 @@
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Velatorio</label>
-        <span>{{nombreVelatorio}}</span>
+        <span>{{ nombreVelatorio }}</span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Fecha</label>
-        <span>{{fecIngresa}}</span>
+        <span>{{ fecIngresa }}</span>
       </div>
     </div>
   </div>
@@ -45,27 +45,29 @@
       <form [formGroup]="datosTitularForm">
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
-            <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
+            <label class="control-label" for="curpTitular">CURP<span class="req">*</span>:</label>
+            <input id="curpTitular" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
                    (change)="convertirMayusculas(0)" (blur)="consultarCurp(0)" maxlength="18">
             <span class="campo-obligatorio"
                   *ngIf="fdt.curp?.errors?.required && (fdt.curp?.dirty || fdt.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="rfc">R.F.C.<span class="req">*</span>:</label>
-            <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
+            <label class="control-label" for="rfcTitular">R.F.C.<span class="req">*</span>:</label>
+            <input id="rfcTitular" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
                    (change)="convertirMayusculas(1)" (blur)="consultarRfc(0)" maxlength="13">
             <span class="campo-obligatorio"
                   *ngIf="fdt.rfc?.errors?.required && (fdt.rfc?.dirty || fdt.rfc?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="matricula">Matrícula:</label>
-            <input id="matricula" class="form-control" formControlName="matricula" placeholder="Ingresa la matrícula"
+            <label class="control-label" for="matriculaTitular">Matrícula:</label>
+            <input id="matriculaTitular" class="form-control" formControlName="matricula"
+                   placeholder="Ingresa la matrícula"
                    maxlength="10" numbersOnly (blur)="consultarMatricula(0)">
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="nss">NSS<span class="req">*</span>:</label>
-            <input id="nss" class="form-control" formControlName="nss" placeholder="Ingresa el NSS" maxlength="11"
+            <label class="control-label" for="nssTitular">NSS<span class="req">*</span>:</label>
+            <input id="nssTitular" class="form-control" formControlName="nss" placeholder="Ingresa el NSS"
+                   maxlength="11"
                    (blur)="consultarNSS(0)">
             <span class="campo-obligatorio"
                   *ngIf="fdt.nss?.errors?.required && (fdt.nss?.dirty || fdt.nss?.touched)">Este campo es obligatorio *.</span>
@@ -73,23 +75,26 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-4">
-            <label class="control-label" for="nombre">Nombre(s)<span class="req">*</span>:</label>
-            <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre"
+            <label class="control-label" for="nombreTitular">Nombre(s)<span class="req">*</span>:</label>
+            <input id="nombreTitular" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre"
                    maxlength="30" (keyup.space)="sinEspacioDoble(0)" lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdt.nombre?.errors?.required && (fdt.nombre?.dirty || fdt.nombre?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
-            <input id="primerApellido" class="form-control" formControlName="primerApellido"
-                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(1)" lettersOnly>
+            <label class="control-label" for="primerApellidoTitular">Primer apellido<span class="req">*</span>:</label>
+            <input id="primerApellidoTitular" class="form-control" formControlName="primerApellido"
+                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(1)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdt.primerApellido?.errors?.required && (fdt.primerApellido?.dirty || fdt.primerApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
-            <input id="segundoApellido" class="form-control" formControlName="segundoApellido"
-                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(2)" lettersOnly>
+            <label class="control-label" for="segundoApellidoTitular">Segundo apellido<span
+              class="req">*</span>:</label>
+            <input id="segundoApellidoTitular" class="form-control" formControlName="segundoApellido"
+                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(2)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdt.segundoApellido?.errors?.required && (fdt.segundoApellido?.dirty || fdt.segundoApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -104,8 +109,9 @@
                   *ngIf="fdt.fechaNacimiento?.errors?.required && (fdt.fechaNacimiento?.dirty || fdt.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="sexo">Sexo<span class="req">*</span></label>
-            <p-dropdown appendTo="body" id="sexo" class="form-control" formControlName="sexo" (onChange)="cambiarSexo(0)"
+            <label class="control-label" for="sexoTitular">Sexo<span class="req">*</span></label>
+            <p-dropdown appendTo="body" id="sexoTitular" class="form-control" formControlName="sexo"
+                        (onChange)="cambiarSexo(0)"
                         [options]="sexo" [filter]="true" filterBy="label"
                         placeholder="Selecciona el sexo">
             </p-dropdown>
@@ -113,8 +119,8 @@
                   *ngIf="fdt.sexo?.errors?.required && (fdt.sexo?.dirty || fdt.sexo?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3" *ngIf="fdt.sexo.value == 3">
-            <label class="control-label" for="otroSexoAfiliado">Otro:</label>
-            <input id="otroSexoAfiliado" class="form-control" formControlName="otroSexo"
+            <label class="control-label" for="otroSexoTitular">Otro:</label>
+            <input id="otroSexoTitular" class="form-control" formControlName="otroSexo"
                    placeholder="Ingresa otro sexo" maxlength="45">
             <span class="campo-obligatorio"
                   *ngIf="fdt.otroSexo?.errors?.required && (fdt.otroSexo?.dirty || fdt.otroSexo?.touched)">Este campo es obligatorio *.</span>
@@ -122,22 +128,24 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="nacionalidad">Nacionalidad:</label>
-            <p-dropdown appendTo="body" id="nacionalidad" class="form-control" formControlName="nacionalidad"
+            <label class="control-label" for="nacionalidadTitular">Nacionalidad:</label>
+            <p-dropdown appendTo="body" id="nacionalidadTitular" class="form-control" formControlName="nacionalidad"
                         [options]="nacionalidad" [filter]="true" filterBy="label" (onChange)="cambiarNacionalidad(0)"
                         placeholder="Selecciona la nacionalidad">
             </p-dropdown>
           </div>
           <div class="col-md-3" *ngIf="fdt.nacionalidad.value == 2">
-            <label class="control-label" for="paisNacimiento">País de nacimiento:</label>
-            <p-dropdown appendTo="body" id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
+            <label class="control-label" for="paisNacimientoTitular">País de nacimiento:</label>
+            <p-dropdown appendTo="body" id="paisNacimientoTitular" class="form-control" formControlName="paisNacimiento"
                         [options]="paises" [filter]="true" filterBy="label"
                         placeholder="Selecciona el país de nacimiento">
             </p-dropdown>
           </div>
           <div class="col-md-3" *ngIf="fdt.nacionalidad.value == 1">
-            <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
-            <p-dropdown appendTo="body" id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
+            <label class="control-label" for="lugarNacimientoTitular">Lugar de nacimiento<span
+              class="req">*</span>:</label>
+            <p-dropdown appendTo="body" id="lugarNacimientoTitular" class="form-control"
+                        formControlName="lugarNacimiento"
                         [options]="estados" [filter]="true" filterBy="label"
                         placeholder="Selecciona el lugar de nacimiento">
             </p-dropdown>
@@ -147,22 +155,26 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="telefonoCelular">Teléfono celular<span class="req">*</span>:</label>
-            <input id="telefonoCelular" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
+            <label class="control-label" for="telefonoCelularTitular">Teléfono celular<span
+              class="req">*</span>:</label>
+            <input id="telefonoCelularTitular" class="form-control" formControlName="telefono" numbersOnly
+                   maxlength="10"
                    placeholder="Ingresa teléfono celular">
             <span class="campo-obligatorio"
                   *ngIf="fdt.telefono?.errors?.required && (fdt.telefono?.dirty || fdt.telefono?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="telefonoFijo">Teléfono fijo<span class="req">*</span>:</label>
-            <input id="telefonoFijo" class="form-control" formControlName="telefonoFijo" placeholder="Ingresa teléfono fijo"
+            <label class="control-label" for="telefonoFijoTitular">Teléfono fijo<span class="req">*</span>:</label>
+            <input id="telefonoFijoTitular" class="form-control" formControlName="telefonoFijo"
+                   placeholder="Ingresa teléfono fijo"
                    numbersOnly maxlength="10">
             <span class="campo-obligatorio"
                   *ngIf="fdt.telefonoFijo?.errors?.required && (fdt.telefonoFijo?.dirty || fdt.telefonoFijo?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-6">
-            <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
-            <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
+            <label class="control-label" for="correoElectronicoTitular">Correo electrónico<span
+              class="req">*</span>:</label>
+            <input id="correoElectronicoTitular" class="form-control" formControlName="correoElectronico"
                    placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(0)"
                    (blur)="consultarCorreo(0)">
             <span class="campo-obligatorio"
@@ -173,27 +185,27 @@
         <div class="row mb-3">
 
           <div class="col-md-3">
-            <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
-            <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
+            <label class="control-label" for="calleTitular">Calle<span class="req">*</span>:</label>
+            <input id="calleTitular" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
                    maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fdt.calle?.errors?.required && (fdt.calle?.dirty || fdt.calle?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="numeroExterior">Número exterior<span class="req">*</span>:</label>
-            <input id="numeroExterior" class="form-control" formControlName="numeroExterior"
+            <label class="control-label" for="numeroExteriorTitular">Número exterior<span class="req">*</span>:</label>
+            <input id="numeroExteriorTitular" class="form-control" formControlName="numeroExterior"
                    placeholder="Ingresa el número exterior" alphanumericOnly maxlength="10">
             <span class="campo-obligatorio"
                   *ngIf="fdt.numeroExterior?.errors?.required && (fdt.numeroExterior?.dirty || fdt.numeroExterior?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="numeroInterior">Número interior:</label>
-            <input id="numeroInterior" class="form-control" formControlName="numeroInterior"
+            <label class="control-label" for="numeroInteriorTitular">Número interior:</label>
+            <input id="numeroInteriorTitular" class="form-control" formControlName="numeroInterior"
                    placeholder="Ingresa el número interior" alphanumericOnly maxlength="10">
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="cp">C.P.<span class="req">*</span>:</label>
-            <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa el C.P." maxlength="5"
+            <label class="control-label" for="cpTitular">C.P.<span class="req">*</span>:</label>
+            <input id="cpTitular" class="form-control" formControlName="cp" placeholder="Ingresa el C.P." maxlength="5"
                    numbersOnly (blur)="consultarCodigoPostal(0)">
             <span class="campo-obligatorio"
                   *ngIf="fdt.cp?.errors?.required && (fdt.cp?.dirty || fdt.cp?.touched)">Este campo es obligatorio *.</span>
@@ -201,21 +213,22 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-4">
-            <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
-            <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+            <label class="control-label" for="coloniaTitular">Colonia<span class="req">*</span>:</label>
+            <input id="coloniaTitular" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
                    maxlength="45">
             <span class="campo-obligatorio"
                   *ngIf="fdt.colonia?.errors?.required && (fdt.colonia?.dirty || fdt.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="municipio">Municipio<span class="req">*</span>:</label>
-            <input id="municipio" class="form-control" formControlName="municipio" placeholder="Ingresa el municipio">
+            <label class="control-label" for="municipioTitular">Municipio<span class="req">*</span>:</label>
+            <input id="municipioTitular" class="form-control" formControlName="municipio"
+                   placeholder="Ingresa el municipio">
             <span class="campo-obligatorio"
                   *ngIf="fdt.municipio?.errors?.required && (fdt.municipio?.dirty || fdt.municipio?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="estado">Estado<span class="req">*</span></label>
-            <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
+            <label class="control-label" for="estadoTitular">Estado<span class="req">*</span></label>
+            <input id="estadoTitular" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
                   *ngIf="fdt.estado?.errors?.required && (fdt.estado?.dirty || fdt.estado?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -223,8 +236,8 @@
         <hr class="separador">
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span></label>
-            <p-dropdown appendTo="body" id="tipoPaquete" class="form-control" formControlName="tipoPaquete"
+            <label class="control-label" for="tipoPaqueteTitular">Tipo de paquete<span class="req">*</span></label>
+            <p-dropdown appendTo="body" id="tipoPaqueteTitular" class="form-control" formControlName="tipoPaquete"
                         [options]="tipoPaquete" [filter]="true" filterBy="label"
                         (onChange)="mostrarInfoPaqueteSeleccionado()" placeholder="Selecciona el tipo de paquete">
             </p-dropdown>
@@ -277,27 +290,28 @@
         <hr class="separador">
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="curpContratante">CURP<span class="req">*</span>:</label>
-            <input id="curpContratante" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
+            <label class="control-label" for="curpSustituto">CURP<span class="req">*</span>:</label>
+            <input id="curpSustituto" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
                    (change)="convertirMayusculas(2)" (blur)="consultarCurp(1)" maxlength="18">
             <span class="campo-obligatorio"
                   *ngIf="fdts.curp?.errors?.required && (fdts.curp?.dirty || fdts.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="rfcContratante">R.F.C.<span class="req">*</span>:</label>
-            <input id="rfcContratante" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
+            <label class="control-label" for="rfcSustituto">R.F.C.<span class="req">*</span>:</label>
+            <input id="rfcSustituto" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
                    (change)="convertirMayusculas(3)" (blur)="consultarRfc(1)" maxlength="13">
             <span class="campo-obligatorio"
                   *ngIf="fdts.rfc?.errors?.required && (fdts.rfc?.dirty || fdts.rfc?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="matriculaContratante">Matrícula:</label>
-            <input id="matriculaContratante" class="form-control" formControlName="matricula"
+            <label class="control-label" for="matriculaSustituto">Matrícula:</label>
+            <input id="matriculaSustituto" class="form-control" formControlName="matricula"
                    placeholder="Ingresa la matrícula" maxlength="10" numbersOnly (blur)="consultarMatricula(1)">
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="nssContratante">NSS<span class="req">*</span>:</label>
-            <input id="nssContratante" class="form-control" formControlName="nss" placeholder="Ingresa el NSS" maxlength="11"
+            <label class="control-label" for="nssSustituto">NSS<span class="req">*</span>:</label>
+            <input id="nssSustituto" class="form-control" formControlName="nss" placeholder="Ingresa el NSS"
+                   maxlength="11"
                    (blur)="consultarNSS(1)">
             <span class="campo-obligatorio"
                   *ngIf="fdts.nss?.errors?.required && (fdts.nss?.dirty || fdts.nss?.touched)">Este campo es obligatorio *.</span>
@@ -305,25 +319,27 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="nombreContratante">Nombre(s)<span class="req">*</span>:</label>
-            <input id="nombreContratante" class="form-control" formControlName="nombre"
+            <label class="control-label" for="nombreSustituto">Nombre(s)<span class="req">*</span>:</label>
+            <input id="nombreSustituto" class="form-control" formControlName="nombre"
                    placeholder="Ingresa el nombre" maxlength="30" (keyup.space)="sinEspacioDoble(3)" lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdts.nombre?.errors?.required && (fdts.nombre?.dirty || fdts.nombre?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="primerApellidoContratante">Primer apellido<span
-              class="req">*</span>:</label>
-            <input id="primerApellidoContratante" class="form-control" formControlName="primerApellido"
-                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(4)" lettersOnly>
+            <label class="control-label" for="primerApellidoSustituto">Primer apellido
+              <span class="req">*</span>:</label>
+            <input id="primerApellidoSustituto" class="form-control" formControlName="primerApellido"
+                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(4)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdts.primerApellido?.errors?.required && (fdts.primerApellido?.dirty || fdts.primerApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="segundoApellidoContratante">Segundo apellido<span
-              class="req">*</span>:</label>
-            <input id="segundoApellidoContratante" class="form-control" formControlName="segundoApellido"
-                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(5)" lettersOnly>
+            <label class="control-label" for="segundoApellidoSustituto">Segundo apellido
+              <span class="req">*</span>:</label>
+            <input id="segundoApellidoSustituto" class="form-control" formControlName="segundoApellido"
+                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(5)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdts.segundoApellido?.errors?.required && (fdts.segundoApellido?.dirty || fdts.segundoApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -340,8 +356,8 @@
                   *ngIf="fdts.fechaNacimiento?.errors?.required && (fdts.fechaNacimiento?.dirty || fdts.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="sexoContratante">Sexo<span class="req">*</span></label>
-            <p-dropdown appendTo="body" id="sexoContratante" class="form-control" formControlName="sexo"
+            <label class="control-label" for="sexoSustituto">Sexo<span class="req">*</span></label>
+            <p-dropdown appendTo="body" id="sexoSustituto" class="form-control" formControlName="sexo"
                         [options]="sexo" [filter]="true" filterBy="label" (onChange)="cambiarSexo(1)"
                         placeholder="Selecciona el sexo">
             </p-dropdown>
@@ -349,8 +365,8 @@
                   *ngIf="fdts.sexo?.errors?.required && (fdts.sexo?.dirty || fdts.sexo?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3" *ngIf="fdts.sexo.value == 3">
-            <label class="control-label" for="otroSexoContratante">Otro:</label>
-            <input id="otroSexoContratante" class="form-control" formControlName="otroSexo"
+            <label class="control-label" for="otroSexoSustituto">Otro:</label>
+            <input id="otroSexoSustituto" class="form-control" formControlName="otroSexo"
                    placeholder="Ingresa otro sexo" maxlength="45">
             <span class="campo-obligatorio"
                   *ngIf="fdts.otroSexo?.errors?.required && (fdts.otroSexo?.dirty || fdts.otroSexo?.touched)">Este campo es obligatorio *.</span>
@@ -358,24 +374,26 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="nacionalidadContratante">Nacionalidad:</label>
-            <p-dropdown appendTo="body" id="nacionalidadContratante" class="form-control"
+            <label class="control-label" for="nacionalidadSustituto">Nacionalidad:</label>
+            <p-dropdown appendTo="body" id="nacionalidadSustituto" class="form-control"
                         formControlName="nacionalidad" (onChange)="cambiarNacionalidad(1)"
                         [options]="nacionalidad" [filter]="true" filterBy="label"
                         placeholder="Selecciona la nacionalidad">
             </p-dropdown>
           </div>
           <div class="col-md-3" *ngIf="fdts.nacionalidad.value == 2">
-            <label class="control-label" for="paisNacimientoContratante">País de nacimiento</label>
-            <p-dropdown appendTo="body" id="paisNacimientoContratante" class="form-control" formControlName="paisNacimiento"
+            <label class="control-label" for="paisNacimientoSustituto">País de nacimiento</label>
+            <p-dropdown appendTo="body" id="paisNacimientoSustituto" class="form-control"
+                        formControlName="paisNacimiento"
                         [options]="paises" [filter]="true" filterBy="label"
                         placeholder="Selecciona el país de nacimiento">
             </p-dropdown>
           </div>
           <div class="col-md-3" *ngIf="fdts.nacionalidad.value == 1">
-            <label class="control-label" for="lugarNacimientoContratante">Lugar de nacimiento<span
+            <label class="control-label" for="lugarNacimientoSustituto">Lugar de nacimiento<span
               class="req">*</span>:</label>
-            <p-dropdown appendTo="body" id="lugarNacimientoContratante" class="form-control" formControlName="lugarNacimiento"
+            <p-dropdown appendTo="body" id="lugarNacimientoSustituto" class="form-control"
+                        formControlName="lugarNacimiento"
                         [options]="estados" [filter]="true" filterBy="label"
                         placeholder="Selecciona el lugar de nacimiento">
             </p-dropdown>
@@ -385,16 +403,16 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="control-label" for="telefonoContratante">Teléfono<span class="req">*</span>:</label>
-            <input id="telefonoContratante" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
+            <label class="control-label" for="telefonoSustituto">Teléfono<span class="req">*</span>:</label>
+            <input id="telefonoSustituto" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
                    placeholder="Ingresa el teléfono">
             <span class="campo-obligatorio"
                   *ngIf="fdts.telefono?.errors?.required && (fdts.telefono?.dirty || fdts.telefono?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-6">
-            <label class="control-label" for="correoElectronicoContratante">Correo electrónico<span
+            <label class="control-label" for="correoElectronicoSustituto">Correo electrónico<span
               class="req">*</span>:</label>
-            <input id="correoElectronicoContratante" class="form-control" formControlName="correoElectronico"
+            <input id="correoElectronicoSustituto" class="form-control" formControlName="correoElectronico"
                    placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(1)"
                    (blur)="consultarCorreo(1)">
             <span class="campo-obligatorio"
@@ -404,27 +422,28 @@
         <hr class="separador">
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="calleContratante">Calle<span class="req">*</span>:</label>
-            <input id="calleContratante" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
+            <label class="control-label" for="calleSustituto">Calle<span class="req">*</span>:</label>
+            <input id="calleSustituto" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
                    maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fdts.calle?.errors?.required && (fdts.calle?.dirty || fdts.calle?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="numeroExteriorContratante">Número exterior<span class="req">*</span>:</label>
-            <input id="numeroExteriorContratante" class="form-control" formControlName="numeroExterior"
+            <label class="control-label" for="numeroExteriorSustituto">Número exterior<span
+              class="req">*</span>:</label>
+            <input id="numeroExteriorSustituto" class="form-control" formControlName="numeroExterior"
                    placeholder="Ingresa el númrto exterior" alphanumericOnly maxlength="10">
             <span class="campo-obligatorio"
                   *ngIf="fdts.numeroExterior?.errors?.required && (fdts.numeroExterior?.dirty || fdts.numeroExterior?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="numeroInteriorContratante">Número interior:</label>
-            <input id="numeroInteriorContratante" class="form-control" formControlName="numeroInterior"
+            <label class="control-label" for="numeroInteriorSustituto">Número interior:</label>
+            <input id="numeroInteriorSustituto" class="form-control" formControlName="numeroInterior"
                    placeholder="Ingresa el número interior">
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="cpContratante">C.P.<span class="req">*</span>:</label>
-            <input id="cpContratante" class="form-control" formControlName="cp" numbersOnly maxlength="5"
+            <label class="control-label" for="cpSustituto">C.P.<span class="req">*</span>:</label>
+            <input id="cpSustituto" class="form-control" formControlName="cp" numbersOnly maxlength="5"
                    placeholder="Ingresa el C.P." (blur)="consultarCodigoPostal(1)">
             <span class="campo-obligatorio"
                   *ngIf="fdts.cp?.errors?.required && (fdts.cp?.dirty || fdts.cp?.touched)">Este campo es obligatorio *.</span>
@@ -432,22 +451,22 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-4">
-            <label class="control-label" for="coloniaContratante">Colonia<span class="req">*</span>:</label>
-            <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+            <label class="control-label" for="coloniaSustituto">Colonia<span class="req">*</span>:</label>
+            <input id="coloniaSustituto" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
                    maxlength="45">
             <span class="campo-obligatorio"
                   *ngIf="fdts.colonia?.errors?.required && (fdts.colonia?.dirty || fdts.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="municipioContratante">Municipio<span class="req">*</span>:</label>
-            <input id="municipioContratante" class="form-control" formControlName="municipio"
+            <label class="control-label" for="municipioSustituto">Municipio<span class="req">*</span>:</label>
+            <input id="municipioSustituto" class="form-control" formControlName="municipio"
                    placeholder="Ingresa el municipio">
             <span class="campo-obligatorio"
                   *ngIf="fdts.municipio?.errors?.required && (fdts.municipio?.dirty || fdts.municipio?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="estadoContratante">Estado<span class="req">*</span></label>
-            <input id="estadoContratante" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
+            <label class="control-label" for="estadoSustituto">Estado<span class="req">*</span></label>
+            <input id="estadoSustituto" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
                   *ngIf="fdts.estado?.errors?.required && (fdts.estado?.dirty || fdts.estado?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -470,27 +489,28 @@
       <form [formGroup]="datosBeneficiario1Form">
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="curpContratante">CURP:</label>
-            <input id="curpContratante" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
+            <label class="control-label" for="curpBeneficiario1">CURP:</label>
+            <input id="curpBeneficiario1" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
                    (change)="convertirMayusculas(4)" (blur)="consultarCurp(2)" maxlength="18">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.curp?.errors?.required && (fdb1.curp?.dirty || fdb1.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="rfcContratante">R.F.C.:</label>
-            <input id="rfcContratante" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
+            <label class="control-label" for="rfcBeneficiario1">R.F.C.:</label>
+            <input id="rfcBeneficiario1" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
                    (change)="convertirMayusculas(5)" (blur)="consultarRfc(2)" maxlength="13">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.rfc?.errors?.required && (fdb1.rfc?.dirty || fdb1.rfc?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="matriculaContratante">Matrícula:</label>
-            <input id="matriculaContratante" class="form-control" formControlName="matricula"
+            <label class="control-label" for="matriculaBeneficiario1">Matrícula:</label>
+            <input id="matriculaBeneficiario1" class="form-control" formControlName="matricula"
                    placeholder="Ingresa la matrícula" maxlength="10" numbersOnly (blur)="consultarMatricula(2)">
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="nssContratante">NSS:</label>
-            <input id="nssContratante" class="form-control" formControlName="nss" placeholder="Ingresa el NSS" maxlength="11"
+            <label class="control-label" for="nssBeneficiario1">NSS:</label>
+            <input id="nssBeneficiario1" class="form-control" formControlName="nss" placeholder="Ingresa el NSS"
+                   maxlength="11"
                    (blur)="consultarNSS(2)">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.nss?.errors?.required && (fdb1.nss?.dirty || fdb1.nss?.touched)">Este campo es obligatorio *.</span>
@@ -498,23 +518,25 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="nombreContratante">Nombre(s):</label>
-            <input id="nombreContratante" class="form-control" formControlName="nombre"
+            <label class="control-label" for="nombreBeneficiario1">Nombre(s):</label>
+            <input id="nombreBeneficiario1" class="form-control" formControlName="nombre"
                    placeholder="Ingresa el nombre" maxlength="30" (keyup.space)="sinEspacioDoble(6)" lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdb1.nombre?.errors?.required && (fdb1.nombre?.dirty || fdb1.nombre?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="primerApellidoContratante">Primer apellido:</label>
-            <input id="primerApellidoContratante" class="form-control" formControlName="primerApellido"
-                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(7)" lettersOnly>
+            <label class="control-label" for="primerApellidoBeneficiario1">Primer apellido:</label>
+            <input id="primerApellidoBeneficiario1" class="form-control" formControlName="primerApellido"
+                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(7)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdb1.primerApellido?.errors?.required && (fdb1.primerApellido?.dirty || fdb1.primerApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="segundoApellidoContratante">Segundo apellido:</label>
-            <input id="segundoApellidoContratante" class="form-control" formControlName="segundoApellido"
-                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(8)" lettersOnly>
+            <label class="control-label" for="segundoApellidoBeneficiario1">Segundo apellido:</label>
+            <input id="segundoApellidoBeneficiario1" class="form-control" formControlName="segundoApellido"
+                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(8)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdb1.segundoApellido?.errors?.required && (fdb1.segundoApellido?.dirty || fdb1.segundoApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -531,8 +553,8 @@
                   *ngIf="fdb1.fechaNacimiento?.errors?.required && (fdb1.fechaNacimiento?.dirty || fdb1.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="sexoContratante">Sexo</label>
-            <p-dropdown appendTo="body" id="sexoContratante" class="form-control" formControlName="sexo"
+            <label class="control-label" for="sexoBeneficiario1">Sexo</label>
+            <p-dropdown appendTo="body" id="sexoBeneficiario1" class="form-control" formControlName="sexo"
                         [options]="sexo" [filter]="true" filterBy="label" (onChange)="cambiarSexo(1)"
                         placeholder="Selecciona el sexo">
             </p-dropdown>
@@ -540,8 +562,8 @@
                   *ngIf="fdb1.sexo?.errors?.required && (fdb1.sexo?.dirty || fdb1.sexo?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3" *ngIf="fdb1.sexo.value == 3">
-            <label class="control-label" for="otroSexoContratante">Otro:</label>
-            <input id="otroSexoContratante" class="form-control" formControlName="otroSexo"
+            <label class="control-label" for="otroSexoBeneficiario1">Otro:</label>
+            <input id="otroSexoBeneficiario1" class="form-control" formControlName="otroSexo"
                    placeholder="Ingresa otro sexo" maxlength="45">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.otroSexo?.errors?.required && (fdb1.otroSexo?.dirty || fdb1.otroSexo?.touched)">Este campo es obligatorio *.</span>
@@ -549,23 +571,25 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="nacionalidadContratante">Nacionalidad:</label>
-            <p-dropdown appendTo="body" id="nacionalidadContratante" class="form-control"
+            <label class="control-label" for="nacionalidadBeneficiario1">Nacionalidad:</label>
+            <p-dropdown appendTo="body" id="nacionalidadBeneficiario1" class="form-control"
                         formControlName="nacionalidad" (onChange)="cambiarNacionalidad2(0)"
                         [options]="nacionalidad" [filter]="true" filterBy="label"
                         placeholder="Selecciona la nacionalidad">
             </p-dropdown>
           </div>
           <div class="col-md-3" *ngIf="fdb1.nacionalidad.value == 2">
-            <label class="control-label" for="paisNacimientoContratante">País de nacimiento</label>
-            <p-dropdown appendTo="body" id="paisNacimientoContratante" class="form-control" formControlName="paisNacimiento"
+            <label class="control-label" for="paisNacimientoBeneficiario1">País de nacimiento</label>
+            <p-dropdown appendTo="body" id="paisNacimientoBeneficiario1" class="form-control"
+                        formControlName="paisNacimiento"
                         [options]="paises" [filter]="true" filterBy="label"
                         placeholder="Selecciona el país de nacimiento">
             </p-dropdown>
           </div>
           <div class="col-md-3" *ngIf="fdb1.nacionalidad.value == 1">
-            <label class="control-label" for="lugarNacimientoContratante">Lugar de nacimiento:</label>
-            <p-dropdown appendTo="body" id="lugarNacimientoContratante" class="form-control" formControlName="lugarNacimiento"
+            <label class="control-label" for="lugarNacimientoBenericiario1">Lugar de nacimiento:</label>
+            <p-dropdown appendTo="body" id="lugarNacimientoBenericiario1" class="form-control"
+                        formControlName="lugarNacimiento"
                         [options]="estados" [filter]="true" filterBy="label"
                         placeholder="Selecciona el lugar de nacimiento">
             </p-dropdown>
@@ -575,15 +599,15 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="control-label" for="telefonoContratante">Teléfono:</label>
-            <input id="telefonoContratante" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
+            <label class="control-label" for="telefonoBeneficiario1">Teléfono:</label>
+            <input id="telefonoBeneficiario1" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
                    placeholder="Ingresa el teléfono">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.telefono?.errors?.required && (fdb1.telefono?.dirty || fdb1.telefono?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-6">
-            <label class="control-label" for="correoElectronicoContratante">Correo electrónico:</label>
-            <input id="correoElectronicoContratante" class="form-control" formControlName="correoElectronico"
+            <label class="control-label" for="correoElectronicoBeneficiario1">Correo electrónico:</label>
+            <input id="correoElectronicoBeneficiario1" class="form-control" formControlName="correoElectronico"
                    placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(2)"
                    (blur)="consultarCorreo(2)">
             <span class="campo-obligatorio"
@@ -593,27 +617,27 @@
         <hr class="separador">
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="calleContratante">Calle:</label>
-            <input id="calleContratante" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
+            <label class="control-label" for="calleBeneficiario1">Calle:</label>
+            <input id="calleBeneficiario1" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
                    maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.calle?.errors?.required && (fdb1.calle?.dirty || fdb1.calle?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="numeroExteriorContratante">Número exterior:</label>
-            <input id="numeroExteriorContratante" class="form-control" formControlName="numeroExterior"
+            <label class="control-label" for="numeroExteriorBeneficiario1">Número exterior:</label>
+            <input id="numeroExteriorBeneficiario1" class="form-control" formControlName="numeroExterior"
                    placeholder="Ingresa el númrto exterior" alphanumericOnly maxlength="10">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.numeroExterior?.errors?.required && (fdb1.numeroExterior?.dirty || fdb1.numeroExterior?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="numeroInteriorContratante">Número interior:</label>
-            <input id="numeroInteriorContratante" class="form-control" formControlName="numeroInterior"
+            <label class="control-label" for="numeroInteriorBeneficiario1">Número interior:</label>
+            <input id="numeroInteriorBeneficiario1" class="form-control" formControlName="numeroInterior"
                    placeholder="Ingresa el número interior">
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="cpContratante">C.P.:</label>
-            <input id="cpContratante" class="form-control" formControlName="cp" numbersOnly maxlength="5"
+            <label class="control-label" for="cpBeneficiario1">C.P.:</label>
+            <input id="cpBeneficiario1" class="form-control" formControlName="cp" numbersOnly maxlength="5"
                    placeholder="Ingresa el C.P." (blur)="consultarCodigoPostal(2)">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.cp?.errors?.required && (fdb1.cp?.dirty || fdb1.cp?.touched)">Este campo es obligatorio *.</span>
@@ -621,22 +645,24 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-4">
-            <label class="control-label" for="coloniaContratante">Colonia:</label>
-            <p-dropdown id="coloniaContratante" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+            <label class="control-label" for="coloniaBeneficiario1">Colonia:</label>
+            <p-dropdown id="coloniaBeneficiario1" class="form-control" formControlName="colonia"
+                        placeholder="Ingresa la colonia"
                         [options]="colonias[2]" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fdb1.colonia?.errors?.required && (fdb1.colonia?.dirty || fdb1.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="municipioContratante">Municipio:</label>
-            <input id="municipioContratante" class="form-control" formControlName="municipio"
+            <label class="control-label" for="municipioBeneficiario1">Municipio:</label>
+            <input id="municipioBeneficiario1" class="form-control" formControlName="municipio"
                    placeholder="Ingresa el municipio">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.municipio?.errors?.required && (fdb1.municipio?.dirty || fdb1.municipio?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="estadoContratante">Estado</label>
-            <input id="estadoContratante" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
+            <label class="control-label" for="estadoBeneficiario1">Estado</label>
+            <input id="estadoBeneficiario1" class="form-control" formControlName="estado"
+                   placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
                   *ngIf="fdb1.estado?.errors?.required && (fdb1.estado?.dirty || fdb1.estado?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -659,27 +685,28 @@
       <form [formGroup]="datosBeneficiario2Form">
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="curpContratante">CURP:</label>
-            <input id="curpContratante" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
+            <label class="control-label" for="curpBeneficiario2">CURP:</label>
+            <input id="curpBeneficiario2" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
                    (change)="convertirMayusculas(6)" (blur)="consultarCurp(3)" maxlength="18">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.curp?.errors?.required && (fdb2.curp?.dirty || fdb2.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="rfcContratante">R.F.C.:</label>
-            <input id="rfcContratante" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
+            <label class="control-label" for="rfcBeneficiario2">R.F.C.:</label>
+            <input id="rfcBeneficiario2" class="form-control" formControlName="rfc" placeholder="Ingresa el R.F.C."
                    (change)="convertirMayusculas(7)" (blur)="consultarRfc(4)" maxlength="13">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.rfc?.errors?.required && (fdb2.rfc?.dirty || fdb2.rfc?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="matriculaContratante">Matrícula:</label>
-            <input id="matriculaContratante" class="form-control" formControlName="matricula"
+            <label class="control-label" for="matriculaBeneficiario2">Matrícula:</label>
+            <input id="matriculaBeneficiario2" class="form-control" formControlName="matricula"
                    placeholder="Ingresa la matrícula" maxlength="10" numbersOnly (blur)="consultarMatricula(3)">
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="nssContratante">NSS:</label>
-            <input id="nssContratante" class="form-control" formControlName="nss" placeholder="Ingresa el NSS" maxlength="11"
+            <label class="control-label" for="nssBeneficiario2">NSS:</label>
+            <input id="nssBeneficiario2" class="form-control" formControlName="nss" placeholder="Ingresa el NSS"
+                   maxlength="11"
                    (blur)="consultarNSS(3)">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.nss?.errors?.required && (fdb2.nss?.dirty || fdb2.nss?.touched)">Este campo es obligatorio *.</span>
@@ -687,29 +714,31 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="nombreContratante">Nombre(s):</label>
-            <input id="nombreContratante" class="form-control" formControlName="nombre"
+            <label class="control-label" for="nombreBeneficiario2">Nombre(s):</label>
+            <input id="nombreBeneficiario2" class="form-control" formControlName="nombre"
                    placeholder="Ingresa el nombre" maxlength="30" (keyup.space)="sinEspacioDoble(9)" lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdb2.nombre?.errors?.required && (fdb2.nombre?.dirty || fdb2.nombre?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="primerApellidoContratante">Primer apellido:</label>
-            <input id="primerApellidoContratante" class="form-control" formControlName="primerApellido"
-                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(10)" lettersOnly>
+            <label class="control-label" for="primerApellidoBeneficiario2">Primer apellido:</label>
+            <input id="primerApellidoBeneficiario2" class="form-control" formControlName="primerApellido"
+                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(10)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdb2.primerApellido?.errors?.required && (fdb2.primerApellido?.dirty || fdb2.primerApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="segundoApellidoContratante">Segundo apellido:</label>
-            <input id="segundoApellidoContratante" class="form-control" formControlName="segundoApellido"
-                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(11)" lettersOnly>
+            <label class="control-label" for="segundoApellidoBeneficiario2">Segundo apellido:</label>
+            <input id="segundoApellidoBeneficiario2" class="form-control" formControlName="segundoApellido"
+                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(11)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdb2.segundoApellido?.errors?.required && (fdb2.segundoApellido?.dirty || fdb2.segundoApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
-  
+
         </div>
-  
+
         <div class="row mb-3">
           <div class="col-md-3">
             <label class="control-label">Fecha de nacimiento:</label>
@@ -720,8 +749,8 @@
                   *ngIf="fdb2.fechaNacimiento?.errors?.required && (fdb2.fechaNacimiento?.dirty || fdb2.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="sexoContratante">Sexo</label>
-            <p-dropdown appendTo="body" id="sexoContratante" class="form-control" formControlName="sexo"
+            <label class="control-label" for="sexoBeneficiario2">Sexo</label>
+            <p-dropdown appendTo="body" id="sexoBeneficiario2" class="form-control" formControlName="sexo"
                         [options]="sexo" [filter]="true" filterBy="label" (onChange)="cambiarSexo(1)"
                         placeholder="Selecciona el sexo">
             </p-dropdown>
@@ -729,8 +758,8 @@
                   *ngIf="fdb2.sexo?.errors?.required && (fdb2.sexo?.dirty || fdb2.sexo?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3" *ngIf="fdb2.sexo.value == 3">
-            <label class="control-label" for="otroSexoContratante">Otro:</label>
-            <input id="otroSexoContratante" class="form-control" formControlName="otroSexo"
+            <label class="control-label" for="otroSexoBeneficiario2">Otro:</label>
+            <input id="otroSexoBeneficiario2" class="form-control" formControlName="otroSexo"
                    placeholder="Ingresa otro sexo" maxlength="45">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.otroSexo?.errors?.required && (fdb2.otroSexo?.dirty || fdb2.otroSexo?.touched)">Este campo es obligatorio *.</span>
@@ -738,23 +767,25 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="nacionalidadContratante">Nacionalidad:</label>
-            <p-dropdown appendTo="body" id="nacionalidadContratante" class="form-control"
+            <label class="control-label" for="nacionalidadBeneficiario2">Nacionalidad:</label>
+            <p-dropdown appendTo="body" id="nacionalidadBeneficiario2" class="form-control"
                         formControlName="nacionalidad" (onChange)="cambiarNacionalidad2(1)"
                         [options]="nacionalidad" [filter]="true" filterBy="label"
                         placeholder="Selecciona la nacionalidad">
             </p-dropdown>
           </div>
           <div class="col-md-3" *ngIf="fdb2.nacionalidad.value == 2">
-            <label class="control-label" for="paisNacimientoContratante">País de nacimiento</label>
-            <p-dropdown appendTo="body" id="paisNacimientoContratante" class="form-control" formControlName="paisNacimiento"
+            <label class="control-label" for="paisNacimientoBeneficiario2">País de nacimiento</label>
+            <p-dropdown appendTo="body" id="paisNacimientoBeneficiario2" class="form-control"
+                        formControlName="paisNacimiento"
                         [options]="paises" [filter]="true" filterBy="label"
                         placeholder="Selecciona el país de nacimiento">
             </p-dropdown>
           </div>
           <div class="col-md-3" *ngIf="fdb2.nacionalidad.value == 1">
-            <label class="control-label" for="lugarNacimientoContratante">Lugar de nacimiento:</label>
-            <p-dropdown appendTo="body" id="lugarNacimientoContratante" class="form-control" formControlName="lugarNacimiento"
+            <label class="control-label" for="lugarNacimientoBeneficiario2">Lugar de nacimiento:</label>
+            <p-dropdown appendTo="body" id="lugarNacimientoBeneficiario2" class="form-control"
+                        formControlName="lugarNacimiento"
                         [options]="estados" [filter]="true" filterBy="label"
                         placeholder="Selecciona el lugar de nacimiento">
             </p-dropdown>
@@ -764,15 +795,15 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="control-label" for="telefonoContratante">Teléfono:</label>
-            <input id="telefonoContratante" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
+            <label class="control-label" for="telefonoBeneficiario2">Teléfono:</label>
+            <input id="telefonoBeneficiario2" class="form-control" formControlName="telefono" numbersOnly maxlength="10"
                    placeholder="Ingresa el teléfono">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.telefono?.errors?.required && (fdb2.telefono?.dirty || fdb2.telefono?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-6">
-            <label class="control-label" for="correoElectronicoContratante">Correo electrónico:</label>
-            <input id="correoElectronicoContratante" class="form-control" formControlName="correoElectronico"
+            <label class="control-label" for="correoElectronicoBeneficiario2">Correo electrónico:</label>
+            <input id="correoElectronicoBeneficiario2" class="form-control" formControlName="correoElectronico"
                    placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(3)"
                    (blur)="consultarCorreo(3)">
             <span class="campo-obligatorio"
@@ -782,27 +813,27 @@
         <hr class="separador">
         <div class="row mb-3">
           <div class="col-md-3">
-            <label class="control-label" for="calleContratante">Calle:</label>
-            <input id="calleContratante" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
+            <label class="control-label" for="calleBeneficiario2">Calle:</label>
+            <input id="calleBeneficiario2" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
                    maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.calle?.errors?.required && (fdb2.calle?.dirty || fdb2.calle?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="numeroExteriorContratante">Número exterior:</label>
-            <input id="numeroExteriorContratante" class="form-control" formControlName="numeroExterior"
+            <label class="control-label" for="numeroExteriorBeneficiario2">Número exterior:</label>
+            <input id="numeroExteriorBeneficiario2" class="form-control" formControlName="numeroExterior"
                    placeholder="Ingresa el númrto exterior" alphanumericOnly maxlength="10">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.numeroExterior?.errors?.required && (fdb2.numeroExterior?.dirty || fdb2.numeroExterior?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="numeroInteriorContratante">Número interior:</label>
-            <input id="numeroInteriorContratante" class="form-control" formControlName="numeroInterior"
+            <label class="control-label" for="numeroInteriorBeneficiario2">Número interior:</label>
+            <input id="numeroInteriorBeneficiario2" class="form-control" formControlName="numeroInterior"
                    placeholder="Ingresa el número interior">
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="cpContratante">C.P.:</label>
-            <input id="cpContratante" class="form-control" formControlName="cp" numbersOnly maxlength="5"
+            <label class="control-label" for="cpBeneficiario2">C.P.:</label>
+            <input id="cpBeneficiario2" class="form-control" formControlName="cp" numbersOnly maxlength="5"
                    placeholder="Ingresa el C.P." (blur)="consultarCodigoPostal(3)">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.cp?.errors?.required && (fdb2.cp?.dirty || fdb2.cp?.touched)">Este campo es obligatorio *.</span>
@@ -810,22 +841,24 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-4">
-            <label class="control-label" for="coloniaContratante">Colonia:</label>
-            <p-dropdown id="coloniaContratante" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+            <label class="control-label" for="coloniaBeneficiario2">Colonia:</label>
+            <p-dropdown id="coloniaBeneficiario2" class="form-control" formControlName="colonia"
+                        placeholder="Ingresa la colonia"
                         [options]="colonias[3]" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fdb2.colonia?.errors?.required && (fdb2.colonia?.dirty || fdb2.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="municipioContratante">Municipio:</label>
-            <input id="municipioContratante" class="form-control" formControlName="municipio"
+            <label class="control-label" for="municipioBeneficiario2">Municipio:</label>
+            <input id="municipioBeneficiario2" class="form-control" formControlName="municipio"
                    placeholder="Ingresa el municipio">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.municipio?.errors?.required && (fdb2.municipio?.dirty || fdb2.municipio?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="estadoContratante">Estado</label>
-            <input id="estadoContratante" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
+            <label class="control-label" for="estadoBeneficiario2">Estado</label>
+            <input id="estadoBeneficiario2" class="form-control" formControlName="estado"
+                   placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
                   *ngIf="fdb2.estado?.errors?.required && (fdb2.estado?.dirty || fdb2.estado?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -843,33 +876,34 @@
 <form [formGroup]="promotorForm" *ngIf="promotorForm">
   <div class="border-panel mb-5">
     <div class="row">
-        <div class="col-md-6">
-            <label class="control-label">¿El servicio fue gestionado por un promotor?<span class="req">*</span></label>
-            <div class="flex">
-                <div class="flex align-items-center mx-2">
-                    <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
-                        formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
-                      </p-radioButton>
-                    <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
-                </div>
-                <div class="flex align-items-center mx-2">
-                    <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false"
-                        formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
-                      </p-radioButton>
-                    <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
-                </div>
-            </div>
-            <span class="campo-obligatorio"
-                  *ngIf="fp.gestionadoPorPromotor?.errors?.required && (fp.gestionadoPorPromotor?.dirty || fp.gestionadoPorPromotor?.touched)">Este campo es obligatorio *.</span>
+      <div class="col-md-6">
+        <label class="control-label">¿El servicio fue gestionado por un promotor?<span class="req">*</span></label>
+        <div class="flex">
+          <div class="flex align-items-center mx-2">
+            <p-radioButton [inputId]="'promotorSi'" name="gestionadoPorPromotor" [value]="true"
+                           formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
+            </p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+          </div>
+          <div class="flex align-items-center mx-2">
+            <p-radioButton [inputId]="'promotorNo'" name="gestionadoPorPromotor" [value]="false"
+                           formControlName="gestionadoPorPromotor" (onClick)="handleGestionPromotor()">
+            </p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+          </div>
         </div>
-        <div class="col-md-6">
-            <label class="control-label" for="promotor">Promotor:<span class="req" *ngIf="fp.gestionadoPorPromotor.value">*</span></label>
-            <p-dropdown id="promotor" class="form-control" formControlName="promotor"
-                placeholder="Selecciona promotor" [options]="catPromotores" [filter]="true"
-                filterBy="label"></p-dropdown>
-            <span class="campo-obligatorio"
-                *ngIf="fp.promotor?.errors?.required && (fp.promotor?.dirty || fp.promotor?.touched)">Este campo es obligatorio *.</span>
-        </div>
+        <span class="campo-obligatorio"
+              *ngIf="fp.gestionadoPorPromotor?.errors?.required && (fp.gestionadoPorPromotor?.dirty || fp.gestionadoPorPromotor?.touched)">Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="promotor">Promotor:<span class="req"
+                                                                   *ngIf="fp.gestionadoPorPromotor.value">*</span></label>
+        <p-dropdown id="promotor" class="form-control" formControlName="promotor"
+                    placeholder="Selecciona promotor" [options]="catPromotores" [filter]="true"
+                    filterBy="label"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fp.promotor?.errors?.required && (fp.promotor?.dirty || fp.promotor?.touched)">Este campo es obligatorio *.</span>
+      </div>
     </div>
   </div>
 </form>
@@ -882,7 +916,7 @@
 </div>
 
 <p-dialog header="" [(visible)]="confirmarGuardado" [style]="{width: '50vw'}"
-          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true"  >
+          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true">
   <div class="row">
     <p class="text-center">¿Estás seguro de modificar el registro?</p>
   </div>
@@ -895,21 +929,22 @@
 </p-dialog>
 
 <p-dialog header="" [(visible)]="confirmarAceptarPaquete" [style]="{width: '50vw'}"
-          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true"  >
+          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true">
   <div class="row">
-    <p class="text-justify">{{infoPaqueteSeleccionado}}</p>
+    <p class="text-justify">{{ infoPaqueteSeleccionado }}</p>
   </div>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
-      <button type="button" class="btn btn-primary btn-md ml-5" (click)="confirmarAceptarPaquete = false">Aceptar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="confirmarAceptarPaquete = false">Aceptar
+      </button>
     </div>
   </div>
 </p-dialog>
 
 <p-dialog header="" [(visible)]="confirmacionDatosExistentes" [style]="{width: '50vw'}"
-          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true"  >
+          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true">
   <div class="row">
-    <p class="text-center">{{mensajeDatosExistentes}}</p>
+    <p class="text-center">{{ mensajeDatosExistentes }}</p>
   </div>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
