@@ -114,19 +114,15 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         this.nombreVelatorio = plan.velatorio;
         this.fecIngresa = plan.fechaIngreso;
         const objetoTitular = datos.contratante;
-
         const objetoSubstituto = datos.titularSubstituto ? datos.titularSubstituto : objetoTitular;
-
         this.inicializarFormPromotor(plan.indPromotor, plan.idPromotor);
         const idPago: number = this.numeroPago.find(pago => pago.label === plan.noPagos)?.value as number;
         this.inicializarFormDatosTitular(plan.idPaquete, idPago, objetoTitular, plan.pago);
         this.inicializarFormDatosTitularSubstituto(plan.indTitularSubstituto, objetoSubstituto);
         this.inicializarFormDatosBeneficiario1(datos.beneficiario1);
         this.inicializarFormDatosBeneficiario2(datos.beneficiario2);
-
         this.consultarCodigoPostal(2);
         this.consultarCodigoPostal(3);
-
         if (respuesta.datos.numPago > 0) {
           this.fdt.tipoPaquete.disable();
           this.fdt.numeroPago.disable();
@@ -164,8 +160,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       sexo: [{value: titular.idSexo ? +titular.idSexo : null, disabled: true}, [Validators.required]],
       otroSexo: [{value: titular.otroSexo, disabled: true}],
       fechaNacimiento: [{value: fecha, disabled: true}, [Validators.required]],
-      nacionalidad: [{value: titular.idPais ? +titular?.idPais == 119 ? 1 : 2 : null, disabled: true},
-        [Validators.required]],
+      nacionalidad: [{value: titular.idNacionalidad, disabled: true}, [Validators.required]],
       lugarNacimiento: [{value: titular?.idEstado ? +titular?.idEstado : null, disabled: true},
         [Validators.required]],
       paisNacimiento: [{value: titular?.idPais ? +titular?.idPais : null, disabled: true}],
@@ -205,10 +200,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         [Validators.required]],
       otroSexo: [{value: titularSubstituto.otroSexo, disabled: false}],
       fechaNacimiento: [{value: fecha, disabled: false}, [Validators.required]],
-      nacionalidad: [{
-        value: titularSubstituto.idPais ? titularSubstituto.idPais == 119 ? 1 : 2 : null,
-        disabled: false
-      },
+      nacionalidad: [{value: titularSubstituto.idNacionalidad, disabled: false},
         [Validators.required]],
       lugarNacimiento: [{value: titularSubstituto.idEstado, disabled: false}, [Validators.required]],
       paisNacimiento: [{value: titularSubstituto.idPais, disabled: false}],
