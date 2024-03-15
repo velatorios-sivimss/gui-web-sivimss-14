@@ -166,8 +166,8 @@ export interface SolicitudPlan {
 
 export interface SolicitudContratante {
   persona: 'titular',
-  idContratante: null,
-  idPersona: null,
+  idContratante: null | number,
+  idPersona: null | number,
   rfc: string,
   curp: string,
   matricula: string,
@@ -184,7 +184,7 @@ export interface SolicitudContratante {
   telefonoFijo: string,
   correo: string,
   ine: null,
-  idDomicilio: null,
+  idDomicilio: null | number,
   desCalle: string,
   numExterior: string,
   numInterior: string,
@@ -196,7 +196,7 @@ export interface SolicitudContratante {
 
 export interface SolicitudSubstituto {
   persona: "titular substituto",
-  idPersona: null,
+  idPersona: null | number,
   rfc: string,
   curp: string,
   matricula: string,
@@ -213,7 +213,7 @@ export interface SolicitudSubstituto {
   telefonoFijo: string | null,
   correo: string,
   ine: null,
-  idDomicilio: null,
+  idDomicilio: null | number,
   desCalle: string,
   numExterior: string,
   numInterior: string,
@@ -225,7 +225,7 @@ export interface SolicitudSubstituto {
 
 export interface SolicitudBeneficiario {
   persona: 'beneficiario 2' | 'beneficiario 1',
-  idPersona: null,
+  idPersona: null | number | string,
   rfc: string,
   curp: string,
   matricula: string,
@@ -242,7 +242,7 @@ export interface SolicitudBeneficiario {
   telefonoFijo: string,
   correo: string,
   ine: null,
-  idDomicilio: null,
+  idDomicilio: null | string | number,
   desCalle: string,
   numExterior: string,
   numInterior: string,
