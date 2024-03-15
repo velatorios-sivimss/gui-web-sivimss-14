@@ -143,7 +143,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       gestionadoPorPromotor: [{value: indPromotor, disabled: false}, [Validators.required]],
       promotor: [{value: idPromotor, disabled: false}, [Validators.required]],
     });
-
     this.handleGestionPromotor();
   }
 
@@ -211,26 +210,19 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         disabled: false
       },
         [Validators.required]],
-      lugarNacimiento: [{value: titularSubstituto.idEstado, disabled: false},
-        [Validators.required]],
+      lugarNacimiento: [{value: titularSubstituto.idEstado, disabled: false}, [Validators.required]],
       paisNacimiento: [{value: titularSubstituto.idPais, disabled: false}],
-      telefono: [{value: titularSubstituto.telefono, disabled: false},
-        [Validators.required]],
+      telefono: [{value: titularSubstituto.telefono, disabled: false}, [Validators.required]],
       correoElectronico: [{value: titularSubstituto.correo, disabled: false},
         [Validators.required, Validators.pattern(PATRON_CORREO)]],
-      cp: [{value: titularSubstituto?.codigoPostal, disabled: false},
-        [Validators.required]],
-      calle: [{value: titularSubstituto?.desCalle, disabled: false},
-        [Validators.required]],
+      cp: [{value: titularSubstituto?.codigoPostal, disabled: false}, [Validators.required]],
+      calle: [{value: titularSubstituto?.desCalle, disabled: false}, [Validators.required]],
       numeroInterior: [{value: titularSubstituto?.numInterior, disabled: false}],
       numeroExterior: [{value: titularSubstituto?.numExterior, disabled: false},
         [Validators.required]],
-      colonia: [{value: titularSubstituto?.desColonia, disabled: true},
-        [Validators.required]],
-      municipio: [{value: titularSubstituto?.desMunicipio, disabled: true},
-        [Validators.required]],
-      estado: [{value: titularSubstituto?.desEstado, disabled: false},
-        [Validators.required]],
+      colonia: [{value: titularSubstituto?.desColonia, disabled: true}, [Validators.required]],
+      municipio: [{value: titularSubstituto?.desMunicipio, disabled: true}, [Validators.required]],
+      estado: [{value: titularSubstituto?.desEstado, disabled: false}, [Validators.required]],
     });
     this.datosTitularSubstitutoForm.disable();
     this.datosIguales(this.fdts.datosIguales.value);
@@ -243,19 +235,19 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
     this.datosBeneficiario1Form = this.formBuilder.group({
-      curp: [{value: beneficiario?.curp, disabled: true}, [Validators.pattern(PATRON_CURP)]],
+      curp: [{value: beneficiario?.curp, disabled: !!beneficiario}, [Validators.pattern(PATRON_CURP)]],
       rfc: [{value: beneficiario?.rfc, disabled: false}, [Validators.pattern(PATRON_RFC)]],
       matricula: [{value: beneficiario?.matricula, disabled: false},],
       nss: [{value: beneficiario?.nss, disabled: false}, []],
-      nombre: [{value: beneficiario?.nomPersona, disabled: true}, []],
-      primerApellido: [{value: beneficiario?.primerApellido, disabled: true}, []],
-      segundoApellido: [{value: beneficiario?.segundoApellido, disabled: true}, []],
-      sexo: [{value: beneficiario?.idSexo ? +beneficiario?.idSexo : null, disabled: true}, []],
-      otroSexo: [{value: beneficiario?.otroSexo, disabled: true}],
-      fechaNacimiento: [{value: fecha, disabled: true}, []],
-      nacionalidad: [{value: beneficiario?.idPais == 119 ? 1 : 2, disabled: true}, []],
-      lugarNacimiento: [{value: beneficiario?.idEstado ? +beneficiario?.idEstado : null, disabled: true}, []],
-      paisNacimiento: [{value: beneficiario?.idPais ? +beneficiario?.idPais : null, disabled: true}],
+      nombre: [{value: beneficiario?.nomPersona, disabled: !!beneficiario}, []],
+      primerApellido: [{value: beneficiario?.primerApellido, disabled: !!beneficiario}, []],
+      segundoApellido: [{value: beneficiario?.segundoApellido, disabled: !!beneficiario}, []],
+      sexo: [{value: beneficiario?.idSexo ? +beneficiario?.idSexo : null, disabled: !!beneficiario}, []],
+      otroSexo: [{value: beneficiario?.otroSexo, disabled: !!beneficiario}],
+      fechaNacimiento: [{value: fecha, disabled: !!beneficiario}, []],
+      nacionalidad: [{value: beneficiario?.idNacionalidad, disabled: !!beneficiario}, []],
+      lugarNacimiento: [{value: beneficiario?.idEstado ? +beneficiario?.idEstado : null, disabled: !!beneficiario}, []],
+      paisNacimiento: [{value: beneficiario?.idPais ? +beneficiario?.idPais : null, disabled: !!beneficiario}],
       telefono: [{value: beneficiario?.telefono, disabled: false}, []],
       correoElectronico: [{value: beneficiario?.correo, disabled: false}, [Validators.pattern(PATRON_CORREO)]],
       cp: [{value: beneficiario?.codigoPostal, disabled: false}, []],
@@ -275,19 +267,19 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
     this.datosBeneficiario2Form = this.formBuilder.group({
-      curp: [{value: beneficiario?.curp, disabled: true}, [Validators.pattern(PATRON_CURP)]],
+      curp: [{value: beneficiario?.curp, disabled: !!beneficiario}, [Validators.pattern(PATRON_CURP)]],
       rfc: [{value: beneficiario?.rfc, disabled: false}, [Validators.pattern(PATRON_RFC)]],
       matricula: [{value: beneficiario?.matricula, disabled: false},],
       nss: [{value: beneficiario?.nss, disabled: false}, []],
-      nombre: [{value: beneficiario?.nomPersona, disabled: true}, []],
-      primerApellido: [{value: beneficiario?.primerApellido, disabled: true}, []],
-      segundoApellido: [{value: beneficiario?.segundoApellido, disabled: true}, []],
-      sexo: [{value: beneficiario?.idSexo ? +beneficiario?.idSexo : null, disabled: true}, []],
-      otroSexo: [{value: beneficiario?.otroSexo, disabled: true}],
-      fechaNacimiento: [{value: fecha, disabled: true}, []],
-      nacionalidad: [{value: beneficiario?.idPais == 119 ? 1 : 2, disabled: true}, []],
-      lugarNacimiento: [{value: beneficiario?.idEstado ? +beneficiario?.idEstado : null, disabled: true}, []],
-      paisNacimiento: [{value: beneficiario?.idPais ? +beneficiario?.idPais : null, disabled: true}],
+      nombre: [{value: beneficiario?.nomPersona, disabled: !!beneficiario}, []],
+      primerApellido: [{value: beneficiario?.primerApellido, disabled: !!beneficiario}, []],
+      segundoApellido: [{value: beneficiario?.segundoApellido, disabled: !!beneficiario}, []],
+      sexo: [{value: beneficiario?.idSexo ? +beneficiario?.idSexo : null, disabled: !!beneficiario}, []],
+      otroSexo: [{value: beneficiario?.otroSexo, disabled: !!beneficiario}],
+      fechaNacimiento: [{value: fecha, disabled: !!beneficiario}, []],
+      nacionalidad: [{value: beneficiario?.idNacionalidad, disabled: !!beneficiario}, []],
+      lugarNacimiento: [{value: beneficiario?.idEstado ? +beneficiario?.idEstado : null, disabled: !!beneficiario}, []],
+      paisNacimiento: [{value: beneficiario?.idPais ? +beneficiario?.idPais : null, disabled: !!beneficiario}],
       telefono: [{value: beneficiario?.telefono, disabled: false}, []],
       correoElectronico: [{value: beneficiario?.correo, disabled: false}, [Validators.pattern(PATRON_CORREO)]],
       cp: [{value: beneficiario?.codigoPostal, disabled: false}, []],
@@ -613,41 +605,15 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
 
   datosIguales(esIgual: boolean): void {
     esIgual ? this.fdts.datosIguales.setValue(true) : this.fdts.datosIguales.setValue(false);
-
     if (esIgual) {
-      this.fdts.curp.enable()
-      this.fdts.rfc.enable()
-      this.fdts.matricula.enable()
+      this.datosTitularSubstitutoForm.enable();
       return
     }
-    this.fdts.curp.disable()
-    this.fdts.rfc.disable()
-    this.fdts.matricula.disable()
-    this.fdts.nss.disable()
-    this.fdts.nombre.disable()
-    this.fdts.primerApellido.disable()
-    this.fdts.segundoApellido.disable()
-    this.fdts.sexo.disable()
-    this.fdts.otroSexo.disable()
-    this.fdts.fechaNacimiento.disable()
-    this.fdts.nacionalidad.disable()
-    this.fdts.lugarNacimiento.disable()
-    this.fdts.paisNacimiento.disable()
-    this.fdts.telefono.disable()
-    this.fdts.correoElectronico.disable()
-    this.fdts.cp.disable()
-    this.fdts.calle.disable()
-    this.fdts.numeroInterior.disable()
-    this.fdts.numeroExterior.disable()
-    this.fdts.colonia.disable()
-    this.fdts.municipio.disable()
-    this.fdts.estado.disable()
-
-
+    this.datosTitularSubstitutoForm.disable();
   }
 
   limpiarFormulario(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
+    const formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     formularioEnUso[posicion].nombre.patchValue(null);
     formularioEnUso[posicion].primerApellido.patchValue(null);
     formularioEnUso[posicion].segundoApellido.patchValue(null);
