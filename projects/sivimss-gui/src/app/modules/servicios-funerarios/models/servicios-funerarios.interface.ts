@@ -150,7 +150,7 @@ export interface SolicitudCreacionSFPA {
 }
 
 export interface SolicitudPlan {
-  idPlanSfpa: null,
+  idPlanSfpa: null | number,
   idTipoContratacion: number,
   idPaquete: number,
   monPrecio: string,

@@ -19,7 +19,7 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/inserta-plan-sfpa`, planSFPA);
   }
 
-  actualizarPlanSFPA(planSFPA: AgregarPlanSFPA): Observable<HttpRespuesta<any>> {
+  actualizarPlanSFPA(planSFPA: SolicitudCreacionSFPA): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/actualiza-plan-sfpa`, planSFPA);
   }
 
