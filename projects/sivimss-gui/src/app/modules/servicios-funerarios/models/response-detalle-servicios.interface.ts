@@ -3,7 +3,7 @@ export interface ResponseDetalleServicios {
   beneficiario2: ResponseBeneficiarioServicios | null,
   contratante: ResponseContratanteServicios,
   plan: ResponsePlanServicios,
-  titularSubstituto: null
+  titularSubstituto: ResponseContratanteServicios
 }
 
 export interface ResponsePlanServicios {
