@@ -16,13 +16,13 @@ import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {finalize} from "rxjs";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
-import {AgregarPlanSFPA, Persona} from "../../models/servicios-funerarios.interface";
+import {AgregarPlanSFPA} from "../../models/servicios-funerarios.interface";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import * as moment from "moment/moment";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {
   ResponseBeneficiarioServicios, ResponseContratanteServicios,
-  ResponseDetalleServicios, ResponsePlanServicios, ResponseSustitutoServicios
+  ResponsePlanServicios, ResponseSustitutoServicios
 } from "../../models/response-detalle-servicios.interface";
 
 @Component({
@@ -110,7 +110,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         const {datos} = respuesta;
         const plan: ResponsePlanServicios = datos.plan;
-        // this.idPlanSfpa = datos.idPlanSfpa;
         this.folioConvenio = plan.folioPlan;
         this.nombreVelatorio = plan.velatorio;
         this.fecIngresa = plan.fechaIngreso;
@@ -119,7 +118,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         const objetoSubstituto = datos.titularSubstituto ? datos.titularSubstituto : objetoTitular;
 
         this.inicializarFormPromotor(plan.indPromotor, plan.idPromotor);
-        this.inicializarFormDatosTitular(plan.idPaquete, datos.idTipoPagoMensual, objetoTitular, plan.pago);
+        const idPago: number = this.numeroPago.find(pago => pago.label === plan.noPagos)?.value as number;
+        this.inicializarFormDatosTitular(plan.idPaquete, idPago, objetoTitular, plan.pago);
         this.inicializarFormDatosTitularSubstituto(plan.indTitularSubstituto, objetoSubstituto);
         this.inicializarFormDatosBeneficiario1(datos.beneficiario1);
         this.inicializarFormDatosBeneficiario2(datos.beneficiario2);
@@ -669,7 +669,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   mostrarInfoPaqueteSeleccionado(): void {
-    let objetoPaquete = this.paqueteBackUp.filter((paquete: any) => {
+    const objetoPaquete = this.paqueteBackUp.filter((paquete: any) => {
       return paquete.idPaquete == +this.fdt.tipoPaquete.value
     });
     this.infoPaqueteSeleccionado = objetoPaquete[0].descPaquete;
@@ -677,17 +677,12 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   validarNumeroPago(): void {
-    this.cambioNumeroPagos = false;
-    if (this.idNumeroPagoOriginal != this.fdt.numeroPago.value) {
-      this.cambioNumeroPagos = true;
-    }
+    this.cambioNumeroPagos = this.idNumeroPagoOriginal != this.fdt.numeroPago.value;
   }
 
   validarBotonGuardar(): boolean {
-    if (this.datosTitularForm.invalid || this.datosTitularSubstitutoForm.invalid || this.promotorForm.invalid) {
-      return true;
-    }
-    return false;
+    if (!this.datosTitularForm) return false;
+    return this.datosTitularForm.invalid || this.datosTitularSubstitutoForm.invalid || this.promotorForm.invalid;
   }
 
 
