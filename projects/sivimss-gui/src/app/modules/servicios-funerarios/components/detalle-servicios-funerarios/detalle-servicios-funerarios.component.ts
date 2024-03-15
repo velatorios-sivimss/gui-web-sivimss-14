@@ -129,6 +129,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
 
   abrirPanelBody(event: MouseEvent, detallePagoBitacora: PagosBitacora): void {
     this.detallePagoBitacora = detallePagoBitacora;
+    this.item.folio = this.datosGenerales.folio;
     this.overlayPanelBody.toggle(event);
   }
 
@@ -248,6 +249,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     item: PagosRealizados
   ): void {
     this.item = item;
+    this.item.folio = this.datosGenerales.folio;
     emergente.toggle(event);
   }
 

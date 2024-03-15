@@ -431,8 +431,11 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   validarEstatusPlan(): boolean {
     return !this.servicioSeleccionado.ESTATUS_PLAN_SFPA?.toUpperCase().includes('CANCELADO')
-
   }
+
+  validarEstatusPlanModificar(): boolean {
+  return !this.servicioSeleccionado.ESTATUS_PLAN_SFPA?.toUpperCase().includes('CANCELADO') && !this.servicioSeleccionado.ESTATUS_PLAN_SFPA?.toUpperCase().includes('PRE-REGISTRO')
+}
 
   get ff() {
     return this.filtroForm.controls;

@@ -84,18 +84,18 @@ export class ModalModificarPagosComponent implements OnInit {
     if (
       typeof this.config.data.detalleRegistro.fechaValeParitario == 'string'
     ) {
-      let [anio, mes, dia] = fechaValeParitario.split('-');
+      let [dia, mes, anio] = fechaValeParitario.split('/');
       dia = dia.substr(0, 2);
       fechaValeParitario = new Date(anio + '/' + mes + '/' + dia);
     } else {
       fechaValeParitario = null;
     }
 
-    let fecha = this.config.data.detalleRegistro.fechaValeParitario;
+    let fecha = this.config.data.detalleRegistro.fechaPago;
     if (
-      typeof this.config.data.detalleRegistro.fechaValeParitario == 'string'
+      typeof this.config.data.detalleRegistro.fechaPago == 'string'
     ) {
-      let [anio, mes, dia] = fecha.split('-');
+      let [dia, mes, anio] = fecha.split('/');
       dia = dia.substr(0, 2);
       fecha = new Date(anio + '/' + mes + '/' + dia);
     } else {

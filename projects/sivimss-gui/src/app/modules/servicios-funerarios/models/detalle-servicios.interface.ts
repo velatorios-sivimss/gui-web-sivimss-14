@@ -25,6 +25,7 @@ export interface PagosRealizados {
   metodoPago: null | string;
   reciboPago: null | string;
   realizarPago: null | string;
+  folio: null | string;
 }
 
 export interface PagosBitacora {

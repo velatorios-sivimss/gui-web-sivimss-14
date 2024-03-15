@@ -153,7 +153,7 @@
       <app-overlay-panel-opciones>
         <app-overlay-panel-opcion (click)="verContrato()" titulo="Ver contrato"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion (click)="detallePago()" titulo="Detalle de pago"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="validarEstatusPlan()"
+        <app-overlay-panel-opcion *ngIf="validarEstatusPlanModificar()"
                                   (click)="modificarPago()" titulo="Modificar Plan"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="validarEstatusPlan()"
                                   (click)="cancelarPago()"
