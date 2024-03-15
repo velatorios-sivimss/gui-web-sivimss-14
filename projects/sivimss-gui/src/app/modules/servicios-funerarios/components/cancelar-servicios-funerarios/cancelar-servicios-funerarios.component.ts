@@ -11,7 +11,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {
   ResponseBeneficiarioServicios, ResponseContratanteServicios,
-  ResponsePlanServicios
+  ResponsePlanServicios, ResponseSustitutoServicios
 } from "../../models/response-detalle-servicios.interface";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 
@@ -33,7 +33,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
   datosBeneficiario2!: ResponseBeneficiarioServicios;
   datosPlan!: ResponsePlanServicios;
   datosContratante!: ResponseContratanteServicios;
-  datosSustituto!: any;
+  datosSustituto!: ResponseContratanteServicios | ResponseSustitutoServicios;
 
   readonly POSICION_CONSULTA: number = 0;
   readonly POSICION_ESTADOS: number = 1;
@@ -66,7 +66,7 @@ export class CancelarServiciosFunerariosComponent implements OnInit {
     this.datosContratante = consulta.datos.contratante;
     this.datosBeneficiario1 = consulta.datos.beneficiario1;
     this.datosBeneficiario2 = consulta.datos.beneficiario2
-    this.datosSustituto = consulta.datos.sustituto ? consulta.datos.sustituto : consulta.datos.contratante;
+    this.datosSustituto = consulta.datos.titularSubstituto ? consulta.datos.titularSubstituto : consulta.datos.contratante;
     this.rellenarDatosLugarNacimiento();
     this.rellenarDatosPaisNacimiento();
   }

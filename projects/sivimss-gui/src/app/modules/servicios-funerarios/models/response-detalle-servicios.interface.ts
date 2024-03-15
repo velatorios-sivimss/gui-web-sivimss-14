@@ -3,7 +3,7 @@ export interface ResponseDetalleServicios {
   beneficiario2: ResponseBeneficiarioServicios | null,
   contratante: ResponseContratanteServicios,
   plan: ResponsePlanServicios,
-  titularSubstituto: ResponseContratanteServicios
+  titularSubstituto: ResponseSustitutoServicios | null
 }
 
 export interface ResponsePlanServicios {
@@ -54,6 +54,41 @@ export interface ResponseContratanteServicios {
   sexo: string,
   telefonoFijo: string,
   telefono: string
+}
+
+export interface ResponseSustitutoServicios {
+  codigoPostal: string,
+  correo: string,
+  curp: string,
+  desCalle: string,
+  desColonia: string,
+  desEstado: string,
+  desMunicipio: string,
+  estado: string,
+  fechaNac: string,
+  idDomicilio: number,
+  idEstado: number,
+  idNacionalidad: number,
+  idPais: number,
+  idPersona: number,
+  idPlanSfpa: number,
+  idSexo: number,
+  idTitularBeneficiario: number,
+  matricula: string,
+  nacionalidad: string,
+  nomPersona: string,
+  nombreCompleto: string,
+  nss: string,
+  numExterior: string,
+  numInterior: string,
+  otroSexo: string,
+  pais: string,
+  primerApellido: string,
+  rfc: string,
+  segundoApellido: string,
+  sexo: string,
+  telefono: string,
+  telefonoFijo: string
 }
 
 export interface ResponseBeneficiarioServicios {
