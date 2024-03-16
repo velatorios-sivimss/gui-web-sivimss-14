@@ -93,7 +93,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ValidaNivelGuard,
     BnNgIdleService,
     MensajesSistemaService,
-    { provide: TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION, useValue: 300 }, // Tiempo en segundos
+    { provide: TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION, useValue: 30000 }, // Tiempo en segundos
   ],
   bootstrap: [AppComponent],
 })

@@ -896,7 +896,6 @@ export class CaracteristicasPresupuestoComponent
       elementosEliminadosPaquete: this.elementosEliminadosPaquete,
       total: this.total,
     };
-
     this.gestionarEtapasService.datosEtapaCaracteristicas$.next(
       datosEtapaCaracteristicas
     );
@@ -934,13 +933,13 @@ export class CaracteristicasPresupuestoComponent
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
-        traslado.destino = datos.datosFormulario.destino;
+        traslado.destino = datos.destino;
         traslado.longitudInicial = Number(datos.coordOrigen[0]);
         traslado.latitudInicial = Number(datos.coordOrigen[1]);
         traslado.longitudFinal = Number(datos.coordDestino[0]);
         traslado.latitudFinal = Number(datos.coordDestino[1]);
-        traslado.origen = datos.datosFormulario.origen;
-        traslado.totalKilometros = datos.datosFormulario.kilometraje;
+        traslado.origen = datos.origen;
+        traslado.totalKilometros = datos.kilometraje;
         detalle.servicioDetalleTraslado = traslado;
       }
       detalle.importeMonto = datos.totalPaquete ?? null;
@@ -1005,7 +1004,6 @@ export class CaracteristicasPresupuestoComponent
       detalle.importeMonto = Number(datos.importe) ?? null;
       detalle.totalPaquete = Number(datos.totalPaquete) ?? null;
       detalle.idCategoriaPaquete = datos.idCategoria === "" ? null : Number(datos.idCategoria)
-
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
