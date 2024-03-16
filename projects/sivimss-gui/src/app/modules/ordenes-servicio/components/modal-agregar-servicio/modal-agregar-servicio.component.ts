@@ -265,8 +265,14 @@ export class ModalAgregarServicioComponent
       finalize(()=> this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        this.kilometrosPermitidos = respuesta.datos[0].numKilometraje;
-        this.costoPorKilometraje = respuesta.datos[0].costoPorKilometraje;
+        if(respuesta.datos.length){
+          this.kilometrosPermitidos = respuesta.datos[0].numKilometraje;
+          this.costoPorKilometraje = respuesta.datos[0].costoPorKilometraje;
+        }else{
+          const precaucionMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(802);
+          this.alertaService.mostrar(TipoAlerta.Precaucion, precaucionMsg ||
+            'El proveedor no tiene configurado el costo por kilometraje extra ni los kilómetros permitidos.')
+        }
       },
       error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));

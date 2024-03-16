@@ -122,7 +122,7 @@
             <th scope="col">Folio autorización</th>
             <th scope="col">Nombre del banco</th>
             <th scope="col">Importe </th>
-            <th scope="col">Importe vale paritario</th>
+<!--            <th scope="col">Importe vale paritario</th>-->
             <th scope="col">Estatus</th>
             <th scope="col"></th>
           </tr>
@@ -135,10 +135,10 @@
             <td>{{PagosBitacora.fechaPago}}</td>
             <td>{{PagosBitacora.fechaValeParitario}}</td>
             <td>{{PagosBitacora.numeroAutorizacion}}</td>
-            <td>{{PagosBitacora.folioAutorizacion}}</td>
+            <td>{{PagosBitacora.numFolio}}</td>
             <td>{{PagosBitacora.referenciaBancaria}}</td>
-            <td>{{PagosBitacora.importePago | currency:"USD":"symbol"}}</td>
-            <td>{{PagosBitacora.importeValeParitario | currency:"USD":"symbol"}}</td>
+            <td>{{PagosBitacora.importeTotal}}</td>
+<!--            <td>{{PagosBitacora.importeValeParitario | currency:"USD":"symbol"}}</td>-->
             <td>{{PagosBitacora.estatus}}</td>
 
             <td>
