@@ -206,7 +206,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
     this.datosTitularSubstitutoForm = this.formBuilder.group({
-      datosIguales: [{value: indTitularSubstituto, disabled: false}, [Validators.required]],
+      datosIguales: [{value: false, disabled: false}, [Validators.required]],
       curp: [{value: titularSubstituto.curp, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
       rfc: [{value: titularSubstituto.rfc, disabled: false}, [Validators.required, Validators.pattern(PATRON_RFC)]],
       matricula: [{value: titularSubstituto.matricula, disabled: false}],
@@ -234,7 +234,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       municipio: [{value: titularSubstituto?.desMunicipio, disabled: true}, [Validators.required]],
       estado: [{value: titularSubstituto?.desEstado, disabled: false}, [Validators.required]],
     });
-    this.datosTitularSubstitutoForm.disable();
     this.datosIguales(this.fdts.datosIguales.value);
   }
 
