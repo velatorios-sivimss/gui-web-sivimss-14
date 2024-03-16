@@ -7,7 +7,11 @@ import {AutenticacionService} from "../../../services/autenticacion.service";
 import {environment} from "../../../../environments/environment";
 import {BaseService} from "../../../utils/base-service";
 import {HttpRespuesta} from "../../../models/http-respuesta.interface";
-import {AgregarPlanSFPA, SolicitudCreacionSFPA} from "../models/servicios-funerarios.interface";
+import {
+  AgregarPlanSFPA,
+  SolicitudCreacionSFPA,
+  SolicitudModificacionSFPA
+} from "../models/servicios-funerarios.interface";
 
 @Injectable()
 export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, any> {
@@ -19,7 +23,7 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/inserta-plan-sfpa`, planSFPA);
   }
 
-  actualizarPlanSFPA(planSFPA: AgregarPlanSFPA): Observable<HttpRespuesta<any>> {
+  actualizarPlanSFPA(planSFPA: SolicitudModificacionSFPA): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/actualiza-plan-sfpa`, planSFPA);
   }
 

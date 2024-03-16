@@ -12,11 +12,17 @@ import {MensajesSistemaService} from "../../../../services/mensajes-sistema.serv
 import {ServiciosFunerariosService} from "../../services/servicios-funerarios.service";
 import {CatalogoPaquetes} from "../../models/catalogos.interface";
 import {PATRON_CORREO, PATRON_CURP, PATRON_RFC} from "../../../../utils/constantes";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown, obtenerVelatorioUsuarioLogueado} from "../../../../utils/funciones";
 import {finalize} from "rxjs";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
-import {AgregarPlanSFPA} from "../../models/servicios-funerarios.interface";
+import {
+  SolicitudBeneficiarioModificar,
+  SolicitudContratanteModificacion,
+  SolicitudModificacionSFPA,
+  SolicitudPlanModificacion,
+  SolicitudSubstituto
+} from "../../models/servicios-funerarios.interface";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import * as moment from "moment/moment";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
@@ -24,6 +30,7 @@ import {
   ResponseBeneficiarioServicios, ResponseContratanteServicios,
   ResponsePlanServicios, ResponseSustitutoServicios
 } from "../../models/response-detalle-servicios.interface";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-modificar-servicios-funerarios',
@@ -73,6 +80,12 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   nombreVelatorio: string = "";
   fecIngresa: string = "";
 
+  datosPlan!: ResponsePlanServicios;
+  datosContratante!: ResponseContratanteServicios;
+  datosSustituto!: ResponseSustitutoServicios | null;
+  datosBeneficiario1!: ResponseBeneficiarioServicios | null;
+  datosBeneficiario2!: ResponseSustitutoServicios | null;
+
   constructor(
     private alertaService: AlertaService,
     private breadcrumbService: BreadcrumbService,
@@ -109,6 +122,11 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         const {datos} = respuesta;
+        this.datosPlan = datos.plan;
+        this.datosContratante = datos.contratante;
+        this.datosSustituto = datos.titularSubstituto;
+        this.datosBeneficiario1 = datos.beneficiario1;
+        this.datosBeneficiario2 = datos.beneficiario2;
         const plan: ResponsePlanServicios = datos.plan;
         this.folioConvenio = plan.folioPlan;
         this.nombreVelatorio = plan.velatorio;
@@ -188,7 +206,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
     this.datosTitularSubstitutoForm = this.formBuilder.group({
-      datosIguales: [{value: indTitularSubstituto, disabled: false}, [Validators.required]],
+      datosIguales: [{value: false, disabled: false}, [Validators.required]],
       curp: [{value: titularSubstituto.curp, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
       rfc: [{value: titularSubstituto.rfc, disabled: false}, [Validators.required, Validators.pattern(PATRON_RFC)]],
       matricula: [{value: titularSubstituto.matricula, disabled: false}],
@@ -216,7 +234,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       municipio: [{value: titularSubstituto?.desMunicipio, disabled: true}, [Validators.required]],
       estado: [{value: titularSubstituto?.desEstado, disabled: false}, [Validators.required]],
     });
-    this.datosTitularSubstitutoForm.disable();
     this.datosIguales(this.fdts.datosIguales.value);
   }
 
@@ -312,14 +329,13 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   consultarCurp(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
+    const formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].curp.value) return;
     if (formularioEnUso[posicion].curp?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
       return;
     }
     if (posicion !== 1) this.limpiarFormulario(posicion);
-    this.validarUsuarioAfiliado(formularioEnUso[posicion].curp.value, "", "");
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarCURP(formularioEnUso[posicion].curp.value).pipe(
       finalize(() => this.cargadorService.desactivar())
@@ -437,22 +453,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     return;
   }
 
-  validarUsuarioAfiliado(curp: string, rfc: string, nss: string): void {
-    this.cargadorService.activar();
-    this.serviciosFunerariosService.validarTitular(curp, rfc, nss).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos.length > 0) {
-          this.confirmacionDatosExistentes = true;
-          this.mensajeDatosExistentes = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje)
-        }
-      },
-      error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
-      }
-    });
-  }
 
   recargarPagina(): void {
     window.location.reload()
@@ -485,7 +485,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   consultarNSS(posicion: number): void {
-    let formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
+    const formularioEnUso = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularioEnUso[posicion].nss.value) return;
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarNSS(formularioEnUso[posicion].nss.value).pipe(
@@ -507,7 +507,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   sinEspacioDoble(posicion: number): void {
-    let formularios = [
+    const formularios = [
       this.fdt.nombre, this.fdt.primerApellido, this.fdt.segundoApellido,
       this.fdts.nombre, this.fdts.primerApellido, this.fdts.segundoApellido,
       this.fdb1.nombre, this.fdb1.primerApellido, this.fdb1.segundoApellido,
@@ -519,12 +519,12 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   cambiarSexo(posicion: number): void {
-    let formulariosOtroSexo = [this.fdt.otroSexo, this.fdts.otroSexo, this.fdb1.otroSexo, this.fdb2.otroSexo];
+    const formulariosOtroSexo = [this.fdt.otroSexo, this.fdts.otroSexo, this.fdb1.otroSexo, this.fdb2.otroSexo];
     formulariosOtroSexo[posicion].patchValue(null);
   }
 
   cambiarNacionalidad(posicion: number): void {
-    let formularios = [this.fdt.paisNacimiento, this.fdt.lugarNacimiento, this.fdts.paisNacimiento, this.fdts.lugarNacimiento];
+    const formularios = [this.fdt.paisNacimiento, this.fdt.lugarNacimiento, this.fdts.paisNacimiento, this.fdts.lugarNacimiento];
     if (posicion === 0) {
 
       if (this.fdt.nacionalidad.value == 1) {
@@ -548,7 +548,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   cambiarNacionalidad2(posicion: number): void {
-    let formularios = [this.fdb1.paisNacimiento, this.fdb1.lugarNacimiento, this.fdb2.paisNacimiento, this.fdb2.lugarNacimiento];
+    const formularios = [this.fdb1.paisNacimiento, this.fdb1.lugarNacimiento, this.fdb2.paisNacimiento, this.fdb2.lugarNacimiento];
     if (posicion === 0) {
       if (this.fdb1.nacionalidad.value == 1) {
         formularios[0].reset();
@@ -565,7 +565,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   consultarCodigoPostal(posicion: number): void {
-    let formularios = [this.fdt, this.fdts, this.fdb1, this.fdb2];
+    const formularios = [this.fdt, this.fdts, this.fdb1, this.fdb2];
     if (!formularios[posicion].cp.value) {
       return;
     }
@@ -655,7 +655,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
 
   guardar(): void {
     const configuracionArchivo: OpcionesArchivos = {};
-    let objetoGuardar: AgregarPlanSFPA = this.generarObjetoPlanSFPA();
+    const objetoGuardar: SolicitudModificacionSFPA = this.generarObjetoPlanSFPA();
     this.confirmarGuardado = false;
     this.cargadorService.activar();
     this.serviciosFunerariosService.actualizarPlanSFPA(objetoGuardar).pipe(
@@ -681,152 +681,179 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     )
   }
 
-  generarObjetoPlanSFPA(): AgregarPlanSFPA {
-    let objetoTitularSubstituto = {
-      persona: 'titular substituto', //Si es la misma persona no mandar este objeto
-      rfc: this.fdts.rfc.value,
-      curp: this.fdts.curp.value,
-      matricula: this.fdts.matricula?.value ?? "",
-      nss: this.fdts.nss.value,
-      nomPersona: this.fdts.nombre.value,
-      primerApellido: this.fdts.primerApellido.value,
-      segundoApellido: this.fdts.segundoApellido.value,
-      sexo: this.fdts.sexo.value,
-      otroSexo: this.fdts.otroSexo?.value ?? "",
-      fecNacimiento: moment(this.fdts.fechaNacimiento.value).format('yyyy-MM-DD'),
-      idPais: this.fdts.paisNacimiento?.value ?? 119,
-      idEstado: this.fdts.lugarNacimiento?.value ?? null,
-      telefono: this.fdts.telefono.value,
-      telefonoFijo: this.fdts.telefono.value,
-      correo: this.fdts.correoElectronico.value,
-      tipoPersona: "",
-      ine: null,
-      cp: {
-        desCalle: this.fdts.calle.value,
-        numExterior: this.fdts.numeroExterior.value,
-        numInterior: this.fdts.numeroInterior?.value ?? "",
-        codigoPostal: this.fdts.cp.value,
-        desColonia: this.fdts.colonia.value,
-        desMunicipio: this.fdts.municipio.value,
-        desEstado: this.fdts.estado.value,
-      }
+  generarObjetoPlanSFPA(): SolicitudModificacionSFPA {
+    return {
+      plan: this.generarPlan(),
+      contratante: this.generarContratante(),
+      titularSubstituto: this.generarSustituto(),
+      beneficiario1: this.generarBeneficiario1(),
+      beneficiario2: this.generarBeneficiario2()
     }
+  }
 
-    let objetoBeneficiario1 = {
-      persona: 'beneficiario 1',
-      rfc: this.fdb1.rfc.value,
-      curp: this.fdb1.curp.value,
-      matricula: this.fdb1.matricula?.value ?? "",
-      nss: this.fdb1.nss.value,
-      nomPersona: this.fdb1.nombre.value,
-      primerApellido: this.fdb1.primerApellido.value,
-      segundoApellido: this.fdb1.segundoApellido.value,
-      sexo: this.fdb1.sexo.value,
-      otroSexo: this.fdb1.otroSexo?.value ?? "",
-      fecNacimiento: this.fdb1.fechaNacimiento.value ? moment(this.fdb1.fechaNacimiento.value).format('yyyy-MM-DD') : null,
-      idPais: this.fdb1.paisNacimiento?.value ?? 119,
-      idEstado: this.fdb1.lugarNacimiento?.value ?? null,
-      telefono: this.fdb1.telefono.value,
-      telefonoFijo: null,
-      correo: this.fdb1.correoElectronico.value,
-      tipoPersona: "",
-      ine: null,
-      cp: {
-        desCalle: this.fdb1.calle.value,
-        numExterior: this.fdb1.numeroExterior.value,
-        numInterior: this.fdb1.numeroInterior?.value ?? "",
-        codigoPostal: this.fdb1.cp.value,
-        desColonia: this.fdb1.colonia.value,
-        desMunicipio: this.fdb1.municipio.value,
-        desEstado: this.fdb1.estado.value,
-      }
-    }
-
-    let objetoBeneficiario2 = {
-      persona: 'beneficiario 2',
-      rfc: this.fdb2.rfc.value,
-      curp: this.fdb2.curp.value,
-      matricula: this.fdb2.matricula?.value ?? "",
-      nss: this.fdb2.nss.value,
-      nomPersona: this.fdb2.nombre.value,
-      primerApellido: this.fdb2.primerApellido.value,
-      segundoApellido: this.fdb2.segundoApellido.value,
-      sexo: this.fdb2.sexo.value,
-      otroSexo: this.fdb2.otroSexo?.value ?? "",
-      fecNacimiento: this.fdb2.fechaNacimiento.value ? moment(this.fdb2.fechaNacimiento.value).format('yyyy-MM-DD') : null,
-      idPais: this.fdb2.paisNacimiento?.value ?? 119,
-      idEstado: this.fdb2.lugarNacimiento?.value ?? null,
-      telefono: this.fdb2.telefono.value,
-      telefonoFijo: null,
-      correo: this.fdb2.correoElectronico.value,
-      tipoPersona: "",
-      ine: null,
-      cp: {
-        desCalle: this.fdb2.calle.value,
-        numExterior: this.fdb2.numeroExterior.value,
-        numInterior: this.fdb2.numeroInterior?.value ?? "",
-        codigoPostal: this.fdb2.cp.value,
-        desColonia: this.fdb2.colonia.value,
-        desMunicipio: this.fdb2.municipio.value,
-        desEstado: this.fdb2.estado.value,
-      }
-    }
-
-    const numPago = this.numeroPago.find((e: TipoDropdown) => e.value === this.fdt.numeroPago.value)?.label ?? '';
-
-    let objetoTitular: AgregarPlanSFPA = {
-      idPlanSfpa: this.idPlanSfpa,
-      numFolioPlanSFPA: this.folioConvenio,
-      idTipoContratacion: 1,
+  generarPlan(): SolicitudPlanModificacion {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
+    const numeroPago = this.fdt.numeroPago.value;
+    const numPago: string = this.numeroPago.find((e: TipoDropdown) => e.value === numeroPago)?.label ?? '';
+    return {
       idPaquete: this.fdt.tipoPaquete.value,
-      idTipoPagoMensual: this.fdt.numeroPago.value,
-      numPagoMensual: +numPago,
-      indTipoPagoMensual: this.cambioNumeroPagos,
-      indTitularSubstituto: this.fdts.datosIguales.value ? 1 : 0,
-      indModificarTitularSubstituto: 1,
-      monPrecio: this.consultarMonPrecio(),
-      indPromotor: this.fp.gestionadoPorPromotor.value ? 1 : 0,
+      idPlanSfpa: this.idPlanSfpa,
       idPromotor: this.fp.promotor.value,
-      titularesBeneficiarios: [
-        {
-          persona: 'titular',
-          rfc: this.fdt.rfc.value,
-          curp: this.fdt.curp.value,
-          matricula: this.fdt.matricula?.value ?? "",
-          nss: this.fdt.nss.value,
-          nomPersona: this.fdt.nombre.value,
-          primerApellido: this.fdt.primerApellido.value,
-          segundoApellido: this.fdt.segundoApellido.value,
-          sexo: this.fdt.sexo.value,
-          otroSexo: this.fdt.otroSexo?.value ?? "",
-          fecNacimiento: moment(this.fdt.fechaNacimiento.value).format('yyyy-MM-DD'),
-          idPais: this.fdt.paisNacimiento?.value ?? 119,
-          idEstado: this.fdt.lugarNacimiento?.value ?? null,
-          telefono: this.fdt.telefono.value,
-          telefonoFijo: this.fdt.telefono.value,
-          correo: this.fdt.correoElectronico.value,
-          tipoPersona: "",
-          ine: null,
-          cp: {
-            desCalle: this.fdt.calle.value,
-            numExterior: this.fdt.numeroExterior.value,
-            numInterior: this.fdt.numeroInterior?.value ?? "",
-            codigoPostal: this.fdt.cp.value,
-            desColonia: this.fdt.colonia.value,
-            desMunicipio: this.fdt.municipio.value,
-            desEstado: this.fdt.estado.value,
-          }
-        }
-      ]
+      idTipoContratacion: 1,
+      idTipoPagoMensual: this.fdt.numeroPago.value,
+      idVelatorio: velatorio,
+      indModificarTitularSubstituto: this.fdts.datosIguales.value ? 0 : 1,
+      indPromotor: this.fp.gestionadoPorPromotor.value ? 1 : 0,
+      indTitularSubstituto: 0,
+      monPrecio: this.consultarMonPrecio().toString(),
+      pagoMensual: numPago,
+      cambioParcialidad: numPago === this.datosPlan.noPagos ? 0 : 1
     }
+  }
 
-    if (objetoTitular.indTitularSubstituto == 0) {
-      objetoTitular.titularesBeneficiarios.push(objetoTitularSubstituto)
+  generarSustituto(): SolicitudSubstituto | null {
+    if (!this.fdts.datosIguales.value) return null;
+    const sustitutoMod = this.datosTitularSubstitutoForm.getRawValue();
+    if (sustitutoMod.curp === this.datosContratante.curp) return null;
+    let fecNacimiento = sustitutoMod.fechaNacimiento
+    if (fecNacimiento) fecNacimiento = moment(fecNacimiento).format('yyyy-MM-DD');
+    return {
+      codigoPostal: sustitutoMod.cp,
+      correo: sustitutoMod.correoElectronico,
+      curp: sustitutoMod.curp,
+      desCalle: sustitutoMod.calle,
+      desColonia: sustitutoMod.colonia,
+      desEstado: sustitutoMod.estado,
+      desMunicipio: sustitutoMod.municipio,
+      fecNacimiento,
+      idDomicilio: this.datosSustituto?.idDomicilio ?? null,
+      idEstado: sustitutoMod.lugarNacimiento,
+      idPais: sustitutoMod.paisNacimiento,
+      idPersona: this.datosSustituto?.idPersona ?? null,
+      idSexo: sustitutoMod.sexo,
+      ine: null,
+      matricula: sustitutoMod.matricula,
+      nomPersona: sustitutoMod.nombre,
+      nss: sustitutoMod.nss,
+      numExterior: sustitutoMod.numeroExterior,
+      numInterior: sustitutoMod.numeroInterior,
+      otroSexo: sustitutoMod.otroSexo,
+      persona: "titular substituto",
+      primerApellido: sustitutoMod.primerApellido,
+      rfc: sustitutoMod.rfc,
+      segundoApellido: sustitutoMod.segundoApellido,
+      telefono: sustitutoMod.telefono,
+      telefonoFijo: null,
     }
-    if (objetoBeneficiario1.curp && objetoBeneficiario1.curp !== '') objetoTitular.titularesBeneficiarios.push(objetoBeneficiario1);
-    if (objetoBeneficiario2.curp && objetoBeneficiario2.curp !== '') objetoTitular.titularesBeneficiarios.push(objetoBeneficiario2);
+  }
 
-    return objetoTitular;
+  generarContratante(): SolicitudContratanteModificacion {
+    const contratanteMod = this.datosTitularForm.getRawValue();
+    let fecNacimiento = contratanteMod.fechaNacimiento
+    if (fecNacimiento) fecNacimiento = moment(fecNacimiento).format('yyyy-MM-DD');
+    return {
+      codigoPostal: contratanteMod.cp,
+      correo: contratanteMod.correoElectronico,
+      curp: contratanteMod.curp,
+      desCalle: contratanteMod.calle,
+      desColonia: contratanteMod.colonia,
+      desEstado: contratanteMod.estado,
+      desMunicipio: contratanteMod.municipio,
+      fecNacimiento,
+      idContratante: this.datosContratante.idContratante,
+      idDomicilio: this.datosContratante.idDomicilio,
+      idEstado: contratanteMod.lugarNacimiento,
+      idPais: contratanteMod.paisNacimiento,
+      idPersona: this.datosContratante.idPersona,
+      idSexo: contratanteMod.sexo,
+      ine: null,
+      matricula: contratanteMod.matricula,
+      nomPersona: contratanteMod.nombre,
+      nss: contratanteMod.nss,
+      numExterior: contratanteMod.numeroExterior,
+      numInterior: contratanteMod.numeroInterior,
+      otroSexo: contratanteMod.otroSexo,
+      persona: "titular",
+      primerApellido: contratanteMod.primerApellido,
+      rfc: contratanteMod.rfc,
+      segundoApellido: contratanteMod.segundoApellido,
+      telefono: contratanteMod.telefono,
+      telefonoFijo: contratanteMod.telefonoFijo,
+      idTitular: this.datosContratante.idContratante
+    }
+  }
+
+  generarBeneficiario1(): SolicitudBeneficiarioModificar | null {
+    const beneficiario1Mod = this.datosBeneficiario1Form.getRawValue();
+    if (!beneficiario1Mod.curp) return null;
+    let fecNacimiento = beneficiario1Mod.fechaNacimiento
+    if (fecNacimiento) fecNacimiento = moment(fecNacimiento).format('yyyy-MM-DD');
+    return {
+      codigoPostal: beneficiario1Mod.cp,
+      correo: beneficiario1Mod.correoElectronico,
+      curp: beneficiario1Mod.curp,
+      desCalle: beneficiario1Mod.calle,
+      desColonia: beneficiario1Mod.colonia,
+      desEstado: beneficiario1Mod.estado,
+      desMunicipio: beneficiario1Mod.municipio,
+      fecNacimiento,
+      idDomicilio: this.datosBeneficiario1?.idDomicilio ?? null,
+      idEstado: beneficiario1Mod.lugarNacimiento,
+      idPais: beneficiario1Mod.paisNacimiento,
+      idPersona: this.datosBeneficiario1?.idPersona ?? null,
+      idSexo: beneficiario1Mod.sexo,
+      ine: null,
+      matricula: beneficiario1Mod.matricula,
+      nomPersona: beneficiario1Mod.nombre,
+      nss: beneficiario1Mod.nss,
+      numExterior: beneficiario1Mod.numeroExterior,
+      numInterior: beneficiario1Mod.numeroInterior,
+      otroSexo: beneficiario1Mod.otroSexo,
+      persona: 'beneficiario 1',
+      primerApellido: beneficiario1Mod.primerApellido,
+      rfc: beneficiario1Mod.rfc,
+      segundoApellido: beneficiario1Mod.segundoApellido,
+      telefono: beneficiario1Mod.telefono,
+      telefonoFijo: '',
+      idTitularBeneficiaro: this.datosBeneficiario1?.idTitularBeneficiario ?? null
+    }
+  }
+
+  generarBeneficiario2(): SolicitudBeneficiarioModificar | null {
+    const beneficiario2Mod = this.datosBeneficiario2Form.getRawValue();
+    if (!beneficiario2Mod.curp) return null;
+    let fecNacimiento = beneficiario2Mod.fechaNacimiento
+    if (fecNacimiento) fecNacimiento = moment(fecNacimiento).format('yyyy-MM-DD');
+    return {
+      codigoPostal: beneficiario2Mod.cp,
+      correo: beneficiario2Mod.correoElectronico,
+      curp: beneficiario2Mod.curp,
+      desCalle: beneficiario2Mod.calle,
+      desColonia: beneficiario2Mod.colonia,
+      desEstado: beneficiario2Mod.estado,
+      desMunicipio: beneficiario2Mod.municipio,
+      fecNacimiento,
+      idDomicilio: this.datosBeneficiario2?.idDomicilio ?? null,
+      idEstado: beneficiario2Mod.lugarNacimiento,
+      idPais: beneficiario2Mod.paisNacimiento,
+      idPersona: this.datosBeneficiario2?.idPersona ?? null,
+      idSexo: beneficiario2Mod.sexo,
+      ine: null,
+      matricula: beneficiario2Mod.matricula,
+      nomPersona: beneficiario2Mod.nombre,
+      nss: beneficiario2Mod.nss,
+      numExterior: beneficiario2Mod.numeroExterior,
+      numInterior: beneficiario2Mod.numeroInterior,
+      otroSexo: beneficiario2Mod.otroSexo,
+      persona: 'beneficiario 2',
+      primerApellido: beneficiario2Mod.primerApellido,
+      rfc: beneficiario2Mod.rfc,
+      segundoApellido: beneficiario2Mod.segundoApellido,
+      telefono: beneficiario2Mod.telefono,
+      telefonoFijo: '',
+      idTitularBeneficiaro: this.datosBeneficiario2?.idTitularBeneficiario ?? null
+    }
   }
 
   consultarMonPrecio(): number {
