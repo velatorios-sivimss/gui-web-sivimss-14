@@ -17,9 +17,11 @@ import {finalize} from "rxjs";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {
-  AgregarPlanSFPA,
-  SolicitudBeneficiario,
-  SolicitudContratante, SolicitudCreacionSFPA, SolicitudPlan, SolicitudSubstituto
+  SolicitudBeneficiarioModificar,
+  SolicitudContratanteModificacion,
+  SolicitudModificacionSFPA,
+  SolicitudPlanModificacion,
+  SolicitudSubstituto
 } from "../../models/servicios-funerarios.interface";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import * as moment from "moment/moment";
@@ -654,7 +656,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
 
   guardar(): void {
     const configuracionArchivo: OpcionesArchivos = {};
-    const objetoGuardar: SolicitudCreacionSFPA = this.generarObjetoPlanSFPA();
+    const objetoGuardar: SolicitudModificacionSFPA = this.generarObjetoPlanSFPA();
     this.confirmarGuardado = false;
     this.cargadorService.activar();
     this.serviciosFunerariosService.actualizarPlanSFPA(objetoGuardar).pipe(
@@ -680,7 +682,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     )
   }
 
-  generarObjetoPlanSFPA(): SolicitudCreacionSFPA {
+  generarObjetoPlanSFPA(): SolicitudModificacionSFPA {
     return {
       plan: this.generarPlan(),
       contratante: this.generarContratante(),
@@ -690,13 +692,12 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     }
   }
 
-  generarPlan(): SolicitudPlan {
+  generarPlan(): SolicitudPlanModificacion {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
     const numeroPago = this.fdt.numeroPago.value;
     const numPago: string = this.numeroPago.find((e: TipoDropdown) => e.value === numeroPago)?.label ?? '';
     return {
-      idEstatusPlan: 0,
       idPaquete: this.fdt.tipoPaquete.value,
       idPlanSfpa: this.idPlanSfpa,
       idPromotor: this.fp.promotor.value,
@@ -707,7 +708,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       indPromotor: this.fp.gestionadoPorPromotor.value ? 1 : 0,
       indTitularSubstituto: 0,
       monPrecio: this.consultarMonPrecio().toString(),
-      pagoMensual: numPago
+      pagoMensual: numPago,
+      cambioParcialidad: numPago === this.datosPlan.noPagos ? 0 : 1
     }
   }
 
@@ -747,7 +749,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     }
   }
 
-  generarContratante(): SolicitudContratante {
+  generarContratante(): SolicitudContratanteModificacion {
     const contratanteMod = this.datosTitularForm.getRawValue();
     let fecNacimiento = contratanteMod.fechaNacimiento
     if (fecNacimiento) fecNacimiento = moment(fecNacimiento).format('yyyy-MM-DD');
@@ -779,10 +781,11 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       segundoApellido: contratanteMod.segundoApellido,
       telefono: contratanteMod.telefono,
       telefonoFijo: contratanteMod.telefonoFijo,
+      idTitular: this.datosContratante.idContratante
     }
   }
 
-  generarBeneficiario1(): SolicitudBeneficiario | null {
+  generarBeneficiario1(): SolicitudBeneficiarioModificar | null {
     const beneficiario1Mod = this.datosBeneficiario1Form.getRawValue();
     if (!beneficiario1Mod.curp) return null;
     let fecNacimiento = beneficiario1Mod.fechaNacimiento
@@ -814,10 +817,11 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       segundoApellido: beneficiario1Mod.segundoApellido,
       telefono: beneficiario1Mod.telefono,
       telefonoFijo: '',
+      idTitularBeneficiaro: this.datosBeneficiario1?.idTitularBeneficiario ?? null
     }
   }
 
-  generarBeneficiario2(): SolicitudBeneficiario | null {
+  generarBeneficiario2(): SolicitudBeneficiarioModificar | null {
     const beneficiario2Mod = this.datosBeneficiario2Form.getRawValue();
     if (!beneficiario2Mod.curp) return null;
     let fecNacimiento = beneficiario2Mod.fechaNacimiento
@@ -849,6 +853,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       segundoApellido: beneficiario2Mod.segundoApellido,
       telefono: beneficiario2Mod.telefono,
       telefonoFijo: '',
+      idTitularBeneficiaro: this.datosBeneficiario2?.idTitularBeneficiario ?? null
     }
   }
 
