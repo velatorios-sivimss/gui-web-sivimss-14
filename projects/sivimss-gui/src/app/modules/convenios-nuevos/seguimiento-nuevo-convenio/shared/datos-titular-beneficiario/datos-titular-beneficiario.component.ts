@@ -12,7 +12,7 @@ import {CalendarModule} from "primeng/calendar";
 import {ActivatedRoute} from "@angular/router";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {delay, finalize} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
@@ -66,6 +66,18 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     if (nacionalidad === 1) {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
     }
+    const curp = this.parentContainer.control?.get('curp')?.value;
+    if (curp) {
+      this.parentContainer.control?.get('nombre')?.disable();
+      this.parentContainer.control?.get('primerApellido')?.disable();
+      this.parentContainer.control?.get('segundoApellido')?.disable();
+      this.parentContainer.control?.get('sexo')?.disable();
+      this.parentContainer.control?.get('otroSexo')?.disable();
+      this.parentContainer.control?.get('fechaNacimiento')?.disable();
+      this.parentContainer.control?.get('nacionalidad')?.disable();
+      this.parentContainer.control?.get('paisNacimiento')?.disable();
+      this.parentContainer.control?.get('lugarNacimiento')?.disable();
+    }
   }
 
   cargarCatalogosLocalStorage(): void {
@@ -83,7 +95,10 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
 
   validarCurp(): void {
     const curp = this.parentContainer.control?.get('curp')?.value;
-    if (!curp) return;
+    if (!curp) {
+      this.limpiarDatosCURP();
+      return;
+    }
     if (!curp.match(PATRON_CURP)) {
       this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
       return;
@@ -96,6 +111,27 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>) => this.procesarRespuestaCURP(respuesta),
         error: (error: HttpErrorResponse) => this.manejarMensajeError(error),
       });
+  }
+
+  limpiarDatosCURP(): void {
+    this.parentContainer.control?.get('nombre')?.enable();
+    this.parentContainer.control?.get('primerApellido')?.enable();
+    this.parentContainer.control?.get('segundoApellido')?.enable();
+    this.parentContainer.control?.get('sexo')?.enable();
+    this.parentContainer.control?.get('otroSexo')?.enable();
+    this.parentContainer.control?.get('fechaNacimiento')?.enable();
+    this.parentContainer.control?.get('nacionalidad')?.enable();
+    this.parentContainer.control?.get('paisNacimiento')?.enable();
+    this.parentContainer.control?.get('lugarNacimiento')?.enable();
+    this.parentContainer.control?.get('nombre')?.setValue(null);
+    this.parentContainer.control?.get('primerApellido')?.setValue(null);
+    this.parentContainer.control?.get('segundoApellido')?.setValue(null);
+    this.parentContainer.control?.get('sexo')?.setValue(null);
+    this.parentContainer.control?.get('otroSexo')?.setValue(null);
+    this.parentContainer.control?.get('fechaNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('nacionalidad')?.setValue(null);
+    this.parentContainer.control?.get('paisNacimiento')?.setValue(null);
+    this.parentContainer.control?.get('lugarNacimiento')?.setValue(null);
   }
 
   validarRfc(): void {
@@ -242,6 +278,14 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     this.parentContainer.control?.get('sexo')?.setValue(valores.sexo);
     this.parentContainer.control?.get('otroSexo')?.setValue(valores.otroSexo);
     this.parentContainer.control?.get('edad')?.setValue(moment().diff(moment(fechaNacimiento), 'years'));
+    this.parentContainer.control?.get('nombre')?.disable();
+    this.parentContainer.control?.get('primerApellido')?.disable();
+    this.parentContainer.control?.get('segundoApellido')?.disable();
+    this.parentContainer.control?.get('sexo')?.disable();
+    this.parentContainer.control?.get('otroSexo')?.disable();
+    this.parentContainer.control?.get('fechaNacimiento')?.disable();
+    this.parentContainer.control?.get('nacionalidad')?.disable();
+    this.parentContainer.control?.get('paisNacimiento')?.disable();
     this.cargarValidacionesIniciales();
     if (valores.nomPersona === '') {
       this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
