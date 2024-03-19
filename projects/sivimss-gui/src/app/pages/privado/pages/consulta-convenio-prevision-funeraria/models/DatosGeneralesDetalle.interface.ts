@@ -15,4 +15,5 @@ export interface DatosGeneralesDetalle {
   velatorio: string;
   idContratante: number;
   idPagoLinea?: number;
+  rfc?: string;
 }
