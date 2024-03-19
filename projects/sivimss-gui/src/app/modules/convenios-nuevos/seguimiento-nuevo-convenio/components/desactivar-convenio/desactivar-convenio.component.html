@@ -267,6 +267,11 @@
                                                         [correoElectronico]="beneficiario.correo"
                                                         [telefono]="beneficiario.telefono"
                                                         [edad]="beneficiario.edad"
+                                                        [nombreDocumento]="beneficiario.nombreArchivo"
+                                                        [tipoDocumento]="beneficiario.docIne === 1 ? 1 : 4"
+                                                        [idPersona]="beneficiario.idPersona"
+                                                        [idPaqueteConvenio]="solicitante.idPaqueteConvenio"
+                                                        [idContratante]="beneficiario.idContratante"
                               ></app-resumen-beneficiario>
                             </p-accordionTab>
                           </p-accordion>
