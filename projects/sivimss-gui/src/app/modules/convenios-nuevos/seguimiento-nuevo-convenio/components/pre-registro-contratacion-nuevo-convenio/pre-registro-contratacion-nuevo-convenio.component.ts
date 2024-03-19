@@ -290,8 +290,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         numeroInterior: [{value: this.titularPA.numInt, disabled: false}],
         cp: [{value: this.titularPA.cp.padStart(5, '0'), disabled: false}, [Validators.required]],
         colonia: [{value: this.titularPA.colonia, disabled: false}, [Validators.required]],
-        municipio: [{value: this.titularPA.municipio, disabled: false}, [Validators.required]],
-        estado: [{value: this.titularPA.estado, disabled: false}, [Validators.required]],
+        municipio: [{value: this.titularPA.municipio, disabled: true}, [Validators.required]],
+        estado: [{value: this.titularPA.estado, disabled: true}, [Validators.required]],
         tipoPaquete: [{value: this.titularPA.idPaquete, disabled: false}, [Validators.required]],
         numeroPagos: [{value: this.titularPA.idTipoPagoMensual, disabled: false}, [Validators.required]],
       }),
@@ -321,8 +321,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         cp: [{value: this.sustituto?.cp?.padStart(5, '0') ?? null, disabled: this.mismoSustituto},
           [Validators.required]],
         colonia: [{value: this.sustituto?.colonia ?? null, disabled: this.mismoSustituto}, [Validators.required]],
-        municipio: [{value: this.sustituto?.municipio ?? null, disabled: this.mismoSustituto}, [Validators.required]],
-        estado: [{value: this.sustituto?.estado ?? null, disabled: this.mismoSustituto}, [Validators.required]],
+        municipio: [{value: this.sustituto?.municipio ?? null, disabled: true}, [Validators.required]],
+        estado: [{value: this.sustituto?.estado ?? null, disabled: true}, [Validators.required]],
       }),
       beneficiario1: this.formBuilder.group({
         curp: [{value: this.beneficiario1?.curp ?? null, disabled: false}],
@@ -346,8 +346,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         numeroInterior: [{value: this.beneficiario1?.numInt ?? null, disabled: false}],
         cp: [{value: this.beneficiario1?.cp?.padStart(5, '0') ?? null, disabled: false}],
         colonia: [{value: this.beneficiario1?.colonia ?? null, disabled: false}],
-        municipio: [{value: this.beneficiario1?.municipio ?? null, disabled: false}],
-        estado: [{value: this.beneficiario1?.estado ?? null, disabled: false}],
+        municipio: [{value: this.beneficiario1?.municipio ?? null, disabled: true}],
+        estado: [{value: this.beneficiario1?.estado ?? null, disabled: true}],
       }),
       beneficiario2: this.formBuilder.group({
         curp: [{value: this.beneficiario2?.curp ?? null, disabled: false}],
@@ -371,8 +371,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
         numeroInterior: [{value: this.beneficiario2?.numInt ?? null, disabled: false}],
         cp: [{value: this.beneficiario2?.cp?.padStart(5, '0') ?? null, disabled: false}],
         colonia: [{value: this.beneficiario2?.colonia ?? null, disabled: false}],
-        municipio: [{value: this.beneficiario2?.municipio ?? null, disabled: false}],
-        estado: [{value: this.beneficiario2?.estado ?? null, disabled: false}],
+        municipio: [{value: this.beneficiario2?.municipio ?? null, disabled: true}],
+        estado: [{value: this.beneficiario2?.estado ?? null, disabled: true}],
       }),
       idPromotor: [{value: this.titularPA.idPromotor, disabled: !this.titularPA.gestionPromotor}]
     });
@@ -598,9 +598,7 @@ export class PreRegistroContratacionNuevoConvenioComponent {
     this.contratacionNuevoConvenioForm.controls["sustituto"].get('colonia')?.setValue(null);
     this.contratacionNuevoConvenioForm.controls["sustituto"].get('colonia')?.enable();
     this.contratacionNuevoConvenioForm.controls["sustituto"].get('municipio')?.setValue(null);
-    this.contratacionNuevoConvenioForm.controls["sustituto"].get('municipio')?.enable();
     this.contratacionNuevoConvenioForm.controls["sustituto"].get('estado')?.setValue(null);
-    this.contratacionNuevoConvenioForm.controls["sustituto"].get('estado')?.enable();
   }
 
   asignarMismoTitular(): void {

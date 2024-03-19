@@ -12,7 +12,7 @@ import {CalendarModule} from "primeng/calendar";
 import {ActivatedRoute} from "@angular/router";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {delay, finalize} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
@@ -66,6 +66,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     if (nacionalidad === 1) {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
     }
+    const curp = this.parentContainer.control?.get('curp')?.value;
   }
 
   cargarCatalogosLocalStorage(): void {
