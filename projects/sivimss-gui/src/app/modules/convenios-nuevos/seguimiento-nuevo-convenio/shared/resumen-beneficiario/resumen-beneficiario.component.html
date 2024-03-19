@@ -2,19 +2,19 @@
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Nombre</label>
-      <span>{{nombre}}</span>
+      <span>{{ nombre }}</span>
     </div>
   </div>
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Edad</label>
-      <span>{{edad}}</span>
+      <span>{{ edad }}</span>
     </div>
   </div>
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Parentesco</label>
-      <span>{{parentesco}}</span>
+      <span>{{ parentesco }}</span>
     </div>
   </div>
 </div>
@@ -22,19 +22,19 @@
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>C.U.R.P.</label>
-      <span>{{curp}}</span>
+      <span>{{ curp }}</span>
     </div>
   </div>
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>R.F.C</label>
-      <span>{{rfc}}</span>
+      <span>{{ rfc }}</span>
     </div>
   </div>
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Correo electronico</label>
-      <span>{{correoElectronico}}</span>
+      <span>{{ correoElectronico }}</span>
     </div>
   </div>
 </div>
@@ -42,9 +42,45 @@
   <div class="col-md-4">
     <div class="table-panel-column">
       <label>Telefono</label>
-      <span>{{telefono}}</span>
+      <span>{{ telefono }}</span>
     </div>
   </div>
   <div class="col-md-8">
   </div>
 </div>
+<p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5 mt-3" [activeIndex]="0">
+  <p-accordionTab header="Documentación requerida">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" [for]="'numeroDocumento' + ID">Número del documento<span
+          class="req">*</span>:</label>
+        <input [id]="'numeroDocumento' + ID" class="form-control" placeholder="Inserta el número de documento"
+               [(ngModel)]="numeroDocumento" [disabled]="true"/>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" [for]="'tipoDocumento' + ID">Tipo del documento<span
+          class="req">*</span>:</label>
+        <p-dropdown [id]="'tipoDocumento' + ID" class="form-control" [options]="tipoDoc"
+                    [(ngModel)]="tipoDocumento" [disabled]="true"
+                    placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" [for]="'nombreDocumento' + ID">Nombre del documento<span
+          class="req">*</span>:</label>
+        <input [id]="'nombreDocumento' + ID" class="form-control" placeholder="Inserta nombre del documento"
+               [(ngModel)]="nombreDocumento" [disabled]="true">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="verDoc">Ver documento<span class="req">*</span>:</label>
+        <div (click)="descargarArchivo()">
+          <input class="hidden" type="file" id="download-file" name="download-file" accept=".jpg, .jpeg, .png, .pdf">
+          <input id="verDoc" class="form-control" readonly/>
+          <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+        </div>
+      </div>
+    </div>
+  </p-accordionTab>
+</p-accordion>
