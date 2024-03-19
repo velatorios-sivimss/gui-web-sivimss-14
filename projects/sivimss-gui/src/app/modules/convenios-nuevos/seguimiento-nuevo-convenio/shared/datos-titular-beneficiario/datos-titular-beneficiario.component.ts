@@ -67,6 +67,17 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
     }
     const curp = this.parentContainer.control?.get('curp')?.value;
+    if (curp) {
+      this.parentContainer.control?.get('nombre')?.disable();
+      this.parentContainer.control?.get('primerApellido')?.disable();
+      this.parentContainer.control?.get('segundoApellido')?.disable();
+      this.parentContainer.control?.get('sexo')?.disable();
+      this.parentContainer.control?.get('otroSexo')?.disable();
+      this.parentContainer.control?.get('fechaNacimiento')?.disable();
+      this.parentContainer.control?.get('nacionalidad')?.disable();
+      this.parentContainer.control?.get('paisNacimiento')?.disable();
+      this.parentContainer.control?.get('lugarNacimiento')?.disable();
+    }
   }
 
   cargarCatalogosLocalStorage(): void {

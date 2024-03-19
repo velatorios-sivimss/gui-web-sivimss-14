@@ -63,6 +63,18 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
     if (nacionalidad === 1) {
       this.parentContainer.control?.get('lugarNacimiento')?.setValidators([Validators.required]);
     }
+    const curpBen = this.parentContainer.control?.get('curp')?.value;
+    if (curpBen) {
+      this.parentContainer.control?.get('nombre')?.disable();
+      this.parentContainer.control?.get('primerApellido')?.disable();
+      this.parentContainer.control?.get('segundoApellido')?.disable();
+      this.parentContainer.control?.get('sexo')?.disable();
+      this.parentContainer.control?.get('otroSexo')?.disable();
+      this.parentContainer.control?.get('fechaNacimiento')?.disable();
+      this.parentContainer.control?.get('nacionalidad')?.disable();
+      this.parentContainer.control?.get('paisNacimiento')?.disable();
+      this.parentContainer.control?.get('lugarNacimiento')?.disable();
+    }
   }
 
   cargarCatalogosLocalStorage(): void {
@@ -90,6 +102,7 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
         error: (error: HttpErrorResponse) => this.manejarMensajeError(error),
       });
   }
+
 
   validarRfc(): void {
     if (this.tipo === 'beneficiario') {
