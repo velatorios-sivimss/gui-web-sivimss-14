@@ -1,130 +1,265 @@
-<div class="row table-panel-row">
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Matricula</label>
-      <span>{{matricula}}</span>
+<p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+  <p-accordionTab header="Datos de la persona">
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Matricula</label>
+          <span>{{ matricula }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>R.F.C.</label>
+          <span>{{ rfc }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>C.U.R.P.</label>
+          <span>{{ curp }}</span>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>R.F.C.</label>
-      <span>{{rfc}}</span>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Nombre(s)</label>
+          <span>{{ nombre }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Primer apellido</label>
+          <span>{{ primerApellido }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Segundo apellido</label>
+          <span>{{ segundoApellido }}</span>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>C.U.R.P.</label>
-      <span>{{curp}}</span>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Calle</label>
+          <span>{{ calle }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Número exterior</label>
+          <span>{{ numeroExterior }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Número interior</label>
+          <span>{{ numeroInterior }}</span>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-<div class="row table-panel-row">
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Nombre(s)</label>
-      <span>{{nombre}}</span>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Código postal</label>
+          <span>{{ codigoPostal }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Colonia</label>
+          <span>{{ colonia }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Municipio</label>
+          <span>{{ municipio }}</span>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Primer apellido</label>
-      <span>{{primerApellido}}</span>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Estado</label>
+          <span>{{ estado }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Nacionalidad</label>
+          <span>{{ nacionalidad }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Pais de nacimiento</label>
+          <span>{{ paisNacimiento }}</span>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Segundo apellido</label>
-      <span>{{segundoApellido}}</span>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Lugar de nacimiento</label>
+          <span>{{ lugarNacimiento }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Correo electrónico</label>
+          <span>{{ correoElectronico }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Telefono</label>
+          <span>{{ telefono }}</span>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-<div class="row table-panel-row">
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Calle</label>
-      <span>{{calle}}</span>
+    <div class="row table-panel-row" *ngIf="mostrarEnfermedad">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Enfermedad prexistente</label>
+          <span>{{ enfermedad }}</span>
+        </div>
+      </div>
+      <div class="col-md-8">
+      </div>
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Número exterior</label>
-      <span>{{numeroExterior}}</span>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Número interior</label>
-      <span>{{numeroInterior}}</span>
-    </div>
-  </div>
-</div>
-<div class="row table-panel-row">
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Código postal</label>
-      <span>{{codigoPostal}}</span>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Colonia</label>
-      <span>{{colonia}}</span>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Municipio</label>
-      <span>{{municipio}}</span>
-    </div>
-  </div>
-</div>
-<div class="row table-panel-row">
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Estado</label>
-      <span>{{estado}}</span>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Nacionalidad</label>
-      <span>{{nacionalidad}}</span>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Pais de nacimiento</label>
-      <span>{{paisNacimiento}}</span>
-    </div>
-  </div>
-</div>
-<div class="row table-panel-row">
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Lugar de nacimiento</label>
-      <span>{{lugarNacimiento}}</span>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Correo electrónico</label>
-      <span>{{correoElectronico}}</span>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Telefono</label>
-      <span>{{telefono}}</span>
-    </div>
-  </div>
-</div>
-<div class="row table-panel-row" *ngIf="mostrarEnfermedad">
-  <div class="col-md-4">
-    <div class="table-panel-column">
-      <label>Enfermedad prexistente</label>
-      <span>{{enfermedad}}</span>
-    </div>
-  </div>
-  <div class="col-md-8">
-  </div>
-</div>
+  </p-accordionTab>
+</p-accordion>
+<p-accordion styleClass="sivimss-accordion mt-3">
+  <p-accordionTab>
+    <ng-template pTemplate="header">
+      <div class="flex justify-content-between align-items-center flex-1">
+        <span>Características del convenio</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <div class="row table-panel-row">
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <label>Tipo de paquete</label>
+            <span>{{ tipoPaquete }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-accordionTab>
+</p-accordion>
+
+<p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+  <p-accordionTab header="Documentación requerida">
+    <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mt-3" [activeIndex]="0">
+      <p-accordionTab [header]="nombreINE" class="mb-3">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="control-label" [for]="'numeroDocumentoINE' + ID">Número del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'numeroDocumentoINE' + ID" class="form-control" placeholder="Inserta el número de documento"
+                   [disabled]="true">
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'tipoDocumentoINE' + ID">Tipo del documento<span
+              class="req">*</span>:</label>
+            <p-dropdown [id]="'tipoDocumentoINE' + ID" class="form-control" [options]="tipoDoc"
+                        [disabled]="true" [(ngModel)]="tipoINE"
+                        placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
+            </p-dropdown>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'nombreDocumentoINE' + ID">Nombre del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'nombreDocumentoINE' + ID" class="form-control" placeholder="Inserta nombre del documento"
+                   [disabled]="true" [(ngModel)]="nombreINE">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="control-label" for="verDocINE">Ver documento<span class="req">*</span>:</label>
+            <div (click)="descargarArchivo(1)">
+              <input class="hidden" type="file" id="downloadFileINE" name="downloadFile"
+                     accept=".jpg, .jpeg, .png, .pdf">
+              <input id="verDocINE" class="form-control" readonly/>
+              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+            </div>
+          </div>
+        </div>
+      </p-accordionTab>
+      <p-accordionTab [header]="nombreCURP">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="control-label" [for]="'numeroDocumentoCURP' + ID">Número del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'numeroDocumentoCURP' + ID" class="form-control" placeholder="Inserta el número de documento"
+                   [disabled]="true">
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'tipoDocumentoCURP' + ID">Tipo del documento<span
+              class="req">*</span>:</label>
+            <p-dropdown [id]="'tipoDocumentoCURP' + ID" class="form-control" [options]="tipoDoc"
+                        [disabled]="true" [(ngModel)]="tipoCURP"
+                        placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
+            </p-dropdown>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'nombreDocumentoCURP' + ID">Nombre del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'nombreDocumentoCURP' + ID" class="form-control" placeholder="Inserta nombre del documento"
+                   [disabled]="true" [(ngModel)]="nombreCURP">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="control-label" for="verDocCURP">Ver documento<span class="req">*</span>:</label>
+            <div (click)="descargarArchivo(2)">
+              <input class="hidden" type="file" id="downloadFileCURP" name="downloadFile"
+                     accept=".jpg, .jpeg, .png, .pdf">
+              <input id="verDocCURP" class="form-control" readonly/>
+              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+            </div>
+          </div>
+        </div>
+      </p-accordionTab>
+      <p-accordionTab [header]="nombreRFC">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="control-label" [for]="'numeroDocumentoRFC' + ID">Número del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'numeroDocumentoRFC' + ID" class="form-control" placeholder="Inserta el número de documento"
+                   [disabled]="true">
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'tipoDocumentoRFC' + ID">Tipo del documento<span
+              class="req">*</span>:</label>
+            <p-dropdown [id]="'tipoDocumentoRFC' + ID" class="form-control" [options]="tipoDoc"
+                        [disabled]="true" [(ngModel)]="tipoRFC"
+                        placeholder="Seleccionar el tipo de documento" [filter]="true" filterBy="label">
+            </p-dropdown>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" [for]="'nombreDocumentoRFC' + ID">Nombre del documento<span
+              class="req">*</span>:</label>
+            <input [id]="'nombreDocumentoRFC' + ID" class="form-control" placeholder="Inserta nombre del documento"
+                   [disabled]="true" [(ngModel)]="nombreRFC">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="control-label" for="verDocRFC">Ver documento<span class="req">*</span>:</label>
+            <div (click)="descargarArchivo(3)">
+              <input class="hidden" type="file" id="downloadFileRFC" name="downloadFile"
+                     accept=".jpg, .jpeg, .png, .pdf">
+              <input id="verDocRFC" class="form-control" readonly/>
+              <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver"/>
+            </div>
+          </div>
+        </div>
+      </p-accordionTab>
+    </p-accordion>
+  </p-accordionTab>
+</p-accordion>
