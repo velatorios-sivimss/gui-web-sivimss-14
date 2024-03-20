@@ -167,10 +167,10 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, 'Error en la realización del pago en línea.');
         return;
       }
-      if (data.transaction && data.transaction.status_detail === 3) {
+      if (data.transaction && [0, 1, 2, 3].includes(data.transaction.status_detail)) {
         this.guardarPagoEnLinea(data);
       }
-      if (data.transaction && [9, 11, 12].includes(data.transaction.status_detail)) {
+      if (data.transaction && ![0, 1, 2, 3].includes(data.transaction.status_detail)) {
         this.alertaService.mostrar(TipoAlerta.Error, 'Pago rechazado.');
       }
     });
