@@ -293,7 +293,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   manejoRespuestaValidaCURPInterno(respuesta: HttpRespuesta<any>, posicion: number): void {
     const [informacion] = respuesta.datos;
-    const [anio, mes, dia] = informacion.fechaNacimiento.split('-');
+    const fechaNacimiento: string = informacion.fechaNacimiento ?? informacion.fecNacimiento;
+    const [anio, mes, dia] = fechaNacimiento.split('-');
     const fecha: Date = new Date(anio + '/' + mes + '/' + dia);
     this.formularios[posicion].nombre.setValue(informacion.nomPersona);
     this.formularios[posicion].nombre.disable();
