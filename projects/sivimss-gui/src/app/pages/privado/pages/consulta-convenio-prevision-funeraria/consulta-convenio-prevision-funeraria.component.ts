@@ -207,10 +207,11 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       idVelatorio: this.idVelatorio,
       importe: this.importe,
       nomContratante: this.nombreCompleto,
-      nomTitular: "Mario Dominguez Serrano", // pagos
+      nomTitular: this.nombreCompleto, // pagos
       numAprobacion: pago.transaction.authorization_code, // pagos
       numTarjeta: pago.card.number, // pagos number
-      referencia: pago.transaction.id // pagos transaction_reference
+      referencia: pago.transaction.id, // pagos transaction_reference
+      refPago: 'NPF'
     }
   }
 
