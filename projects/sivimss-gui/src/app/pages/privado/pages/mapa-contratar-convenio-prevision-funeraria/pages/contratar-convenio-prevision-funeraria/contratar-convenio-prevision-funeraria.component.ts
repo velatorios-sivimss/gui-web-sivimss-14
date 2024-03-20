@@ -218,11 +218,11 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
       idVelatorio: this.idVelatorio,
       importe: this.importe,
       nomContratante: this.nombreCompleto,
-      nomTitular: "Mario Dominguez Serrano", // pagos
+      nomTitular: this.nombreCompleto, // pagos
       numAprobacion: pago.transaction.authorization_code, // pagos
       numTarjeta: pago.card.number, // pagos number
-      referencia: pago.transaction.id // pagos transaction_reference
-
+      referencia: pago.transaction.id, // pagos transaction_reference
+      refPago: 'NPF'
     }
   }
 
@@ -254,7 +254,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
 
   procesarToken(respuesta: HttpRespuesta<any>): void {
     const [credenciales] = respuesta.datos;
-    this.cargarScript(() => {});
+    this.cargarScript(() => {
+    });
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
     elemento_ref.setAttribute('data-objeto', JSON.stringify({
@@ -1492,7 +1493,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     this.confirmacionGuardado = false;
     this.tipoContratacion.includes('grupo') ? this.guardarEmpresa() : this.guardarPersona()
   }
-
 
 
   ngOnDestroy(): void {

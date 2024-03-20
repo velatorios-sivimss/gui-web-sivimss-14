@@ -146,6 +146,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
       numTarjeta: pago.card.number,
       referencia: pago.transaction.id,
       idPagoSFPA: this.registroPagar.idPagoSFPA,
+      refPago: 'Mensualidad SFPA'
     }
   }
 
