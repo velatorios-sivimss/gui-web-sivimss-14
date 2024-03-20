@@ -121,7 +121,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
     this.autenticacionContratanteService.contrasenia = this.f.contrasenia.value;
 
     this.mostrarModalPreActivo = false;
-    void this.router.navigate(["../restablecer-contrasenia"], { relativeTo: this.activatedRoute });
+    void this.router.navigate(["../actualizar-contrasenia"], { relativeTo: this.activatedRoute });
   }
 
   empezarTemporizadorPorExcederIntentos(): void {
