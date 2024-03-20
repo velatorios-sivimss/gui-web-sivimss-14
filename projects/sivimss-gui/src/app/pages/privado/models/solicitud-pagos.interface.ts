@@ -13,4 +13,5 @@ export interface SolicitudPagos {
   nomContratante: string,
   idMetodoPago: number,
   idPagoSFPA?: number,
+  refPago: string
 }

@@ -342,17 +342,18 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.mensaje.includes('interno')) {
-          const [anio, mes, dia] = respuesta.datos[0].fechaNacimiento.split('-');
+          const fechaNacimiento: string = respuesta.datos[0].fechaNacimiento ?? respuesta.datos[0].fecNacimiento;
+          const [anio, mes, dia] = fechaNacimiento.split('-');
           const fecha = new Date(anio + '/' + mes + '/' + dia);
           formularioEnUso[posicion].nombre.setValue(respuesta.datos[0].nomPersona)
-          formularioEnUso[posicion].primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno)
-          formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno)
-          formularioEnUso[posicion].sexo.setValue(respuesta.datos[0].numSexo)
-          formularioEnUso[posicion].otroSexo.setValue(respuesta.datos[0]?.desOtroSexo)
+          formularioEnUso[posicion].primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno ?? respuesta.datos[0]?.primerApellido)
+          formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno ?? respuesta.datos[0]?.segundoApellido)
+          formularioEnUso[posicion].sexo.setValue(respuesta.datos[0].numSexo ?? parseInt(respuesta.datos[0]?.sexo))
+          formularioEnUso[posicion].otroSexo.setValue(respuesta.datos[0]?.desOtroSexo ?? respuesta.datos[0]?.otroSexo)
           formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
-          formularioEnUso[posicion].telefono.setValue(respuesta.datos[0].desTelefono)
-          formularioEnUso[posicion].correoElectronico.setValue(respuesta.datos[0].desCorreo)
-          formularioEnUso[posicion].cp.setValue(respuesta.datos[0].DesCodigoPostal)
+          formularioEnUso[posicion].telefono.setValue(respuesta.datos[0].desTelefono ?? respuesta.datos[0]?.telefono)
+          formularioEnUso[posicion].correoElectronico.setValue(respuesta.datos[0].desCorreo ?? respuesta.datos[0]?.correo)
+          formularioEnUso[posicion].cp.setValue(respuesta.datos[0].desCodigoPostal ?? respuesta.datos[0]?.codigoPostal)
           formularioEnUso[posicion].calle.setValue(respuesta.datos[0].desCalle)
           formularioEnUso[posicion].numeroInterior.setValue(respuesta.datos[0].numInterior)
           formularioEnUso[posicion].numeroExterior.setValue(respuesta.datos[0].numExterior)
