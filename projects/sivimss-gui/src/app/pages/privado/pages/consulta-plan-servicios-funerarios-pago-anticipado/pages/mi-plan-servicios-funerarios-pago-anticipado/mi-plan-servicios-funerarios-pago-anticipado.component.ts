@@ -1,20 +1,25 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DialogService } from 'primeng/dynamicdialog';
-import { finalize } from 'rxjs';
-import { ContratarPSFPAService } from '../../../mapa-contratar-plan-servicios-funerarios-pago-anticipado/services/contratar-psfpa.service';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { DetalleServicioFunerario, PagoSFPA, TitularesBeneficiarios } from '../../models/consulta-plan-sfpa.interface';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { TransaccionPago } from '../../../../models/transaccion-pago.interface';
-import { SolicitudPagos } from '../../../../models/solicitud-pagos.interface';
-import { BusquedaConveniosPFServic } from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
+import {Component, OnInit, Renderer2} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {DialogService} from 'primeng/dynamicdialog';
+import {finalize} from 'rxjs';
+import {
+  ContratarPSFPAService
+} from '../../../mapa-contratar-plan-servicios-funerarios-pago-anticipado/services/contratar-psfpa.service';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {DetalleServicioFunerario, PagoSFPA, TitularesBeneficiarios} from '../../models/consulta-plan-sfpa.interface';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {TransaccionPago} from '../../../../models/transaccion-pago.interface';
+import {SolicitudPagos} from '../../../../models/solicitud-pagos.interface';
+import {
+  BusquedaConveniosPFServic
+} from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
 import * as moment from 'moment';
 import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
+
 @Component({
   selector: 'app-mi-plan-servicios-funerarios-pago-anticipado',
   templateUrl: './mi-plan-servicios-funerarios-pago-anticipado.component.html',
@@ -42,7 +47,8 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
     private router: Router,
     private consultaConveniosService: BusquedaConveniosPFServic,
     private gestorCredencialesService: GestorCredencialesService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.detalleConvenio();
@@ -110,7 +116,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
       next: (respuesta: HttpRespuesta<any>): void => {
         const id = respuesta.datos.idPagoLinea;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
-        void this.router.navigate(['recibo-de-pago', id], { relativeTo: this.rutaActiva });
+        void this.router.navigate(['recibo-de-pago', id], {relativeTo: this.rutaActiva});
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -215,7 +221,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
               [this.descargaArchivosService.base64_2Blob(
                 respuesta.datos,
                 this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-              { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+              {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
             const url = window.URL.createObjectURL(file);
             window.open(url);
           },

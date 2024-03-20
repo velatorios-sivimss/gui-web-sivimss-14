@@ -1,318 +1,323 @@
 <div class="container-sivimss px-5 registro-en-linea my-5" *ngIf="detalleServicioFunerario">
-    <app-titulo-principal titulo="MI PLAN DE SERVICIOS FUNERARIOS PAGO ANTICIPADO">
-        <app-btn-regresar routerLink="../"></app-btn-regresar>
-    </app-titulo-principal>
+  <app-titulo-principal titulo="MI PLAN DE SERVICIOS FUNERARIOS PAGO ANTICIPADO">
+    <app-btn-regresar routerLink="../"></app-btn-regresar>
+  </app-titulo-principal>
 
-    <div class="border-panel mb-5">
-        <div class="flex justify-content-between align-items-center">
-            <h2 class="subtitulo-base">Datos generales del convenio</h2>
-            <button class="btn btn-primary btn-md" (click)="verContrato();">Ver contrato</button>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Velatorio</span>
-                <span class="texto-base font-normal">{{detalleServicioFunerario.desIdVelatorio}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Folio del convenio</span>
-                <span class="texto-base font-normal">{{detalleServicioFunerario.numFolioPlanSFPA}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Estatus del convenio</span>
-                <span class="texto-base font-normal">{{detalleServicioFunerario.desEstatusPlanSfpa}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Tipo de paquete</span>
-                <span class="texto-base font-normal">{{detalleServicioFunerario.nomPaquete}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Número de pagos</span>
-                <span class="texto-base font-normal">{{detalleServicioFunerario.pagoSFPA.length}}</span>
-            </div>
-        </div>
+  <div class="border-panel mb-5">
+    <div class="flex justify-content-between align-items-center">
+      <h2 class="subtitulo-base">Datos generales del convenio</h2>
+      <button class="btn btn-primary btn-md" (click)="verContrato();">Ver contrato</button>
     </div>
 
-    <div class="border-panel mb-5">
-        <h2 class="subtitulo-base">Datos generales del titular</h2>
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">CURP</span>
-                <span class="texto-base font-normal" *ngIf="titular?.curp">{{titular.curp}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">RFC</span>
-                <span class="texto-base font-normal" *ngIf="titular?.rfc">{{titular.rfc}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Matrícula</span>
-                <span class="texto-base font-normal" *ngIf="titular?.matricula">{{titular.matricula}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">NSS</span>
-                <span class="texto-base font-normal" *ngIf="titular?.nss">{{titular.nss}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Nombre(s) del titular</span>
-                <span class="texto-base font-normal" *ngIf="titular?.nomPersona">{{titular.nomPersona}}</span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Primer apellido</span>
-                <span class="texto-base font-normal" *ngIf="titular?.primerApellido">{{titular.primerApellido}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Segundo apellido</span>
-                <span class="texto-base font-normal" *ngIf="titular?.segundoApellido">{{titular.segundoApellido}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Sexo</span>
-                <span class="texto-base font-normal" *ngIf="titular?.sexo">{{titular.sexo}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Fecha de nacimiento</span>
-                <span class="texto-base font-normal" *ngIf="titular?.fecNacimiento">{{titular.fecNacimiento}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Nacionalidad</span>
-                <span class="texto-base font-normal" *ngIf="titular?.nacionalidad">{{titular.nacionalidad}}</span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">País de nacimiento</span>
-                <span class="texto-base font-normal" *ngIf="titular?.pais">{{titular.pais}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Lugar de nacimiento</span>
-                <span class="texto-base font-normal" *ngIf="titular?.lugarNac">{{titular.lugarNac}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Teléfono</span>
-                <span class="texto-base font-normal" *ngIf="titular?.telefono">{{titular.telefono}}</span>
-            </div>
-            <div class="col-md-4 flex flex-column">
-                <span class="etiqueta-base font-bold">Correo electrónico</span>
-                <span class="texto-base font-normal" *ngIf="titular?.correo">{{titular.correo}}</span>
-            </div>
-        </div>
-        <h2 class="subtitulo-base">Domicilio del titular</h2>
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Calle</span>
-                <span class="texto-base font-normal" *ngIf="titular?.cp?.desCalle">{{titular.cp?.desCalle}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Número exterior</span>
-                <span class="texto-base font-normal" *ngIf="titular?.cp?.numExterior">{{titular.cp?.numExterior}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Número interior</span>
-                <span class="texto-base font-normal" *ngIf="titular?.cp?.numInterior">{{titular.cp?.numInterior}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">C.P.</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titular?.cp?.codigoPostal">{{titular.cp?.codigoPostal}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Colonia</span>
-                <span class="texto-base font-normal" *ngIf="titular?.cp?.desColonia">{{titular.cp?.desColonia}}</span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Municipio</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titular?.cp?.desMunicipio">{{titular.cp?.desMunicipio}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Estado</span>
-                <span class="texto-base font-normal" *ngIf="titular?.cp?.desEstado">{{titular.cp?.desEstado}}</span>
-            </div>
-        </div>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Velatorio</span>
+        <span class="texto-base font-normal">{{ detalleServicioFunerario.desIdVelatorio }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Folio del convenio</span>
+        <span class="texto-base font-normal">{{ detalleServicioFunerario.numFolioPlanSFPA }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Estatus del convenio</span>
+        <span class="texto-base font-normal">{{ detalleServicioFunerario.desEstatusPlanSfpa }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Tipo de paquete</span>
+        <span class="texto-base font-normal">{{ detalleServicioFunerario.nomPaquete }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Número de pagos</span>
+        <span class="texto-base font-normal">{{ detalleServicioFunerario.pagoSFPA.length }}</span>
+      </div>
     </div>
+  </div>
 
-    <div class="border-panel mb-5">
-        <h2 class="subtitulo-base">Datos generales del titular substituto</h2>
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">CURP</span>
-                <span class="texto-base font-normal" *ngIf="titularSubstituto?.curp">{{titularSubstituto.curp}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">RFC</span>
-                <span class="texto-base font-normal" *ngIf="titularSubstituto?.rfc">{{titularSubstituto.rfc}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Matrícula</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.matricula">{{titularSubstituto.matricula}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">NSS</span>
-                <span class="texto-base font-normal" *ngIf="titularSubstituto?.nss">{{titularSubstituto.nss}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Nombre(s) del titular substituto</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.nomPersona">{{titularSubstituto.nomPersona}}</span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Primer apellido</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.primerApellido">{{titularSubstituto.primerApellido}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Segundo apellido</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.segundoApellido">{{titularSubstituto.segundoApellido}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Sexo</span>
-                <span class="texto-base font-normal" *ngIf="titularSubstituto?.sexo">{{titularSubstituto.sexo}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Fecha de nacimiento</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.fecNacimiento">{{titularSubstituto.fecNacimiento}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Nacionalidad</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.nacionalidad">{{titularSubstituto.nacionalidad}}</span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">País de nacimiento</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.pais">{{titularSubstituto.pais}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Lugar de nacimiento</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.lugarNac">{{titularSubstituto.lugarNac}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Teléfono</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.telefono">{{titularSubstituto.telefono}}</span>
-            </div>
-            <div class="col-md-4 flex flex-column">
-                <span class="etiqueta-base font-bold">Correo electrónico</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titularSubstituto?.correo">{{titularSubstituto.correo}}</span>
-            </div>
-        </div>
-        <h2 class="subtitulo-base">Domicilio del titular substituto</h2>
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Calle</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titular?.cp?.desCalle">{{titularSubstituto.cp?.desCalle}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Número exterior</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titular?.cp?.numExterior">{{titularSubstituto.cp?.numExterior}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Número interior</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titular?.cp?.numInterior">{{titularSubstituto.cp?.numInterior}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">C.P.</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titular?.cp?.codigoPostal">{{titularSubstituto.cp?.codigoPostal}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Colonia</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titular?.cp?.desColonia">{{titularSubstituto.cp?.desColonia}}</span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Municipio</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titular?.cp?.desMunicipio">{{titularSubstituto.cp?.desMunicipio}}</span>
-            </div>
-            <div class="col-md-2 flex flex-column">
-                <span class="etiqueta-base font-bold">Estado</span>
-                <span class="texto-base font-normal"
-                    *ngIf="titular?.cp?.desEstado">{{titularSubstituto.cp?.desEstado}}</span>
-            </div>
-        </div>
+  <div class="border-panel mb-5">
+    <h2 class="subtitulo-base">Datos generales del titular</h2>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">CURP</span>
+        <span class="texto-base font-normal" *ngIf="titular?.curp">{{ titular.curp }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">RFC</span>
+        <span class="texto-base font-normal" *ngIf="titular?.rfc">{{ titular.rfc }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Matrícula</span>
+        <span class="texto-base font-normal" *ngIf="titular?.matricula">{{ titular.matricula }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">NSS</span>
+        <span class="texto-base font-normal" *ngIf="titular?.nss">{{ titular.nss }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Nombre(s) del titular</span>
+        <span class="texto-base font-normal" *ngIf="titular?.nomPersona">{{ titular.nomPersona }}</span>
+      </div>
     </div>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Primer apellido</span>
+        <span class="texto-base font-normal" *ngIf="titular?.primerApellido">{{ titular.primerApellido }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Segundo apellido</span>
+        <span class="texto-base font-normal" *ngIf="titular?.segundoApellido">{{ titular.segundoApellido }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Sexo</span>
+        <span class="texto-base font-normal" *ngIf="titular?.sexo">{{ titular.sexo }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Fecha de nacimiento</span>
+        <span class="texto-base font-normal" *ngIf="titular?.fecNacimiento">{{ titular.fecNacimiento }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Nacionalidad</span>
+        <span class="texto-base font-normal" *ngIf="titular?.nacionalidad">{{ titular.nacionalidad }}</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">País de nacimiento</span>
+        <span class="texto-base font-normal" *ngIf="titular?.pais">{{ titular.pais }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Lugar de nacimiento</span>
+        <span class="texto-base font-normal" *ngIf="titular?.lugarNac">{{ titular.lugarNac }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Teléfono</span>
+        <span class="texto-base font-normal" *ngIf="titular?.telefono">{{ titular.telefono }}</span>
+      </div>
+      <div class="col-md-4 flex flex-column">
+        <span class="etiqueta-base font-bold">Correo electrónico</span>
+        <span class="texto-base font-normal" *ngIf="titular?.correo">{{ titular.correo }}</span>
+      </div>
+    </div>
+    <h2 class="subtitulo-base">Domicilio del titular</h2>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Calle</span>
+        <span class="texto-base font-normal" *ngIf="titular?.cp?.desCalle">{{ titular.cp?.desCalle }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Número exterior</span>
+        <span class="texto-base font-normal" *ngIf="titular?.cp?.numExterior">{{ titular.cp?.numExterior }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Número interior</span>
+        <span class="texto-base font-normal" *ngIf="titular?.cp?.numInterior">{{ titular.cp?.numInterior }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">C.P.</span>
+        <span class="texto-base font-normal"
+              *ngIf="titular?.cp?.codigoPostal">{{ titular.cp?.codigoPostal }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Colonia</span>
+        <span class="texto-base font-normal" *ngIf="titular?.cp?.desColonia">{{ titular.cp?.desColonia }}</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Municipio</span>
+        <span class="texto-base font-normal"
+              *ngIf="titular?.cp?.desMunicipio">{{ titular.cp?.desMunicipio }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Estado</span>
+        <span class="texto-base font-normal" *ngIf="titular?.cp?.desEstado">{{ titular.cp?.desEstado }}</span>
+      </div>
+    </div>
+  </div>
 
-    <div class="border-panel mb-5">
-        <h2 class="subtitulo-base">Beneficiarios</h2>
-        <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true" [columnResizeMode]="'expand'">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th scope="col">RFC</th>
-                    <th scope="col">Fecha de nacimiento</th>
-                    <th scope="col">Nombre completo</th>
-                    <th scope="col">Teléfono</th>
-                    <th scope="col">Calle</th>
-                    <th scope="col">No. Ext.</th>
-                    <th scope="col">No. Int.</th>
-                    <th scope="col">C.P.</th>
-                    <th scope="col">Colonia</th>
-                    <th scope="col">Municipio</th>
-                    <th scope="col">Estado</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-beneficiario>
-                <tr>
-                    <td>{{beneficiario.rfc}}</td>
-                    <td>{{beneficiario.fecNacimiento}}</td>
-                    <td>{{beneficiario.nomPersona}} {{beneficiario.primerApellido}} {{beneficiario.segundoApellido}}</td>
-                    <td>{{beneficiario.telefono}}</td>
-                    <td>{{beneficiario.cp?.desCalle}}</td>
-                    <td>{{beneficiario.cp?.numExterior}}</td>
-                    <td>{{beneficiario.cp?.numInterior}}</td>
-                    <td>{{beneficiario.cp?.codigoPostal}}</td>
-                    <td>{{beneficiario.cp?.desColonia}}</td>
-                    <td>{{beneficiario.cp?.desMunicipio}}</td>
-                    <td>{{beneficiario.cp?.desEstado}}</td>
-                </tr>
-            </ng-template>
-        </p-table>
+  <div class="border-panel mb-5">
+    <h2 class="subtitulo-base">Datos generales del titular substituto</h2>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">CURP</span>
+        <span class="texto-base font-normal" *ngIf="titularSubstituto?.curp">{{ titularSubstituto.curp }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">RFC</span>
+        <span class="texto-base font-normal" *ngIf="titularSubstituto?.rfc">{{ titularSubstituto.rfc }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Matrícula</span>
+        <span class="texto-base font-normal"
+              *ngIf="titularSubstituto?.matricula">{{ titularSubstituto.matricula }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">NSS</span>
+        <span class="texto-base font-normal" *ngIf="titularSubstituto?.nss">{{ titularSubstituto.nss }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Nombre(s) del titular substituto</span>
+        <span class="texto-base font-normal"
+              *ngIf="titularSubstituto?.nomPersona">{{ titularSubstituto.nomPersona }}</span>
+      </div>
     </div>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Primer apellido</span>
+        <span class="texto-base font-normal"
+              *ngIf="titularSubstituto?.primerApellido">{{ titularSubstituto.primerApellido }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Segundo apellido</span>
+        <span class="texto-base font-normal"
+              *ngIf="titularSubstituto?.segundoApellido">{{ titularSubstituto.segundoApellido }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Sexo</span>
+        <span class="texto-base font-normal" *ngIf="titularSubstituto?.sexo">{{ titularSubstituto.sexo }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Fecha de nacimiento</span>
+        <span class="texto-base font-normal"
+              *ngIf="titularSubstituto?.fecNacimiento">{{ titularSubstituto.fecNacimiento }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Nacionalidad</span>
+        <span class="texto-base font-normal"
+              *ngIf="titularSubstituto?.nacionalidad">{{ titularSubstituto.nacionalidad }}</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">País de nacimiento</span>
+        <span class="texto-base font-normal"
+              *ngIf="titularSubstituto?.pais">{{ titularSubstituto.pais }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Lugar de nacimiento</span>
+        <span class="texto-base font-normal"
+              *ngIf="titularSubstituto?.lugarNac">{{ titularSubstituto.lugarNac }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Teléfono</span>
+        <span class="texto-base font-normal"
+              *ngIf="titularSubstituto?.telefono">{{ titularSubstituto.telefono }}</span>
+      </div>
+      <div class="col-md-4 flex flex-column">
+        <span class="etiqueta-base font-bold">Correo electrónico</span>
+        <span class="texto-base font-normal"
+              *ngIf="titularSubstituto?.correo">{{ titularSubstituto.correo }}</span>
+      </div>
+    </div>
+    <h2 class="subtitulo-base">Domicilio del titular substituto</h2>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Calle</span>
+        <span class="texto-base font-normal"
+              *ngIf="titular?.cp?.desCalle">{{ titularSubstituto.cp?.desCalle }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Número exterior</span>
+        <span class="texto-base font-normal"
+              *ngIf="titular?.cp?.numExterior">{{ titularSubstituto.cp?.numExterior }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Número interior</span>
+        <span class="texto-base font-normal"
+              *ngIf="titular?.cp?.numInterior">{{ titularSubstituto.cp?.numInterior }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">C.P.</span>
+        <span class="texto-base font-normal"
+              *ngIf="titular?.cp?.codigoPostal">{{ titularSubstituto.cp?.codigoPostal }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Colonia</span>
+        <span class="texto-base font-normal"
+              *ngIf="titular?.cp?.desColonia">{{ titularSubstituto.cp?.desColonia }}</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Municipio</span>
+        <span class="texto-base font-normal"
+              *ngIf="titular?.cp?.desMunicipio">{{ titularSubstituto.cp?.desMunicipio }}</span>
+      </div>
+      <div class="col-md-2 flex flex-column">
+        <span class="etiqueta-base font-bold">Estado</span>
+        <span class="texto-base font-normal"
+              *ngIf="titular?.cp?.desEstado">{{ titularSubstituto.cp?.desEstado }}</span>
+      </div>
+    </div>
+  </div>
 
-    <div class="border-panel mb-5">
-        <div class="flex justify-content-between align-items-center">
-            <h2 class="subtitulo-base">Detalles de pagos</h2>
-            <button class="btn btn-primary btn-md realizar-pago" *ngIf="mostrarBtnRealizarPago">Realizar pago</button>
-        </div>
-        <p-table styleClass="mt-5 mb-8" [value]="detalleServicioFunerario.pagoSFPA" [resizableColumns]="true"
-            [columnResizeMode]="'expand'">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th scope="col">Pagos</th>
-                    <th scope="col">Fecha de pago</th>
-                    <th scope="col">Monto</th>
-                    <th scope="col">Método de pago</th>
-                    <th scope="col">Estatus</th>
-                    <th scope="col">No. Recibo de pago</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-pago>
-                <tr>
-                    <td>{{pago.noPagos}}</td>
-                    <td>{{pago.fechaParcialidad}}</td>
-                    <td>{{pago.importeMensual}}</td>
-                    <td>{{pago.metodoPago}}</td>
-                    <td>{{pago.estatusPago}}</td>
-                    <td>{{pago.folioRecibo}}</td>
-                </tr>
-            </ng-template>
-        </p-table>
+  <div class="border-panel mb-5">
+    <h2 class="subtitulo-base">Beneficiarios</h2>
+    <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true" [columnResizeMode]="'expand'">
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col">RFC</th>
+          <th scope="col">Fecha de nacimiento</th>
+          <th scope="col">Nombre completo</th>
+          <th scope="col">Teléfono</th>
+          <th scope="col">Calle</th>
+          <th scope="col">No. Ext.</th>
+          <th scope="col">No. Int.</th>
+          <th scope="col">C.P.</th>
+          <th scope="col">Colonia</th>
+          <th scope="col">Municipio</th>
+          <th scope="col">Estado</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-beneficiario>
+        <tr>
+          <td>{{ beneficiario.rfc }}</td>
+          <td>{{ beneficiario.fecNacimiento }}</td>
+          <td>{{ beneficiario.nomPersona }} {{ beneficiario.primerApellido }} {{ beneficiario.segundoApellido }}</td>
+          <td>{{ beneficiario.telefono }}</td>
+          <td>{{ beneficiario.cp?.desCalle }}</td>
+          <td>{{ beneficiario.cp?.numExterior }}</td>
+          <td>{{ beneficiario.cp?.numInterior }}</td>
+          <td>{{ beneficiario.cp?.codigoPostal }}</td>
+          <td>{{ beneficiario.cp?.desColonia }}</td>
+          <td>{{ beneficiario.cp?.desMunicipio }}</td>
+          <td>{{ beneficiario.cp?.desEstado }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="border-panel mb-5">
+    <div class="flex justify-content-between align-items-center">
+      <h2 class="subtitulo-base">Detalles de pagos</h2>
     </div>
+    <p-table styleClass="mt-5 mb-8" [value]="detalleServicioFunerario.pagoSFPA" [resizableColumns]="true"
+             [columnResizeMode]="'expand'">
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col">Pagos</th>
+          <th scope="col">Fecha de pago</th>
+          <th scope="col">Monto</th>
+          <th scope="col">Método de pago</th>
+          <th scope="col">Estatus</th>
+          <th scope="col">No. Recibo de pago</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-pago>
+        <tr>
+          <td>{{ pago.noPagos }}</td>
+          <td>{{ pago.fechaParcialidad }}</td>
+          <td>{{ pago.importeMensual }}</td>
+          <td>{{ pago.metodoPago }}</td>
+          <td>{{ pago.estatusPago }}</td>
+          <td>{{ pago.folioRecibo }}</td>
+          <td>
+            <ng-container *ngIf="pago.estatusPago === 'POR PAGAR'">
+              <button class="btn btn-primary btn-md realizar-pago" *ngIf="mostrarBtnRealizarPago">Realizar pago</button>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
