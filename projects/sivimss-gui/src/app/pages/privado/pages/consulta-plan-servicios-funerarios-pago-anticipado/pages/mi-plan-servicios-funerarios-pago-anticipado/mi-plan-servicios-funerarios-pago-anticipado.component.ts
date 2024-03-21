@@ -19,6 +19,7 @@ import {
 } from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
 import * as moment from 'moment';
 import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
+import {diferenciaUTC} from "../../../../../../utils/funciones";
 
 @Component({
   selector: 'app-mi-plan-servicios-funerarios-pago-anticipado',
@@ -76,7 +77,8 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
 
   procesarToken(respuesta: HttpRespuesta<any>): void {
     const [credenciales] = respuesta.datos;
-    this.cargarScript(() => {});
+    this.cargarScript(() => {
+    });
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
     elemento_ref.setAttribute('data-objeto', JSON.stringify({
@@ -189,7 +191,9 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
               if (beneficiario2) this.beneficiarios.push(beneficiario2);
 
               this.detalleServicioFunerario.pagoSFPA.forEach((item: PagoSFPA) => {
-                if (moment().isSame(moment(item.fechaParcialidad, 'DD/MM/YYYY'), 'day') && item.idEstatus === this.ESTATUS_POR_PAGAR) {
+                if (!item.fechaParcialidad) return;
+                const fechaParcialidad = new Date(diferenciaUTC(item.fechaParcialidad, '/'))
+                if (moment().isSame(moment(fechaParcialidad, 'DD/MM/YYYY'), 'day') && item.idEstatus === this.ESTATUS_POR_PAGAR) {
                   this.registroPagar = item;
                   this.mostrarBtnRealizarPago = true;
                 }
