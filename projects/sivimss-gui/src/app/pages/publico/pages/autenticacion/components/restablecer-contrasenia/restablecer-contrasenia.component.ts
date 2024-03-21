@@ -80,6 +80,7 @@ export class RestablecerContraseniaComponent implements OnInit {
       return;
     }
     const form = this.form.getRawValue();
+    form.contraseniaAnterior == null ? form.contraseniaAnterior = "" : form.contraseniaAnterior
     this.usuarioIncorrecto = false;
     this.loaderService.activar();
     this.autenticacionContratanteService
