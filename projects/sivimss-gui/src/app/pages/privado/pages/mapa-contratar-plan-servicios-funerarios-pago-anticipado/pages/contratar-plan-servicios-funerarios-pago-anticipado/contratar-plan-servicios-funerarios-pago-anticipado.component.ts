@@ -726,6 +726,15 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
           formularioEnUso[posicion].segundoApellido.setValue(datosUsuario.apellido2)
           formularioEnUso[posicion].sexo.setValue(datosUsuario.sexo === "MUJER" ? 1 : 2)
           formularioEnUso[posicion].fechaNacimiento.setValue(fecha);
+          formularioEnUso[posicion].nacionalidad.setValue(datosUsuario.nacionalidad.toUpperCase().includes("MEX") ? 1 : 2);
+          this.consultarLugarNacimiento(datosUsuario.desEntidadNac, posicion)
+          formularioEnUso[posicion].nombre.disable();
+          formularioEnUso[posicion].primerApellido.disable();
+          formularioEnUso[posicion].segundoApellido.disable();
+          formularioEnUso[posicion].sexo.disable();
+          formularioEnUso[posicion].fechaNacimiento.disable();
+          formularioEnUso[posicion].nacionalidad.disable();
+          formularioEnUso[posicion].lugarNacimiento.disable();
         } else if (respuesta.mensaje === 'USUARIO REGISTRADO') {
           const datosUsuario = respuesta.datos[0];
           const [dia, mes, anio] = datosUsuario.fecNacimiento.split('/');
@@ -753,6 +762,13 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
           this.consultarCodigoPostal(posicion);
           this.cambiarNacionalidad(posicion);
           this.cambiarNacionalidad2(posicion);
+          formularioEnUso[posicion].nombre.disable();
+          formularioEnUso[posicion].primerApellido.disable();
+          formularioEnUso[posicion].segundoApellido.disable();
+          formularioEnUso[posicion].sexo.disable();
+          formularioEnUso[posicion].fechaNacimiento.disable();
+          formularioEnUso[posicion].nacionalidad.disable();
+          formularioEnUso[posicion].lugarNacimiento.disable();
         } else if (respuesta.mensaje === 'NO EXISTE CURP') {
           this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
         } else {
@@ -870,6 +886,13 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     formularioEnUso[posicion].colonia.patchValue(null);
     formularioEnUso[posicion].municipio.patchValue(null);
     formularioEnUso[posicion].estado.patchValue(null);
+    formularioEnUso[posicion].nombre.enable();
+    formularioEnUso[posicion].primerApellido.enable();
+    formularioEnUso[posicion].segundoApellido.enable();
+    formularioEnUso[posicion].sexo.enable();
+    formularioEnUso[posicion].fechaNacimiento.enable();
+    formularioEnUso[posicion].nacionalidad.enable();
+    formularioEnUso[posicion].lugarNacimiento.enable();
 
     if (posicion === 0) {
       formularioEnUso[posicion].telefonoFijo.patchValue(null);
