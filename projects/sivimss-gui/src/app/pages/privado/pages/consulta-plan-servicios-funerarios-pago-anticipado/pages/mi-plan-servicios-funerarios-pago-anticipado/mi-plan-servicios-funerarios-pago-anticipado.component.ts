@@ -82,7 +82,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
     elemento_ref.setAttribute('data-objeto', JSON.stringify({
-      referencia: 'Mensualidad SFPA',
+      referencia: 'Mensualidad que se pagó del plan SFPA',
       monto: this.registroPagar.importeAcumulado,
       mode: credenciales.mode,
       code: credenciales.code,

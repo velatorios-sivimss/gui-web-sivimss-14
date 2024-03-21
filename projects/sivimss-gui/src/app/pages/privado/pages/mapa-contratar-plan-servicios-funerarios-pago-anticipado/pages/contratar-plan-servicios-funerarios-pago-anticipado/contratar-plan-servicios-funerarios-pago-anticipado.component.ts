@@ -239,7 +239,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       numTarjeta: pago.card.number, // pagos number
       referencia: pago.transaction.id, // pagos transaction_reference
       idPagoSFPA: this.idPagoSFPA,
-      refPago: 'Mensualidad SFPA'
+      refPago: 'Mensualidad que se pagó del plan SFPA'
     }
   }
 
