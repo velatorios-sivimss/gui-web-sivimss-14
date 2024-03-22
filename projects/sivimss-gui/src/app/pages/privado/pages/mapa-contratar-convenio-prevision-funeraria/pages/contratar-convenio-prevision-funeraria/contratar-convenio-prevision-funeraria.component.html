@@ -274,8 +274,10 @@
                   </ul>
                   <div class="iconos">
                     <img alt="candle1" src="assets/images/sivimss-externos/material-symbols_candle.svg">
-                    <img alt="candle2" src='{{"assets/images/sivimss-externos/material-symbols_candle" + (i > 0 ? "" : "-2") + ".svg"}}'>
-                    <img alt="candle3" src='{{"assets/images/sivimss-externos/material-symbols_candle" + (i > 1 ? "" : "-2") + ".svg"}}'>
+                    <img alt="candle2"
+                         src='{{"assets/images/sivimss-externos/material-symbols_candle" + (i > 0 ? "" : "-2") + ".svg"}}'>
+                    <img alt="candle3"
+                         src='{{"assets/images/sivimss-externos/material-symbols_candle" + (i > 1 ? "" : "-2") + ".svg"}}'>
                   </div>
                 </div>
               </div>
@@ -393,11 +395,13 @@
           <button class="btn btn-primary btn-md ml-4" type="submit" [disabled]="!this.formPersona.valid"
                   *ngIf="mostrarBontonGaurdarPersona">Guardar
           </button>
-          <button class="btn ml-4 btn-gold btn-md" type="button" *ngIf="!mostrarBontonGaurdarPersona && mostrarBotonTerminar"
+          <button class="btn ml-4 btn-gold btn-md" type="button"
+                  *ngIf="!mostrarBontonGaurdarPersona && mostrarBotonTerminar"
                   (click)="mostrarMensajeGuardado = true">Terminar contratación
           </button>
           <div [hidden]="validaBotonRealizarPago()">
-            <button type="button" class="btn ml-4 btn-primary realizar-pago" onCloseOnNavigation>
+            <button type="button" class="btn ml-4 btn-primary realizar-pago" onCloseOnNavigation
+                    (click)="realizarPago()">
               Realizar pago
             </button>
           </div>

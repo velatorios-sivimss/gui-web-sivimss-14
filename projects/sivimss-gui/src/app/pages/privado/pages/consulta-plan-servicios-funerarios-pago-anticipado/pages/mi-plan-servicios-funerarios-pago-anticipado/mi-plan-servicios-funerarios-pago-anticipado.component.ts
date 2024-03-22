@@ -36,6 +36,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   idPlanSfpa: number | undefined;
   registroPagar!: PagoSFPA;
   mostrarBtnRealizarPago: boolean = false;
+  transaccion!: any;
 
   constructor(
     private dialogService: DialogService,
@@ -61,6 +62,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   cargarScript(callback: () => void): void {
     const elementoId: string = 'realizar-pago';
     if (!document.getElementById(elementoId)) {
+      console.log('n time script')
       const body: HTMLElement = document.body;
       const elemento_ref = this.renderer.createElement('script');
       elemento_ref.type = 'text/javascript';
@@ -71,6 +73,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
       this.renderer.appendChild(body, elemento_ref);
       elemento_ref.onload = callback;
     } else {
+      console.log('n time back')
       callback();
     }
   }
@@ -79,18 +82,21 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
     const [credenciales] = respuesta.datos;
     this.cargarScript(() => {
     });
-    const elemento_ref = document.querySelector('.realizar-pago');
-    if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({
+    this.transaccion = {
       referencia: 'Mensualidad que se pagó del plan SFPA',
-      monto: this.registroPagar.importeAcumulado,
+      monto: null,
       mode: credenciales.mode,
       code: credenciales.code,
       key: credenciales.key
-    }));
+    };
     this.subscripcionMotorPagos();
   }
 
+  realizarPago(): void {
+    this.transaccion.monto = this.registroPagar.importeAcumulado;
+    const evento = new CustomEvent('realizarPago', {detail: this.transaccion});
+    document.dispatchEvent(evento);
+  }
 
   subscripcionMotorPagos(): void {
     // Escucha el evento personalizado
@@ -148,7 +154,7 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
       numTarjeta: pago.card.number,
       referencia: pago.transaction.id,
       idPagoSFPA: this.registroPagar.idPagoSFPA,
-      refPago: 'Mensualidad SFPA'
+      refPago: 'Mensualidad que se pagó del plan SFPA'
     }
   }
 
