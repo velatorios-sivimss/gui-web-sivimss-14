@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
-import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {diferenciaUTC, mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
@@ -209,6 +209,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
       this.cargadorService.activar();
       this.parentContainer.control?.get('colonia')?.setValue(null);
     }
+    if (validarUsuarioLogueado()) return;
     this.seguimientoNuevoConvenioService.consutaCP(cp).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({

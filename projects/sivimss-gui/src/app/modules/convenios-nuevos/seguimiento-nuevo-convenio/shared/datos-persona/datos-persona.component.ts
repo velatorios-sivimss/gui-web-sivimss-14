@@ -114,6 +114,12 @@ export class DatosPersonaComponent implements OnInit {
     } else {
       this.parentContainer.control?.get('paisNacimiento')?.setValidators([Validators.required]);
     }
+    const curp = this.parentContainer.control?.get('curp')?.value;
+    if (curp) {
+      this.parentContainer.control?.get('nombres')?.disable();
+      this.parentContainer.control?.get('primerApellido')?.disable();
+      this.parentContainer.control?.get('segundoApellido')?.disable();
+    }
   }
 
   cargarCatalogosLocalStorage(): void {
@@ -198,7 +204,10 @@ export class DatosPersonaComponent implements OnInit {
 
   validarCurp(): void {
     const curp = this.parentContainer.control?.get('curp')?.value;
-    if (!curp) return;
+    if (!curp) {
+      this.limpiarCURP();
+      return;
+    }
     if (!curp.match(PATRON_CURP)) {
       this.alertaService.mostrar(TipoAlerta.Error, 'CURP no valido.');
       return;
@@ -213,6 +222,15 @@ export class DatosPersonaComponent implements OnInit {
       });
   }
 
+  limpiarCURP(): void {
+    this.parentContainer.control?.get('nombres')?.enable();
+    this.parentContainer.control?.get('primerApellido')?.enable();
+    this.parentContainer.control?.get('segundoApellido')?.enable();
+    this.parentContainer.control?.get('nombres')?.setValue(null);
+    this.parentContainer.control?.get('primerApellido')?.setValue(null);
+    this.parentContainer.control?.get('segundoApellido')?.setValue(null);
+  }
+
   procesarRespuestaCURP(respuesta: HttpRespuesta<any>): void {
     if (respuesta.error && respuesta.mensaje !== 'Exito') {
       this.mostrarMensaje(+respuesta.mensaje);
@@ -222,6 +240,9 @@ export class DatosPersonaComponent implements OnInit {
     this.parentContainer.control?.get('nombres')?.setValue(valores.nomPersona);
     this.parentContainer.control?.get('primerApellido')?.setValue(valores.primerApellido);
     this.parentContainer.control?.get('segundoApellido')?.setValue(valores.segundoApellido);
+    this.parentContainer.control?.get('nombres')?.disable();
+    this.parentContainer.control?.get('primerApellido')?.disable();
+    this.parentContainer.control?.get('segundoApellido')?.disable();
     this.parentContainer.control?.get('telefono')?.setValue(valores.telefono);
     this.parentContainer.control?.get('correoElectronico')?.setValue(valores.correo);
     if (valores.nomPersona === '') {

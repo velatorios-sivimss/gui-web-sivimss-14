@@ -7,7 +7,7 @@ import {CalendarModule} from "primeng/calendar";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo";
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
-import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {diferenciaUTC, mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
@@ -234,6 +234,7 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
       this.cargadorService.activar();
       this.parentContainer.control?.get('colonia')?.setValue(null);
     }
+    if (validarUsuarioLogueado()) return;
     this.seguimientoNuevoConvenioService.consutaCP(cpSust).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({

@@ -165,8 +165,7 @@
       Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4 mb-3" *ngIf="enfermedad">
-        <label class="control-label" [for]="'enfermedadPreExistente' + ID">Enfermedad prexistente<span
-          class="req">*</span>:</label>
+        <label class="control-label" [for]="'enfermedadPreExistente' + ID">Enfermedad prexistente:</label>
         <p-dropdown [id]="'enfermedadPreExistente' + ID" class="form-control" formControlName="enfermedadPreExistente"
                     [filter]="true" filterBy="label" [options]="enfermedades"
                     placeholder="Selecciona la enfermedad pre existente">
