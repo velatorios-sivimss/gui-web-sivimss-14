@@ -63,7 +63,7 @@
     <div class="col-md-6" *ngIf="validacion.importe">
       <label class="control-label" for="importe">Importe:</label>
       <p-inputNumber id="importe" class="form-control" formControlName="importe" mode="decimal" [minFractionDigits]="2"
-                     [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD" [max]="this.config.data.detallePago.importeAcumulado" [min]="1"
+                     [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD" [max]="pagoMaximo" [min]="1"
                      locale="en-US"></p-inputNumber>
     </div>
     <div class="col-md-6" *ngIf="validacion.folioAutorizacion">
