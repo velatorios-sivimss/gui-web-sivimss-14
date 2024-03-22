@@ -29,6 +29,7 @@ export class ModalModificarPagosComponent implements OnInit {
   mensualidades: number = 0;
 
   confirmacionGuardar: boolean = false;
+  pagoMaximo: number = 0;
   errorMsg =
     ' Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
 
@@ -147,6 +148,7 @@ export class ModalModificarPagosComponent implements OnInit {
     this.formulario.idMetodoPago.setValue(
       this.config.data.detalleRegistro.idMetodoPago
     );
+    this.pagoMaximo = this.config.data.detallePago.importeAcumulado + this.formulario.importe.value;
   }
 
   cambioMetodoPago(dd: Dropdown): void {
