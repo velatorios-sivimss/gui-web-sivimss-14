@@ -313,7 +313,8 @@
           <td>{{ pago.folioRecibo }}</td>
           <td>
             <ng-container *ngIf="pago.estatusPago === 'POR PAGAR'">
-              <button class="btn btn-primary btn-md realizar-pago" *ngIf="mostrarBtnRealizarPago && this.registroPagar.importeAcumulado">Realizar pago</button>
+              <button class="btn btn-primary btn-md realizar-pago" *ngIf="mostrarBtnRealizarPago && this.registroPagar.importeAcumulado"
+              (click)="realizarPago()">Realizar pago</button>
             </ng-container>
           </td>
         </tr>
