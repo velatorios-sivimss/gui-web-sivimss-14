@@ -1,5 +1,4 @@
 document.addEventListener('realizarPago', (event) => {
-  console.log(event);
 
   let paymentCheckout = new PaymentCheckout.modal({
     client_app_code: event.detail.code, // Application Code de las credenciales CLIENT
@@ -9,10 +8,8 @@ document.addEventListener('realizarPago', (event) => {
     onOpen: function () {
     },
     onClose: function (event) {
-      console.log(event)
     },
     onResponse: function (response) { // Funcionalidad a invocar cuando se completa el proceso de pago
-      console.log(response)
       const evento = new CustomEvent('datosRecibidos', {detail: response});
       document.dispatchEvent(evento);
 

@@ -47,6 +47,8 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   idVelatorio: number | null = null;
   nombreCompleto: string = '';
   importe: number = 0;
+  transaccion: any;
+
   constructor(
     private consultaConveniosService: BusquedaConveniosPFServic,
     private alertaService: AlertaService,
@@ -151,12 +153,9 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   iniciarPago(): void {
-    const elemento_ref = document.querySelector('.realizar-pago');
-    const e = document.getElementById('btn-realizar-pago');
-    if (!elemento_ref) return;
     this.overlayPanel.hide();
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({ referencia: 'NPF', monto: this.importe }));
-    e?.click();
+    const evento = new CustomEvent('realizarPago', {detail: this.transaccion});
+    document.dispatchEvent(evento);
   }
 
   subscripcionMotorPagos(): void {
@@ -239,16 +238,17 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
 
   procesarToken(respuesta: HttpRespuesta<any>): void {
     const [credenciales] = respuesta.datos;
-    this.cargarScript(() => {});
+    this.cargarScript(() => {
+    });
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({
+    this.transaccion = {
       referencia: 'NPF',
       monto: this.importe,
       mode: credenciales.mode,
       code: credenciales.code,
       key: credenciales.key
-    }));
+    }
     this.subscripcionMotorPagos();
   }
 

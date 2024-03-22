@@ -123,6 +123,7 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
   confirmacionGuardado: boolean = false;
   mensajeConfirmacionGuardar: string = '';
   importe: number = 0;
+  transaccion!: any;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -254,18 +255,22 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
 
   procesarToken(respuesta: HttpRespuesta<any>): void {
     const [credenciales] = respuesta.datos;
-    this.cargarScript(() => {
-    });
+    this.cargarScript(() => {});
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
-    elemento_ref.setAttribute('data-objeto', JSON.stringify({
+    this.transaccion = {
       referencia: 'NPF',
       monto: this.importe,
       mode: credenciales.mode,
       code: credenciales.code,
       key: credenciales.key
-    }));
+    }
     this.subscripcionMotorPagos();
+  }
+
+  realizarPago(): void {
+    const evento = new CustomEvent('realizarPago', {detail: this.transaccion});
+    document.dispatchEvent(evento);
   }
 
   crearFormPersona(): FormGroup {
