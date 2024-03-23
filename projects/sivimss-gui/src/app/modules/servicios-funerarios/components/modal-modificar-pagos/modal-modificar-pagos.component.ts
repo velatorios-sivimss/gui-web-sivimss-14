@@ -248,7 +248,7 @@ export class ModalModificarPagosComponent implements OnInit {
           if (respuesta.error === false && respuesta.mensaje === 'Exito') {
             this.alertaService.mostrar(
               TipoAlerta.Exito,
-              'Pago realizado correctamente. '
+              'Pago modificado correctamente. '
             );
             this.ref.close(true);
           } else {

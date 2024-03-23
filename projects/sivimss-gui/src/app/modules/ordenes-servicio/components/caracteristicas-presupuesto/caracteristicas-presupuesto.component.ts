@@ -933,13 +933,13 @@ export class CaracteristicasPresupuestoComponent
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
-        traslado.destino = datos.destino;
+        traslado.destino = datos.datosFormulario.destino;
         traslado.longitudInicial = Number(datos.coordOrigen[0]);
         traslado.latitudInicial = Number(datos.coordOrigen[1]);
         traslado.longitudFinal = Number(datos.coordDestino[0]);
         traslado.latitudFinal = Number(datos.coordDestino[1]);
-        traslado.origen = datos.origen;
-        traslado.totalKilometros = datos.kilometraje;
+        traslado.origen = datos.datosFormulario.origen;
+        traslado.totalKilometros = datos.datosFormulario.kilometraje;
         detalle.servicioDetalleTraslado = traslado;
       }
       detalle.importeMonto = datos.totalPaquete ?? null;
