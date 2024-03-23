@@ -244,7 +244,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
     this.datosBeneficiario1Form = this.formBuilder.group({
-      curp: [{value: beneficiario?.curp, disabled: !!beneficiario}, [Validators.pattern(PATRON_CURP)]],
+      curp: [{value: beneficiario?.curp, disabled: false}, [Validators.pattern(PATRON_CURP)]],
       rfc: [{value: beneficiario?.rfc, disabled: false}, [Validators.pattern(PATRON_RFC)]],
       matricula: [{value: beneficiario?.matricula, disabled: false},],
       nss: [{value: beneficiario?.nss, disabled: false}, []],
@@ -276,7 +276,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       fecha = new Date(anio + '/' + mes + '/' + dia);
     }
     this.datosBeneficiario2Form = this.formBuilder.group({
-      curp: [{value: beneficiario?.curp, disabled: !!beneficiario}, [Validators.pattern(PATRON_CURP)]],
+      curp: [{value: beneficiario?.curp, disabled: false}, [Validators.pattern(PATRON_CURP)]],
       rfc: [{value: beneficiario?.rfc, disabled: false}, [Validators.pattern(PATRON_RFC)]],
       matricula: [{value: beneficiario?.matricula, disabled: false},],
       nss: [{value: beneficiario?.nss, disabled: false}, []],
