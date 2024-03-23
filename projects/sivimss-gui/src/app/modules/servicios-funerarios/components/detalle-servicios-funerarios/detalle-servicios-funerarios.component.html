@@ -7,7 +7,7 @@
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
       <div class="table-panel-header-column" *ngIf="datosGenerales?.folio">
-        <span class="font-bold">Folio plan SFPA {{datosGenerales.folio}}</span>
+        <span class="font-bold">Folio plan SFPA {{ datosGenerales.folio }}</span>
       </div>
     </ng-template>
 
@@ -21,7 +21,7 @@
               <span>Nombre(s) titular substituto</span>
             </div>
             <div class="col-md" *ngIf="datosGenerales?.nombre">
-              <span class="font-bold"> {{datosGenerales.nombre}} </span>
+              <span class="font-bold"> {{ datosGenerales.nombre }} </span>
             </div>
           </div>
         </div>
@@ -31,7 +31,7 @@
               <span>Estado</span>
             </div>
             <div class="col-md" *ngIf="datosGenerales?.estado">
-              <span class="font-bold">{{datosGenerales.estado}}</span>
+              <span class="font-bold">{{ datosGenerales.estado }}</span>
             </div>
           </div>
         </div>
@@ -41,7 +41,7 @@
               <span>Correo electrónico</span>
             </div>
             <div class="col-md" *ngIf="datosGenerales?.correo">
-              <span class="font-bold">{{datosGenerales.correo === 'null' ? null : datosGenerales.correo }}</span>
+              <span class="font-bold">{{ datosGenerales.correo === 'null' ? null : datosGenerales.correo }}</span>
             </div>
           </div>
         </div>
@@ -51,7 +51,7 @@
               <span>Paquete</span>
             </div>
             <div class="col-md" *ngIf="datosGenerales?.paquete">
-              <span class="font-bold">{{datosGenerales.paquete}}</span>
+              <span class="font-bold">{{ datosGenerales.paquete }}</span>
             </div>
           </div>
         </div>
@@ -80,22 +80,23 @@
           <tr>
             <td>
               <p-tableRadioButton *ngIf="pagosRealizados.importePagado > 0 || pagosRealizados.idEstatus == 5"
-                                  [value]="pagosRealizados.idPagoSFPA" (click)="mostrarDetallePagos(pagosRealizados)"></p-tableRadioButton>
+                                  [value]="pagosRealizados.idPagoSFPA"
+                                  (click)="mostrarDetallePagos(pagosRealizados)"></p-tableRadioButton>
             </td>
-            <td>{{pagosRealizados.velatorio}}</td>
-            <td>{{pagosRealizados.noPagos}}</td>
-            <td>{{pagosRealizados.fechaParcialidad | date:'dd/MM/YYYY'}}</td>
-            <td>{{pagosRealizados.importeMensual | currency:"USD":"symbol"}}</td>
-            <td>{{pagosRealizados.metodoPago}}</td>
-            <td>{{pagosRealizados.estatusPago}}</td>
-            <td>{{pagosRealizados.folioRecibo}}</td>
+            <td>{{ pagosRealizados.velatorio }}</td>
+            <td>{{ pagosRealizados.noPagos }}</td>
+            <td>{{ pagosRealizados.fechaParcialidad | date:'dd/MM/YYYY' }}</td>
+            <td>{{ pagosRealizados.importeMensual | currency:"USD":"symbol" }}</td>
+            <td>{{ pagosRealizados.metodoPago }}</td>
+            <td>{{ pagosRealizados.estatusPago }}</td>
+            <td>{{ pagosRealizados.folioRecibo }}</td>
             <td>
 
               <div *ngIf="validarMostrarBotonHamburguesa(pagosRealizados)">
-                <a class="ml-5 cursor-pointer"
-                   (click)="abrirPanelNuevoPago(overlayPanelHeader,$event,pagosRealizados)">
-                  <img   src="assets/images/imagen-icono-barras-horizontales.svg"
-                         alt="icono barras horizontales">
+                <a class="ml-5 cursor-pointer" (click)="abrirPanelNuevoPago(overlayPanelHeader,$event,pagosRealizados)"
+                   onCloseOnNavigation>
+                  <img src="assets/images/imagen-icono-barras-horizontales.svg"
+                       alt="icono barras horizontales">
                 </a>
               </div>
             </td>
@@ -110,7 +111,8 @@
         </ng-template>
       </p-table>
       <h2 class="subtitulo pl-1 mx-6 my-4" *ngIf="ocultarBitacora">Métodos de pago utilizados</h2>
-      <p-table styleClass="mt-5 mb-8 mx-6" *ngIf="ocultarBitacora" [value]="PagosBitacora" [rows]="cantElementosPorPagina" [lazy]="true"
+      <p-table styleClass="mt-5 mb-8 mx-6" *ngIf="ocultarBitacora" [value]="PagosBitacora"
+               [rows]="cantElementosPorPagina" [lazy]="true"
                [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
         <ng-template pTemplate="header">
           <tr>
@@ -121,7 +123,7 @@
             <th scope="col">No. autorización</th>
             <th scope="col">Folio autorización</th>
             <th scope="col">Nombre del banco</th>
-            <th scope="col">Importe </th>
+            <th scope="col">Importe</th>
             <th scope="col">Estatus</th>
             <th scope="col"></th>
           </tr>
@@ -129,15 +131,15 @@
         <ng-template pTemplate="body" let-PagosBitacora>
           <tr>
 
-            <td>{{PagosBitacora.numeroPago}}</td>
-            <td>{{PagosBitacora.desMetodoPago}}</td>
-            <td>{{PagosBitacora.fechaPago}}</td>
-            <td>{{PagosBitacora.fechaValeParitario}}</td>
-            <td>{{PagosBitacora.numeroAutorizacion}}</td>
-            <td>{{PagosBitacora.numFolio}}</td>
-            <td>{{PagosBitacora.referenciaBancaria}}</td>
-            <td>{{PagosBitacora.importeTotal}}</td>
-            <td>{{PagosBitacora.estatus}}</td>
+            <td>{{ PagosBitacora.numeroPago }}</td>
+            <td>{{ PagosBitacora.desMetodoPago }}</td>
+            <td>{{ PagosBitacora.fechaPago }}</td>
+            <td>{{ PagosBitacora.fechaValeParitario }}</td>
+            <td>{{ PagosBitacora.numeroAutorizacion }}</td>
+            <td>{{ PagosBitacora.numFolio }}</td>
+            <td>{{ PagosBitacora.referenciaBancaria }}</td>
+            <td>{{ PagosBitacora.importeTotal }}</td>
+            <td>{{ PagosBitacora.estatus }}</td>
 
             <td>
               <div class="contenedor-celda-iconos" *ngIf="validarMenuBitacora(PagosBitacora)">
@@ -178,12 +180,11 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion onCloseOnNavigation titulo="Modificar método"
                                 (click)="abrirModalModificarPago()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion  onCloseOnNavigation titulo="Eliminar método"
-                                 (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion onCloseOnNavigation titulo="Eliminar método"
+                                (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
-
 
 
 <p-overlayPanel #overlayPanelHeader>
@@ -202,7 +203,7 @@
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+      <span class="text-justify">{{ mensajeArchivoConfirmacion }}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
@@ -217,7 +218,7 @@
           [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>
+      <span class="text-justify">{{ MENSAJE_ARCHIVO_DESCARGA_EXITOSA }}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
