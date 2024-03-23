@@ -55,4 +55,9 @@ document.addEventListener('realizarPago', (event) => {
   window.addEventListener('popstate', function () {
     paymentCheckout.close();
   });
+
+  document.addEventListener('closeModal', (event)  => {
+    console.log(event)
+    paymentCheckout.close();
+  });
 })

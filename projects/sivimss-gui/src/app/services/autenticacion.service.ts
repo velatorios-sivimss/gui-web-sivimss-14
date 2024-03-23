@@ -528,7 +528,7 @@ export class AutenticacionService {
     this.permisosUsuarioSubject.next(null);
     localStorage.removeItem(SIVIMSS_TOKEN);
     localStorage.clear();
-    this.router.navigate(['/inicio-sesion']);
+    void this.router.navigate(['/inicio-sesion']);
     this.detenerTemporizadorSesion();
   }
 
