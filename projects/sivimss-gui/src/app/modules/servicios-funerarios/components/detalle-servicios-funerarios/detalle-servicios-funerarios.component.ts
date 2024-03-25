@@ -12,7 +12,7 @@ import { LazyLoadEvent } from 'primeng/api';
 import { ActivatedRoute } from '@angular/router';
 import { DetallePagoService } from '../../services/detalle-pago.service';
 import { TipoDropdown } from '../../../../models/tipo-dropdown';
-import { mapearArregloTipoDropdown } from '../../../../utils/funciones';
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from '../../../../utils/funciones';
 import { LoaderService } from '../../../../shared/loader/services/loader.service';
 import { finalize } from 'rxjs/operators';
 import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
@@ -103,6 +103,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
   }
 
   consultarDetallePago(idPlanSfpa: number): void {
+    if (validarUsuarioLogueado()) return;
     this.detallePagoService
       .obtenerDetallePago(+idPlanSfpa)
       .pipe(finalize(() => this.loaderService.desactivar()))
