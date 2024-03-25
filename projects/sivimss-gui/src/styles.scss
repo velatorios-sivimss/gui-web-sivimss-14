@@ -451,3 +451,7 @@ p-table .p-datatable .p-column-resizer {
   cursor: initial;
   pointer-events: none;
 }
+
+.navbar-fixed-top {
+  z-index: 300;
+}
