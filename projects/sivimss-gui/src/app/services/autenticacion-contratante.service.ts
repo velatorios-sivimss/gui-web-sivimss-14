@@ -113,7 +113,9 @@ export class AutenticacionContratanteService {
     this.permisosUsuarioSubject.next(null);
     localStorage.removeItem(SIVIMSS_TOKEN_ONLINE);
     localStorage.clear();
-    this.router.navigate(['/externo-publico/autenticacion/inicio-sesion']);
+    const evento = new CustomEvent('closeModal', {});
+    document.dispatchEvent(evento);
+    void this.router.navigate(['/externo-publico/autenticacion/inicio-sesion']);
     this.detenerTemporizadorSesion();
   }
 
