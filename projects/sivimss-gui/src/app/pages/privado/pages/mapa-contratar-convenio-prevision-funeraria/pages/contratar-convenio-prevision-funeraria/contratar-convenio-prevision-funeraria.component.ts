@@ -1499,6 +1499,10 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
     this.tipoContratacion.includes('grupo') ? this.guardarEmpresa() : this.guardarPersona()
   }
 
+  regresarDocumento(beneficiario: any): string {
+    return beneficiario.ine == "" ? beneficiario.actaNacimiento : beneficiario.ine;
+  }
+
 
   ngOnDestroy(): void {
     if (this.refBeneficiario) {
