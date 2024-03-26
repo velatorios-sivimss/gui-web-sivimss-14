@@ -971,6 +971,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.servicioDetalleTraslado = null;
       detalle.proviene = datos.proviene;
       if (Number(datos.idTipoServicio) == 4) {
+        if(datos.proviene == "paquete")return
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
         traslado.destino = datos.datosFormulario.destino;
