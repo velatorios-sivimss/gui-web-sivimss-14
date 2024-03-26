@@ -899,7 +899,6 @@ export class CaracteristicasPresupuestoComponent
     this.gestionarEtapasService.datosEtapaCaracteristicas$.next(
       datosEtapaCaracteristicas
     );
-
     this.datosPresupuesto.forEach((datos: any) => {
       let detalle: DetallePresupuestoInterface =
         {} as DetallePresupuestoInterface;
@@ -931,6 +930,7 @@ export class CaracteristicasPresupuestoComponent
 
       detalle.proviene = datos.proviene;
       if (Number(datos.idTipoServicio) == 4) {
+        if(datos.proviene == "paquete")return
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
         traslado.destino = datos.datosFormulario.destino;
