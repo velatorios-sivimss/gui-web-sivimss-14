@@ -20,7 +20,6 @@ import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {CatalogoPaquetes} from "../../models/catalogos.interface";
 import {
-  AgregarPlanSFPA,
   SolicitudBeneficiario,
   SolicitudContratante, SolicitudCreacionSFPA,
   SolicitudPlan, SolicitudSubstituto
@@ -28,7 +27,6 @@ import {
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {CURP} from 'projects/sivimss-gui/src/app/utils/regex';
-import {UsuarioContratante} from "../../../contratantes/models/usuario-contratante.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 
@@ -480,13 +478,14 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.serviciosFunerariosService.consultarMatriculaSiap(this.formularios[posicion].matricula.value).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaValidaMatricula(respuesta),
+      next: (respuesta: HttpRespuesta<any>): void => this.procesarRespuestaValidaMatricula(respuesta, posicion),
       error: (error: HttpErrorResponse): void => this.procesarRespuestaErrorMatricula(error)
     });
   }
 
-  procesarRespuestaValidaMatricula(respuesta: HttpRespuesta<any>): void {
+  procesarRespuestaValidaMatricula(respuesta: HttpRespuesta<any>, posicion: number): void {
     if (respuesta.datos) return;
+    this.formularios[posicion].matricula.setErrors({'incorrect': true});
     this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(70));
   }
 
@@ -513,7 +512,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     const ERROR_SISTEMA: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
     this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR_SISTEMA || ERROR);
     this.formularios[posicion].nss.setErrors({'incorrect': true});
-    this.formularios[posicion].nss.setValue(null);
   }
 
   procesarRespuestaErrorNSS(): void {
