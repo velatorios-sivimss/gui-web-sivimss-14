@@ -30,6 +30,7 @@ import {GestorCredencialesService} from "../../../../../../services/gestor-crede
   selector: 'app-mi-convenio-prevision-funeraria',
   templateUrl: './mi-convenio-prevision-funeraria.component.html',
   styleUrls: ['./mi-convenio-prevision-funeraria.component.scss'],
+  providers: [GestorCredencialesService]
 })
 export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   beneficiarios: Beneficiarios[] = [];
@@ -45,6 +46,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   idPlan!: string;
   transaccion: any;
   nombreCompleto: string = '';
+  idRenovacion: number = 0;
 
   constructor(
     private dialogService: DialogService,
@@ -54,7 +56,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
     private loaderService: LoaderService,
     private readonly router: Router,
     private renderer: Renderer2,
-    private gestorCredencialesService: GestorCredencialesService
+    private gestorCredencialesService: GestorCredencialesService,
   ) {
   }
 
@@ -145,7 +147,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   cerrarModal(): void {
-    this.ref.onClose;
+    void this.ref.onClose;
   }
 
   ngOnDestroy() {
@@ -164,6 +166,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
       },
     });
     this.ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta.renovacion) this.iniciarPago()
     });
   }
 
@@ -201,6 +204,18 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   iniciarPago(): void {
+    const idConvenio: number = this.datosGenerales.idConvenio
+    this.loaderService.activar();
+    this.consultaConveniosService.renovarConvenio(idConvenio).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (response: HttpRespuesta<any>) => this.renovarConvenio(response)
+    })
+  }
+
+  renovarConvenio(respuesta: HttpRespuesta<any>): void {
+    if (!respuesta.datos) return;
+    this.idRenovacion = respuesta.datos;
     const evento = new CustomEvent('realizarPago', {detail: this.transaccion});
     document.dispatchEvent(evento);
   }
@@ -250,7 +265,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
       folioPago: "TEST-1", // pagos linea
       idFlujoPagos: 3,
       idMetodoPago, // debito o credito payment_method_type
-      idRegistro: this.datosGenerales.idConvenio, // idConvenio
+      idRegistro: this.idRenovacion, // idConvenio
       idVelatorio: this.datosGenerales.idVelatorio,
       importe: this.datosGeneralesRenovacion.cuotaRecuperacion,
       nomContratante: this.nombreCompleto,
