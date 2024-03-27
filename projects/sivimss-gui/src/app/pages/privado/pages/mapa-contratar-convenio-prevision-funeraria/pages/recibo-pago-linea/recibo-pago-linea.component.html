@@ -1,6 +1,6 @@
 <div class="container-sivimss px-5 registro-en-linea my-5">
   <app-titulo-principal titulo="Comprobante de Pago">
-    <app-btn-regresar routerLink="../../../../"></app-btn-regresar>
+    <app-btn-regresar [routerLink]="['/externo-privado']"></app-btn-regresar>
   </app-titulo-principal>
   <app-recibo-pago [cveCliente]="recibo.claveCliente"
                    [nombreUsuario]="recibo.nomUsuario" [numeroConvenio]="recibo.numCon"
