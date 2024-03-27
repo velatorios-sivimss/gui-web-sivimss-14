@@ -20,8 +20,10 @@ import {DatosGeneralesRenovacion} from '../../models/DatosGeneralesRenovacion.in
 import {
   ModalRegistrarNuevoBeneficiarioComponent
 } from './components/modal-registrar-nuevo-beneficiario/modal-registrar-nuevo-beneficiario.component';
-
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {
+  mapearArregloTipoDropdown,
+  validarUsuarioLogueadoOnline
+} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {TransaccionPago} from "../../../../models/transaccion-pago.interface";
 import {SolicitudPagos} from "../../../../models/solicitud-pagos.interface";
 import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
@@ -37,10 +39,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   parentesco: any[] = [];
 
   datosGenerales: DatosGeneralesDetalle = {} as DatosGeneralesDetalle;
-  datosGeneralesRenovacion: DatosGeneralesRenovacion =
-    {} as DatosGeneralesRenovacion;
-  errorSolicitud: string =
-    'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
+  datosGeneralesRenovacion: DatosGeneralesRenovacion = {} as DatosGeneralesRenovacion;
   ref!: DynamicDialogRef;
   agregarBeneficiarios: boolean = false;
   idPlan!: string;
@@ -63,20 +62,17 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   ngOnInit(): void {
     this.detalleConvenio();
     this.buscarParentesco();
-    this.gestorCredencialesService.obtenerToken().subscribe({
-      next: (respuesta) => this.procesarToken(respuesta)
-    });
   }
 
   detalleConvenio() {
     this.idPlan = this.rutaActiva.snapshot.queryParams.idpfs;
+    if (validarUsuarioLogueadoOnline()) return;
     this.consultaConveniosService
       .detalleConvenio(this.idPlan)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
-            console.log(respuesta.mensaje);
+          if (respuesta.error && respuesta.mensaje !== 'Exito') {
             this.alertaService.mostrar(
               TipoAlerta.Error,
               'Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.'
@@ -85,6 +81,9 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
           }
           try {
             this.datosGenerales = respuesta.datos.datosGenerales[0] || {};
+            this.gestorCredencialesService.obtenerToken().subscribe({
+              next: (respuesta) => this.procesarToken(respuesta)
+            });
             this.beneficiarios = respuesta.datos.beneficiarios || [];
             this.datosGeneralesRenovacion =
               respuesta.datos.datosRenovacion[0] || {};
@@ -183,6 +182,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
       code: credenciales.code,
       key: credenciales.key
     }
+    console.log(this.transaccion)
     this.subscripcionMotorPagos();
   }
 
