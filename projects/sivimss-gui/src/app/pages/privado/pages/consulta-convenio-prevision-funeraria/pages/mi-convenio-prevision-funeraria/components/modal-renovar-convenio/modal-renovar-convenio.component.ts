@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { DatosGeneralesRenovacion } from '../../../../models/DatosGeneralesRenovacion.interface';
+import {Component, OnInit} from '@angular/core';
+import {DatosGeneralesRenovacion} from '../../../../models/DatosGeneralesRenovacion.interface';
 import {
   DialogService,
   DynamicDialogConfig,
@@ -19,14 +19,18 @@ export class ModalRenovarConvenioComponent implements OnInit {
     private readonly dialogService: DialogService,
     public readonly config: DynamicDialogConfig,
     private ref: DynamicDialogRef
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.datosGeneralesRenovacion = this.config.data['item'];
-    console.log(this.datosGeneralesRenovacion);
   }
 
   cerrarModal(): void {
     this.ref.destroy();
+  }
+
+  realizarPago(): void {
+    this.ref.close({renovacion: true})
   }
 }
