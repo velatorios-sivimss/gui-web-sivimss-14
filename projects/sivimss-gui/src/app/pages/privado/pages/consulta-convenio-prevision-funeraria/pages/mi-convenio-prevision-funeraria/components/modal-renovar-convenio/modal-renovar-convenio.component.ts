@@ -29,4 +29,8 @@ export class ModalRenovarConvenioComponent implements OnInit {
   cerrarModal(): void {
     this.ref.destroy();
   }
+
+  realizarPago(): void {
+    this.ref.close()
+  }
 }
