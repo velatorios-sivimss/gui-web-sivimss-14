@@ -101,7 +101,7 @@
         <div class="col-md-4">
             <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
             <input id="telefono" type="text" class="form-control" formControlName="telefono"
-                placeholder="Ingresa telefono" />
+                placeholder="Ingresa telefono" maxlength="10" />
             <span class="campo-obligatorio" *ngIf="
           f.telefono?.errors?.required &&
           (f.telefono?.dirty || f.telefono?.touched)
