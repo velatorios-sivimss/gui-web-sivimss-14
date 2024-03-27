@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ConsultaConvenioPrevisionFunerariaComponent } from './consulta-convenio-prevision-funeraria.component';
-import { MiConvenioPrevisionFunerariaModule } from './pages/mi-convenio-prevision-funeraria/mi-convenio-prevision-funeraria.module';
 import {
   ReciboPagoLineaComponent
 } from "../mapa-contratar-convenio-prevision-funeraria/pages/recibo-pago-linea/recibo-pago-linea.component";
