@@ -971,16 +971,21 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.servicioDetalleTraslado = null;
       detalle.proviene = datos.proviene;
       if (Number(datos.idTipoServicio) == 4) {
-        if(datos.proviene == "paquete")return
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
-        traslado.destino = datos.datosFormulario.destino;
+        if(datos.proviene == "paquete"){
+          traslado.destino = datos.destino;
+          traslado.origen = datos.origen;
+          traslado.totalKilometros = datos.kilometraje;
+        }else{
+          traslado.destino = datos.datosFormulario.destino;
+          traslado.origen = datos.datosFormulario.origen;
+          traslado.totalKilometros = datos.datosFormulario.kilometraje;
+        }
         traslado.longitudInicial = Number(datos.coordOrigen[0]);
         traslado.latitudInicial = Number(datos.coordOrigen[1]);
         traslado.longitudFinal = Number(datos.coordDestino[0]);
         traslado.latitudFinal = Number(datos.coordDestino[1]);
-        traslado.origen = datos.datosFormulario.origen;
-        traslado.totalKilometros = datos.datosFormulario.kilometraje;
         detalle.servicioDetalleTraslado = traslado;
       }
       detalle.importeMonto = datos.totalPaquete ?? null;
