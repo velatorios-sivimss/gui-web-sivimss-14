@@ -241,7 +241,9 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       return;
     }
     this.limpiarFormulario(posicion);
-    this.validarUsuarioTitular(this.formularios[posicion].curp.value, "", "", posicion);
+    if ([0, 1].includes((posicion))) {
+      this.validarUsuarioTitular(this.formularios[posicion].curp.value, "", "", posicion);
+    }
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarCURP(this.formularios[posicion].curp.value).pipe(
       finalize(() => this.cargadorService.desactivar())
