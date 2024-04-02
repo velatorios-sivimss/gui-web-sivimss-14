@@ -145,7 +145,7 @@ body {
     width: 100%;
   }
 
-  a.pi-ellipsis-v,a.pi  {
+  a.pi-ellipsis-v, a.pi {
     color: #9D2449;
     font-size: 18px;
   }
@@ -454,4 +454,12 @@ p-table .p-datatable .p-column-resizer {
 
 .navbar-fixed-top {
   z-index: 300;
+}
+
+.leaflet-pane {
+  z-index: 200;
+}
+
+.leaflet-control {
+  z-index: 200;
 }
