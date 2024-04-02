@@ -7,10 +7,8 @@ document.addEventListener('realizarPago', (event) => {
     env_mode: event.detail.mode, // `prod`, `stg`, `local` para cambiar de ambiente. Por defecto es `stg`
     onOpen: function () {
     },
-    onClose: function (event) {
-    },
     onResponse: function (response) { // Funcionalidad a invocar cuando se completa el proceso de pago
-      const evento = new CustomEvent('datosRecibidos', {detail: response});
+      const evento = new CustomEvent('datosRecibidos', {detail: response, contratante});
       document.dispatchEvent(evento);
 
       /*
@@ -32,7 +30,6 @@ document.addEventListener('realizarPago', (event) => {
           }
         }
       */
-      console.log('Respuesta de modal');
       // document.getElementById('response').innerHTML = JSON.stringify(response);
     }
   });
@@ -44,7 +41,7 @@ document.addEventListener('realizarPago', (event) => {
     order_description: event.detail.referencia,
     order_amount: event.detail.monto,
     order_vat: 0,
-    order_reference: '#234323411',
+    order_reference: event.detail.folio,
     //order_installments_type: 2, // Opcional: 0 para permitir cuotas, -1 en caso contrario.
     //conf_exclusive_types: 'ak,ex', // Opcional: Tipos de tarjeta permitidos para esta operación. Opciones: https://developers.gpvicomm.com/api/#metodos-de-pago-tarjetas-marcas-de-tarjetas
     //conf_invalid_card_type_message: 'Tarjeta invalida para esta operación' // Opcional: Define un mensaje personalizado para mostrar para los tipos de tarjeta no válidos.
@@ -56,8 +53,7 @@ document.addEventListener('realizarPago', (event) => {
     paymentCheckout.close();
   });
 
-  document.addEventListener('closeModal', (event)  => {
-    console.log(event)
+  document.addEventListener('closeModal', (event) => {
     paymentCheckout.close();
   });
 })

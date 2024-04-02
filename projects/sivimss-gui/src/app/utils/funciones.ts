@@ -95,3 +95,17 @@ export function obtenerFechaYHoraActual(): string {
   return `${fechaFormateada} ${horaFormateada}${dosPuntos}${minutos}`;
 
 }
+
+export function obtenerFechaYHoraActualPagos(): string {
+  const fecha: Date = new Date();
+
+  const fechaFormateada: string = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString()
+    .padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`;
+
+  const horaFormateada: string = `${fecha.getHours().toString().padStart(2, '0')}`;
+  const minutos: string = `${fecha.getMinutes().toString().padStart(2, '0')}`;
+  const dosPuntos: string = ':';
+
+  return `${fechaFormateada}_${horaFormateada}${dosPuntos}${minutos}`;
+
+}

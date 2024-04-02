@@ -1,14 +1,14 @@
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import {Component, ElementRef, OnInit, Renderer2} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
 
 import 'leaflet';
 import 'leaflet-control-geocoder';
-import { MapaContratatarPSFPAService } from "./services/mapa-contratatar-psfpa.service";
-import { finalize } from "rxjs/operators";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { HttpErrorResponse } from "@angular/common/http";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import {MapaContratatarPSFPAService} from "./services/mapa-contratatar-psfpa.service";
+import {finalize} from "rxjs/operators";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 
 declare let L: any;
 
@@ -38,7 +38,8 @@ export class MapaContratarPlanServiciosFunerariosPagoAnticipadoComponent
     private mapaContratatarPSFPAService: MapaContratatarPSFPAService,
     private loaderService: LoaderService,
     private alertaService: AlertaService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.mapaContratatarPSFPAService.obtenerListaVelatorios().pipe(
@@ -58,8 +59,12 @@ export class MapaContratarPlanServiciosFunerariosPagoAnticipadoComponent
   inicializarMapa(): void {
     L.Icon.Default.imagePath = 'assets/images/leaflet/';
     this.getPosition()
-      .then(respuesta => { this.inicializarUbicacion([respuesta.lat, respuesta.lng]) })
-      .catch(error => { this.inicializarUbicacion(this.coordenadasPorDefecto) })
+      .then(respuesta => {
+        this.inicializarUbicacion([respuesta.lat, respuesta.lng])
+      })
+      .catch(error => {
+        this.inicializarUbicacion(this.coordenadasPorDefecto)
+      })
   }
 
   inicializarUbicacion(coordenadas: number[]): void {
@@ -83,8 +88,8 @@ export class MapaContratarPlanServiciosFunerariosPagoAnticipadoComponent
   getPosition(): Promise<any> {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(resp => {
-        resolve({ lng: resp.coords.longitude, lat: resp.coords.latitude });
-      },
+          resolve({lng: resp.coords.longitude, lat: resp.coords.latitude});
+        },
         err => {
           reject(err);
         });
@@ -104,7 +109,7 @@ export class MapaContratarPlanServiciosFunerariosPagoAnticipadoComponent
         <span class="popup-telephone">${velatorioSeleccionado[0].telefono ?? ""}</span>
         <hr>
         <span class="info-title">Servicios disponibles</span>
-        `+
+        ` +
       this.consultarVelatorios(velatorioSeleccionado[0].servicios)
       + `
         <div class="flex justify-content-end">
@@ -131,7 +136,7 @@ export class MapaContratarPlanServiciosFunerariosPagoAnticipadoComponent
         <span class="popup-telephone">${velatorio.telefono ?? ""}</span>
         <hr>
         <span class="info-title">Servicios disponibles</span>
-        `+
+        ` +
         this.consultarVelatorios(velatorio.servicios)
         + `
         <div class="flex justify-content-end">
@@ -145,6 +150,7 @@ export class MapaContratarPlanServiciosFunerariosPagoAnticipadoComponent
 
   consultarVelatorios(velatorios: any): any {
     let velatorioSeleccion: any = ``;
+    if (!velatorios) return '';
     velatorios.forEach((velatorio: string) => {
       velatorioSeleccion += `<ul><li class="info-description">` + velatorio + `</li></ul>`
     })
@@ -177,7 +183,7 @@ export class MapaContratarPlanServiciosFunerariosPagoAnticipadoComponent
       ['registro-contratacion-plan-de-servicios-funerarios-pago-anticipado'],
       {
         relativeTo: this.activatedRoute,
-        queryParams: { idVelatorio: e.target.dataset.funeraria, velatorio: e.target.dataset.nombre }
+        queryParams: {idVelatorio: e.target.dataset.funeraria, velatorio: e.target.dataset.nombre}
       }
     );
   }

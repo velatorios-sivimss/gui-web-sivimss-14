@@ -62,7 +62,6 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   cargarScript(callback: () => void): void {
     const elementoId: string = 'realizar-pago';
     if (!document.getElementById(elementoId)) {
-      console.log('n time script')
       const body: HTMLElement = document.body;
       const elemento_ref = this.renderer.createElement('script');
       elemento_ref.type = 'text/javascript';
@@ -73,7 +72,6 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
       this.renderer.appendChild(body, elemento_ref);
       elemento_ref.onload = callback;
     } else {
-      console.log('n time back')
       callback();
     }
   }
