@@ -1,23 +1,24 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { BusquedaConveniosPFServic } from './services/busqueda-convenios-pf.service';
+import {Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {BusquedaConveniosPFServic} from './services/busqueda-convenios-pf.service';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { LazyLoadEvent } from "primeng/api";
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {LazyLoadEvent} from "primeng/api";
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
-import { HttpErrorResponse } from '@angular/common/http';
-import { finalize } from 'rxjs';
-import { BusquedaPrevision } from './models/BusquedaPrevision.interface';
-import { TransaccionPago } from "../../models/transaccion-pago.interface";
-import { SolicitudPagos } from "../../models/solicitud-pagos.interface";
-import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
+import {HttpErrorResponse} from '@angular/common/http';
+import {finalize} from 'rxjs';
+import {BusquedaPrevision} from './models/BusquedaPrevision.interface';
+import {TransaccionPago} from "../../models/transaccion-pago.interface";
+import {SolicitudPagos} from "../../models/solicitud-pagos.interface";
 import {GestorCredencialesService} from "../../../../services/gestor-credenciales.service";
+import {obtenerFechaYHoraActualPagos, validarUsuarioLogueadoOnline} from "../../../../utils/funciones";
+
 @Component({
   selector: 'app-consulta-convenio-prevision-funeraria',
   templateUrl: './consulta-convenio-prevision-funeraria.component.html',
@@ -45,6 +46,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   folioConvenio: string = '';
   idConvenioPf: number | null = null;
   idVelatorio: number | null = null;
+  velatorio: string = '';
   nombreCompleto: string = '';
   importe: number = 0;
   transaccion: any;
@@ -57,7 +59,9 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
     private rutaActiva: ActivatedRoute,
     private renderer: Renderer2,
     private gestorCredencialesService: GestorCredencialesService
-  ) { }
+  ) {
+  }
+
   ngOnInit(): void {
     // this.busqueda();
   }
@@ -72,14 +76,12 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
-          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
-            console.log(respuesta.mensaje);
+          if (respuesta.error && respuesta.mensaje !== 'Exito') {
             this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
             return;
           }
           let total = respuesta.datos.length;
-          if (total === 0 || respuesta.datos === null) {
+          if (total === 0) {
             this.mostrarModalFaltaConvenio = true;
             return;
           }
@@ -106,19 +108,18 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       pagina: this.numPaginaActual,
       tamanio: this.cantElementosPorPagina,
     };
+    if (validarUsuarioLogueadoOnline()) return;
     this.consultaConveniosService
       .consultarConvenios(valores)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
-          if (respuesta.error !== false && respuesta.mensaje !== 'Exito') {
-            console.log(respuesta.mensaje);
+          if (respuesta.error && respuesta.mensaje !== 'Exito') {
             this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
             return;
           }
           let total = respuesta.datos.content.length;
-          if (total === 0 || respuesta.datos === null) {
+          if (total === 0) {
             this.mostrarModalFaltaConvenio = true;
             return;
           }
@@ -128,7 +129,6 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
-
           this.alertaService.mostrar(TipoAlerta.Error, this.errorSolicitud);
         },
       });
@@ -184,7 +184,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         const id = respuesta.datos.idPagoLinea;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago realizado con éxito.');
-        void this.router.navigate(['recibo-de-pago', id], { relativeTo: this.rutaActiva });
+        void this.router.navigate(['recibo-de-pago', id], {relativeTo: this.rutaActiva});
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -247,7 +247,8 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       monto: this.importe,
       mode: credenciales.mode,
       code: credenciales.code,
-      key: credenciales.key
+      key: credenciales.key,
+      folio: `${this.idVelatorio}_${this.velatorio}_${obtenerFechaYHoraActualPagos()}`
     }
     this.subscripcionMotorPagos();
   }
@@ -258,7 +259,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
         'externo-privado/consultar-mi-convenio-de-prevision-funeraria/mi-convenio-de-prevision-funeraria',
       ],
       {
-        queryParams: { idpfs: this.itemConvenio.idConvenio },
+        queryParams: {idpfs: this.itemConvenio.idConvenio},
       }
     );
   }
@@ -277,7 +278,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       .subscribe({
         next: (respuesta: any): void => {
           console.log(respuesta);
-          const file = new Blob([respuesta], { type: 'application/pdf' });
+          const file = new Blob([respuesta], {type: 'application/pdf'});
           const url = window.URL.createObjectURL(file);
           window.open(url);
         },
