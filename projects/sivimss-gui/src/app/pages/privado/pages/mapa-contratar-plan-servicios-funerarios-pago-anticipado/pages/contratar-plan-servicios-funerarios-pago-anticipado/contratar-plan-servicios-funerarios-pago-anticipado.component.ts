@@ -233,8 +233,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     if (+pago.transaction.payment_method_type === 0) idMetodoPago = 4;
     if (+pago.transaction.payment_method_type === 7) idMetodoPago = 3;
 
-    const nombreTitular = `${this.fdt.nombre.value} ${this.fdt.primerApellido.value} ${this.fdt.segundoApellido.value}`;
-    debugger;
+    const nombreTitular: string = `${this.fdt.nombre.value} ${this.fdt.primerApellido.value} ${this.fdt.segundoApellido.value}`;
     return {
       fecTransaccion: pago.transaction.payment_date, // pagos linea
       folio: this.folioConvenio,

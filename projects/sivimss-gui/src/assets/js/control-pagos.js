@@ -8,7 +8,7 @@ document.addEventListener('realizarPago', (event) => {
     onOpen: function () {
     },
     onResponse: function (response) { // Funcionalidad a invocar cuando se completa el proceso de pago
-      const evento = new CustomEvent('datosRecibidos', {detail: response, contratante});
+      const evento = new CustomEvent('datosRecibidos', {detail: response});
       document.dispatchEvent(evento);
 
       /*
