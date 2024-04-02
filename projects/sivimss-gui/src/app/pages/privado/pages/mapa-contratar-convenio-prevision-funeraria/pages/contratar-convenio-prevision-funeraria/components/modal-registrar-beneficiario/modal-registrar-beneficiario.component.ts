@@ -255,7 +255,6 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
 
   handleClick(controlName: string) {
     let elements = document.getElementById(`upload-file`);
-    console.log(elements);
     elements?.click();
   }
 
@@ -354,7 +353,6 @@ export class ModalRegistrarBeneficiarioComponent implements OnInit {
             this.mostrarMensaje(Number(respuesta.mensaje));
             return;
           }
-          console.log(respuesta.datos);
           if (respuesta.mensaje == 'Exito') {
             if (curp != '') {
               let valores = respuesta.datos[0];
