@@ -21,7 +21,7 @@ import {
   ModalRegistrarNuevoBeneficiarioComponent
 } from './components/modal-registrar-nuevo-beneficiario/modal-registrar-nuevo-beneficiario.component';
 import {
-  mapearArregloTipoDropdown,
+  mapearArregloTipoDropdown, obtenerFechaYHoraActualPagos,
   validarUsuarioLogueadoOnline
 } from 'projects/sivimss-gui/src/app/utils/funciones';
 import {TransaccionPago} from "../../../../models/transaccion-pago.interface";
@@ -175,12 +175,15 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
     });
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
+    const idVelatorio = this.datosGenerales.idVelatorio;
+    const velatorio = this.datosGenerales.velatorio;
     this.transaccion = {
       referencia: 'RPF',
       monto: this.datosGeneralesRenovacion.cuotaRecuperacion,
       mode: credenciales.mode,
       code: credenciales.code,
-      key: credenciales.key
+      key: credenciales.key,
+      folio: `${idVelatorio}_${velatorio}_${obtenerFechaYHoraActualPagos()}`
     }
     console.log(this.transaccion)
     this.subscripcionMotorPagos();
