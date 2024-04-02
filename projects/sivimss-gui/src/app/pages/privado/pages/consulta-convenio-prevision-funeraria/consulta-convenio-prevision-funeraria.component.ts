@@ -219,6 +219,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
     let idEstatus = itemConvenio.idEstatus;
     this.idConvenioPf = itemConvenio.idConvenio;
     this.idVelatorio = itemConvenio.idVelatorio;
+    this.velatorio = itemConvenio.nombreVelatorio;
     this.nombreCompleto = itemConvenio.nombreAfiliado;
     this.folioConvenio = itemConvenio.folioConvenio;
     this.importe = itemConvenio.precioPaquete;
