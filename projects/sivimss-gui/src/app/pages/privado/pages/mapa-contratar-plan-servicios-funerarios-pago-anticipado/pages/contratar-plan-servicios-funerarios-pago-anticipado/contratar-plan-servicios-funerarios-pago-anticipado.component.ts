@@ -11,7 +11,11 @@ import {
   CATALOGO_SEXO
 } from "projects/sivimss-gui/src/app/modules/contratantes/constants/catalogos-complementarios";
 import {finalize} from 'rxjs/operators';
-import {mapearArregloTipoDropdown, validarUsuarioLogueadoOnline} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {
+  mapearArregloTipoDropdown,
+  obtenerFechaYHoraActualPagos,
+  validarUsuarioLogueadoOnline
+} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
@@ -148,7 +152,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   cargarScript(callback: () => void): void {
     const elementoId: string = 'realizar-pago';
     if (!document.getElementById(elementoId)) {
-      console.log('n time script')
       const body: HTMLElement = document.body;
       const elemento_ref = this.renderer.createElement('script');
       elemento_ref.type = 'text/javascript';
@@ -159,7 +162,6 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       this.renderer.appendChild(body, elemento_ref);
       elemento_ref.onload = callback;
     } else {
-      console.log('callback')
       callback();
     }
   }
@@ -181,7 +183,8 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
       monto: this.montoTotalPagar,
       mode: credenciales.mode,
       code: credenciales.code,
-      key: credenciales.key
+      key: credenciales.key,
+      folio: `${this.idVelatorio}_${this.velatorio}_${obtenerFechaYHoraActualPagos()}`
     };
     this.subscripcionMotorPagos();
   }
@@ -230,8 +233,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     if (+pago.transaction.payment_method_type === 0) idMetodoPago = 4;
     if (+pago.transaction.payment_method_type === 7) idMetodoPago = 3;
 
-    let nombreTitular = `${this.fdt.nombre.value} ${this.fdt.primerApellido.value} ${this.fdt.segundoApellido.value}`;
-
+    const nombreTitular: string = `${this.fdt.nombre.value} ${this.fdt.primerApellido.value} ${this.fdt.segundoApellido.value}`;
     return {
       fecTransaccion: pago.transaction.payment_date, // pagos linea
       folio: this.folioConvenio,

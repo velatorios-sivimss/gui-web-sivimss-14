@@ -34,7 +34,7 @@ import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {
   CATALOGO_ENFERMEDAD_PREEXISTENTE
 } from 'projects/sivimss-gui/src/app/modules/convenios-prevision-funeraria/constants/catalogos-funcion';
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {mapearArregloTipoDropdown, obtenerFechaYHoraActualPagos} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {Beneficiarios} from '../../../consulta-convenio-prevision-funeraria/models/Beneficiarios.interface';
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 import {SolicitudPagos} from "../../../../models/solicitud-pagos.interface";
@@ -255,7 +255,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
 
   procesarToken(respuesta: HttpRespuesta<any>): void {
     const [credenciales] = respuesta.datos;
-    this.cargarScript(() => {});
+    this.cargarScript(() => {
+    });
     const elemento_ref = document.querySelector('.realizar-pago');
     if (!elemento_ref) return;
     this.transaccion = {
@@ -263,7 +264,8 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
       monto: this.importe,
       mode: credenciales.mode,
       code: credenciales.code,
-      key: credenciales.key
+      key: credenciales.key,
+      folio: `${this.idVelatorio}_${this.velatorio}_${obtenerFechaYHoraActualPagos()}`
     }
     this.subscripcionMotorPagos();
   }
@@ -1256,7 +1258,6 @@ export class ContratarConvenioPrevisionFunerariaComponent implements OnInit, OnD
 
           if (respuesta.mensaje === 'Exito') {
             this.beneficiarios = respuesta.datos.beneficiarios || [];
-            console.log('los beneficarios', this.beneficiarios);
           } else {
             this.beneficiarios = [];
             this.mostrarMensaje(Number(respuesta.mensaje));

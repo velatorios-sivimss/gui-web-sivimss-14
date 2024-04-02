@@ -10,4 +10,5 @@ export interface BusquedaPrevision {
   fechaExpedicion: string;
   idVelatorio: number;
   precioPaquete: number;
+  nombreVelatorio: string;
 }

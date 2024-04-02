@@ -19,7 +19,7 @@ import {
 } from '../../../consulta-convenio-prevision-funeraria/services/busqueda-convenios-pf.service';
 import * as moment from 'moment';
 import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
-import {diferenciaUTC} from "../../../../../../utils/funciones";
+import {diferenciaUTC, obtenerFechaYHoraActualPagos} from "../../../../../../utils/funciones";
 
 @Component({
   selector: 'app-mi-plan-servicios-funerarios-pago-anticipado',
@@ -37,6 +37,8 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   registroPagar!: PagoSFPA;
   mostrarBtnRealizarPago: boolean = false;
   transaccion!: any;
+  idVelatorio: string = '';
+  velatorio: string = '';
 
   constructor(
     private dialogService: DialogService,
@@ -62,7 +64,6 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
   cargarScript(callback: () => void): void {
     const elementoId: string = 'realizar-pago';
     if (!document.getElementById(elementoId)) {
-      console.log('n time script')
       const body: HTMLElement = document.body;
       const elemento_ref = this.renderer.createElement('script');
       elemento_ref.type = 'text/javascript';
@@ -73,21 +74,22 @@ export class MiPlanServiciosFunerariosPagoAnticipadoComponent implements OnInit 
       this.renderer.appendChild(body, elemento_ref);
       elemento_ref.onload = callback;
     } else {
-      console.log('n time back')
       callback();
     }
   }
 
   procesarToken(respuesta: HttpRespuesta<any>): void {
     const [credenciales] = respuesta.datos;
-    this.cargarScript(() => {
-    });
+    this.cargarScript(() => {});
+    const velatorio: string = this.detalleServicioFunerario.desIdVelatorio || '';
+    const idVelatorio: number = this.detalleServicioFunerario.idVelatorio || 0;
     this.transaccion = {
       referencia: 'Mensualidad que se pagó del plan SFPA',
       monto: null,
       mode: credenciales.mode,
       code: credenciales.code,
-      key: credenciales.key
+      key: credenciales.key,
+      folio: `${idVelatorio}_${velatorio}_${obtenerFechaYHoraActualPagos()}`
     };
     this.subscripcionMotorPagos();
   }
