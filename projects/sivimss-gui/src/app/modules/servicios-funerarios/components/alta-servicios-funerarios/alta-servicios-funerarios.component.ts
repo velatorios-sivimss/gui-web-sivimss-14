@@ -302,7 +302,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.formularios[posicion].primerApellido.disable();
     this.formularios[posicion].segundoApellido.setValue(informacion.nomPersonaMaterno);
     this.formularios[posicion].segundoApellido.disable();
-    this.formularios[posicion].sexo.setValue(informacion.numSexo);
+    this.formularios[posicion].sexo.setValue(+informacion.numSexo);
     this.formularios[posicion].sexo.disable();
     this.formularios[posicion].otroSexo.setValue(informacion?.desOtroSexo);
     this.formularios[posicion].otroSexo.disable();
@@ -318,12 +318,12 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     if (+informacion.idPais == 119 || !+informacion.idPais) {
       this.formularios[posicion].nacionalidad.setValue(1);
       this.formularios[posicion].nacionalidad.disable();
-      this.formularios[posicion].lugarNacimiento.setValue(informacion.idEstado)
+      this.formularios[posicion].lugarNacimiento.setValue(+informacion.idEstado)
       this.formularios[posicion].lugarNacimiento.disable()
     } else {
       this.formularios[posicion].nacionalidad.setValue(2);
       this.formularios[posicion].nacionalidad.disable();
-      this.formularios[posicion].paisNacimiento.setValue(informacion.idPais)
+      this.formularios[posicion].paisNacimiento.setValue(+informacion.idPais)
       this.formularios[posicion].paisNacimiento.disable()
     }
     informacion.rfc ? this.formularios[posicion].rfc.setValue(informacion.rfc) :
