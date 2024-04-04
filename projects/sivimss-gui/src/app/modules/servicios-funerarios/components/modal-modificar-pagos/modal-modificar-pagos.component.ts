@@ -80,6 +80,7 @@ export class ModalModificarPagosComponent implements OnInit {
   }
 
   inicializarDatos(): void {
+    let importeMaximo:number = 0;
     let fechaValeParitario =
       this.config.data.detalleRegistro.fechaValeParitario;
     if (
@@ -148,7 +149,13 @@ export class ModalModificarPagosComponent implements OnInit {
     this.formulario.idMetodoPago.setValue(
       this.config.data.detalleRegistro.idMetodoPago
     );
-    this.pagoMaximo = this.config.data.detallePago.importeAcumulado + this.formulario.importe.value;
+    if(this.formulario.importe.value != 0) {
+      importeMaximo = this.formulario.importe.value
+    }
+    else {
+      importeMaximo = this.formulario.importeValeParitaria.value
+    }
+    this.pagoMaximo = this.config.data.detallePago.importeAcumulado + importeMaximo;
   }
 
   cambioMetodoPago(dd: Dropdown): void {

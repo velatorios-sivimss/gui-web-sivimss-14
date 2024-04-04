@@ -89,7 +89,7 @@
     <div class="col-md-6" *ngIf="validacion.importeValeParitaria">
       <label class="control-label" for="importeValeParitaria">Importe autorizado:</label>
       <p-inputNumber id="importeValeParitaria" class="form-control" formControlName="importeValeParitaria" mode="decimal" [minFractionDigits]="2"
-                     [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD" [max]="this.config.data.detallePago.importeAcumulado" [min]="0"
+                     [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD" [max]="    this.pagoMaximo" [min]="0"
                      locale="en-US"></p-inputNumber>
     </div>
   </div>
