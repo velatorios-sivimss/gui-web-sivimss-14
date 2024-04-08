@@ -9,6 +9,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {validarUsuarioLogueadoOnline} from "../../../../utils/funciones";
 
 declare let L: any;
 
@@ -40,6 +41,7 @@ export class MapaContratarConvenioPrevisionFunerariaComponent
   }
 
   ngOnInit(): void {
+    if (validarUsuarioLogueadoOnline()) return;
     this.mapaContratatarConvenioPfService.obtenerListaVelatorios().pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
@@ -106,27 +108,22 @@ export class MapaContratarConvenioPrevisionFunerariaComponent
   }
 
   seleccionarVelatorio(velatorio: number): void {
-    let velatorioSeleccionado;
-    velatorioSeleccionado = this.listaVelatorios.filter((e: any) => {
-      return e.idVelatorio == velatorio;
-    });
-    L.marker([+velatorioSeleccionado[0].longitud, +velatorioSeleccionado[0].latitud]).addTo(this.map).bindPopup(
-      `
-      <div class="custom-popup">
-        <span class="popup-title">${velatorioSeleccionado[0].nombreVelatorio}</span>
-        <span class="popup-description">${velatorioSeleccionado[0].direccion}</span>
-        <span class="popup-telephone">${velatorioSeleccionado[0].telefono ?? ""}</span>
+    const velatorioSeleccionado = this.listaVelatorios.find((e: any) => (e.idVelatorio === velatorio));
+    const {longitud, latitud, servicios, nombreVelatorio, direccion, telefono, idVelatorio} = velatorioSeleccionado;
+    L.marker([+longitud, +latitud]).addTo(this.map)
+      .bindPopup(`<div class="custom-popup">
+        <span class="popup-title">${nombreVelatorio}</span>
+        <span class="popup-description">${direccion}</span>
+        <span class="popup-telephone">${telefono ?? ""}</span>
         <hr>
         <span class="info-title">Servicios disponibles</span>
-        ` +
-      this.consultarVelatorios(velatorioSeleccionado[0].servicios)
-      + `
-        <div class="flex justify-content-end">
+        `
+        + this.consultarVelatorios(servicios) +
+        `<div class="flex justify-content-end">
           <button class="btn btn-primary btn-md" id="seleccionar"
-          data-nombre="${velatorioSeleccionado[0].nombreVelatorio}" data-funeraria="${velatorioSeleccionado[0].idVelatorio}">Continuar</button>
+          data-nombre="${nombreVelatorio}" data-funeraria="${idVelatorio}">Continuar</button>
         </div>
-     </div>
-    `).openPopup();
+     </div>`).openPopup();
     setTimeout(() => {
       const buttonElement = this.el.nativeElement.querySelector('#seleccionar');
       if (buttonElement) {
@@ -160,7 +157,7 @@ export class MapaContratarConvenioPrevisionFunerariaComponent
 
   consultarVelatorios(velatorios: any): any {
     let velatorioSeleccion: any = ``;
-    if (!velatorioSeleccion) return '';
+    if (!velatorios) return '';
     velatorios.forEach((velatorio: string) => {
       velatorioSeleccion += `<ul><li class="info-description">` + velatorio + `</li></ul>`
     })
