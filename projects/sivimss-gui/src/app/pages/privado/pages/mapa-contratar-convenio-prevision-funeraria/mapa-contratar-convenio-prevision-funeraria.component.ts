@@ -9,6 +9,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {validarUsuarioLogueadoOnline} from "../../../../utils/funciones";
 
 declare let L: any;
 
@@ -40,6 +41,7 @@ export class MapaContratarConvenioPrevisionFunerariaComponent
   }
 
   ngOnInit(): void {
+    if (validarUsuarioLogueadoOnline()) return;
     this.mapaContratatarConvenioPfService.obtenerListaVelatorios().pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
