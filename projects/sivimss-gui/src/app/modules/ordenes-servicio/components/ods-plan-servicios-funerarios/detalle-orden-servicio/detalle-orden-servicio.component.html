@@ -10,119 +10,119 @@
         <div class="col-md-2">
           <span class="etiqueta-base">Matrícula:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.contratante.matricula}} </label>
+          <label class="texto-base"> {{ altaODS.contratante.matricula }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">RFC:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.contratante.rfc}} </label>
+          <label class="texto-base"> {{ altaODS.contratante.rfc }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">CURP:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.contratante.curp}} </label>
+          <label class="texto-base"> {{ altaODS.contratante.curp }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Nombre (s):</span>
           <br/>
-          <label class="texto-base"> {{altaODS.contratante.nomPersona}} </label>
+          <label class="texto-base"> {{ altaODS.contratante.nomPersona }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Primer apellido:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.contratante.primerApellido}} </label>
+          <label class="texto-base"> {{ altaODS.contratante.primerApellido }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Segundo apellido:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.contratante.segundoApellido}} </label>
+          <label class="texto-base"> {{ altaODS.contratante.segundoApellido }} </label>
         </div>
       </div>
       <hr/>
       <div class="row mb-3">
         <div class="col-md-2">
           <span class="etiqueta-base">Fecha de nacimiento:</span>
-          <br />
-          <label class="texto-base">{{altaODS.contratante.fechaNac}}</label>
+          <br/>
+          <label class="texto-base">{{ altaODS.contratante.fechaNac }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Sexo:</span>
-          <br />
-          <label class="texto-base">{{consultarSexo(altaODS.contratante.sexo)}}</label>
+          <br/>
+          <label class="texto-base">{{ consultarSexo(altaODS.contratante.sexo) }}</label>
         </div>
         <div class="col-md-2" *ngIf="consultarSexo(altaODS.contratante.sexo) === 'Otro'">
           <span class="etiqueta-base">Otro:</span>
-          <br />
-          <label class="texto-base">{{altaODS.contratante.otroSexo}}</label>
+          <br/>
+          <label class="texto-base">{{ altaODS.contratante.otroSexo }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Nacionalidad:</span>
-          <br />
-          <label class="texto-base">{{consultarNacionalidad(altaODS.contratante.idPais)}}</label>
+          <br/>
+          <label class="texto-base">{{ consultarNacionalidad(altaODS.contratante.idPais) }}</label>
         </div>
         <div class="col-md-2" *ngIf="altaODS.contratante.idEstado">
-          <span class="etiqueta-base" >Lugar de nacimiento</span>
-          <br />
-          <label class="texto-base">{{dropDownODS.contratante.lugarNacimiento}}</label>
+          <span class="etiqueta-base">Lugar de nacimiento</span>
+          <br/>
+          <label class="texto-base">{{ dropDownODS.contratante.lugarNacimiento }}</label>
         </div>
         <div class="col-md-2" *ngIf="altaODS.contratante.idPais">
-          <span class="etiqueta-base" >País de nacimiento</span>
-          <br />
-          <label class="texto-base">{{dropDownODS.contratante.paisNacimiento}}</label>
+          <span class="etiqueta-base">País de nacimiento</span>
+          <br/>
+          <label class="texto-base">{{ dropDownODS.contratante.paisNacimiento }}</label>
         </div>
       </div>
-      <hr />
+      <hr/>
       <div class="row mb-3">
         <div class="col-md-2">
           <span class="etiqueta-base">Tel&eacute;fono:</span>
-          <br />
-          <label class="texto-base">{{altaODS.contratante.telefono}}</label>
+          <br/>
+          <label class="texto-base">{{ altaODS.contratante.telefono }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Correo electrónico:</span>
-          <br />
-          <label class="texto-base">{{altaODS.contratante.correo}}</label>
+          <br/>
+          <label class="texto-base">{{ altaODS.contratante.correo }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Parentesco</span>
-          <br />
-          <label class="texto-base">{{dropDownODS.contratante.parentesco}}</label>
+          <br/>
+          <label class="texto-base">{{ dropDownODS.contratante.parentesco }}</label>
         </div>
       </div>
-      <hr />
+      <hr/>
       <div class="row mb-3">
         <div class="col-md-12 mb-1">
           <h2 class="subtitulo">Dirección</h2>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Calle:</span>
-          <br />
-          <label class="texto-base">{{altaODS.contratante.cp.desCalle}}</label>
+          <br/>
+          <label class="texto-base">{{ altaODS.contratante.cp.desCalle }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Número exterior:</span>
-          <br />
-          <label class="texto-base">{{altaODS.contratante.cp.numExterior}}</label>
+          <br/>
+          <label class="texto-base">{{ altaODS.contratante.cp.numExterior }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">C.P.:</span>
-          <br />
-          <label class="texto-base">{{altaODS.contratante.cp.codigoPostal}}</label>
+          <br/>
+          <label class="texto-base">{{ altaODS.contratante.cp.codigoPostal }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Colonia:</span>
-          <br />
-          <label class="texto-base">{{altaODS.contratante.cp.desColonia}}</label>
+          <br/>
+          <label class="texto-base">{{ altaODS.contratante.cp.desColonia }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Municipio:</span>
-          <br />
-          <label class="texto-base">{{altaODS.contratante.cp.desMunicipio}}</label>
+          <br/>
+          <label class="texto-base">{{ altaODS.contratante.cp.desMunicipio }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Estado:</span>
-          <br />
-          <label class="texto-base">{{altaODS.contratante.cp.desEstado}}</label>
+          <br/>
+          <label class="texto-base">{{ altaODS.contratante.cp.desEstado }}</label>
         </div>
       </div>
     </ng-template>
@@ -141,93 +141,93 @@
         <div class="col-md-2">
           <span class="etiqueta-base">Matrícula:</span>
           <br/>
-              <label class="texto-base"> {{dropDownODS.finado.matricula}} </label>
+          <label class="texto-base"> {{ dropDownODS.finado.matricula }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">CURP:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.finado.curp}} </label>
+          <label class="texto-base"> {{ altaODS.finado.curp }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Nombre (s):</span>
           <br/>
-          <label class="texto-base"> {{altaODS.finado.nomPersona}} </label>
+          <label class="texto-base"> {{ altaODS.finado.nomPersona }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Primer apellido:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.finado.primerApellido}} </label>
+          <label class="texto-base"> {{ altaODS.finado.primerApellido }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Segundo apellido:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.finado.segundoApellido}} </label>
+          <label class="texto-base"> {{ altaODS.finado.segundoApellido }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">NSS:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.finado.nss}} </label>
+          <label class="texto-base"> {{ altaODS.finado.nss }} </label>
         </div>
       </div>
-      <hr />
+      <hr/>
       <div class="row mb-3">
         <div class="col-md-3">
           <span class="etiqueta-base">Sexo:</span>
           <br/>
-          <label class="texto-base"> {{consultarSexo(altaODS.finado.sexo)}} </label>
+          <label class="texto-base"> {{ consultarSexo(altaODS.finado.sexo) }} </label>
         </div>
         <div class="col-md-3">
           <span class="etiqueta-base">Edad:</span>
           <br/>
-              <label class="texto-base"> {{consultarEdad(altaODS.finado.fechaNac)}} </label>
+          <label class="texto-base"> {{ consultarEdad(altaODS.finado.fechaNac) }} </label>
         </div>
         <div class="col-md-3">
           <span class="etiqueta-base">Nacionalidad:</span>
           <br/>
-          <label class="texto-base"> {{consultarNacionalidad(altaODS.finado.idPais)}} </label>
+          <label class="texto-base"> {{ consultarNacionalidad(altaODS.finado.idPais) }} </label>
         </div>
         <div class="col-md-3" *ngIf="altaODS.finado.idEstado">
-          <span class="etiqueta-base" >Lugar de nacimiento:</span>
+          <span class="etiqueta-base">Lugar de nacimiento:</span>
           <br/>
-            <label class="texto-base"> {{dropDownODS.finado.lugarNacimiento}} </label>
+          <label class="texto-base"> {{ dropDownODS.finado.lugarNacimiento }} </label>
         </div>
         <div class="col-md-3" *ngIf="altaODS.finado.idPais">
           <span class="etiqueta-base">País de nacimiento</span>
           <br/>
-          <label class="texto-base"> {{dropDownODS.finado.paisNacimiento}} </label>
+          <label class="texto-base"> {{ dropDownODS.finado.paisNacimiento }} </label>
         </div>
       </div>
-      <hr />
+      <hr/>
       <div class="row mb-3">
         <div class="col-md-2">
           <span class="etiqueta-base">Fecha de defunción:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.finado.fechaDeceso}} </label>
+          <label class="texto-base"> {{ altaODS.finado.fechaDeceso }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Causa del deceso:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.finado.causaDeceso}} </label>
+          <label class="texto-base"> {{ altaODS.finado.causaDeceso }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Lugar del deceso:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.finado.lugarDeceso}} </label>
+          <label class="texto-base"> {{ altaODS.finado.lugarDeceso }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Unidad de procedencia:</span>
           <br/>
-          <label class="texto-base">{{dropDownODS.finado.unidadProcedencia}}</label>
+          <label class="texto-base">{{ dropDownODS.finado.unidadProcedencia }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Hora:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.finado.hora}} </label>
+          <label class="texto-base"> {{ altaODS.finado.hora }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Número de contrato:</span>
           <br/>
-              <label class="texto-base"> {{dropDownODS.finado.numeroContrato}} </label>
+          <label class="texto-base"> {{ dropDownODS.finado.numeroContrato }} </label>
         </div>
       </div>
     </ng-template>
@@ -258,13 +258,13 @@
         </ng-template>
         <ng-template pTemplate="body" let-paquete let-rowIndex="rowIndex">
           <tr>
-            <td>{{rowIndex + 1}}</td>
-            <td>{{paquete.grupo}}</td>
-            <td>{{paquete.concepto}}</td>
-            <td>{{paquete.cantidad}}</td>
-            <td>{{paquete.importe | currency:"USD":"symbol"}}</td>
-            <td>{{paquete.proveedor}}</td>
-            <td>{{paquete.totalPaquete | currency:"USD":"symbol"}}</td>
+            <td>{{ rowIndex + 1 }}</td>
+            <td>{{ paquete.grupo }}</td>
+            <td>{{ paquete.concepto }}</td>
+            <td>{{ paquete.cantidad }}</td>
+            <td>{{ paquete.importe | currency:"USD":"symbol" }}</td>
+            <td>{{ paquete.proveedor }}</td>
+            <td>{{ paquete.totalPaquete | currency:"USD":"symbol" }}</td>
             <td style="width:200px">
               <div class="flex ">
                 <div class="flex align-items- mr-2">
@@ -300,18 +300,18 @@
         <div class="col-md-2">
           <span class="etiqueta-base">Procedencia del finado:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.finado.procedenciaFinado}} </label>
+          <label class="texto-base"> {{ altaODS.finado.procedenciaFinado }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Lugar de velación:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.informacionServicio.informacionServicioVelacion.cp?.desEstado}} ,
-          {{altaODS.informacionServicio.informacionServicioVelacion.cp?.desMunicipio}}</label>
+          <label class="texto-base"> {{ altaODS.informacionServicio.informacionServicioVelacion.cp?.desEstado }} ,
+            {{ altaODS.informacionServicio.informacionServicioVelacion.cp?.desMunicipio }}</label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Hora:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.informacionServicio.informacionServicioVelacion.horaVelacion}} </label>
+          <label class="texto-base"> {{ altaODS.informacionServicio.informacionServicioVelacion.horaVelacion }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Lugar de inhumación:</span>
@@ -320,12 +320,14 @@
         <div class="col-md-2">
           <span class="etiqueta-base">Se recogerá:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.informacionServicio.fechaRecoger}} {{altaODS.informacionServicio.horaRecoger}} </label>
+          <label
+            class="texto-base"> {{ altaODS.informacionServicio.fechaRecoger }} {{ altaODS.informacionServicio.horaRecoger }} </label>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Cortejo del día:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.informacionServicio.fechaCortejo}}  {{altaODS.informacionServicio.horaCortejo}} </label>
+          <label
+            class="texto-base"> {{ altaODS.informacionServicio.fechaCortejo }}  {{ altaODS.informacionServicio.horaCortejo }} </label>
         </div>
       </div>
     </ng-template>
@@ -335,20 +337,30 @@
   <div class="col-md-12 flex justify-content-end">
     <div class="flex flex-column align-items-end">
       <span class="texto-orden-servicio">Total órden de servicio</span>
-      <span class="cantidad-orden-servicio">{{dropDownODS.totalPaquete | currency: 'USD' | lowercase}}</span>
+      <span class="cantidad-orden-servicio">{{ dropDownODS.totalPaquete | currency: 'USD' | lowercase }}</span>
     </div>
   </div>
+</div>
+<div class="flex flex-column align-items-center justify-content-center" *ngIf="altaODS.idEstatus == 2">
+  <span class="text-center">¿Estás seguro de agregar este nuevo registro de Orden de Servicio?</span>
+</div>
+<div class="flex flex-column align-items-center justify-content-center" *ngIf="altaODS.idEstatus == 1">
+  <span class="text-center">
+    ¿Estás seguro de querer guardar como pre-orden? Para concluir una ODS se debe seleccionar “Confirmar Orden de Servicio”.
+  </span>
 </div>
 <hr>
 <div class="my-4 flex justify-content-end">
   <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
   <div *ngIf="altaODS.idEstatus == 1">
     <button type="button" (click)="guardarODS()" [disabled]="false" class="btn btn-lg btn-primary ml-5">
-      Generar pre-orden</button>
+      Generar pre-orden
+    </button>
   </div>
-  <div  *ngIf="altaODS.idEstatus == 2">
+  <div *ngIf="altaODS.idEstatus == 2">
     <button type="button" class="btn btn-md btn-primary ml-5" [disabled]="false"
-            (click)="guardarODS()">Crear Orden de Servicio</button>
+            (click)="guardarODS()">Crear Orden de Servicio
+    </button>
   </div>
 </div>
 
