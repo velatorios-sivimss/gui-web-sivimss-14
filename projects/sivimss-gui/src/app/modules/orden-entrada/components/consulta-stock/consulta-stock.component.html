@@ -3,13 +3,13 @@
     <div class="col-md-6">
       <label class="control-label" for="nivel">Nivel:</label>
       <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
-        placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
+                  placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
       </p-dropdown>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="velatorio">Velatorio:</label>
       <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-        placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
+                  placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
       </p-dropdown>
     </div>
   </div>
@@ -17,20 +17,23 @@
     <div class="col-md-6">
       <label class="control-label" for="ordenEntrada">Orden de entrada (ODE):</label>
       <p-autoComplete id="ordenEntrada" class="form-control" formControlName="ordenEntrada" (keyup)="validarNombre(0)"
-        (keyup.space)="sinEspacioInicial(0)" autocomplete="ordenEntrada" [suggestions]="catalogoOrdenesEntrada"
-        (completeMethod)="consultarOrdenesEntrada($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
-        [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa la orden de entrada"
-        [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+                      (keyup.space)="sinEspacioInicial(0)" autocomplete="ordenEntrada"
+                      [suggestions]="catalogoOrdenesEntrada"
+                      (completeMethod)="consultarOrdenesEntrada($event)" [showEmptyMessage]="true"
+                      [style]="{'width':'100%'}"
+                      [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa la orden de entrada"
+                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
       </p-autoComplete>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="categoria">Categoría:</label>
       <p-autoComplete id="categoria" class="form-control" formControlName="categoria" (keyup)="validarNombre(0)"
-        (keyup.space)="sinEspacioInicial(0)" autocomplete="categoria" [suggestions]="catalogoCategorias"
-        (completeMethod)="consultarCategorias($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
-        [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa categoría"
-        [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
-        </p-autoComplete>
+                      (keyup.space)="sinEspacioInicial(0)" autocomplete="categoria" [suggestions]="catalogoCategorias"
+                      (completeMethod)="consultarCategorias($event)" [showEmptyMessage]="true"
+                      [style]="{'width':'100%'}"
+                      [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa categoría"
+                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+      </p-autoComplete>
     </div>
   </div>
   <div class="row mb-4">
@@ -61,8 +64,8 @@
 </form>
 <section>
   <p-table styleClass="mt-5 mb-8" [value]="stock" [paginator]="stock.length > 0" [rows]="cantElementosPorPagina"
-    [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-    (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
+           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn scope="col">Fecha ODE</th>
@@ -75,23 +78,24 @@
     </ng-template>
     <ng-template pTemplate="body" let-stock>
       <tr>
-        <td pResizableColumn> {{stock.FEC_ODE}} </td>
-        <td pResizableColumn> {{stock.NUM_FOLIO_ODE}} </td>
-        <td pResizableColumn> {{stock.FOLIO_ARTICULO}} </td>
-        <td pResizableColumn> {{stock.DES_MODELO_ARTICULO}} </td>
-        <td>
-          <div class="contenedor-inputswitch flex mr-4">
-            <span class="activo mr-3" *ngIf="stock.ESTATUS_ORDEN_ENTRADA == 1">Activa</span>
-            <span class="activo mr-3" *ngIf="stock.ESTATUS_ORDEN_ENTRADA == 2">Cancelada</span>
-            <span class="activo mr-3" *ngIf="stock.ESTATUS_ORDEN_ENTRADA == 3">Cerrada</span>
-          </div>
+        <td pResizableColumn> {{ stock.FEC_ODE }}</td>
+        <td pResizableColumn> {{ stock.NUM_FOLIO_ODE }}</td>
+        <td pResizableColumn> {{ stock.FOLIO_ARTICULO }}</td>
+        <td pResizableColumn> {{ stock.DES_MODELO_ARTICULO }}</td>
+        <td pResizableColumn>
+            <span class="activo"
+                  *ngIf="stock.ESTATUS_ORDEN_ENTRADA == 1">Activa / {{ stock.ESTATUS_ARTICULO }}</span>
+          <span class="activo"
+                *ngIf="stock.ESTATUS_ORDEN_ENTRADA == 2">Cancelada / {{ stock.ESTATUS_ARTICULO }}</span>
+          <span class="activo"
+                *ngIf="stock.ESTATUS_ORDEN_ENTRADA == 3">Cerrada / {{ stock.ESTATUS_ARTICULO }}</span>
         </td>
-        <td *ngIf="stock.ESTATUS_ORDEN_ENTRADA === 1">
+        <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'60px 40px'}"
-            class="contenedor-celda-iconos">
+               *ngIf="stock.ESTATUS_ORDEN_ENTRADA === 1"
+               class="contenedor-celda-iconos">
             <a (click)="abrirPanel($event,stock)" onCloseOnNavigation
-              class="pi pi-ellipsis-v inline-flex w-auto">
-
+               class="pi pi-ellipsis-v inline-flex w-auto">
             </a>
           </div>
         </td>
@@ -106,7 +110,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{numPaginaActual + 1}} de {{totalElementos}}</span>
+        <span class="total-elements">{{ numPaginaActual + 1 }} de {{ totalElementos }}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -114,8 +118,10 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" (click)="generarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" (click)="generarArchivo('xls')" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" (click)="generarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg"
+                 alt="exportar pdf">
+            <img class="icon-export-table" (click)="generarArchivo('xls')" src="assets/images/imagen-icono-excel.svg"
+                 alt="exportar excel">
           </div>
         </div>
       </div>
@@ -125,7 +131,8 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Devolución" [routerLink]="['devolucion-articulo', stockSeleccionado.FOLIO_ARTICULO]">
+      <app-overlay-panel-opcion titulo="Devolución"
+                                [routerLink]="['devolucion-articulo', stockSeleccionado.FOLIO_ARTICULO]">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

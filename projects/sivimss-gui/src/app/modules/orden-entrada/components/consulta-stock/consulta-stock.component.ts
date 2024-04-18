@@ -11,7 +11,7 @@ import { LoaderService } from "../../../../shared/loader/services/loader.service
 import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
 import { finalize } from "rxjs/operators";
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { mapearArregloTipoDropdown } from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
@@ -62,7 +62,6 @@ export class ConsultaStockComponent implements OnInit {
     },
   ];
 
-  filtros: any;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   numPaginaActual: number = 0
   totalElementos: number = 0
@@ -188,23 +187,21 @@ export class ConsultaStockComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    this.paginacionConFiltrado = false;
+    if (validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
     } else {
-      if (this.numPaginaActual === 0) {
-        this.filtros = this.mapearFiltrosBusqueda();
-      }
       this.paginar();
     }
   }
 
   paginar(): void {
     this.loaderService.activar();
-    this.ordenEntradaService.buscarStockPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, this.filtros)
+    const filtros  = { idVelatorio: this.formulario.get('velatorio')?.value }
+    this.ordenEntradaService.buscarStockPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.stock = [];
@@ -219,9 +216,9 @@ export class ConsultaStockComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    let filtros: any = this.mapearFiltrosBusqueda();
+    const filtros: any = this.mapearFiltrosBusqueda();
     this.loaderService.activar();
-    this.ordenEntradaService.buscarStockPorFiltros(0, this.cantElementosPorPagina, filtros)
+    this.ordenEntradaService.buscarStockPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.stock = [];
