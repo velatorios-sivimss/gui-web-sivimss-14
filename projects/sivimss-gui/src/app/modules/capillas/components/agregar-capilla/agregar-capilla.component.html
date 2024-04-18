@@ -61,7 +61,7 @@
       </div>
 
       <div>
-        <label class="control-label">Estatus<span class="req"> *:</span></label>
+        <span class="label-style control-label">Estatus<span class="req"> *:</span></span>
         <div class="contenedor-inputswitch">
           <p-inputSwitch formControlName="estatus" (click)="modificarEstatusGuardar()"></p-inputSwitch>
           <span class="activo" *ngIf="estatusGuardar">Activo</span>
@@ -86,7 +86,7 @@
 </ng-container>
 
 
-<ng-container *ngIf="ventanaConfirmacion == true">
+<ng-container *ngIf="ventanaConfirmacion">
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
       <div class="table-panel-header-column">
@@ -110,7 +110,7 @@
     <div class="row table-panel-row">
       <div class="col-md-12">
         <div class="table-panel-column">
-          <label>Nombre</label>
+          <span class="label-style">Nombre</span>
           <span> {{capillas.nombre}} </span>
         </div>
       </div>
@@ -118,7 +118,7 @@
     <div class="row table-panel-row">
       <div class="col-md-12">
         <div class="table-panel-column">
-          <label>Capacidad</label>
+          <span class="label-style">Capacidad</span>
           <span> {{capillas.capacidad}} </span>
         </div>
       </div>
@@ -126,19 +126,19 @@
     <div class="row table-panel-row">
       <div class="col-md-4">
         <div class="table-panel-column">
-          <label>Largo</label>
+          <span class="label-style">Largo</span>
           <span> {{capillas.largo}} </span>
         </div>
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
-          <label>Alto</label>
+          <span class="label-style">Alto</span>
           <span> {{capillas.alto}} </span>
         </div>
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
-          <label>Area total</label>
+          <span class="label-style">Area total</span>
           <span> {{capillas.areaTotal}} </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
     <div class="row table-panel-row">
       <div class="col-md-12">
         <div class="table-panel-column">
-          <label>Velatorio</label>
+          <span class="label-style">Velatorio</span>
           <span> {{capillas.velatorio}} </span>
         </div>
       </div>
@@ -154,7 +154,7 @@
   </app-table-panel>
 </ng-container>
 
-<ng-container *ngIf="ventanaConfirmacion == true">
+<ng-container *ngIf="ventanaConfirmacion">
   <div class="flex mt-4 justify-content-center">
     <div class="col-md-6">
       ¿Estás seguro que deseas agregar esta capilla?
