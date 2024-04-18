@@ -12,7 +12,6 @@ import {
 import {ActivatedRoute, Router} from '@angular/router';
 import { HttpRespuesta } from "projects/sivimss-gui/src/app/models/http-respuesta.interface";
 import { AutenticacionContratanteService } from "projects/sivimss-gui/src/app/services/autenticacion-contratante.service";
-// import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
 import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
 import { MensajesRespuestaAutenticacion } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";

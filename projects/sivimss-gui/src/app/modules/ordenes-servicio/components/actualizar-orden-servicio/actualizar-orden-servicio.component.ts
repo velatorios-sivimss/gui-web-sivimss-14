@@ -170,7 +170,7 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
     let mostrarOtorgamiento = false;
     let salidaPaquete = [];
     let salidaPresupuesto = [];
-    if (datosPaquete != null && datosPaquete.caracteristicasPaqueteResponse != null && datosPaquete.caracteristicasDelPresupuesto != null) {
+    if (datosPaquete.caracteristicasPaqueteResponse != null && datosPaquete.caracteristicasDelPresupuesto != null) {
       let caracteristicasPaquete = datosPaquete.caracteristicasPaqueteResponse;
       observaciones = datosPaquete.caracteristicasDelPresupuesto.observaciones;
       notasServicio = datosPaquete.caracteristicasDelPresupuesto.notasServicio;

@@ -23,12 +23,12 @@ import * as moment from 'moment';
 })
 export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements OnInit {
 
-  readonly POSICION_PARENTESCO   = 2;
+  readonly POSICION_PARENTESCO = 2;
   readonly POSICION_DELEGACIONES = 5;
 
   beneficiarioForm!: FormGroup;
 
-  velatorio!: TipoDropdown[] ;
+  velatorio!: TipoDropdown[];
   parentesco!: TipoDropdown[];
 
   hoy = new Date();
@@ -45,12 +45,13 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
     private mensajesSistemaService: MensajesSistemaService,
     private route: ActivatedRoute,
     private ref: DynamicDialogRef,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     let respuesta = this.route.snapshot.data['respuesta'];
     this.parentesco = respuesta[this.POSICION_PARENTESCO]!.map((parentesco: TipoDropdown) => (
-      {label: parentesco.label, value: parentesco.value} )) || [];
+      {label: parentesco.label, value: parentesco.value})) || [];
     this.delegaciones = respuesta[this.POSICION_DELEGACIONES];
     this.inicializarBeneficiarioForm();
     this.consultaVelatorio();
@@ -58,38 +59,44 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
 
   inicializarBeneficiarioForm(): void {
     this.beneficiarioForm = this.formBuilder.group({
-      delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled:  +this.rolLocalStorage.idOficina >= 2},[Validators.required]],
-      velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3},[Validators.required]],
-                       fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
-                                  edad: [{value: null, disabled: true}, [Validators.required]],
-                                nombre: [{value: null, disabled: false}, [Validators.required]],
-                        primerApellido: [{value: null, disabled: false}, [Validators.required]],
-                       segundoApellido: [{value: null, disabled: false}, [Validators.required]],
-                            parentesco: [{value: null, disabled: false}, [Validators.required]],
-                                  curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
-                                   rfc: [{value: null, disabled: false}],
-                        actaNacimiento: [{value: null, disabled: false}],
-                     correoElectronico: [{value: null, disabled: false}, [Validators.required,Validators.pattern(PATRON_CORREO)]],
-                              telefono: [{value: null, disabled: false}, [Validators.required]],
+      delegacion: [{
+        value: +this.rolLocalStorage.idDelegacion || null,
+        disabled: +this.rolLocalStorage.idOficina >= 2
+      }, [Validators.required]],
+      velatorio: [{
+        value: +this.rolLocalStorage.idVelatorio || null,
+        disabled: +this.rolLocalStorage.idOficina === 3
+      }, [Validators.required]],
+      fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
+      edad: [{value: null, disabled: true}, [Validators.required]],
+      nombre: [{value: null, disabled: false}, [Validators.required]],
+      primerApellido: [{value: null, disabled: false}, [Validators.required]],
+      segundoApellido: [{value: null, disabled: false}, [Validators.required]],
+      parentesco: [{value: null, disabled: false}, [Validators.required]],
+      curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
+      rfc: [{value: null, disabled: false}],
+      actaNacimiento: [{value: null, disabled: false}],
+      correoElectronico: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
+      telefono: [{value: null, disabled: false}, [Validators.required]],
       validaActaNacimientoBeneficiario: [{value: null, disabled: true}],
-                 validaIneBeneficiario: [{value: null, disabled: true}],
+      validaIneBeneficiario: [{value: null, disabled: true}],
 
-                             matricula: [{value:'' ,disabled: true}],
-                                   nss: [{value:'' ,disabled: true}],
-                                numIne: [{value:'' ,disabled: true}],
-                                  sexo: [{value:'' ,disabled: true}],
-                              otroSexo: [{value:'' ,disabled: true}],
-                           tipoPersona: [{value:'' ,disabled: true}],
-                                 calle: [{value:'' ,disabled: true}],
-                        numeroExterior: [{value:'' ,disabled: true}],
-                        numeroInterior: [{value:'' ,disabled: true}],
-                                    cp: [{value:'' ,disabled: true}],
-                               colonia: [{value:'' ,disabled: true}],
-                             municipio: [{value:'' ,disabled: true}],
-                                estado: [{value:'' ,disabled: true}],
-                                  pais: [{value:'' ,disabled: true}],
-                enfermedadPreexistente: [{value:'' ,disabled: true}],
-                        otraEnfermedad: [{value:'' ,disabled: true}],
+      matricula: [{value: '', disabled: true}],
+      nss: [{value: '', disabled: true}],
+      numIne: [{value: '', disabled: true}],
+      sexo: [{value: '', disabled: true}],
+      otroSexo: [{value: '', disabled: true}],
+      tipoPersona: [{value: '', disabled: true}],
+      calle: [{value: '', disabled: true}],
+      numeroExterior: [{value: '', disabled: true}],
+      numeroInterior: [{value: '', disabled: true}],
+      cp: [{value: '', disabled: true}],
+      colonia: [{value: '', disabled: true}],
+      municipio: [{value: '', disabled: true}],
+      estado: [{value: '', disabled: true}],
+      pais: [{value: '', disabled: true}],
+      enfermedadPreexistente: [{value: '', disabled: true}],
+      otraEnfermedad: [{value: '', disabled: true}],
     });
   }
 
@@ -114,11 +121,11 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   }
 
   validarEdad(): void {
-    if(+this.f.edad.value < 18){
+    if (+this.f.edad.value < 18) {
       this.f.validaActaNacimientoBeneficiario.enable();
       this.f.validaIneBeneficiario.disable();
       this.f.validaIneBeneficiario.patchValue(null);
-    }else{
+    } else {
       this.f.validaIneBeneficiario.enable();
       this.f.validaActaNacimientoBeneficiario.disable();
       this.f.validaActaNacimientoBeneficiario.patchValue(null);
@@ -126,20 +133,28 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   }
 
   validarCURP(): void {
-    if(this.f.curp.value.includes('XEXX010101HNEXXXA4')){ this.limpiarDatosBeneficario(); return};
-    if(this.f.curp.value.includes('XEXX010101MNEXXXA8')){this.limpiarDatosBeneficario(); return};
-    if (this.beneficiarioForm.controls.curp?.errors?.pattern){
+    if (this.f.curp.value.includes('XEXX010101HNEXXXA4')) {
+      this.limpiarDatosBeneficario();
+      return
+    }
+    ;
+    if (this.f.curp.value.includes('XEXX010101MNEXXXA8')) {
+      this.limpiarDatosBeneficario();
+      return
+    }
+    ;
+    if (this.beneficiarioForm.controls.curp?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
       return;
     }
-    if(!this.f.curp.value) return;
+    if (!this.f.curp.value) return;
     this.limpiarDatosBeneficario();
     this.loaderService.activar();
-    this.agregarConvenioPFService.consultaCURPRFC("",this.f.curp.value).pipe(
-      finalize(()=>this.loaderService.desactivar())
+    this.agregarConvenioPFService.consultaCURPRFC("", this.f.curp.value).pipe(
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next: (respuesta:HttpRespuesta<any>): void => {
-        if(respuesta.datos.length > 0){
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos.length > 0) {
           const fecha = this.validarSeparadorFecha(respuesta.datos[0].fechaNacimiento)
           this.f.fechaNacimiento.setValue(new Date(fecha[2] + '/' + fecha[1] + '/' + fecha[0]));
           this.f.nombre.setValue(respuesta.datos[0].nomPersona);
@@ -148,8 +163,8 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
           this.f.correoElectronico.setValue(respuesta.datos[0].correo.includes('null') ? null : respuesta.datos[0].correo);
           this.f.telefono.setValue(respuesta.datos[0].telefono.includes('null') ? null : respuesta.datos[0].telefono);
           this.calcularEdad();
-        }else{
-          if(respuesta.datos.curp != ""){
+        } else {
+          if (respuesta.datos.curp != "") {
             const fecha = this.validarSeparadorFecha(respuesta.datos.fechaNacimiento)
             this.f.fechaNacimiento.setValue(new Date(fecha[2] + '/' + fecha[1] + '/' + fecha[0]));
             this.f.nombre.setValue(respuesta.datos.nomPersona);
@@ -158,7 +173,7 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
             this.f.correoElectronico.setValue(respuesta.datos.correo);
             this.f.telefono.setValue(respuesta.datos.telefono);
             this.calcularEdad();
-          }else {
+          } else {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
           }
         }
@@ -173,18 +188,18 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   }
 
   validarSeparadorFecha(fechaString: string): any {
-    if(fechaString.includes('/')){
-      let [dia,mes,anio] = fechaString.split('/');
-      if(dia.length == 3){
-        [dia,mes,anio] = [anio,mes,dia]
+    if (fechaString.includes('/')) {
+      let [dia, mes, anio] = fechaString.split('/');
+      if (dia.length == 3) {
+        [dia, anio] = [anio, dia]
       }
-      return [dia,mes,anio];
+      return [dia, mes, anio];
     }
-    let [diaD,mesD,anioD] = fechaString.split('/');
-    if(diaD.length == 3){
-      [diaD,mesD,anioD] = [anioD,mesD,diaD]
+    let [diaD, mesD, anioD] = fechaString.split('/');
+    if (diaD.length == 3) {
+      [diaD, anioD] = [anioD, diaD]
     }
-    return [diaD,mesD,anioD];
+    return [diaD, mesD, anioD];
   }
 
   limpiarDatosBeneficario(): void {
@@ -198,11 +213,11 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   }
 
   validarRFC(): void {
-    if(!this.f.rfc.value) return;
+    if (!this.f.rfc.value) return;
     this.f.rfc.clearValidators();
     this.f.rfc.updateValueAndValidity();
-    if(this.f.rfc.value.includes('XAXX010101000'))return;
-    if(!this.f.rfc.value.match(PATRON_RFC)){
+    if (this.f.rfc.value.includes('XAXX010101000')) return;
+    if (!this.f.rfc.value.match(PATRON_RFC)) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
       this.f.rfc.setValidators(Validators.pattern(PATRON_RFC));
       this.f.rfc.updateValueAndValidity();
@@ -210,7 +225,7 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   }
 
   validarCorreoElectronico(): void {
-    if (this.beneficiarioForm.controls.correoElectronico?.errors?.pattern){
+    if (this.beneficiarioForm.controls.correoElectronico?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
     }
   }
@@ -230,9 +245,9 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
       actaNacimiento: "",
       correoElectronico: this.f.correoElectronico.value.toString(),
       telefono: this.f.telefono.value.toString(),
-      documentacion:{
-      validaActaNacimientoBeneficiario: this.f.validaActaNacimientoBeneficiario?.value ?? false,
-      validaIneBeneficiario: this.f.validaIneBeneficiario?.value ?? false,
+      documentacion: {
+        validaActaNacimientoBeneficiario: this.f.validaActaNacimientoBeneficiario?.value ?? false,
+        validaIneBeneficiario: this.f.validaIneBeneficiario?.value ?? false,
       },
       nss: this.f.nss.value.toString(),
       numIne: this.f.numIne.value.toString(),
@@ -257,7 +272,7 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   consultarVelatorioPorID(): void {
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarVelatorios(+this.f.delegacion.value).pipe(
-      finalize(()=>this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.velatorio = respuesta.datos.map((velatorio: any) => (

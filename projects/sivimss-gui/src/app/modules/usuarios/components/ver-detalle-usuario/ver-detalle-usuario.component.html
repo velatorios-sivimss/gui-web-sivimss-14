@@ -19,13 +19,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>CURP<span class="req">*</span>:</label>
+        <span class="label-style">CURP<span class="req">*</span>:</span>
         <span>{{ usuarioSeleccionado.curp }}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Matrícula<span class="req">*</span>:</label>
+        <span class="label-style">Matrícula<span class="req">*</span>:</span>
         <span>{{ usuarioSeleccionado.matricula }}</span>
       </div>
     </div>
@@ -33,13 +33,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Nombre(s)<span class="req">*</span>:</label>
+        <span class="label-style">Nombre(s)<span class="req">*</span>:</span>
         <span>{{ usuarioSeleccionado.nombre }}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Usuario:</label>
+        <span class="label-style">Usuario:</span>
         <span>{{ usuarioSeleccionado.usuario }}</span>
       </div>
     </div>
@@ -47,13 +47,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Contraseña:</label>
+        <span class="label-style">Contraseña:</span>
         <span>{{ usuarioSeleccionado.contrasenia }}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Entidad Federativa de Nacimiento:</label>
+        <span class="label-style">Entidad Federativa de Nacimiento:</span>
         <span>{{ usuarioSeleccionado.desEdoNacimiento | uppercase }}</span>
       </div>
     </div>
@@ -61,13 +61,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Primer apellido<span class="req">*</span>:</label>
+        <span class="label-style">Primer apellido<span class="req">*</span>:</span>
         <span>{{ usuarioSeleccionado.paterno }}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Segundo apellido<span class="req">*</span>:</label>
+        <span class="label-style">Segundo apellido<span class="req">*</span>:</span>
         <span>{{ usuarioSeleccionado.materno }}</span>
       </div>
     </div>
@@ -75,13 +75,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Correo electrónico<span class="req">*</span>:</label>
+        <span class="label-style">Correo electrónico<span class="req">*</span>:</span>
         <span>{{ usuarioSeleccionado.correo }}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Nivel<span class="req">*</span>:</label>
+        <span class="label-style">Nivel<span class="req">*</span>:</span>
         <span>{{ usuarioSeleccionado.oficina }}</span>
       </div>
     </div>
@@ -89,13 +89,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Delegación:</label>
+        <span class="label-style">Delegación:</span>
         <span [ngClass]="{ 'mb-3': !usuarioSeleccionado.delegacion}">{{ usuarioSeleccionado.delegacion }}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Velatorio:</label>
+        <span class="label-style">Velatorio:</span>
         <span [ngClass]="{ 'mb-3': !usuarioSeleccionado.velatorio}">{{ usuarioSeleccionado.velatorio }}</span>
       </div>
     </div>
@@ -103,7 +103,7 @@
   <div class="row table-panel-row">
     <div class="col-md-12">
       <div class="table-panel-column">
-        <label>Rol<span class="req">*</span>:</label>
+        <span class="label-style">Rol<span class="req">*</span>:</span>
         <span>{{ usuarioSeleccionado.rol }}</span>
       </div>
     </div>
