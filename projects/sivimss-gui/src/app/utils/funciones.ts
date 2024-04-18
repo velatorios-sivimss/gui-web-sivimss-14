@@ -8,10 +8,7 @@ export function diferenciaUTC(fecha: string, divisor: string = "/"): number {
 }
 
 export function validarAlMenosUnCampoConValor(values: object) {
-  if (!Object.values(values).find(value => value !== '' && value !== null)) {
-    return false;
-  }
-  return true;
+  return Object.values(values).find(value => value !== '' && value !== null);
 }
 
 export function mapearArregloTipoDropdown(arr: [] = [], label: string = '', value: string = ''): TipoDropdown[] {
@@ -84,28 +81,21 @@ export function obtenerVelatorioUsuarioLogueado(usuario: UsuarioEnSesion): numbe
 
 export function obtenerFechaYHoraActual(): string {
   const fecha: Date = new Date();
-
   const fechaFormateada: string = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString()
     .padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`;
-
   const horaFormateada: string = `${fecha.getHours().toString().padStart(2, '0')}`;
   const minutos: string = `${fecha.getMinutes().toString().padStart(2, '0')}`;
   const dosPuntos: string = ':';
-
   return `${fechaFormateada} ${horaFormateada}${dosPuntos}${minutos}`;
-
 }
 
 export function obtenerFechaYHoraActualPagos(): string {
   const fecha: Date = new Date();
-
-  const fechaFormateada: string = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString()
+  const fechaFormateadaPagos: string = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString()
     .padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`;
-
   const horaFormateada: string = `${fecha.getHours().toString().padStart(2, '0')}`;
   const minutos: string = `${fecha.getMinutes().toString().padStart(2, '0')}`;
   const dosPuntos: string = ':';
-
-  return `${fechaFormateada}_${horaFormateada}${dosPuntos}${minutos}`;
+  return `${fechaFormateadaPagos}_${horaFormateada}${dosPuntos}${minutos}`;
 
 }

@@ -433,9 +433,6 @@ export class AutenticacionService {
   );
 
   subsSesionInactivaTemporizador!: Subscription;
-
-  cambiarPwd: boolean = false;
-  tituloCambiarPwd: string = '';
   usuario: string | null = null;
   contrasenia: string | null = null;
 
