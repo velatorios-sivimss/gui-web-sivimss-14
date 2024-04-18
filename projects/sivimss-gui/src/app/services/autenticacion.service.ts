@@ -6,7 +6,6 @@ import {HttpRespuesta} from "projects/sivimss-gui/src/app/models/http-respuesta.
 import {Payload} from "projects/sivimss-gui/src/app/models/payload.interface";
 import {UsuarioEnSesion} from "projects/sivimss-gui/src/app/models/usuario-en-sesion.interface";
 import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
-import {LoaderService} from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
 import {MenuSidebarService} from "projects/sivimss-gui/src/app/shared/sidebar/services/menu-sidebar.service";
 import {SIVIMSS_TOKEN} from "projects/sivimss-gui/src/app/utils/constantes";
 import {existeMensajeEnEnum} from "projects/sivimss-gui/src/app/utils/funciones";
@@ -17,6 +16,7 @@ import {BehaviorSubject, Observable, of, Subscription} from 'rxjs';
 import {concatMap, map} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {environment} from '../../environments/environment';
+import {CookieService} from "ngx-cookie-service";
 
 export interface Modulo {
   idModuloPadre: string | null;
@@ -444,9 +444,9 @@ export class AutenticacionService {
     private readonly router: Router,
     private readonly menuSidebarService: MenuSidebarService,
     private readonly breadcrumbService: BreadcrumbService,
-    private readonly loaderService: LoaderService,
     private readonly controladorInactividadUsuarioService: BnNgIdleService,
-    @Inject(TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION) private readonly tiempoMaximoInactividad: number
+    @Inject(TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION) private readonly tiempoMaximoInactividad: number,
+    private readonly cookieService: CookieService
   ) {
     this.recuperarSesionAlActualizarPagina();
   }
@@ -526,6 +526,7 @@ export class AutenticacionService {
     this.menuSidebarService.limpiarRutaSeleccionada();
     this.usuarioEnSesionSubject.next(null);
     this.permisosUsuarioSubject.next(null);
+    this.cookieService.deleteAll();
     localStorage.removeItem(SIVIMSS_TOKEN);
     localStorage.clear();
     void this.router.navigate(['/inicio-sesion']);
@@ -605,25 +606,25 @@ export class AutenticacionService {
   obtenerCatalogos(): void {
     this.httpClient.post<HttpRespuesta<any>>(environment.api.login + '/catalogos/consulta', {})
       .subscribe({
-        next: (respuesta) => {
-          const {datos} = respuesta;
-          const {catalogos} = datos ?? {};
-          this.guardarCatalogosEnLocalStorage(catalogos)
-        },
-        error: (error) => {
-          console.log(error)
-        }
-      })
+        next: (respuesta: HttpRespuesta<any>) => this.procesarCatalogos(respuesta),
+        error: (error) => console.log(error)
+      });
+  }
+
+  procesarCatalogos(respuesta: HttpRespuesta<any>): void {
+    const {datos} = respuesta;
+    const {catalogos} = datos ?? {};
+    this.guardarCatalogosEnLocalStorage(catalogos);
   }
 
   guardarCatalogosEnLocalStorage<T extends { [key: string]: T }>(obj: T): void {
     Object.keys(obj).forEach(propiedad => {
-      localStorage.setItem(`catalogo_${propiedad}`, JSON.stringify(obj[propiedad]));
+      this.cookieService.set(`catalogo_${propiedad}`, JSON.stringify(obj[propiedad]), 1);
     });
   }
 
   obtenerCatalogoDeLocalStorage<T>(propiedad: string): any {
-    const catalogo = JSON.parse(localStorage.getItem(propiedad) as string);
+    const catalogo = JSON.parse(this.cookieService.get(propiedad) as string);
     return catalogo ?? [];
   }
 }
