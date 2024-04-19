@@ -25,6 +25,7 @@ import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-arc
 import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {finalize} from 'rxjs';
 import * as moment from 'moment';
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 interface HttpResponse {
   respuesta: string;
@@ -35,7 +36,7 @@ interface HttpResponse {
   selector: 'app-generar-formato-actividades',
   templateUrl: './generar-formato-actividades.component.html',
   styleUrls: ['./generar-formato-actividades.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, AutenticacionService]
 })
 export class GenerarFormatoActividadesComponent implements OnInit {
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
@@ -73,6 +74,7 @@ export class GenerarFormatoActividadesComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -84,11 +86,17 @@ export class GenerarFormatoActividadesComponent implements OnInit {
   }
 
   inicializarFiltroForm() {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: +usuario?.idOficina, disabled: true}],
-      delegacion: [{value: usuario?.idDelegacion ? +usuario?.idDelegacion : null, disabled: +usuario?.idOficina >= 2}, []],
-      velatorio: [{value: +usuario?.idVelatorio ? +usuario?.idVelatorio : null, disabled: +usuario?.idOficina === 3}, []],
+      delegacion: [{
+        value: usuario?.idDelegacion ? +usuario?.idDelegacion : null,
+        disabled: +usuario?.idOficina >= 2
+      }, []],
+      velatorio: [{
+        value: +usuario?.idVelatorio ? +usuario?.idVelatorio : null,
+        disabled: +usuario?.idOficina === 3
+      }, []],
       nombrePromotor: [{value: null, disabled: false}],
       folio: new FormControl({value: null, disabled: false}, []),
       fecInicio: new FormControl({value: null, disabled: false}, []),
@@ -202,7 +210,7 @@ export class GenerarFormatoActividadesComponent implements OnInit {
   limpiar(): void {
     this.realizoBusqueda = false;
     this.filtroForm.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm.get('nivel')?.patchValue(+usuario?.idOficina);
 
     if (+usuario?.idOficina >= 2) {

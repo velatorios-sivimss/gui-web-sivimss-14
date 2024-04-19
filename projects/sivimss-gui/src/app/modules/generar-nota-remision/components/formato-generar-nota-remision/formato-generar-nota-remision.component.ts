@@ -12,12 +12,13 @@ import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/des
 import {mensajes} from '../../../reservar-salas/constants/mensajes';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-formato-generar-nota-remision',
   templateUrl: './formato-generar-nota-remision.component.html',
   styleUrls: ['./formato-generar-nota-remision.component.scss'],
-  providers: [DynamicDialogConfig, DialogService, DescargaArchivosService],
+  providers: [DynamicDialogConfig, DialogService, DescargaArchivosService, CookieService],
 })
 export class FormatoGenerarNotaRemisionComponent implements OnInit {
   readonly POSICION_DETALLE: number = 0;
@@ -36,7 +37,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
   validacionGenerarFactura: boolean = false;
   idNota: number = 0;
 
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string) || mensajes;
 
   constructor(
     public dialogService: DialogService,
@@ -46,7 +47,8 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     private route: ActivatedRoute,
     private activatedRoute: ActivatedRoute,
     private generarNotaRemisionService: GenerarNotaRemisionService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private cookieService: CookieService
   ) {
   }
 

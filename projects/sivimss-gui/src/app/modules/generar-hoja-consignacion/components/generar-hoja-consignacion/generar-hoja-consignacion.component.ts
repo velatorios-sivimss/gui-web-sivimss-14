@@ -22,12 +22,13 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import { finalize } from 'rxjs';
 import * as moment from 'moment';
 import { FacturaProveedorComponent } from '../factura-proveedor/factura-proveedor.component';
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-generar-hoja-consignacion',
   templateUrl: './generar-hoja-consignacion.component.html',
   styleUrls: ['./generar-hoja-consignacion.component.scss'],
-  providers: [DialogService, DescargaArchivosService, DynamicDialogRef]
+  providers: [DialogService, DescargaArchivosService, DynamicDialogRef, AutenticacionService]
 })
 export class GenerarHojaConsignacionComponent implements OnInit, OnDestroy {
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
@@ -66,6 +67,7 @@ export class GenerarHojaConsignacionComponent implements OnInit, OnDestroy {
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -77,7 +79,7 @@ export class GenerarHojaConsignacionComponent implements OnInit, OnDestroy {
   }
 
   inicializarFiltroForm() {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm = this.formBuilder.group({
       nivel: new FormControl({ value: +usuario?.idOficina, disabled: true }, [Validators.required]),
       delegacion: new FormControl({ value: +usuario?.idDelegacion, disabled: +usuario?.idOficina >= 2 }, [Validators.required]),
@@ -101,7 +103,7 @@ export class GenerarHojaConsignacionComponent implements OnInit, OnDestroy {
       this.filtroForm.get('velatorio')?.patchValue("");
     }
 
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
     if (+usuario?.idOficina === 3) {
       this.filtroForm.get('velatorio')?.patchValue(+usuario?.idVelatorio);
@@ -240,7 +242,7 @@ export class GenerarHojaConsignacionComponent implements OnInit, OnDestroy {
   limpiar(): void {
     this.busquedaRealizada = false;
     this.filtroForm.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.inicializarFiltroForm();
     this.cargarVelatorios(true);
     this.cargarCatalogos();

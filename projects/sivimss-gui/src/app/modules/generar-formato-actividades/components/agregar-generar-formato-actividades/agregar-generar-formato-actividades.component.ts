@@ -1,35 +1,42 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from '@angular/router';
-import { LocationStrategy } from '@angular/common';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { BuscarCatalogo, CatalogoPromotores, GenerarFormatoActividades, GenerarFormatoActividadesBusqueda } from '../../models/generar-formato-actividades.interface';
-import { UsuarioService } from '../../../usuarios/services/usuario.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { finalize, of } from 'rxjs';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from '@angular/router';
+import {LocationStrategy} from '@angular/common';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {
+  BuscarCatalogo,
+  CatalogoPromotores,
+  GenerarFormatoActividades,
+  GenerarFormatoActividadesBusqueda
+} from '../../models/generar-formato-actividades.interface';
+import {UsuarioService} from '../../../usuarios/services/usuario.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {finalize, of} from 'rxjs';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import * as moment from 'moment';
-import { GenerarFormatoActividadesService } from '../../services/generar-formato-actividades.service';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { GENERAR_FORMATO_BREADCRUMB } from '../../constants/breadcrumb';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { ConfirmationService, LazyLoadEvent } from 'primeng/api';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { PrevisualizacionArchivoComponent } from '../previsualizacion-archivo/previsualizacion-archivo.component';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {GenerarFormatoActividadesService} from '../../services/generar-formato-actividades.service';
+import {mapearArregloTipoDropdown, obtenerNivelUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {GENERAR_FORMATO_BREADCRUMB} from '../../constants/breadcrumb';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {ConfirmationService, LazyLoadEvent} from 'primeng/api';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {PrevisualizacionArchivoComponent} from '../previsualizacion-archivo/previsualizacion-archivo.component';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-agregar-generar-formato-actividades',
   templateUrl: './agregar-generar-formato-actividades.component.html',
   styleUrls: ['./agregar-generar-formato-actividades.component.scss'],
-  providers: [DialogService, DynamicDialogRef, DescargaArchivosService, ConfirmationService]
+  providers: [DialogService, DynamicDialogRef, DescargaArchivosService, ConfirmationService,
+    AutenticacionService]
 })
 export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   @ViewChild(OverlayPanel)
@@ -79,6 +86,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     private generarFormatoActividadesService: GenerarFormatoActividadesService,
     private descargaArchivosService: DescargaArchivosService,
     private confirmationService: ConfirmationService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -97,26 +105,29 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   }
 
   inicializarAgregarActividadesForm() {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.agregarGenerarFormatoActividadesForm = this.formBuilder.group({
-      folio: new FormControl({ value: null, disabled: true }, []),
-      velatorio: new FormControl({ value: +usuario?.idVelatorio, disabled: this.mode !== 'create' || +usuario?.idOficina === 3 }, []),
-      descVelatorio: new FormControl({ value: null, disabled: this.mode !== 'create' }, []),
-      fechaInicio: new FormControl({ value: null, disabled: this.mode !== 'create' }, []),
-      fechaFinal: new FormControl({ value: null, disabled: this.mode !== 'create' }, []),
+      folio: new FormControl({value: null, disabled: true}, []),
+      velatorio: new FormControl({
+        value: +usuario?.idVelatorio,
+        disabled: this.mode !== 'create' || +usuario?.idOficina === 3
+      }, []),
+      descVelatorio: new FormControl({value: null, disabled: this.mode !== 'create'}, []),
+      fechaInicio: new FormControl({value: null, disabled: this.mode !== 'create'}, []),
+      fechaFinal: new FormControl({value: null, disabled: this.mode !== 'create'}, []),
     });
 
     this.agregarActividadForm = this.formBuilder.group({
-      fecActividad: new FormControl({ value: null, disabled: false }, []),
-      hrInicio: new FormControl({ value: null, disabled: false }, []),
-      hrFin: new FormControl({ value: null, disabled: false }, []),
-      idPromotor: new FormControl({ value: null, disabled: false }, []),
-      numPlaticas: new FormControl({ value: null, disabled: false }, []),
-      unidadImss: new FormControl({ value: null, disabled: false }, []),
-      empresa: new FormControl({ value: null, disabled: false }, []),
-      actividadRealizada: new FormControl({ value: null, disabled: false }, []),
-      observaciones: new FormControl({ value: null, disabled: false }, []),
-      evidencia: new FormControl({ value: null, disabled: false }, []),
+      fecActividad: new FormControl({value: null, disabled: false}, []),
+      hrInicio: new FormControl({value: null, disabled: false}, []),
+      hrFin: new FormControl({value: null, disabled: false}, []),
+      idPromotor: new FormControl({value: null, disabled: false}, []),
+      numPlaticas: new FormControl({value: null, disabled: false}, []),
+      unidadImss: new FormControl({value: null, disabled: false}, []),
+      empresa: new FormControl({value: null, disabled: false}, []),
+      actividadRealizada: new FormControl({value: null, disabled: false}, []),
+      observaciones: new FormControl({value: null, disabled: false}, []),
+      evidencia: new FormControl({value: null, disabled: false}, []),
     });
   }
 
@@ -269,7 +280,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {
           if (!this.apf.folio.value) {
-            void this.router.navigate([`/generar-formato-de-actividades/modificar-actividades/${respuesta.datos}`], { relativeTo: this.activatedRoute });
+            void this.router.navigate([`/generar-formato-de-actividades/modificar-actividades/${respuesta.datos}`], {relativeTo: this.activatedRoute});
           } else {
             setTimeout(() => {
               let elements = document.getElementById(`cancel-${actividad.idActividad}`);
@@ -379,7 +390,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   validarFechas() {
     if (this.apf.fechaInicio.value > this.apf.fechaFinal.value && this.apf.fechaFinal.value) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
-      this.apf.fechaInicio.setErrors({ 'incorrect': true });
+      this.apf.fechaInicio.setErrors({'incorrect': true});
     } else {
       this.apf.fechaInicio.setErrors(null);
     }
@@ -401,7 +412,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
 
   generarReporteTabla(): void {
     this.loaderService.activar();
-    this.descargaArchivosService.descargarArchivo(this.generarFormatoActividadesService.generarReporteActividades({ idFormato: this.idFormato })).pipe(
+    this.descargaArchivosService.descargarArchivo(this.generarFormatoActividadesService.generarReporteActividades({idFormato: this.idFormato})).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (res: boolean) => {
@@ -421,18 +432,19 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   modalConfirmacion() {
     this.confirmationService.confirm({
       message: this.mensajeArchivoConfirmacion,
-      accept: () => { },
+      accept: () => {
+      },
     });
   }
 
   previsualizarReporte(): void {
-    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Formato de actividades' };
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: 'Formato de actividades'};
     this.loaderService.activar();
-    this.generarFormatoActividadesService.previsualizarReporte({ idFormato: this.idFormato }).pipe(
+    this.generarFormatoActividadesService.previsualizarReporte({idFormato: this.idFormato}).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        const file = new Blob([respuesta], { type: 'application/pdf' });
+        const file = new Blob([respuesta], {type: 'application/pdf'});
         const url = window.URL.createObjectURL(file);
         let archivoRef: DynamicDialogRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
           data: url,

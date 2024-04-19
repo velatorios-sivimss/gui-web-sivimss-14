@@ -23,12 +23,13 @@ import * as moment from 'moment';
 import { mapearArregloTipoDropdown, validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { PrevisualizacionArchivoComponent } from '../previsualizacion-archivo/previsualizacion-archivo.component';
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-agregar-generar-hoja-consignacion',
   templateUrl: './agregar-generar-hoja-consignacion.component.html',
   styleUrls: ['./agregar-generar-hoja-consignacion.component.scss'],
-  providers: [DialogService, DynamicDialogRef, DescargaArchivosService]
+  providers: [DialogService, DynamicDialogRef, DescargaArchivosService, AutenticacionService]
 })
 export class AgregarGenerarHojaConsignacionComponent implements OnInit {
   readonly POSICION_HOJA_CONSIGNACION_DETALLE: number = 0;
@@ -81,6 +82,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
     public generarHojaConsignacionService: GenerarHojaConsignacionService,
+    private authService: AutenticacionService
   ) { }
 
   ngOnInit(): void {
@@ -101,8 +103,8 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
     }
   }
 
-  inicializarFiltroForm() {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+  inicializarFiltroForm(): void {
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm = this.formBuilder.group({
       nivel: new FormControl({ value: +usuario?.idOficina, disabled: true }, [Validators.required]),
       delegacion: new FormControl({ value: +usuario?.idDelegacion, disabled: +usuario?.idOficina >= 2 }, [Validators.required]),
@@ -322,7 +324,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
   limpiar(): void {
     this.busquedaRealizada = false;
     this.filtroForm.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm.get('nivel')?.patchValue(+usuario?.idOficina);
 
     if (+ usuario?.idOficina >= 2) {

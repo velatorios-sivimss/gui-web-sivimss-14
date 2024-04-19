@@ -10,12 +10,13 @@ import {ArticulosServicios, DetalleNotaRemision} from '../../models/nota-remisio
 import {mensajes} from '../../../reservar-salas/constants/mensajes';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-cancelar-formato-generar-nota-remision',
   templateUrl: './cancelar-formato-generar-nota-remision.component.html',
   styleUrls: ['./cancelar-formato-generar-nota-remision.component.scss'],
-  providers: [DynamicDialogConfig, DialogService],
+  providers: [DynamicDialogConfig, DialogService, CookieService],
 })
 
 export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
@@ -31,7 +32,7 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
   servicios: ArticulosServicios[] = [];
   cancelarRemisionForm!: FormGroup;
 
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string) || mensajes;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,7 +42,8 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
     private readonly router: Router,
     private alertaService: AlertaService,
     private generarNotaRemisionService: GenerarNotaRemisionService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private cookieService: CookieService
   ) {
   }
 

@@ -14,11 +14,13 @@ import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/aler
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-por-empresa',
   templateUrl: './por-empresa.component.html',
-  styleUrls: ['./por-empresa.component.scss']
+  styleUrls: ['./por-empresa.component.scss'],
+  providers: [CookieService]
 })
 export class PorEmpresaComponent implements OnInit, OnChanges, AfterViewInit {
 
@@ -56,22 +58,20 @@ export class PorEmpresaComponent implements OnInit, OnChanges, AfterViewInit {
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private router: Router,
+    private cookieService: CookieService
   ) {
   }
 
   ngOnInit(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
 
-    this.empresaFormTempora = JSON.parse(localStorage.getItem('empresaForm') as string) || {};
-    localStorage.removeItem('empresaForm');
+    this.empresaFormTempora = JSON.parse(this.cookieService.get('empresaForm') as string) || {};
+    this.cookieService.delete('empresaForm');
     this.personasConvenio = this.empresaFormTempora.personas || [];
-    if (JSON.parse(localStorage.getItem('persona') as string)) {
-      this.personasConvenio.push(JSON.parse(localStorage.getItem('persona') as string));
+    if (JSON.parse(this.cookieService.get('persona') as string)) {
+      this.personasConvenio.push(JSON.parse(this.cookieService.get('persona') as string));
     }
-
-    localStorage.removeItem('persona');
-
-
+    this.cookieService.delete('persona');
     this.estado = respuesta[this.POSICION_ESTADOS]!.map((estado: TipoDropdown) => (
       {label: estado.label, value: estado.value})) || [];
     this.pais = respuesta[this.POSICION_PAISES]!.map((pais: TipoDropdown) => (
@@ -186,8 +186,8 @@ export class PorEmpresaComponent implements OnInit, OnChanges, AfterViewInit {
       correoElectronico: this.fe.correoElectronico.value,
       personas: this.personasConvenio
     }
-    localStorage.setItem('empresaForm', JSON.stringify(this.empresaFormTempora));
-    localStorage.setItem('flujo', this.escenario)
+    this.cookieService.set('empresaForm', JSON.stringify(this.empresaFormTempora));
+    this.cookieService.set('flujo', this.escenario)
 
     this.guardarFormularioPrincipal.emit(true);
   }
@@ -217,7 +217,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges, AfterViewInit {
           this.loaderService.desactivar()
           this.empresaForm.reset()
           if (!respuesta.datos || respuesta.datos.length == 0) return;
-          this.colonias = [{label: respuesta.datos[0].desColonia, value:respuesta.datos[0].desColonia}];
+          this.colonias = [{label: respuesta.datos[0].desColonia, value: respuesta.datos[0].desColonia}];
           this.fe.nombre.setValue(respuesta.datos[0].nombreEmpresa);
           this.fe.razonSocial.setValue(respuesta.datos[0].razonSocial);
           this.fe.rfc.setValue(respuesta.datos[0].rfc);
