@@ -1,31 +1,33 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CalendarOptions, EventApi, EventClickArg } from '@fullcalendar/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {CalendarOptions, EventApi, EventClickArg} from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { MENU_SALAS } from "../../constants/menu-salas";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {MENU_SALAS} from "../../constants/menu-salas";
 import interactionPlugin from "@fullcalendar/interaction";
-import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { CalendarioSalas } from "../../models/calendario-salas.interface";
-import { VerActividadSalasComponent } from "../ver-actividad-salas/ver-actividad-salas.component";
-import { ActivatedRoute } from "@angular/router";
-import { VelatorioInterface } from "../../models/velatorio.interface";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { HttpErrorResponse } from "@angular/common/http";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { ReservarSalasService } from "../../services/reservar-salas.service";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {CalendarioSalas} from "../../models/calendario-salas.interface";
+import {VerActividadSalasComponent} from "../ver-actividad-salas/ver-actividad-salas.component";
+import {ActivatedRoute} from "@angular/router";
+import {VelatorioInterface} from "../../models/velatorio.interface";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {ReservarSalasService} from "../../services/reservar-salas.service";
 import * as moment from 'moment';
-import { Moment } from 'moment';
-import { FullCalendarComponent } from "@fullcalendar/angular";
-import { finalize } from "rxjs/operators";
-import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
-import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface";
+import {Moment} from 'moment';
+import {FullCalendarComponent} from "@fullcalendar/angular";
+import {finalize} from "rxjs/operators";
+import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-calendario-salas',
   templateUrl: './calendario-salas.component.html',
   styleUrls: ['./calendario-salas.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, AutenticacionService]
 })
 export class CalendarioSalasComponent implements OnInit, OnDestroy {
 
@@ -56,7 +58,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
   salasDetalle: CalendarioSalas[] = [];
   currentEvents: EventApi[] = [];
 
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   constructor(
     private alertaService: AlertaService,
@@ -64,16 +66,17 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
     private readonly loaderService: LoaderService,
     private route: ActivatedRoute,
     private reservarSalasService: ReservarSalasService,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private authService: AutenticacionService
   ) {
   }
 
   ngOnInit(): void {
-    this.velatorio = +this.rolLocalStorage.idVelatorio ?? 0;
-    this.delegacion = +this.rolLocalStorage.idDelegacion ?? 0;
+    this.velatorio = +this.rolUsuarioEnSesion.idVelatorio ?? 0;
+    this.delegacion = +this.rolUsuarioEnSesion.idDelegacion ?? 0;
     const respuesta = this.route.snapshot.data['respuesta'];
     this.delegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION]!.map((delegacion: any) => (
-      { label: delegacion.label, value: delegacion.value })) || [];
+      {label: delegacion.label, value: delegacion.value})) || [];
     this.cambiarDelegacion();
     this.inicializarCalendario();
     this.inicializarCalendarioEmbalsamamiento();
@@ -81,7 +84,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
 
   inicializarCalendario(): void {
     this.calendarOptions = {
-      headerToolbar: { end: "next", center: "title", start: "prev" },
+      headerToolbar: {end: "next", center: "title", start: "prev"},
       initialView: 'dayGridMonth',
       plugins: [dayGridPlugin, interactionPlugin],
       initialEvents: "",
@@ -93,7 +96,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
       eventClick: this.mostrarEvento.bind(this),
       eventsSet: this.handleEvents.bind(this),
       dayMaxEventRows: 3,
-      titleFormat: { year: 'numeric', month: 'long' },
+      titleFormat: {year: 'numeric', month: 'long'},
       datesSet: event => {
         let mesInicio = +moment(event.start).format("MM");
         let mesFinal = +moment(event.end).format("MM");
@@ -118,7 +121,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
 
   inicializarCalendarioEmbalsamamiento(): void {
     this.calendarEmbalsamamientoOptions = {
-      headerToolbar: { end: "next", center: "title", start: "prev" },
+      headerToolbar: {end: "next", center: "title", start: "prev"},
       initialView: 'dayGridMonth',
       plugins: [dayGridPlugin, interactionPlugin],
       initialEvents: "",
@@ -130,7 +133,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
       eventClick: this.mostrarEvento.bind(this),
       eventsSet: this.handleEvents.bind(this),
       dayMaxEventRows: 3,
-      titleFormat: { year: 'numeric', month: 'long' },
+      titleFormat: {year: 'numeric', month: 'long'},
       datesSet: event => {
         let mesInicio = +moment(event.start).format("MM");
         let mesFinal = +moment(event.end).format("MM");
@@ -177,11 +180,11 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
           let bandera: boolean = false;
           if (!this.posicionPestania) {
             this.calendarioCremacion?.getApi().addEvent(
-              { id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala },
+              {id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala},
             );
           } else {
             this.calendarioEmbalsamamiento?.getApi().addEvent(
-              { id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala },
+              {id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala},
             );
           }
           this.tituloSalas.forEach((tituloSala: any) => {
@@ -215,7 +218,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
     this.actividadRef = this.dialogService.open(VerActividadSalasComponent, {
       header: 'Ver actividad del día',
       width: "920px",
-      data: { fecha: this.fechaSeleccionada, idSala: idSala }
+      data: {fecha: this.fechaSeleccionada, idSala: idSala}
     })
   }
 
@@ -282,7 +285,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
-          { label: velatorio.nomVelatorio, value: velatorio.idVelatorio })) || [];
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);

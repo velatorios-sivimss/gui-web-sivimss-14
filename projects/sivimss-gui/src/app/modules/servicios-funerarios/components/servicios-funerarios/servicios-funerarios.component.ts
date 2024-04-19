@@ -26,12 +26,13 @@ import {OpcionesArchivos} from '../../../../models/opciones-archivos.interface';
 import {DescargaArchivosService} from '../../../../services/descarga-archivos.service';
 import {of} from 'rxjs';
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-servicios-funerarios',
   templateUrl: './servicios-funerarios.component.html',
   styleUrls: ['./servicios-funerarios.component.scss'],
-  providers: [DescargaArchivosService],
+  providers: [DescargaArchivosService, AutenticacionService],
 })
 export class ServiciosFunerariosComponent implements OnInit {
   @ViewChild(OverlayPanel)
@@ -41,7 +42,7 @@ export class ServiciosFunerariosComponent implements OnInit {
   readonly POSICION_NIVELES: number = 1;
   readonly POSICION_ESTATUS: number = 2;
 
-  rolLocalStorage: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
   nivelUsuario: number = 0;
 
   filtroForm!: FormGroup;
@@ -78,10 +79,11 @@ export class ServiciosFunerariosComponent implements OnInit {
     private router: Router,
     private mensajesSistemaService: MensajesSistemaService,
     private serviciosFunerariosService: ServiciosFunerariosConsultaService,
-    private readonly loaderService: LoaderService
+    private readonly loaderService: LoaderService,
+    private authService: AutenticacionService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
-    this.nivelUsuario = obtenerNivelUsuarioLogueado(this.rolLocalStorage);
+    this.nivelUsuario = obtenerNivelUsuarioLogueado(this.rolUsuarioEnSesion);
     this.inicializarFiltroForm();
   }
 
@@ -97,11 +99,11 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
-    const nivel: number = +this.rolLocalStorage.idOficina;
+    const nivel: number = +this.rolUsuarioEnSesion.idOficina;
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: nivel, disabled: true}],
-      delegacion: [{value: obtenerDelegacionUsuarioLogueado(this.rolLocalStorage), disabled: nivel >= 2,}],
-      velatorio: [{value: obtenerVelatorioUsuarioLogueado(this.rolLocalStorage), disabled: nivel === 3}],
+      delegacion: [{value: obtenerDelegacionUsuarioLogueado(this.rolUsuarioEnSesion), disabled: nivel >= 2,}],
+      velatorio: [{value: obtenerVelatorioUsuarioLogueado(this.rolUsuarioEnSesion), disabled: nivel === 3}],
       folioPlanSFPA: [{value: null, disabled: false}],
       rfc: [{value: null, disabled: false}],
       curp: [{value: null, disabled: false}],
@@ -120,7 +122,7 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
   limpiar(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);
     const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);

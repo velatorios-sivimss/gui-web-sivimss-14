@@ -25,12 +25,13 @@ import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {MESES} from "../../constants/meses";
 import {Dropdown} from "primeng/dropdown";
 import {NOMBRE_ENDPOINT, NOMBRE_REPORTES} from "../../constants/nombre-reportes";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-reportes',
   templateUrl: './reportes.html',
   styleUrls: ['./reportes.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, AutenticacionService]
 })
 export class Reportes implements OnInit {
 
@@ -48,7 +49,7 @@ export class Reportes implements OnInit {
   readonly POSICION_PROMOTORES: number = 2;
 
   filtroForm!: FormGroup;
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   niveles: TipoDropdown[] = [];
   delegaciones: TipoDropdown[] = [];
@@ -91,6 +92,7 @@ export class Reportes implements OnInit {
     private route: ActivatedRoute,
     private reporteOrdenServicioService: ReportesService,
     private descargaArchivosService: DescargaArchivosService,
+    private authService: AutenticacionService
   ) {
     /*
     * 1	Reporte de órdenes de servicio
@@ -124,15 +126,15 @@ export class Reportes implements OnInit {
   }
 
   inicializarForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);
     const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
     this.filtroForm = this.formBuilder.group({
       tipoReporte: [{value: null, disabled: false}, [Validators.required]],
       reporte: [{value: null, disabled: false}, [Validators.required]],
       nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
-      delegacion: [{value: delegacion, disabled: +this.rolLocalStorage.idOficina >= 2}],
-      velatorio: [{value: velatorio, disabled: +this.rolLocalStorage.idOficina === 3}],
+      delegacion: [{value: delegacion, disabled: +this.rolUsuarioEnSesion.idOficina >= 2}],
+      velatorio: [{value: velatorio, disabled: +this.rolUsuarioEnSesion.idOficina === 3}],
       idTipoODS: [{value: null, disabled: false}],
       idEstatusODS: [{value: null, disabled: false}],
       fechaIni: [{value: null, disabled: false}],
@@ -190,7 +192,7 @@ export class Reportes implements OnInit {
         this.seleccionarValidaciones();
 
         if(configuracionInicial){
-          const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+          const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
           this.filtroFormDir.resetForm({
             nivel: obtenerNivelUsuarioLogueado(usuario),
             delegacion: obtenerDelegacionUsuarioLogueado(usuario),
@@ -219,7 +221,7 @@ export class Reportes implements OnInit {
   limpiarFiltros(): void {
     this.ff.idEstatusODS.clearValidators();
     this.exportar = [];
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroFormDir.resetForm({
       nivel: obtenerNivelUsuarioLogueado(usuario),
       delegacion: obtenerDelegacionUsuarioLogueado(usuario),

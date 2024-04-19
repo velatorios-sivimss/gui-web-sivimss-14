@@ -16,12 +16,15 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {CookieService} from "ngx-cookie-service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-listado-salas',
   templateUrl: './listado-salas.component.html',
   styleUrls: ['./listado-salas.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, AutenticacionService, CookieService]
 })
 export class ListadoSalasComponent implements OnInit, OnDestroy {
 
@@ -43,7 +46,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
   registrarSalidaRef!: DynamicDialogRef;
 
   filtroForm!: FormGroup;
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   constructor(
     private route: ActivatedRoute,
@@ -53,7 +56,9 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
     public dialogService: DialogService,
     private readonly loaderService: LoaderService,
     private reservarSalasService: ReservarSalasService,
-    private mensajesSistemaService: MensajesSistemaService) {
+    private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService,
+    private cookiesService: CookieService,) {
   }
 
   ngOnInit(): void {
@@ -66,8 +71,8 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
 
     this.inicializarFiltroForm();
 
-    let tipoSala = JSON.parse(localStorage.getItem('reserva-sala') as string);
-    localStorage.removeItem('reserva-sala');
+    const tipoSala = JSON.parse(this.cookiesService.get('reserva-sala') as string);
+    this.cookiesService.delete('reserva-sala');
     if (tipoSala) {
       this.registrarSalida(tipoSala);
     }
@@ -75,8 +80,8 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2}],
-      velatorio: [{value: null, disabled: +this.rolLocalStorage.idOficina === 3}],
+      delegacion: [{value: +this.rolUsuarioEnSesion.idDelegacion || null, disabled: +this.rolUsuarioEnSesion.idOficina >= 2}],
+      velatorio: [{value: null, disabled: +this.rolUsuarioEnSesion.idOficina === 3}],
     });
     if (this.f.delegacion.value != null) {
       this.cambiarDelegacion();
@@ -154,9 +159,9 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
         this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
           {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
 
-        const item = this.velatorios.find((item: TipoDropdown) => item.value === +this.rolLocalStorage.idVelatorio);
+        const item = this.velatorios.find((item: TipoDropdown) => item.value === +this.rolUsuarioEnSesion.idVelatorio);
         if (item) {
-          this.filtroForm.get('velatorio')?.patchValue(+this.rolLocalStorage.idVelatorio);
+          this.filtroForm.get('velatorio')?.patchValue(+this.rolUsuarioEnSesion.idVelatorio);
           this.cambiarPestania({index: 0});
         } else {
           this.filtroForm.get('velatorio')?.patchValue(null);

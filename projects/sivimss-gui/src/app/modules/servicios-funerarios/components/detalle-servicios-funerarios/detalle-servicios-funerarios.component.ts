@@ -32,13 +32,15 @@ import { of } from 'rxjs';
 import { OpcionesArchivos } from '../../../../models/opciones-archivos.interface';
 import { DescargaArchivosService } from '../../../../services/descarga-archivos.service';
 import * as moment from "moment";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 
 @Component({
   selector: ' app-detalle-servicios-funerarios',
   templateUrl: './detalle-servicios-funerarios.component.html',
   styleUrls: ['./detalle-servicios-funerarios.component.scss'],
-  providers: [DialogService, DescargaArchivosService],
+  providers: [DialogService, DescargaArchivosService, AutenticacionService],
 })
 export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
   @Input() servicioFunerario: ServiciosFunerariosInterface[] = [];
@@ -70,7 +72,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
   pagosRealizados!: PagosRealizados[];
   item!: PagosRealizados;
 
-  usuario = JSON.parse(localStorage.getItem('usuario') as string);
+  usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
   mensajeArchivoConfirmacion: string = '';
   mostrarModalConfirmacion: boolean = false;
   totalPagos: number = 0;
@@ -89,6 +91,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private descargaArchivosService: DescargaArchivosService,
     private renderer: Renderer2,
+    private authService: AutenticacionService
   ) {}
 
   ngOnInit(): void {

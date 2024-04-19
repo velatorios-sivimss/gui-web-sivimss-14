@@ -27,12 +27,13 @@ import {DescargaArchivosService} from "../../../../../services/descarga-archivos
 import {DialogService} from "primeng/dynamicdialog";
 import {SolicitudDescargaArchivo} from "../../modelos/solicitudDescargaArchivo.interface";
 import {forkJoin, Observable} from "rxjs";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-realizar-pago',
   templateUrl: './realizar-pago.component.html',
   styleUrls: ['./realizar-pago.component.scss'],
-  providers: [DescargaArchivosService, DialogService]
+  providers: [DescargaArchivosService, DialogService, AutenticacionService]
 })
 export class RealizarPagoComponent implements OnInit {
 
@@ -85,10 +86,11 @@ export class RealizarPagoComponent implements OnInit {
               private router: Router,
               private readonly activatedRoute: ActivatedRoute,
               private alertaService: AlertaService,
-              private descargaArchivosService: DescargaArchivosService
+              private descargaArchivosService: DescargaArchivosService,
+              private authService: AutenticacionService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.rol = +usuario.idRol;
   }
 
@@ -112,7 +114,7 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   inicializarForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     const velatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
     this.filtroPagoForm = this.formBuilder.group({
@@ -143,7 +145,7 @@ export class RealizarPagoComponent implements OnInit {
 
   limpiarFormulario(): void {
     if (!this.filtroPagoForm) return;
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     const velatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
     const DEFAULT = {nivel, velatorio}
@@ -324,7 +326,7 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   obtenerVelatorios(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null;
     this.realizarPagoService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.cargarCatalogoVelatorios(respuesta),

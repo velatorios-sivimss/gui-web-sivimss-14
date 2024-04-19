@@ -26,6 +26,7 @@ import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/me
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { finalize } from 'rxjs';
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 interface HttpResponse {
   respuesta: string;
@@ -36,7 +37,7 @@ interface HttpResponse {
   selector: 'app-promotores',
   templateUrl: './promotores.component.html',
   styleUrls: ['./promotores.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, AutenticacionService]
 })
 export class PromotoresComponent implements OnInit, OnDestroy {
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
@@ -88,6 +89,7 @@ export class PromotoresComponent implements OnInit, OnDestroy {
     private promotoresService: PromotoresService,
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -99,7 +101,7 @@ export class PromotoresComponent implements OnInit, OnDestroy {
   }
 
   inicializarFiltroForm() {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm = this.formBuilder.group({
       nivel: [{ value: +usuario.idOficina, disabled: true }],
       delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
@@ -217,7 +219,7 @@ export class PromotoresComponent implements OnInit, OnDestroy {
   limpiar(): void {
     this.realizoBusqueda = false;
     this.filtroForm.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
 
     if (+usuario.idOficina >= 2) {

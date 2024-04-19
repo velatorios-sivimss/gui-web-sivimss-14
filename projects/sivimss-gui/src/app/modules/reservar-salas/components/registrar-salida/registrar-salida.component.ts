@@ -13,15 +13,17 @@ import {SalidaSala} from "../../models/registro-sala.interface";
 import {ReservarSalasService} from "../../services/reservar-salas.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-registrar-salida',
   templateUrl: './registrar-salida.component.html',
-  styleUrls: ['./registrar-salida.component.scss']
+  styleUrls: ['./registrar-salida.component.scss'],
+  providers: [CookieService]
 })
 export class RegistrarSalidaComponent implements OnInit {
 
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
 
   registroSalidaForm!: FormGroup;
 
@@ -40,7 +42,8 @@ export class RegistrarSalidaComponent implements OnInit {
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private reservarSalasService:ReservarSalasService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private cookieService: CookieService
   ) { }
 
   ngOnInit(): void {

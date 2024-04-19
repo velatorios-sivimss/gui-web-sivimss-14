@@ -16,11 +16,13 @@ import {SalaVelatorio} from "../../models/sala-velatorio.interface";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {EntradaSala} from "../../models/registro-sala.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-registrar-entrada',
   templateUrl: './registrar-entrada.component.html',
-  styleUrls: ['./registrar-entrada.component.scss']
+  styleUrls: ['./registrar-entrada.component.scss'],
+  providers: [CookieService]
 })
 export class RegistrarEntradaComponent implements OnInit {
 
@@ -34,7 +36,7 @@ export class RegistrarEntradaComponent implements OnInit {
   tipoSala: number = 0;
   folioValido: boolean = false;
   opcionesInicio: TipoDropdown[] = [{label: 'Mantenimiento', value: '1'}, {label: 'Servicio de ODS', value: '2'}];
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
 
 
   constructor(
@@ -45,6 +47,7 @@ export class RegistrarEntradaComponent implements OnInit {
     private readonly loaderService: LoaderService,
     private reservarSalasService: ReservarSalasService,
     private mensajesSistemaService: MensajesSistemaService,
+    private cookieService: CookieService
   ) {
     this.iniciarFormRegistroEntrada();
   }

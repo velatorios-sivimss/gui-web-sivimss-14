@@ -28,13 +28,14 @@ import {DescargaArchivosService} from "../../../../services/descarga-archivos.se
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {CURP} from 'projects/sivimss-gui/src/app/utils/regex';
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 
 @Component({
   selector: 'app-alta-servicios-funerarios',
   templateUrl: './alta-servicios-funerarios.component.html',
   styleUrls: ['./alta-servicios-funerarios.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, AutenticacionService]
 })
 export class AltaServiciosFunerariosComponent implements OnInit {
 
@@ -90,7 +91,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private serviciosFunerariosService: ServiciosFunerariosService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -731,7 +733,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   generarPlan(): SolicitudPlan {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
     const numeroPago = this.fdt.numeroPago.value;
     const numPago: string = this.numeroPago.find((e: TipoDropdown) => e.value === numeroPago)?.label ?? '';

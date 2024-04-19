@@ -22,12 +22,13 @@ import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-
 import { finalize } from 'rxjs'
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service'
 import { RENOVACION_EXTEMPORANEA_BREADCRUMB } from '../../constants/breadcrumb'
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-renovacion-extemporanea',
   templateUrl: './renovacion-extemporanea.component.html',
   styleUrls: ['./renovacion-extemporanea.component.scss'],
-  providers: [DialogService],
+  providers: [DialogService, AutenticacionService],
 })
 export class RenovacionExtemporaneaComponent implements OnInit {
   readonly POSICION_CATALOGO_NIVELES = 0;
@@ -53,7 +54,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   mensajeConfirmacion: string = "";
   cargaInicial: boolean = true;
 
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   constructor(
     private route: ActivatedRoute,
@@ -64,6 +65,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
     private readonly loaderService: LoaderService,
     private renovacionExtemporaneaService: RenovacionExtemporaneaService,
     private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService
   ) { }
 
   ngOnInit(): void {
@@ -76,9 +78,9 @@ export class RenovacionExtemporaneaComponent implements OnInit {
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, []),
-      idDelegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, []),
-      idVelatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, []),
+      nivel: new FormControl({ value: +this.rolUsuarioEnSesion.idOficina || null, disabled: +this.rolUsuarioEnSesion.idOficina >= 1 }, []),
+      idDelegacion: new FormControl({ value: +this.rolUsuarioEnSesion.idDelegacion || null, disabled: +this.rolUsuarioEnSesion.idOficina >= 2 }, []),
+      idVelatorio: new FormControl({ value: +this.rolUsuarioEnSesion.idVelatorio || null, disabled: +this.rolUsuarioEnSesion.idOficina === 3 }, []),
       numConvenio: new FormControl({ value: null, disabled: false }, []),
       folio: new FormControl({ value: null, disabled: false }, []),
       rfc: new FormControl({ value: null, disabled: false }, [Validators.maxLength(13)]),
@@ -142,7 +144,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   }
 
   crearSolicitudFiltrosPorNivel(): FiltrosConveniosPrevision {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     switch (+usuario.idOficina) {
       case 1:
         return {
@@ -215,7 +217,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   limpiar(): void {
     this.busquedaRealizada = false;
     this.filtroForm.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
 
     if (+usuario.idOficina >= 2) {
