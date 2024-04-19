@@ -42,7 +42,7 @@ import {
 import {finalize} from 'rxjs/operators';
 import {LoaderService} from '../../../../../shared/loader/services/loader.service';
 import {HttpRespuesta} from '../../../../../models/http-respuesta.interface';
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {mapearArregloTipoDropdown, obtenerVelatorioUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {Dropdown} from 'primeng/dropdown';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {ModalEliminarArticuloComponent} from '../../modal-eliminar-articulo/modal-eliminar-articulo.component';
@@ -53,11 +53,14 @@ import {ActualizarOrdenServicioService} from '../../../services/actualizar-orden
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-modificar-datos-caracteristicas-contratante-sf',
   templateUrl: './modificar-datos-caracteristicas-contratante.component.html',
   styleUrls: ['./modificar-datos-caracteristicas-contratante.component.scss'],
+  providers: [AutenticacionService, CookieService]
 })
 export class ModificarDatosCaracteristicasContratanteSFComponent
   implements OnInit, AfterContentChecked {
@@ -110,7 +113,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   tipoAsignacion: any[] = [];
   idServicio: number | null = null;
   listaproveedor: any[] = [];
-  idVelatorio!: number;
+  idVelatorio!: number | null;
   mostrarDonarAtaud: boolean = true;
   fila: number = 0;
   utilizarArticulo: boolean | null = null;
@@ -149,7 +152,9 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
     private gestionarEtapasService: GestionarEtapasActualizacionSFService,
     private breadcrumbService: BreadcrumbService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private cookieService: CookieService,
+    private authService: AutenticacionService
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -178,13 +183,11 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   ngOnInit(): void {
-    localStorage.setItem("ataudDonado", 'N');
-    let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
+    this.cookieService.set("ataudDonado", 'N');
+    const estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
-    const usuario: UsuarioEnSesion = JSON.parse(
-      localStorage.getItem('usuario') as string
-    );
-    this.idVelatorio = +usuario.idVelatorio;
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion()
+    this.idVelatorio = obtenerVelatorioUsuarioLogueado(usuario);
 
     this.gestionarEtapasService.altaODS$
       .asObservable()
@@ -228,10 +231,8 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   buscarPaquetes(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(
-      localStorage.getItem('usuario') as string
-    );
-    this.idVelatorio = +usuario.idVelatorio;
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
+    this.idVelatorio = obtenerVelatorioUsuarioLogueado(usuario);
     this.loaderService.activar();
     const parametros = {idVelatorio: this.idVelatorio};
     this.gestionarOrdenServicioService
@@ -724,7 +725,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
       if (respuesta == null) {
         return;
       }
-      +respuesta.idAsignacion == 3 ? localStorage.setItem("ataudDonado", 'S') : localStorage.setItem("ataudDonado", 'N')
+      +respuesta.idAsignacion == 3 ? this.cookieService.set("ataudDonado", 'S') : this.cookieService.set("ataudDonado", 'N')
       this.datosPaquetes.forEach((datos: any) => {
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = respuesta.idInventario;
@@ -922,7 +923,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   datosAlta(): void {
-    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    let obj: DropDownDetalleInterface = JSON.parse(this.cookieService.get("drop_down") as string)
     let datosEtapaCaracteristicas = {
       observaciones: this.f.observaciones.value,
       notasServicio: this.f.notasServicio.value,
@@ -940,7 +941,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     );
     obj.tablaPaquete = datosEtapaCaracteristicas.datosPaquetes;
     obj.totalPaquete = this.total;
-    localStorage.setItem("drop_down",JSON.stringify(obj));
+    this.cookieService.set("drop_down",JSON.stringify(obj));
     this.datosPresupuesto.forEach((datos: any) => {
       let detalle: DetallePresupuestoInterface =
         {} as DetallePresupuestoInterface;

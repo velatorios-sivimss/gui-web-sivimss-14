@@ -15,18 +15,19 @@ import {DescargaArchivosService} from "../../../../../services/descarga-archivos
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 import {Router} from "@angular/router";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-detalle-orden-servicio',
   templateUrl: './detalle-orden-servicio.component.html',
   styleUrls: ['./detalle-orden-servicio.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, CookieService]
 })
 export class DetalleOrdenServicioComponent implements OnInit {
   @Output()
   seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
   altaODS: AltaODSSFInterface = {} as AltaODSSFInterface;
-  dropDownODS: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+  dropDownODS: DropDownDetalleInterface = JSON.parse(this.cookieService.get("drop_down") as string)
   constructor(
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
     private gestionarEtapasService: GestionarEtapasServiceSF,
@@ -36,6 +37,7 @@ export class DetalleOrdenServicioComponent implements OnInit {
     private renderer: Renderer2,
     private router: Router,
     private descargaArchivosService: DescargaArchivosService,
+    private cookieService: CookieService
   ) { }
 
   ngOnInit(): void {
@@ -67,10 +69,10 @@ export class DetalleOrdenServicioComponent implements OnInit {
 
 
           if(this.altaODS.idEstatus != 1){
-            if(localStorage.getItem("ataudDonado") == 'S' as string){
+            if(this.cookieService.get("ataudDonado") == 'S' as string){
               this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
             }
-            localStorage.removeItem('ataudDonado');
+            this.cookieService.delete('ataudDonado');
           }
 
           const ExitoMsg: string =
@@ -88,7 +90,7 @@ export class DetalleOrdenServicioComponent implements OnInit {
               'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
             );
           }
-          this.router.navigate(["ordenes-de-servicio"]);
+          void this.router.navigate(["ordenes-de-servicio"]);
         },
         error: (error: HttpErrorResponse) => {
           try {

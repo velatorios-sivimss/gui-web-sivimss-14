@@ -49,12 +49,14 @@ import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {PanteonInterace} from "../../../constants/panteon.interace";
 import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-modificar-informacion-servicio-sf',
   templateUrl: './modificar-informacion-servicio.component.html',
   styleUrls: ['./modificar-informacion-servicio.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, AutenticacionService, CookieService]
 
 })
 export class ModificarInformacionServicioSFComponent
@@ -112,8 +114,9 @@ export class ModificarInformacionServicioSFComponent
   confirmarPreOrden: boolean = false;
   confirmarGuardarPanteon: boolean = false;
   existePanteon: boolean = false;
-  colonias:TipoDropdown[] = [];
+  colonias: TipoDropdown[] = [];
   direcPanteon!: PanteonInterace;
+
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -130,7 +133,9 @@ export class ModificarInformacionServicioSFComponent
     private changeDetector: ChangeDetectorRef,
     private router: Router,
     private descargaArchivosService: DescargaArchivosService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private authService: AutenticacionService,
+    private cookieService: CookieService,
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -154,7 +159,7 @@ export class ModificarInformacionServicioSFComponent
   }
 
   ngOnInit(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.idVelatorio = +usuario.idVelatorio;
 
     this.estatusUrl = this.rutaActiva.snapshot.queryParams.idEstatus;
@@ -183,9 +188,9 @@ export class ModificarInformacionServicioSFComponent
     this.validarExistenciaPromotor();
   }
 
-  validarExistenciaPanteon(datos:any): void {
+  validarExistenciaPanteon(datos: any): void {
     this.existePanteon = !!datos.idPanteon
-    if(!this.existePanteon)return
+    if (!this.existePanteon) return
     this.direcPanteon = {
       calle: datos.panteon.calle,
       noExterior: datos.panteon.noExterior ?? null,
@@ -264,8 +269,8 @@ export class ModificarInformacionServicioSFComponent
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-           {value:  !!datos.idPanteon, disabled: !!datos.idPanteon}
-         ],
+          {value: !!datos.idPanteon, disabled: !!datos.idPanteon}
+        ],
       }),
       recoger: this.formBuilder.group({
         fecha: [
@@ -670,7 +675,7 @@ export class ModificarInformacionServicioSFComponent
     this.llenarDatos();
     this.altaODS.idEstatus = 1;
     window.scrollTo(0, 0);
-    this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
+    this.seleccionarEtapa.emit({idEtapaSeleccionada: 4, detalle_orden_servicio: false});
     // this.guardarODS(0)
   }
 
@@ -694,9 +699,9 @@ export class ModificarInformacionServicioSFComponent
 
               return;
             }
-            this.descargarOrdenServicio(respuesta.datos.idOrdenServicio,respuesta.datos.idEstatus);
-            if(this.altaODS.idEstatus != 1){
-              if(localStorage.getItem("ataudDonado") == 'S' as string){
+            this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+            if (this.altaODS.idEstatus != 1) {
+              if (this.cookieService.get("ataudDonado") == 'S' as string) {
                 this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
               }
             }
@@ -737,13 +742,13 @@ export class ModificarInformacionServicioSFComponent
 
   parseoFecha(fecha: string): any {
     const [dia, mes, anio] = fecha.split('/')
-    return  new Date(anio + '/' + mes + '/' + dia);
+    return new Date(anio + '/' + mes + '/' + dia);
   }
 
   parseoHora(fecha: string, tiempo: string): any {
     const [dia, mes, anio] = fecha.split('/')
     const [horas, minutos] = tiempo.split(':')
-    return  new Date(+anio, +mes, +dia, +horas, +minutos)
+    return new Date(+anio, +mes, +dia, +horas, +minutos)
   }
 
   guardarODSComplementaria(consumoTablas: number): void {
@@ -836,11 +841,11 @@ export class ModificarInformacionServicioSFComponent
 
     this.informacionServicio.fechaRecoger = this.validarFecha(formulario.recoger.fecha)
 
-    this.informacionServicio.horaRecoger = this.validarHora(formulario.recoger.hora,formulario.recoger.fecha);
+    this.informacionServicio.horaRecoger = this.validarHora(formulario.recoger.hora, formulario.recoger.fecha);
 
-    this.informacionServicio.horaCortejo = this.validarHora(formulario.cortejo.hora,formulario.cortejo.fecha);
+    this.informacionServicio.horaCortejo = this.validarHora(formulario.cortejo.hora, formulario.cortejo.fecha);
 
-    this.informacionServicio.horaCremacion = this.validarHora(formulario.lugarCremacion.hora,formulario.lugarCremacion.fecha);
+    this.informacionServicio.horaCremacion = this.validarHora(formulario.lugarCremacion.hora, formulario.lugarCremacion.fecha);
 
     this.informacionServicio.idPanteon = this.idPanteon;
     this.informacionServicio.idPromotor = formulario.cortejo.promotor;
@@ -866,7 +871,7 @@ export class ModificarInformacionServicioSFComponent
 
     this.informacionServicioVelacion.fechaVelacion = this.validarFecha(formulario.lugarVelacion.fecha);
 
-    this.informacionServicioVelacion.horaInstalacion = this.validarHora(formulario.instalacionServicio.hora,formulario.instalacionServicio.fecha)
+    this.informacionServicioVelacion.horaInstalacion = this.validarHora(formulario.instalacionServicio.hora, formulario.instalacionServicio.fecha)
 
     this.informacionServicioVelacion.horaVelacion = this.validarHora(formulario.lugarVelacion.hora, formulario.lugarVelacion.fecha)
 
@@ -882,22 +887,22 @@ export class ModificarInformacionServicioSFComponent
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
-  validarHora(hora:any,fecha:any):any {
-    if(hora){
-      if(typeof hora === "string"){
-        return moment(this.parseoHora(fecha,hora)).format('HH:mm');
-      }else{
-       return moment(hora).format('HH:mm');
+  validarHora(hora: any, fecha: any): any {
+    if (hora) {
+      if (typeof hora === "string") {
+        return moment(this.parseoHora(fecha, hora)).format('HH:mm');
+      } else {
+        return moment(hora).format('HH:mm');
       }
     }
     return null
   }
 
-  validarFecha(fecha:any):any {
-    if(fecha){
-      if(typeof fecha === "string"){
+  validarFecha(fecha: any): any {
+    if (fecha) {
+      if (typeof fecha === "string") {
         return moment(this.parseoFecha(fecha)).format('yyyy-MM-DD');
-      }else{
+      } else {
         return moment(fecha).format('yyyy-MM-DD');
       }
     }
@@ -994,8 +999,8 @@ export class ModificarInformacionServicioSFComponent
 
   descargarControlSalidaDonaciones(idODS: number, idEstatus: number): void {
     const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
-    this.gestionarOrdenServicioService.generarArchivoSalidaDonaciones(idODS,idEstatus).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
+    this.gestionarOrdenServicioService.generarArchivoSalidaDonaciones(idODS, idEstatus).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let link = this.renderer.createElement('a');
 
         const file = new Blob(
@@ -1009,7 +1014,7 @@ export class ModificarInformacionServicioSFComponent
         link.click();
         link.remove();
       },
-      error:(error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
@@ -1020,7 +1025,7 @@ export class ModificarInformacionServicioSFComponent
     this.llenarDatos();
     this.altaODS.idEstatus = 2;
     window.scrollTo(0, 0);
-    this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
+    this.seleccionarEtapa.emit({idEtapaSeleccionada: 4, detalle_orden_servicio: false});
     // this.guardarODS(1)
   }
 
@@ -1086,16 +1091,17 @@ export class ModificarInformacionServicioSFComponent
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
     this.llenarDatos();
-    this.seleccionarEtapa.emit({idEtapaSeleccionada:2, detalle_orden_servicio: true});
+    this.seleccionarEtapa.emit({idEtapaSeleccionada: 2, detalle_orden_servicio: true});
   }
+
   llenarDescripcionDropDown(): void {
-    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    const obj: DropDownDetalleInterface = JSON.parse(this.cookieService.get("drop_down") as string)
     obj.informacion.capilla = this.idCapilla?.selectedOption?.label ?? null;
     obj.informacion.sala = this.salaCambio?.selectedOption?.label ?? null;
-    localStorage.setItem("drop_down",JSON.stringify(obj));
+    this.cookieService.set("drop_down", JSON.stringify(obj));
   }
 
   validarExistenciaPromotor(): void {
-    if(this.cortejo.gestionadoPorPromotor.value)this.cortejo.promotor.enable();
+    if (this.cortejo.gestionadoPorPromotor.value) this.cortejo.promotor.enable();
   }
 }

@@ -40,11 +40,13 @@ import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
 import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-datos-contratante-sf',
   templateUrl: './datos-contratante.component.html',
   styleUrls: ['./datos-contratante.component.scss'],
+  providers: [CookieService]
 })
 export class DatosContratanteSFComponent implements OnInit {
   @Output()
@@ -102,7 +104,8 @@ export class DatosContratanteSFComponent implements OnInit {
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-    private gestionarEtapasService: GestionarEtapasServiceSF
+    private gestionarEtapasService: GestionarEtapasServiceSF,
+    private cookieService: CookieService
   ) {
   }
 
@@ -133,7 +136,7 @@ export class DatosContratanteSFComponent implements OnInit {
       .asObservable()
       .subscribe((datosPrevios) => this.llenarAlta(datosPrevios));
 
-    this.inicializarLocalStorage();
+    this.inicializarCookies();
   }
 
   llenarAlta(datosPrevios: AltaODSSFInterface): void {
@@ -196,7 +199,7 @@ export class DatosContratanteSFComponent implements OnInit {
     this.colonias = [{value:datosEtapaContratante.direccion.colonia,label:datosEtapaContratante.direccion.colonia}];
   }
 
-  inicializarLocalStorage(): void {
+  inicializarCookies(): void {
     let obj = {
       contratante: {
         parentesco: null,
@@ -223,7 +226,7 @@ export class DatosContratanteSFComponent implements OnInit {
       tablaPaquete: [],
       totalPaquete: 0
     }
-    localStorage.setItem("drop_down",JSON.stringify(obj));
+    this.cookieService.set("drop_down",JSON.stringify(obj));
   }
 
   noEspaciosAlPrincipio(posicion: number) {
@@ -761,10 +764,10 @@ export class DatosContratanteSFComponent implements OnInit {
     }
   }
   llenarDescripcionDropDown(): void {
-    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    let obj: DropDownDetalleInterface = JSON.parse(this.cookieService.get("drop_down") as string)
     obj.contratante.parentesco = this.parentescoContratante?.selectedOption?.label ?? null;
     obj.contratante.lugarNacimiento = this.lugarSeleccionado?.selectedOption?.label ?? null;
     obj.contratante.paisNacimiento = this.paisSeleccionado?.selectedOption?.label ?? null;
-    localStorage.setItem("drop_down",JSON.stringify(obj));
+    this.cookieService.set("drop_down",JSON.stringify(obj));
   }
 }

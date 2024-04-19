@@ -16,18 +16,19 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {Router} from "@angular/router";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-detalle-actualizar-orden-servicio',
   templateUrl: './detalle-actualizar-orden-servicio.component.html',
   styleUrls: ['./detalle-actualizar-orden-servicio.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, CookieService]
 })
 export class DetalleActualizarOrdenServicioComponent implements OnInit {
   @Output()
   seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
   altaODS: AltaODSInterface = {} as AltaODSInterface;
-  dropDownODS: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string);
+  dropDownODS: DropDownDetalleInterface = JSON.parse(this.cookieService.get("drop_down") as string);
   tipoOrden: number = 0;
   constructor(
     private gestionarEtapasService: GestionarEtapasActualizacionSFService,
@@ -39,6 +40,7 @@ export class DetalleActualizarOrdenServicioComponent implements OnInit {
     private router: Router,
     private renderer: Renderer2,
     private descargaArchivosService: DescargaArchivosService,
+    private cookieService: CookieService
   ) { }
 
   ngOnInit(): void {
@@ -153,10 +155,10 @@ export class DetalleActualizarOrdenServicioComponent implements OnInit {
               return;
             }
             if(this.altaODS.idEstatus != 1){
-              if(localStorage.getItem("ataudDonado") == 'S' as string){
+              if(this.cookieService.get("ataudDonado") == 'S' as string){
                 this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
               }
-              localStorage.removeItem('ataudDonado');
+              this.cookieService.delete('ataudDonado');
             }
             this.descargarOrdenServicio(respuesta.datos.idOrdenServicio,respuesta.datos.idEstatus);
 

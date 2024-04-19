@@ -1,10 +1,9 @@
-import {ChangeDetectorRef, Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import {ActivatedRoute} from '@angular/router';
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import {ActualizarOrdenServicioService} from '../../../services/actualizar-orden-servicio.service';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {HttpErrorResponse} from '@angular/common/http';
 import {
@@ -14,19 +13,21 @@ import {
 import {Subscription, finalize} from 'rxjs';
 import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-actualizar-orden-servicio-sf',
   templateUrl: './actualizar-orden-servicio.component.html',
   styleUrls: ['./actualizar-orden-servicio.component.scss'],
+  providers: [CookieService]
 })
 export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
-  readonly DATOS_DEL_CONTRATANTE = 0;
-  readonly DATOS_DEL_FINADO = 1;
-  readonly CARACTERISTICAS_DEL_PRESUPUESTO = 2;
-  readonly INFORMACION_DEL_SERVICIO = 3;
-  readonly DETALLE_ORDEN_SERVICIO = 4
-  detalle_orden_servicio = true;
+  readonly DATOS_DEL_CONTRATANTE: number = 0;
+  readonly DATOS_DEL_FINADO: number = 1;
+  readonly CARACTERISTICAS_DEL_PRESUPUESTO: number = 2;
+  readonly INFORMACION_DEL_SERVICIO: number = 3;
+  readonly DETALLE_ORDEN_SERVICIO: number = 4
+  detalle_orden_servicio: boolean = true;
 
   titulo: string = '';
 
@@ -41,10 +42,9 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
     private rutaActiva: ActivatedRoute,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-    private gestionarOrdenServicioService: ActualizarOrdenServicioService,
     private ordenServicioSF: GenerarOrdenServicioService,
-    private changeDetector: ChangeDetectorRef,
-    private alertaService: AlertaService
+    private alertaService: AlertaService,
+    private cookieService: CookieService,
   ) {
     this.buscarDetalle(Number(this.rutaActiva.snapshot.queryParams.idODS));
   }
@@ -380,7 +380,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    localStorage.removeItem('drop_down')
+    this.cookieService.delete('drop_down');
     const datosEtapaFinado = {
       datosFinado: {
         tipoOrden: null,

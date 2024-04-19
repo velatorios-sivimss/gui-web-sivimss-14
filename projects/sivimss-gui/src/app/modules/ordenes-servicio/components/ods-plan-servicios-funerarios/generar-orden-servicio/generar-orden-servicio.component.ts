@@ -3,29 +3,30 @@ import {EtapaEstado} from "projects/sivimss-gui/src/app/shared/etapas/models/eta
 import {Etapa} from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
 import {Subscription} from "rxjs";
 import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-generar-orden-servicio-sf',
   templateUrl: './generar-orden-servicio.component.html',
-  styleUrls: ['./generar-orden-servicio.component.scss']
+  styleUrls: ['./generar-orden-servicio.component.scss'],
+  providers: [CookieService]
 })
 export class GenerarOrdenServicioSFComponent implements OnDestroy {
 
-  readonly DATOS_DEL_CONTRATANTE = 0;
-  readonly DATOS_DEL_FINADO = 1;
-  readonly CARACTERISTICAS_DEL_PRESUPUESTO = 2;
-  readonly INFORMACION_DEL_SERVICIO = 3;
-  readonly DETALLE_ORDEN_SERVICIO = 4
-  detalle_orden_servicio = true;
-
-
+  readonly DATOS_DEL_CONTRATANTE: number = 0;
+  readonly DATOS_DEL_FINADO: number = 1;
+  readonly CARACTERISTICAS_DEL_PRESUPUESTO: number = 2;
+  readonly INFORMACION_DEL_SERVICIO: number = 3;
+  readonly DETALLE_ORDEN_SERVICIO: number = 4
+  detalle_orden_servicio: boolean = true;
 
   contratanteSubscription$!: Subscription;
 
   idEtapaSeleccionada: number = 0;
 
   constructor(
-    private gestionarEtapasService: GestionarEtapasServiceSF
+    private gestionarEtapasService: GestionarEtapasServiceSF,
+    private cookieService: CookieService
   ) {
   }
 
@@ -40,7 +41,7 @@ export class GenerarOrdenServicioSFComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    localStorage.removeItem('drop_down')
+    this.cookieService.delete('drop_down');
     const datosEtapaContratante = {
       datosContratante: {
         idPersona: null,

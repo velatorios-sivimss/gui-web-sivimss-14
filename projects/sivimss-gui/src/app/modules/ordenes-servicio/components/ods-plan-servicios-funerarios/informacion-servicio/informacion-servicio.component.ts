@@ -40,12 +40,14 @@ import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.servi
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {PanteonInterace} from "../../../constants/panteon.interace";
 import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-informacion-servicio-sf',
   templateUrl: './informacion-servicio.component.html',
   styleUrls: ['./informacion-servicio.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, CookieService, AutenticacionService]
 })
 export class InformacionServicioSFComponent implements OnInit {
   @Output()
@@ -94,7 +96,7 @@ export class InformacionServicioSFComponent implements OnInit {
   confirmarPreOrden: boolean = false;
   confirmarGuardarPanteon: boolean = false;
   existePanteon: boolean = false;
-  colonias:TipoDropdown[] = [];
+  colonias: TipoDropdown[] = [];
   direcPanteon!: PanteonInterace;
 
   constructor(
@@ -109,6 +111,8 @@ export class InformacionServicioSFComponent implements OnInit {
     private consultarOrdenServicioService: ConsultarOrdenServicioService,
     private renderer: Renderer2,
     private descargaArchivosService: DescargaArchivosService,
+    private cookieService: CookieService,
+    private authService: AutenticacionService
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -132,7 +136,7 @@ export class InformacionServicioSFComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.idVelatorio = +usuario.idVelatorio;
     this.gestionarEtapasService.datosEtapaInformacionServicio$.asObservable().subscribe(
       (datosEtapaInformacionServicio) => this.inicializarForm(datosEtapaInformacionServicio)
@@ -149,9 +153,9 @@ export class InformacionServicioSFComponent implements OnInit {
     this.buscarPromotor();
   }
 
-  validarExistenciaPanteon(datos:any): void {
+  validarExistenciaPanteon(datos: any): void {
     this.existePanteon = !!datos.idPanteon
-    if(!this.existePanteon)return
+    if (!this.existePanteon) return
     this.direcPanteon = {
       calle: datos.panteon.calle,
       noExterior: datos.panteon.noExterior ?? null,
@@ -300,7 +304,7 @@ export class InformacionServicioSFComponent implements OnInit {
         ],
       }),
     });
-    this.colonias = [{label:datos.colonia, value: datos.colonia}];
+    this.colonias = [{label: datos.colonia, value: datos.colonia}];
   }
 
   changePromotor(validacion: string): void {
@@ -531,7 +535,7 @@ export class InformacionServicioSFComponent implements OnInit {
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
     this.llenarDatos();
-    this.seleccionarEtapa.emit({idEtapaSeleccionada:2, detalle_orden_servicio: true});
+    this.seleccionarEtapa.emit({idEtapaSeleccionada: 2, detalle_orden_servicio: true});
   }
 
   llenarDatos(): void {
@@ -687,11 +691,11 @@ export class InformacionServicioSFComponent implements OnInit {
             return;
           }
           this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-          if(this.altaODS.idEstatus != 1){
-            if(localStorage.getItem("ataudDonado") == 'S' as string){
+          if (this.altaODS.idEstatus != 1) {
+            if (this.cookieService.get("ataudDonado") == 'S' as string) {
               this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
             }
-            localStorage.removeItem('ataudDonado');
+            this.cookieService.delete('ataudDonado');
           }
           const ExitoMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -704,7 +708,7 @@ export class InformacionServicioSFComponent implements OnInit {
             );
           } else {
             this.alertaService.mostrar(
-              TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(49) ||
+              TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(49) ||
               'Se ha guardado exitosamente la pre-orden. El contratante debe acudir al Velatorio correspondiente' +
               ' para concluir con la contratación del servicio.'
             );
@@ -750,13 +754,13 @@ export class InformacionServicioSFComponent implements OnInit {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
-    } )
+    })
   }
 
   descargarControlSalidaDonaciones(idODS: number, idEstatus: number): void {
     const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
-    this.gestionarOrdenServicioService.generarArchivoSalidaDonaciones(idODS,idEstatus).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
+    this.gestionarOrdenServicioService.generarArchivoSalidaDonaciones(idODS, idEstatus).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let link = this.renderer.createElement('a');
 
         const file = new Blob(
@@ -770,7 +774,7 @@ export class InformacionServicioSFComponent implements OnInit {
         link.click();
         link.remove();
       },
-      error:(error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
@@ -806,14 +810,14 @@ export class InformacionServicioSFComponent implements OnInit {
     this.llenarDatos();
     this.altaODS.idEstatus = 1;
     window.scrollTo(0, 0);
-    this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
+    this.seleccionarEtapa.emit({idEtapaSeleccionada: 4, detalle_orden_servicio: false});
   }
 
   generada(): void {
     this.llenarDatos();
     this.altaODS.idEstatus = 2;
     window.scrollTo(0, 0);
-    this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
+    this.seleccionarEtapa.emit({idEtapaSeleccionada: 4, detalle_orden_servicio: false});
   }
 
   consultaCP(): void {
@@ -851,10 +855,10 @@ export class InformacionServicioSFComponent implements OnInit {
   }
 
   llenarDescripcionDropDown(): void {
-    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    const obj: DropDownDetalleInterface = JSON.parse(this.cookieService.get("drop_down") as string)
     obj.informacion.capilla = this.idCapilla?.selectedOption?.label ?? null;
     obj.informacion.sala = this.salaCambio?.selectedOption?.label ?? null;
     obj.informacion.promotor = this.cambioPromotor?.selectedOption?.label ?? null;
-    localStorage.setItem("drop_down",JSON.stringify(obj));
+    this.cookieService.set("drop_down", JSON.stringify(obj));
   }
 }

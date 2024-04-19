@@ -49,11 +49,13 @@ import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 import * as moment from "moment"
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-modificar-datos-contratante-sf',
   templateUrl: './modificar-datos-contratante.component.html',
   styleUrls: ['./modificar-datos-contratante.component.scss'],
+  providers: [CookieService]
 })
 export class ModificarDatosContratanteSFComponent
   implements OnInit, AfterContentChecked {
@@ -128,7 +130,8 @@ export class ModificarDatosContratanteSFComponent
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
     private gestionarEtapasService: GestionarEtapasActualizacionSFService,
     private breadcrumbService: BreadcrumbService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private cookieService: CookieService
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -187,7 +190,7 @@ export class ModificarDatosContratanteSFComponent
       (datosConsultaODS) => (this.datosConsulta = datosConsultaODS)
     );
 
-    this.inicializarLocalStorage();
+    this.inicializarCookies();
   }
 
 
@@ -871,7 +874,7 @@ export class ModificarDatosContratanteSFComponent
       });
   }
 
-  inicializarLocalStorage(): void {
+  inicializarCookies(): void {
     let obj = {
       contratante: {
         parentesco: null,
@@ -898,7 +901,7 @@ export class ModificarDatosContratanteSFComponent
       },
       tablaPaquete:[]
     }
-    localStorage.setItem("drop_down",JSON.stringify(obj));
+    this.cookieService.set("drop_down",JSON.stringify(obj));
   }
 
   noEspaciosAlPrincipio(posicion: number) {
@@ -1196,10 +1199,10 @@ export class ModificarDatosContratanteSFComponent
   }
 
   llenarDescripcionDropDown(): void {
-    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    let obj: DropDownDetalleInterface = JSON.parse(this.cookieService.get("drop_down") as string)
     obj.contratante.parentesco = this.parentescoContratante?.selectedOption?.label ?? null;
     obj.contratante.lugarNacimiento = this.lugarSeleccionado?.selectedOption?.label ?? null;
     obj.contratante.paisNacimiento = this.paisSeleccionado?.selectedOption?.label ?? null;
-    localStorage.setItem("drop_down",JSON.stringify(obj));
+    this.cookieService.set("drop_down",JSON.stringify(obj));
   }
 }

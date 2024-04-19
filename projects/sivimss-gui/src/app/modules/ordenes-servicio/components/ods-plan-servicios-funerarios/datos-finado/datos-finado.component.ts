@@ -39,11 +39,13 @@ import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 import {ModalConvenioSfpaComponent} from "../modal-convenio-sfpa/modal-convenio-sfpa.component";
 import {Contratante} from "../../../models/contrato-sfpa.interface";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-datos-finado-sf',
   templateUrl: './datos-finado.component.html',
   styleUrls: ['./datos-finado.component.scss'],
+  providers: [CookieService]
 })
 export class DatosFinadoSFComponent implements OnInit {
   @Output()
@@ -118,7 +120,8 @@ export class DatosFinadoSFComponent implements OnInit {
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-    private gestionarEtapasService: GestionarEtapasServiceSF
+    private gestionarEtapasService: GestionarEtapasServiceSF,
+    private cookieService: CookieService
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -606,7 +609,7 @@ export class DatosFinadoSFComponent implements OnInit {
   }
 
   llenarDescripcionDropDown(): void {
-    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    let obj: DropDownDetalleInterface = JSON.parse(this.cookieService.get("drop_down") as string)
     obj.finado.clinicaAdscripcion = this.clinicaSeleccionada?.selectedOption?.label ?? null;
     obj.finado.tipoPension = this.pensionSeleccionada?.selectedOption?.label ?? null;
     obj.finado.unidadProcedencia = this.unidadSeleccionada?.selectedOption?.label ?? null;
@@ -614,6 +617,6 @@ export class DatosFinadoSFComponent implements OnInit {
     obj.finado.paisNacimiento = this.paisNacimientoSelect?.selectedOption?.label ?? null;
     obj.finado.numeroContrato = this.datosFinado.noContrato.value
     obj.finado.matricula = this.datosFinado.matricula.value
-    localStorage.setItem("drop_down",JSON.stringify(obj));
+    this.cookieService.set("drop_down",JSON.stringify(obj));
   }
 }
