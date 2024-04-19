@@ -5,7 +5,7 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación"
-                    (onChange)="cambiarDelegacion()" [disabled]="+this.rolLocalStorage.idOficina >= 2">
+                    (onChange)="cambiarDelegacion()" [disabled]="+this.rolUsuarioEnSesion.idOficina >= 2">
         </p-dropdown>
       </div>
       <div class="col-md-6">
@@ -14,7 +14,7 @@
                     [options]="velatorios"
                     (onChange)="consultarCapillas()"
                     placeholder="Selecciona el velatorio"
-                    [disabled]="+this.rolLocalStorage.idOficina === 3">
+                    [disabled]="+this.rolUsuarioEnSesion.idOficina === 3">
         </p-dropdown>
       </div>
     </div>

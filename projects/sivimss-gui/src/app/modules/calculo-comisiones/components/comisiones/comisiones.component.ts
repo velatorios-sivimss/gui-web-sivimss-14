@@ -25,6 +25,7 @@ import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mens
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 type ListadoComisiones = Required<Comisiones> & { id: string }
 
@@ -32,7 +33,7 @@ type ListadoComisiones = Required<Comisiones> & { id: string }
   selector: 'app-comisiones',
   templateUrl: './comisiones.component.html',
   styleUrls: ['./comisiones.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, AutenticacionService]
 })
 export class ComisionesComponent implements OnInit {
 
@@ -78,7 +79,8 @@ export class ComisionesComponent implements OnInit {
     private router: Router,
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private authService: AutenticacionService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -103,7 +105,7 @@ export class ComisionesComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroFormComisiones = this.formBuilder.group({
       nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
@@ -194,7 +196,7 @@ export class ComisionesComponent implements OnInit {
     this.filtroFormComisiones.reset();
     this.catalogoVelatorios = [];
     if (this.filtroFormComisiones) {
-      const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+      const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
       const DEFAULT = {
         nivel: obtenerNivelUsuarioLogueado(usuario),
         delegacion: this.central ? null : obtenerDelegacionUsuarioLogueado(usuario),

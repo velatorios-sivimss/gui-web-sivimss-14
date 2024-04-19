@@ -30,12 +30,15 @@ import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface
 import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
 import { VelatorioInterface } from "../../../reservar-salas/models/velatorio.interface";
 import { PrevisualizacionArchivoComponent } from "./previsualizacion-archivo/previsualizacion-archivo.component";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {CookieService} from "ngx-cookie-service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-calendario',
   templateUrl: './calendario.component.html',
   styleUrls: ['./calendario.component.scss'],
-  providers: [DialogService, DescargaArchivosService],
+  providers: [DialogService, DescargaArchivosService, AutenticacionService, CookieService],
 })
 export class CalendarioComponent implements OnInit, OnDestroy {
   @ViewChild('calendarioCapillas') calendarioCapillas!: FullCalendarComponent
@@ -62,8 +65,8 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   archivoRef!: DynamicDialogRef
 
   fechaCalendario!: Moment;
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   constructor(
     public dialogService: DialogService,
@@ -72,19 +75,21 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private capillaReservacionService: CapillaReservacionService,
     private formBuilder: FormBuilder,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private authService: AutenticacionService,
+    private cookieService: CookieService
   ) { }
 
 
 
   ngOnInit(): void {
-    this.velatorio = +this.rolLocalStorage.idVelatorio ?? 0;
-    this.delegacion = +this.rolLocalStorage.idDelegacion ?? 0;
+    this.velatorio = +this.rolUsuarioEnSesion.idVelatorio ?? 0;
+    this.delegacion = +this.rolUsuarioEnSesion.idDelegacion ?? 0;
     this.cambiarDelegacion();
     this.inicializarCalendario();
     this.inicializarCalendarioForm();
 
-    let respuesta = this.route.snapshot.data['respuesta'];
+    const respuesta = this.route.snapshot.data['respuesta'];
 
     this.delegaciones = respuesta[1]!.map((delegacion: any) => (
       { label: delegacion.label, value: delegacion.value })) || [];

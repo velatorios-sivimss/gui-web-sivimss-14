@@ -9,17 +9,19 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {HttpErrorResponse} from '@angular/common/http';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-realizar-cierre',
   templateUrl: './realizar-cierre.component.html',
-  styleUrls: ['./realizar-cierre.component.scss']
+  styleUrls: ['./realizar-cierre.component.scss'],
+  providers: [CookieService]
 })
 export class RealizarCierreComponent {
 
   modificarPagoForm!: FormGroup;
   filtrosBalanceSeleccionados: any;
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string) || mensajes;
 
   constructor(
     public config: DynamicDialogConfig,
@@ -27,7 +29,8 @@ export class RealizarCierreComponent {
     private readonly referencia: DynamicDialogRef,
     private balanceCajaService: BalanceCajaService,
     private mensajesSistemaService: MensajesSistemaService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private cookieService: CookieService
   ) {
   }
 
