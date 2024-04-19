@@ -11,7 +11,7 @@ import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 @Component({
   selector: 'app-menu-sidebar',
   templateUrl: './menu-sidebar.component.html',
-  styleUrls: ['./menu-sidebar.component.scss']
+  styleUrls: ['./menu-sidebar.component.scss'],
 })
 export class MenuSidebarComponent implements OnInit, OnDestroy {
   readonly NOMBRE_ICONO_POR_DEFECTO: string = 'default-icon.svg';
@@ -28,7 +28,7 @@ export class MenuSidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.abierto$ = this.menuSidebarService.menuSidebar$;
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.autenticacionService.obtenerUsuarioEnSesion();
     this.modulos$ = this.autenticacionService.obtenerModulosPorIdRol(usuario.idRol).pipe(
       map((respuesta: HttpRespuesta<Modulo[]>): Modulo[] => {
         return this.agregarPropiedadesExtras(respuesta.datos);
@@ -43,7 +43,7 @@ export class MenuSidebarComponent implements OnInit, OnDestroy {
         ...modulo,
         ruta: idsModulos[modulo.idModulo].ruta,
         icono: idsModulos[modulo.idModulo].icono ?? this.NOMBRE_ICONO_POR_DEFECTO
-      };      
+      };
       if (moduloConPropiedadesExtras.modulos !== null) {
         moduloConPropiedadesExtras.modulos = this.agregarPropiedadesExtras(moduloConPropiedadesExtras.modulos);
       }

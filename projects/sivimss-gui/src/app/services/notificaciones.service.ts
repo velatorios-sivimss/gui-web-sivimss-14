@@ -4,6 +4,7 @@ import {AutenticacionService} from "./autenticacion.service";
 import {Observable} from "rxjs";
 import {HttpRespuesta} from "../models/http-respuesta.interface";
 import {environment} from "../../environments/environment";
+import {CookieService} from "ngx-cookie-service";
 
 @Injectable()
 export class NotificacionesService {
@@ -15,7 +16,8 @@ export class NotificacionesService {
     "Tienes 10 vehículos, sin registrar la verificación al inicio de la jornada, recordamos que debes registrar diariamente",
     "Tienes 10 vehículos, sin registrar la verificación al inicio de la jornada, recordamos que debes registrar diariamente"];
 
-  constructor(private _http: HttpClient, private authService: AutenticacionService) {
+  constructor(private _http: HttpClient, private authService: AutenticacionService,
+              private cookieService: CookieService) {
   }
 
   consultaNotificacion(): Observable<HttpRespuesta<any>> {
@@ -39,7 +41,7 @@ export class NotificacionesService {
   }
 
   guardarNotificaciones(): void {
-    localStorage.setItem('notificaciones', JSON.stringify(this.notificaciones));
+    this.cookieService.set('notificaciones', JSON.stringify(this.notificaciones));
   }
 
   consultarNotificaciones(): string[] {
@@ -47,11 +49,11 @@ export class NotificacionesService {
   }
 
   borrarNotificaciones(): void {
-    localStorage.removeItem('notificaciones');
+    this.cookieService.delete('notificaciones');
   }
 
   obtenerNotificaciones(): string[] {
-    const notificaciones = JSON.parse(localStorage.getItem('notificaciones') as string);
+    const notificaciones = JSON.parse(this.cookieService.get('notificaciones') as string);
     return notificaciones || this.notificaciones;
   }
 }

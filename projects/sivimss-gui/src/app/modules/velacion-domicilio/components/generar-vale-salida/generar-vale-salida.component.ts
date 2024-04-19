@@ -17,17 +17,20 @@ import * as moment from 'moment';
 import { mensajes } from '../../../reservar-salas/constants/mensajes';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EliminarArticuloComponent } from '../eliminar-articulo/eliminar-articulo.component';
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {CookieService} from "ngx-cookie-service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-generar-vale-salida',
   templateUrl: './generar-vale-salida.component.html',
   styleUrls: ['./generar-vale-salida.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, AutenticacionService, CookieService]
 })
 export class GenerarValeSalidaComponent implements OnInit {
-  readonly POSICION_CATALOGO_NIVELES = 0;
-  readonly POSICION_CATALOGO_DELEGACION = 1;
-  readonly POSICION_ODS_GENERADAS = 2;
+  readonly POSICION_CATALOGO_NIVELES: number = 0;
+  readonly POSICION_CATALOGO_DELEGACION: number = 1;
+  readonly POSICION_ODS_GENERADAS: number = 2;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel
@@ -50,8 +53,8 @@ export class GenerarValeSalidaComponent implements OnInit {
   bloquearRegistrarSalida: boolean = false;
   idOds: number = 0;
   paso: 'formulario' | 'confirmacion' = 'formulario';
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string) || mensajes;
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   constructor(
     private route: ActivatedRoute,
@@ -62,6 +65,8 @@ export class GenerarValeSalidaComponent implements OnInit {
     private readonly loaderService: LoaderService,
     private router: Router,
     public dialogService: DialogService,
+    private cookieService: CookieService,
+    private authService: AutenticacionService
   ) { }
 
   ngOnInit(): void {
@@ -69,7 +74,7 @@ export class GenerarValeSalidaComponent implements OnInit {
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION];
     this.actualizarBreadcrumb();
-    this.inicializarForm();
+    void this.inicializarForm();
   }
 
   actualizarBreadcrumb(): void {
@@ -78,9 +83,9 @@ export class GenerarValeSalidaComponent implements OnInit {
 
   async inicializarForm() {
     this.generarValeSalidaForm = this.formBuilder.group({
-      nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, [Validators.required]),
-      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, []),
-      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, []),
+      nivel: new FormControl({ value: +this.rolUsuarioEnSesion.idOficina || null, disabled: +this.rolUsuarioEnSesion.idOficina >= 1 }, [Validators.required]),
+      delegacion: new FormControl({ value: +this.rolUsuarioEnSesion.idDelegacion || null, disabled: +this.rolUsuarioEnSesion.idOficina >= 2 }, []),
+      velatorio: new FormControl({ value: +this.rolUsuarioEnSesion.idVelatorio || null, disabled: +this.rolUsuarioEnSesion.idOficina === 3 }, []),
       folio: new FormControl({ value: null, disabled: false }, [Validators.required, Validators.maxLength(11)]),
       nombreContratante: new FormControl({ value: null, disabled: true }, []),
       nombreFinado: new FormControl({ value: null, disabled: true }, []),

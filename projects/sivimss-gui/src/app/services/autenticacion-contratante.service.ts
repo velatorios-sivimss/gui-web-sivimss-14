@@ -1,21 +1,22 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { BnNgIdleService } from 'bn-ng-idle';
-import { HttpRespuesta } from "projects/sivimss-gui/src/app/models/http-respuesta.interface";
-import { Payload } from "projects/sivimss-gui/src/app/models/payload.interface";
-import { UsuarioEnSesion } from "projects/sivimss-gui/src/app/models/usuario-en-sesion.interface";
-import { BreadcrumbService } from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
-import { MenuSidebarService } from "projects/sivimss-gui/src/app/shared/sidebar/services/menu-sidebar.service";
-import { SIVIMSS_TOKEN_ONLINE } from "projects/sivimss-gui/src/app/utils/constantes";
-import { existeMensajeEnEnum } from "projects/sivimss-gui/src/app/utils/funciones";
-import { MensajesRespuestaAutenticacion } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
-import { MensajesRespuestaCodigo } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-codigo.enum";
-import { TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION } from "projects/sivimss-gui/src/app/utils/tokens";
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { concatMap, map } from "rxjs/operators";
-import { JwtHelperService } from "@auth0/angular-jwt";
-import { environment } from '../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Inject, Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+import {BnNgIdleService} from 'bn-ng-idle';
+import {HttpRespuesta} from "projects/sivimss-gui/src/app/models/http-respuesta.interface";
+import {Payload} from "projects/sivimss-gui/src/app/models/payload.interface";
+import {UsuarioEnSesion} from "projects/sivimss-gui/src/app/models/usuario-en-sesion.interface";
+import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
+import {MenuSidebarService} from "projects/sivimss-gui/src/app/shared/sidebar/services/menu-sidebar.service";
+import {SIVIMSS_TOKEN_ONLINE} from "projects/sivimss-gui/src/app/utils/constantes";
+import {existeMensajeEnEnum} from "projects/sivimss-gui/src/app/utils/funciones";
+import {MensajesRespuestaAutenticacion} from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
+import {MensajesRespuestaCodigo} from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-codigo.enum";
+import {TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION} from "projects/sivimss-gui/src/app/utils/tokens";
+import {BehaviorSubject, Observable, of, Subscription} from 'rxjs';
+import {concatMap, map} from "rxjs/operators";
+import {JwtHelperService} from "@auth0/angular-jwt";
+import {environment} from '../../environments/environment';
+import {CookieService} from "ngx-cookie-service";
 
 export interface PermisosPorFuncionalidad {
   idFuncionalidad: string;
@@ -56,6 +57,7 @@ export class AutenticacionContratanteService {
     private readonly menuSidebarService: MenuSidebarService,
     private readonly breadcrumbService: BreadcrumbService,
     private readonly controladorInactividadUsuarioService: BnNgIdleService,
+    private readonly cookiesService: CookieService,
     @Inject(TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION) private readonly tiempoMaximoInactividad: number
   ) {
     this.recuperarSesionAlActualizarPagina();
@@ -65,7 +67,7 @@ export class AutenticacionContratanteService {
    * Crea la sesion nuevamente si el usuario actualiza la pagina
    */
   recuperarSesionAlActualizarPagina() {
-    const token: string | null = localStorage.getItem(SIVIMSS_TOKEN_ONLINE);
+    const token: string | null = this.cookiesService.get(SIVIMSS_TOKEN_ONLINE);
     if (token) {
       try {
         const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(token);
@@ -111,8 +113,8 @@ export class AutenticacionContratanteService {
     this.menuSidebarService.limpiarRutaSeleccionada();
     this.usuarioEnSesionSubject.next(null);
     this.permisosUsuarioSubject.next(null);
-    localStorage.removeItem(SIVIMSS_TOKEN_ONLINE);
-    localStorage.clear();
+    this.cookiesService.delete(SIVIMSS_TOKEN_ONLINE);
+    this.cookiesService.deleteAll();
     const evento = new CustomEvent('closeModal', {});
     document.dispatchEvent(evento);
     void this.router.navigate(['/externo-publico/autenticacion/inicio-sesion']);
@@ -137,7 +139,7 @@ export class AutenticacionContratanteService {
     this.breadcrumbService.limpiar();
     this.usuarioEnSesionSubject.next(usuario);
     this.permisosUsuarioSubject.next(permisosUsuario);
-    localStorage.setItem(SIVIMSS_TOKEN_ONLINE, token);
+    this.cookiesService.set(SIVIMSS_TOKEN_ONLINE, token);
     this.obtenerCatalogos();
     this.iniciarTemporizadorSesion();
   }
@@ -146,9 +148,9 @@ export class AutenticacionContratanteService {
     this.httpClient.post<HttpRespuesta<any>>(environment.api.login + '/catalogos/consulta', {})
       .subscribe({
         next: (respuesta) => {
-          const { datos } = respuesta;
-          const { catalogos } = datos ?? {};
-          this.guardarCatalogosEnLocalStorage(catalogos)
+          const {datos} = respuesta;
+          const {catalogos} = datos ?? {};
+          this.guardarCatalogosEnCookies(catalogos)
         },
         error: (error) => {
           console.log(error)
@@ -156,21 +158,21 @@ export class AutenticacionContratanteService {
       })
   }
 
-  guardarCatalogosEnLocalStorage<T extends { [key: string]: T }>(obj: T): void {
+  guardarCatalogosEnCookies<T extends { [key: string]: T }>(obj: T): void {
     Object.keys(obj).forEach(propiedad => {
-      localStorage.setItem(`catalogo_${propiedad}`, JSON.stringify(obj[propiedad]));
+      this.cookiesService.set(`catalogo_${propiedad}`, JSON.stringify(obj[propiedad]));
     });
   }
 
   obtenerPermisos(idRol: string) {
-    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/permisos`, { idRol });
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/permisos`, {idRol});
     // return of<HttpRespuesta<any>>(respuestaPermisosUsuario); NOSONAR
   }
 
   //////////////////////////////////
 
   iniciarSesionNewLogin(usuario: string, contrasenia: string, mostrarMsjContraseniaProxVencer: boolean = true): Observable<string> {
-    return this.httpClient.post<any>(environment.api.loginContratante + `/login/ext`, { usuario, contrasenia }).pipe(
+    return this.httpClient.post<any>(environment.api.loginContratante + `/login/ext`, {usuario, contrasenia}).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (this.esInicioSesionCorrecto(respuesta.mensaje) || (respuesta.mensaje === MensajesRespuestaAutenticacion.ContraseniaProximaVencer && !mostrarMsjContraseniaProxVencer)) {
           const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(respuesta.datos);
@@ -212,6 +214,6 @@ export class AutenticacionContratanteService {
   }
 
   generarCodigoRestablecerContraseniaNewLogin(usuario: string): Observable<HttpRespuesta<any>> {
-    return this.httpClient.post<HttpRespuesta<any>>(environment.api.loginContratante + `/contrasenia/ext/genera-codigo`, { usuario });
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.loginContratante + `/contrasenia/ext/genera-codigo`, {usuario});
   }
 }

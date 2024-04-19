@@ -123,7 +123,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         this.obtenerEstados();
         this.obtenerPromotores();
         this.obtenerPaquete();
-        this.cargarCatalogosLocalStorage();
+        this.cargarCatalogosDesdeCookies();
         this.handleGestionPromotor();
         this.consultarCurpInicial();
       });
@@ -135,7 +135,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
     }
   }
 
-  cargarCatalogosLocalStorage(): void {
+  cargarCatalogosDesdeCookies(): void {
     const catalogoNumPagos = this.autenticacionService.obtenerCatalogoDeCookies('catalogo_mesesPago');
     this.numeroPagos = mapearArregloTipoDropdown(catalogoNumPagos, 'desc', 'id');
   }

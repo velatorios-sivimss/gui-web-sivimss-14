@@ -1,33 +1,41 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { ConfirmationService, LazyLoadEvent } from "primeng/api";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { BuscarFoliosOds, ControlMovimiento, ReporteTabla, VelacionDomicilioInterface } from "../../models/velacion-domicilio.interface";
-import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { RegistrarEntradaEquipoComponent } from "../registrar-entrada-equipo/registrar-entrada-equipo.component";
-import { ActivatedRoute, Router } from "@angular/router";
-import { mapearArregloTipoDropdown, validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { VelacionDomicilioService } from '../../services/velacion-domicilio.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {ConfirmationService, LazyLoadEvent} from "primeng/api";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {
+  BuscarFoliosOds,
+  ControlMovimiento,
+  ReporteTabla,
+  VelacionDomicilioInterface
+} from "../../models/velacion-domicilio.interface";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {RegistrarEntradaEquipoComponent} from "../registrar-entrada-equipo/registrar-entrada-equipo.component";
+import {ActivatedRoute, Router} from "@angular/router";
+import {mapearArregloTipoDropdown, validarAlMenosUnCampoConValor} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {VelacionDomicilioService} from '../../services/velacion-domicilio.service';
+import {HttpErrorResponse} from '@angular/common/http';
 import * as moment from "moment/moment";
-import { mensajes } from '../../../reservar-salas/constants/mensajes';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { finalize } from 'rxjs';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {mensajes} from '../../../reservar-salas/constants/mensajes';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {finalize} from 'rxjs';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 
 @Component({
   selector: 'app-velacion-domicilio',
   templateUrl: './velacion-domicilio.component.html',
   styleUrls: ['./velacion-domicilio.component.scss'],
-  providers: [DialogService, DescargaArchivosService, ConfirmationService]
+  providers: [DialogService, DescargaArchivosService, ConfirmationService, CookieService, AutenticacionService]
 })
 export class VelacionDomicilioComponent implements OnInit {
   readonly POSICION_NIVELES: number = 0;
@@ -49,8 +57,8 @@ export class VelacionDomicilioComponent implements OnInit {
   catalogoVelatorios: TipoDropdown[] = [];
   foliosGenerados: TipoDropdown[] = [];
   fechaActual: Date = new Date();
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  alertas = JSON.parse(this.cookiesService.get('mensajes') as string) || mensajes;
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
   mensajeArchivoConfirmacion: string | undefined;
 
   constructor(
@@ -64,8 +72,11 @@ export class VelacionDomicilioComponent implements OnInit {
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
-    private confirmationService: ConfirmationService
-  ) { }
+    private confirmationService: ConfirmationService,
+    private authService: AutenticacionService,
+    private cookiesService: CookieService,
+  ) {
+  }
 
   async ngOnInit() {
     this.actualizarBreadcrumb();
@@ -76,7 +87,8 @@ export class VelacionDomicilioComponent implements OnInit {
   modalConfirmacion() {
     this.confirmationService.confirm({
       message: this.mensajeArchivoConfirmacion,
-      accept: () => { },
+      accept: () => {
+      },
     });
   }
 
@@ -94,12 +106,21 @@ export class VelacionDomicilioComponent implements OnInit {
 
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, []),
-      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, [Validators.required]),
-      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, [Validators.required]),
-      folioODS: new FormControl({ value: null, disabled: false }, [Validators.maxLength(11)]),
-      fechaInicio: new FormControl({ value: null, disabled: false }, []),
-      fechaFinal: new FormControl({ value: null, disabled: false }, []),
+      nivel: new FormControl({
+        value: +this.rolUsuarioEnSesion.idOficina || null,
+        disabled: +this.rolUsuarioEnSesion.idOficina >= 1
+      }, []),
+      delegacion: new FormControl({
+        value: +this.rolUsuarioEnSesion.idDelegacion || null,
+        disabled: +this.rolUsuarioEnSesion.idOficina >= 2
+      }, [Validators.required]),
+      velatorio: new FormControl({
+        value: +this.rolUsuarioEnSesion.idVelatorio || null,
+        disabled: +this.rolUsuarioEnSesion.idOficina === 3
+      }, [Validators.required]),
+      folioODS: new FormControl({value: null, disabled: false}, [Validators.maxLength(11)]),
+      fechaInicio: new FormControl({value: null, disabled: false}, []),
+      fechaFinal: new FormControl({value: null, disabled: false}, []),
     });
     await this.obtenerVelatorios();
   }
@@ -139,7 +160,7 @@ export class VelacionDomicilioComponent implements OnInit {
     this.registrarEntradaEquipoRef = this.dialogService.open(RegistrarEntradaEquipoComponent, {
       header: 'Registro de entrada de equipo de velación',
       width: '920px',
-      data: { valeSeleccionado: this.valeSeleccionado },
+      data: {valeSeleccionado: this.valeSeleccionado},
     });
 
     this.registrarEntradaEquipoRef.onClose.subscribe(() => {
@@ -310,14 +331,14 @@ export class VelacionDomicilioComponent implements OnInit {
   limpiar(): void {
     this.alertaService.limpiar();
     this.filtroForm.reset();
-    this.f.nivel.setValue(+this.rolLocalStorage.idOficina || null);
+    this.f.nivel.setValue(+this.rolUsuarioEnSesion.idOficina || null);
 
-    if (+ this.rolLocalStorage.idOficina >= 2) {
-      this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
+    if (+this.rolUsuarioEnSesion.idOficina >= 2) {
+      this.f.delegacion.setValue(+this.rolUsuarioEnSesion.idDelegacion || null);
     }
 
-    if (+this.rolLocalStorage.idOficina === 3) {
-      this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
+    if (+this.rolUsuarioEnSesion.idOficina === 3) {
+      this.f.velatorio.setValue(+this.rolUsuarioEnSesion.idVelatorio || null);
     }
 
     this.obtenerFoliosGenerados();
@@ -325,7 +346,9 @@ export class VelacionDomicilioComponent implements OnInit {
   }
 
   regresar() {
-    this.router.navigate(['/']).then((e) => { }).catch((e) => { });
+    this.router.navigate(['/']).then((e) => {
+    }).catch((e) => {
+    });
   }
 
   validarCampoOds() {

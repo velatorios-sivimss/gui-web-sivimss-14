@@ -32,6 +32,7 @@ import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-det
 import {AprobarSolicitudPagoComponent} from '../aprobar-solicitud-pago/aprobar-solicitud-pago.component';
 import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
 
@@ -48,7 +49,7 @@ interface SolicitudReporte {
   selector: 'app-solicitudes-pago',
   templateUrl: './solicitudes-pago.component.html',
   styleUrls: ['./solicitudes-pago.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, AutenticacionService]
 })
 export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
 
@@ -101,6 +102,7 @@ export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
     private changeDetector: ChangeDetectorRef,
+    private authService: AutenticacionService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -123,7 +125,7 @@ export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroFormSolicitudesPago = this.formBuilder.group({
       velatorio: [{
@@ -283,7 +285,7 @@ export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
       idNivel: this.filtroFormSolicitudesPago.get("nivel")?.value,
       idDelegacion: this.filtroFormSolicitudesPago.get("delegacion")?.value,
       idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
-      fecInicial:fechaInicial,
+      fecInicial: fechaInicial,
       fecFinal: fechaFinal,
       ejercicioFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
       idTipoSolicitud: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
@@ -296,7 +298,7 @@ export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
     this.paginacionConFiltrado = false;
     this.numPaginaActual = 0;
     if (this.filtroFormSolicitudesPago) {
-      const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+      const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
       const DEFAULT = {
         velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)
       }
@@ -307,7 +309,7 @@ export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
   }
 
   obtenerVelatorios(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null;
     this.solicitudesPagoService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {

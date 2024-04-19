@@ -101,7 +101,7 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
     this.cookieService.delete('fomularioPrincipal')
     this.personasAgregadas = JSON.parse(this.cookieService.get('persona') as string) || [];
     if(this.personasAgregadas.length > 0){
-      // localStorage.removeItem('persona')
+      // this.cookieService.delete('persona')
       this.existePersona = true;
     }
 

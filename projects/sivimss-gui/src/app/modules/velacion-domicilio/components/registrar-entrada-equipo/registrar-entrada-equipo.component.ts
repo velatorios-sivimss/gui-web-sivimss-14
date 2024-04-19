@@ -10,18 +10,20 @@ import { HttpErrorResponse } from '@angular/common/http';
 import * as moment from 'moment';
 import { mensajes } from '../../../reservar-salas/constants/mensajes';
 import { VelacionDomicilioInterface } from '../../models/velacion-domicilio.interface';
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-registrar-entrada-equipo',
   templateUrl: './registrar-entrada-equipo.component.html',
-  styleUrls: ['./registrar-entrada-equipo.component.scss']
+  styleUrls: ['./registrar-entrada-equipo.component.scss'],
+  providers: [CookieService]
 })
 export class RegistrarEntradaEquipoComponent implements OnInit {
 
   confirmacion: boolean = false;
   registrarEntradaForm!: FormGroup;
   valeSeleccionado: VelacionDomicilioInterface = {}
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string) || mensajes;
 
   constructor(
     public config: DynamicDialogConfig,
@@ -30,6 +32,7 @@ export class RegistrarEntradaEquipoComponent implements OnInit {
     private readonly referencia: DynamicDialogRef,
     private velacionDomicilioService: VelacionDomicilioService,
     private readonly loaderService: LoaderService,
+    private cookieService: CookieService
   ) { }
 
   ngOnInit(): void {

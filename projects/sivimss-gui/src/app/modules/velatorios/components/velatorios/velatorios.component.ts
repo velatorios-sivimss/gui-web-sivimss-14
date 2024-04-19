@@ -22,6 +22,7 @@ import {finalize} from "rxjs/operators";
 import {ActivatedRoute} from "@angular/router";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 const MAX_WIDTH: string = "920px";
 
@@ -29,7 +30,7 @@ const MAX_WIDTH: string = "920px";
   selector: 'app-velatorios',
   templateUrl: './velatorios.component.html',
   styleUrls: ['./velatorios.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, AutenticacionService]
 })
 export class VelatoriosComponent implements OnInit, OnDestroy {
 
@@ -60,11 +61,12 @@ export class VelatoriosComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private velatorioService: VelatorioService,
               private route: ActivatedRoute,
-              private cargadorService: LoaderService,) {
+              private cargadorService: LoaderService,
+              private authService: AutenticacionService) {
   }
 
   ngOnInit(): void {
-    const usuario = JSON.parse(localStorage.getItem("usuario") as string);
+    const usuario = this.authService.obtenerUsuarioEnSesion();
     this.actualizarBreadcrumb();
     this.cargarCatalogos();
     this.inicializarFiltroForm(usuario);

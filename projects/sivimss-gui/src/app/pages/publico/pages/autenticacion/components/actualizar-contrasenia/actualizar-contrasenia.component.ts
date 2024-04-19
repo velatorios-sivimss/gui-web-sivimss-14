@@ -17,6 +17,7 @@ import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/servic
 import { MensajesRespuestaAutenticacion } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
 import { PATRON_CONTRASENIA } from "projects/sivimss-gui/src/app/utils/regex";
 import {finalize} from "rxjs/operators";
+import {CookieService} from "ngx-cookie-service";
 
 /**
  * Valida que la contraseña anterior sea diferente a la nueva
@@ -42,7 +43,8 @@ export const confirmacionContraseniadValidator: ValidatorFn = (control: Abstract
 @Component({
   selector: 'app-actualizar-contrasenia',
   templateUrl: './actualizar-contrasenia.component.html',
-  styleUrls: ['./actualizar-contrasenia.component.scss']
+  styleUrls: ['./actualizar-contrasenia.component.scss'],
+  providers: [CookieService]
 })
 export class ActualizarContraseniaComponent implements OnInit {
 
@@ -65,7 +67,8 @@ export class ActualizarContraseniaComponent implements OnInit {
     private readonly router: Router,
     private readonly alertaService: AlertaService,
     private readonly formBuilder: FormBuilder,
-    private readonly loaderService: LoaderService
+    private readonly loaderService: LoaderService,
+    private readonly cookieService: CookieService
   ) {
   }
 
@@ -149,7 +152,7 @@ export class ActualizarContraseniaComponent implements OnInit {
   }
 
   empezarTemporizadorPorExcederIntentos(): void {
-    let duracionEnSegundos: number = this.existeTemporizadorEnCurso() ? Number(localStorage.getItem('segundos_temporizador_intentos_sivimss')) : this.SEGUNDOS_TEMPORIZADOR_INTENTOS;
+    let duracionEnSegundos: number = this.existeTemporizadorEnCurso() ? Number(this.cookieService.get('segundos_temporizador_intentos_sivimss')) : this.SEGUNDOS_TEMPORIZADOR_INTENTOS;
     let refTemporador: any = setInterval((): void => {
       let minutos: string | number = Math.floor(duracionEnSegundos / 60);
       let segundos: string | number = duracionEnSegundos % 60;
@@ -158,17 +161,17 @@ export class ActualizarContraseniaComponent implements OnInit {
       this.minutosTemporizadorIntentos = minutos as string;
       this.segundosTemporizadorIntentos = segundos as string;
       duracionEnSegundos--;
-      localStorage.setItem('segundos_temporizador_intentos_sivimss', String(duracionEnSegundos));
+      this.cookieService.set('segundos_temporizador_intentos_sivimss', String(duracionEnSegundos));
       if (duracionEnSegundos < 0) {
         clearInterval(refTemporador);
-        localStorage.removeItem('segundos_temporizador_intentos_sivimss');
+        this.cookieService.delete('segundos_temporizador_intentos_sivimss');
         this.mostrarModalIntentosFallidos = false;
       }
     }, 1000);
   }
 
   existeTemporizadorEnCurso(): boolean {
-    return localStorage.getItem('segundos_temporizador_intentos_sivimss') !== null;
+    return this.cookieService.get('segundos_temporizador_intentos_sivimss') !== null;
   }
 
   get f() {

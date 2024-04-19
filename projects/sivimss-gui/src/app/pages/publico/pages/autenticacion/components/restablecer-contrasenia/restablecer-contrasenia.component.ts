@@ -1,21 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
-import { confirmacionContraseniadValidator } from '../actualizar-contrasenia/actualizar-contrasenia.component';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { PATRON_CONTRASENIA } from 'projects/sivimss-gui/src/app/utils/regex';
-import { MensajesRespuestaAutenticacion } from 'projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {finalize} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
+import {confirmacionContraseniadValidator} from '../actualizar-contrasenia/actualizar-contrasenia.component';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {AutenticacionContratanteService} from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {PATRON_CONTRASENIA} from 'projects/sivimss-gui/src/app/utils/regex';
+import {MensajesRespuestaAutenticacion} from 'projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum';
+import {CookieService} from "ngx-cookie-service";
+
 // import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
 
 @Component({
   selector: 'app-restablecer-contrasenia',
   templateUrl: './restablecer-contrasenia.component.html',
   styleUrls: ['./restablecer-contrasenia.component.scss'],
+  providers: [CookieService]
 })
 export class RestablecerContraseniaComponent implements OnInit {
   readonly SEGUNDOS_TEMPORIZADOR_INTENTOS: number = 300;
@@ -35,8 +38,10 @@ export class RestablecerContraseniaComponent implements OnInit {
     private readonly router: Router,
     private readonly alertaService: AlertaService,
     private readonly formBuilder: FormBuilder,
-    private readonly loaderService: LoaderService
-  ) { }
+    private readonly loaderService: LoaderService,
+    private readonly cookieService: CookieService
+  ) {
+  }
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(params => {
@@ -48,12 +53,18 @@ export class RestablecerContraseniaComponent implements OnInit {
   inicializarForm(): void {
     this.form = this.formBuilder.group(
       {
-        usuario: [{ value: null, disabled: false }, [Validators.required]],
-        contraseniaAnterior: [{ value: null, disabled: false }],
-        contraseniaNueva: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
-        contraseniaConfirmacion: [{ value: null, disabled: false }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
+        usuario: [{value: null, disabled: false}, [Validators.required]],
+        contraseniaAnterior: [{value: null, disabled: false}],
+        contraseniaNueva: [{
+          value: null,
+          disabled: false
+        }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
+        contraseniaConfirmacion: [{
+          value: null,
+          disabled: false
+        }, [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
       },
-      { validators: [confirmacionContraseniadValidator] }
+      {validators: [confirmacionContraseniadValidator]}
     );
   }
 
@@ -138,7 +149,7 @@ export class RestablecerContraseniaComponent implements OnInit {
   }
 
   empezarTemporizadorPorExcederIntentos(): void {
-    let duracionEnSegundos: number = this.existeTemporizadorEnCurso() ? Number(localStorage.getItem('segundos_temporizador_intentos_sivimss')) : this.SEGUNDOS_TEMPORIZADOR_INTENTOS;
+    let duracionEnSegundos: number = this.existeTemporizadorEnCurso() ? Number(this.cookieService.get('segundos_temporizador_intentos_sivimss')) : this.SEGUNDOS_TEMPORIZADOR_INTENTOS;
     let refTemporador: NodeJS.Timer = setInterval((): void => {
       let minutos: string | number = Math.floor(duracionEnSegundos / 60);
       let segundos: string | number = duracionEnSegundos % 60;
@@ -147,17 +158,17 @@ export class RestablecerContraseniaComponent implements OnInit {
       this.minutosTemporizadorIntentos = minutos as string;
       this.segundosTemporizadorIntentos = segundos as string;
       duracionEnSegundos--;
-      localStorage.setItem('segundos_temporizador_intentos_sivimss', String(duracionEnSegundos));
+      this.cookieService.set('segundos_temporizador_intentos_sivimss', String(duracionEnSegundos));
       if (duracionEnSegundos < 0) {
         clearInterval(refTemporador);
-        localStorage.removeItem('segundos_temporizador_intentos_sivimss');
+        this.cookieService.delete('segundos_temporizador_intentos_sivimss');
         this.mostrarModalIntentosFallidos = false;
       }
     }, 1000);
   }
 
   existeTemporizadorEnCurso(): boolean {
-    return localStorage.getItem('segundos_temporizador_intentos_sivimss') !== null;
+    return this.cookieService.get('segundos_temporizador_intentos_sivimss') !== null;
   }
 
   get f() {
