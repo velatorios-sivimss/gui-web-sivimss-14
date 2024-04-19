@@ -20,7 +20,7 @@ export class OrdenEntradaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.index = +JSON.parse(localStorage.getItem('indexOrdenEntrada') as string);
+    this.index = +JSON.parse(this.cookieService.get('indexOrdenEntrada') as string);
     this.cookieService.delete("indexOrdenEntrada")
     this.actualizarBreadCrumb();
   }

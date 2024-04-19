@@ -37,12 +37,13 @@ import {ConsultarOrdenServicioService} from "../../services/consultar-orden-serv
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-informacion-servicio',
   templateUrl: './informacion-servicio.component.html',
   styleUrls: ['./informacion-servicio.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, AutenticacionService]
 })
 export class InformacionServicioComponent implements OnInit {
   @Output()
@@ -101,6 +102,7 @@ export class InformacionServicioComponent implements OnInit {
     private consultarOrdenServicioService: ConsultarOrdenServicioService,
     private renderer: Renderer2,
     private descargaArchivosService: DescargaArchivosService,
+    private authService: AutenticacionService
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -124,7 +126,7 @@ export class InformacionServicioComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.idVelatorio = +usuario.idVelatorio;
     this.gestionarEtapasService.datosEtapaInformacionServicio$
       .asObservable()

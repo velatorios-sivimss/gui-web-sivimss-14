@@ -42,7 +42,7 @@ import {
 import {finalize} from 'rxjs/operators';
 import {LoaderService} from '../../../../shared/loader/services/loader.service';
 import {HttpRespuesta} from '../../../../models/http-respuesta.interface';
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {mapearArregloTipoDropdown, obtenerVelatorioUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {Dropdown} from 'primeng/dropdown';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {ModalEliminarArticuloComponent} from '../modal-eliminar-articulo/modal-eliminar-articulo.component';
@@ -52,11 +52,13 @@ import {ActivatedRoute} from '@angular/router';
 import {ActualizarOrdenServicioService} from '../../services/actualizar-orden-servicio.service';
 import {GestionarEtapasActualizacionService} from '../../services/gestionar-etapas-actualizacion.service';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-modificar-datos-caracteristicas-contratante',
   templateUrl: './modificar-datos-caracteristicas-contratante.component.html',
   styleUrls: ['./modificar-datos-caracteristicas-contratante.component.scss'],
+  providers: [AutenticacionService]
 })
 export class ModificarDatosCaracteristicasContratanteComponent
   implements OnInit, AfterContentChecked {
@@ -109,7 +111,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
   tipoAsignacion: any[] = [];
   idServicio: number | null = null;
   listaproveedor: any[] = [];
-  idVelatorio!: number;
+  idVelatorio!: number | null;
   mostrarDonarAtaud: boolean = true;
   fila: number = 0;
   utilizarArticulo: boolean | null = null;
@@ -148,7 +150,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
     private gestionarEtapasService: GestionarEtapasActualizacionService,
     private breadcrumbService: BreadcrumbService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private authService: AutenticacionService
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -177,11 +180,9 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   ngOnInit(): void {
-    let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
+    const estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
-    const usuario: UsuarioEnSesion = JSON.parse(
-      localStorage.getItem('usuario') as string
-    );
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion()
     this.idVelatorio = +usuario.idVelatorio;
 
     this.gestionarEtapasService.altaODS$
@@ -226,10 +227,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   buscarPaquetes(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(
-      localStorage.getItem('usuario') as string
-    );
-    this.idVelatorio = +usuario.idVelatorio;
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
+    this.idVelatorio = obtenerVelatorioUsuarioLogueado(usuario);
     this.loaderService.activar();
     const parametros = {idVelatorio: this.idVelatorio};
     this.gestionarOrdenServicioService

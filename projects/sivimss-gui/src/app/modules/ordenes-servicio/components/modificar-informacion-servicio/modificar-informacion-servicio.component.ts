@@ -12,7 +12,7 @@ import {
 } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-panteon/modal-agregar-panteon.component';
 
 import {DescargaArchivosService} from '../../../../services/descarga-archivos.service';
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {mapearArregloTipoDropdown, obtenerVelatorioUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 import {AltaODSInterface} from '../../models/AltaODS.interface';
@@ -51,12 +51,13 @@ import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-arc
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {GenerarOrdenServicioService} from "../../services/generar-orden-servicio.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-modificar-informacion-servicio',
   templateUrl: './modificar-informacion-servicio.component.html',
   styleUrls: ['./modificar-informacion-servicio.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, AutenticacionService]
 
 })
 export class ModificarInformacionServicioComponent
@@ -99,7 +100,7 @@ export class ModificarInformacionServicioComponent
 
   ocultarFolioEstatus: boolean = true;
   form!: FormGroup;
-  idVelatorio!: number;
+  idVelatorio!: number | null;
   capillas: any[] = [];
   salas: any[] = [];
   promotores: any[] = [];
@@ -127,7 +128,8 @@ export class ModificarInformacionServicioComponent
     private changeDetector: ChangeDetectorRef,
     private router: Router,
     private descargaArchivosService: DescargaArchivosService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private authService: AutenticacionService
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -151,8 +153,8 @@ export class ModificarInformacionServicioComponent
   }
 
   ngOnInit(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.idVelatorio = +usuario.idVelatorio;
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
+    this.idVelatorio = obtenerVelatorioUsuarioLogueado(usuario);
 
     this.estatusUrl = this.rutaActiva.snapshot.queryParams.idEstatus;
 

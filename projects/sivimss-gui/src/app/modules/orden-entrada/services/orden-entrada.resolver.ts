@@ -3,16 +3,18 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/r
 import { OrdenEntradaService } from "./orden-entrada.service";
 import { forkJoin, Observable } from "rxjs";
 import { UsuarioEnSesion } from "../../../models/usuario-en-sesion.interface";
+import {AutenticacionService} from "../../../services/autenticacion.service";
 
 @Injectable()
 export class OrdenEntradaResolver implements Resolve<any> {
 
-  constructor(private ordenEntradaService: OrdenEntradaService) { }
+  constructor(private ordenEntradaService: OrdenEntradaService,
+              private authService: AutenticacionService) { }
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const catDelegacion$ = this.ordenEntradaService.obtenerCatalogoDelegaciones();
     const catNivel$ = this.ordenEntradaService.obtenerCatalogoNiveles();
     const foliosODE$ = this.ordenEntradaService.consultarFolioODE();
-    let usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    let usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     let datos = {
       "idVelatorio": usuario.idVelatorio,
       "numFolioOrdenEntrada": null,
