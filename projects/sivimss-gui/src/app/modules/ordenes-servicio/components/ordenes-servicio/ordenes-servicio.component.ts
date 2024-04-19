@@ -30,14 +30,16 @@ import {CancelarOrdenServicioComponent} from "../cancelar-orden-servicio/cancela
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-ordenes-servicio',
   templateUrl: './ordenes-servicio.component.html',
   styleUrls: ['./ordenes-servicio.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, AutenticacionService]
 })
-export class OrdenesServicioComponent implements OnInit, OnDestroy{
+export class OrdenesServicioComponent implements OnInit, OnDestroy {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -77,7 +79,7 @@ export class OrdenesServicioComponent implements OnInit, OnDestroy{
   ordenesServicio: OrdenServicioPaginado[] = [];
   ordenServicioSeleccionada!: any;
 
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   tarjetaIdentificacionref!: DynamicDialogRef;
 
@@ -93,17 +95,15 @@ export class OrdenesServicioComponent implements OnInit, OnDestroy{
     private descargaArchivosService: DescargaArchivosService,
     private renderer: Renderer2,
     private router: Router,
+    private authService: AutenticacionService
   ) {
   }
 
   ngOnInit(): void {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
-
-    let respuesta = this.route.snapshot.data['respuesta'];
+    const respuesta = this.route.snapshot.data['respuesta'];
     this.delegaciones = respuesta[this.POSICION_DELEGACION];
     this.unidadesMedicas = respuesta[1];
-
-
     this.consultarTipoODS();
     this.consultarEstatusODS();
     this.consultarNombreContratantes();
@@ -132,7 +132,6 @@ export class OrdenesServicioComponent implements OnInit, OnDestroy{
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.estatusODS = mapearArregloTipoDropdown(respuesta.datos, 'estatus', 'idODS') || [];
-
       },
       error: (error: HttpErrorResponse) => {
         console.log(error)
@@ -161,7 +160,6 @@ export class OrdenesServicioComponent implements OnInit, OnDestroy{
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.nombresFinados = respuesta.datos || [];
-
       },
       error: (error: HttpErrorResponse) => {
         console.log(error)
@@ -171,8 +169,8 @@ export class OrdenesServicioComponent implements OnInit, OnDestroy{
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2}],
-      velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3}],
+      delegacion: [{value: +this.rolUsuarioEnSesion.idDelegacion || null, disabled: +this.rolUsuarioEnSesion.idOficina >= 2}],
+      velatorio: [{value: +this.rolUsuarioEnSesion.idVelatorio || null, disabled: +this.rolUsuarioEnSesion.idOficina === 3}],
       numeroFolio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
       nombreFinado: [{value: null, disabled: false}],
@@ -193,8 +191,8 @@ export class OrdenesServicioComponent implements OnInit, OnDestroy{
     this.paginarPorFiltros()
   }
 
-  paginarPorFiltros(botonBusqueda?:boolean): void {2
-    if(botonBusqueda)this.numPaginaActual=0;
+  paginarPorFiltros(botonBusqueda?: boolean): void {
+    if (botonBusqueda) this.numPaginaActual = 0;
     this.totalElementos = 0;
     this.ordenesServicio = [];
     const filtros = this.obtenerObjetoParaFiltrado();
@@ -579,8 +577,8 @@ export class OrdenesServicioComponent implements OnInit, OnDestroy{
   }
 
   validaControlSalidaDonacion(): boolean {
-    if(this.ordenServicioSeleccionada.EntradaDonacion > 0){
-      if(this.ordenServicioSeleccionada.idTipoOrden == 4){
+    if (this.ordenServicioSeleccionada.EntradaDonacion > 0) {
+      if (this.ordenServicioSeleccionada.idTipoOrden == 4) {
         return this.ordenServicioSeleccionada.estatus?.includes('Generada');
       }
       return true
@@ -597,8 +595,9 @@ export class OrdenesServicioComponent implements OnInit, OnDestroy{
   get formulario() {
     return this.filtroForm.controls;
   }
+
   ngOnDestroy() {
-    if(this.tarjetaIdentificacionref){
+    if (this.tarjetaIdentificacionref) {
       this.tarjetaIdentificacionref.destroy();
     }
   }

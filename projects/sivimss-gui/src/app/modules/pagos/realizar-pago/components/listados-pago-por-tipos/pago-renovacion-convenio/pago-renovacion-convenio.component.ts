@@ -19,12 +19,13 @@ import {
   validarUsuarioLogueado
 } from "../../../../../../utils/funciones";
 import {UsuarioEnSesion} from "../../../../../../models/usuario-en-sesion.interface";
+import {AutenticacionService} from "../../../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-pago-renovacion-convenio',
   templateUrl: './pago-renovacion-convenio.component.html',
   styleUrls: ['./pago-renovacion-convenio.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, AutenticacionService]
 })
 export class PagoRenovacionConvenioComponent implements OnInit {
 
@@ -44,7 +45,8 @@ export class PagoRenovacionConvenioComponent implements OnInit {
               public dialogService: DialogService,
               private realizarPagoService: RealizarPagoService,
               private cargadorService: LoaderService,
-              private mensajesSistemaService: MensajesSistemaService
+              private mensajesSistemaService: MensajesSistemaService,
+              private authService: AutenticacionService
   ) {
 
   }
@@ -69,7 +71,7 @@ export class PagoRenovacionConvenioComponent implements OnInit {
 
   private paginar(): void {
     this.cargadorService.activar();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const idVelatorio: number | null = obtenerNivelUsuarioLogueado(usuario) === 1 ? null : obtenerVelatorioUsuarioLogueado(usuario);
     this.realizarPagoService.consultarPagosRenovacionConvenio({ idVelatorio },this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({

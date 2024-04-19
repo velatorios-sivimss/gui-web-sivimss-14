@@ -27,6 +27,7 @@ import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mens
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import * as moment from "moment/moment";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 type ListadoFormato = Required<FormatoPagare> & { idODS: string }
 
@@ -34,7 +35,7 @@ type ListadoFormato = Required<FormatoPagare> & { idODS: string }
   selector: 'app-generar-formato-pagare',
   templateUrl: './generar-formato-pagare.component.html',
   styleUrls: ['./generar-formato-pagare.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, AutenticacionService]
 })
 export class GenerarFormatoPagareComponent implements OnInit {
 
@@ -82,7 +83,8 @@ export class GenerarFormatoPagareComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private cargadorService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -114,7 +116,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: nivel, disabled: true}],
@@ -205,7 +207,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   limpiar(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const DEFAULT = {
       nivel: obtenerNivelUsuarioLogueado(usuario),
       delegacion: obtenerDelegacionUsuarioLogueado(usuario),

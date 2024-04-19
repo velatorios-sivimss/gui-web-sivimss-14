@@ -25,6 +25,7 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {FiltrosFacturacion} from "../../models/filtrosFacturacion.interface";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 interface RegistroFacturacion {
   contratante: string,
@@ -48,7 +49,7 @@ interface ParamsCancelar {
   selector: 'app-facturacion',
   templateUrl: './facturacion.component.html',
   styleUrls: ['./facturacion.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, AutenticacionService]
 })
 export class FacturacionComponent implements OnInit {
 
@@ -88,10 +89,11 @@ export class FacturacionComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private readonly router: Router,
     private route: ActivatedRoute,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private authService: AutenticacionService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.rol = +usuario.idRol;
   }
 
@@ -102,7 +104,7 @@ export class FacturacionComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm = this.formBuilder.group({
       velatorio: [{
         value: obtenerVelatorioUsuarioLogueado(usuario),
@@ -147,7 +149,7 @@ export class FacturacionComponent implements OnInit {
   limpiar(): void {
     this.paginacionConFiltrado = false;
     if (this.filtroForm) {
-      const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+      const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
       this.filtroFormDir.resetForm({velatorio: obtenerVelatorioUsuarioLogueado(usuario)});
     }
     this.tipoPago = null;
@@ -219,7 +221,7 @@ export class FacturacionComponent implements OnInit {
   }
 
   obtenerVelatorios(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.facturacionService.obtenerCatalogoVelatorios(usuario?.idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.velatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
@@ -271,7 +273,6 @@ export class FacturacionComponent implements OnInit {
     ).subscribe({
       next: (respuesta: boolean): void => {
         if (respuesta) this.mostrarModalDescargaExitosa = true;
-        console.log(respuesta)
       },
       error: (error): void => {
         console.log(error)

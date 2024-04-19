@@ -26,6 +26,7 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import * as moment from "moment/moment";
 import {FiltrosBasicosReciboPago, FormBasicoReciboPago} from "../../models/filtrosBasicosReciboPago.interface";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 type ListadoRecibo = Required<ReciboPago> & { idPagoBitacora: string }
 
@@ -33,7 +34,7 @@ type ListadoRecibo = Required<ReciboPago> & { idPagoBitacora: string }
   selector: 'app-generar-recibo-pago',
   templateUrl: './generar-recibo-pago.component.html',
   styleUrls: ['./generar-recibo-pago.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, AutenticacionService]
 })
 export class GenerarReciboPagoComponent implements OnInit {
 
@@ -75,6 +76,7 @@ export class GenerarReciboPagoComponent implements OnInit {
     private generarReciboService: GenerarReciboService,
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -98,7 +100,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     this.filtroFormReciboPago = this.formBuilder.group({
       nivel: [{value: nivel, disabled: true}],
@@ -201,7 +203,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   }
 
   crearFormDefault(): FormBasicoReciboPago {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     return {
       nivel: obtenerNivelUsuarioLogueado(usuario),
       delegacion: obtenerDelegacionUsuarioLogueado(usuario),

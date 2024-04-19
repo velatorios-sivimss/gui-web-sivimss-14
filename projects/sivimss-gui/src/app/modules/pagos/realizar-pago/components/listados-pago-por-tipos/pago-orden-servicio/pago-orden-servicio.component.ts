@@ -19,12 +19,13 @@ import {
 import {TIPO_PAGO_CATALOGOS_ODS} from "../../../constants/catalogos";
 import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
 import {UsuarioEnSesion} from "../../../../../../models/usuario-en-sesion.interface";
+import {AutenticacionService} from "../../../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-pago-orden-servicio',
   templateUrl: './pago-orden-servicio.component.html',
   styleUrls: ['./pago-orden-servicio.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, AutenticacionService]
 })
 export class PagoOrdenServicioComponent implements OnInit {
 
@@ -46,6 +47,7 @@ export class PagoOrdenServicioComponent implements OnInit {
               private realizarPagoService: RealizarPagoService,
               private cargadorService: LoaderService,
               private mensajesSistemaService: MensajesSistemaService,
+              private authService: AutenticacionService
   ) {
 
   }
@@ -70,7 +72,7 @@ export class PagoOrdenServicioComponent implements OnInit {
 
   private paginar(): void {
     this.cargadorService.activar();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const idVelatorio: number | null = obtenerNivelUsuarioLogueado(usuario) === 1 ? null : obtenerVelatorioUsuarioLogueado(usuario);
     this.realizarPagoService.consultarPagosODS({idVelatorio}, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({

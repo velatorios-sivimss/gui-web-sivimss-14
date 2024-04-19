@@ -5,15 +5,17 @@ import {GestionarPagoService} from "./gestionar-pago.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {obtenerVelatorioUsuarioLogueado} from "../../../../utils/funciones";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Injectable()
 export class GestionarPagoResolver implements Resolve<any> {
 
-  constructor(private gestionarPagoService: GestionarPagoService) {
+  constructor(private gestionarPagoService: GestionarPagoService,
+              private authService: AutenticacionService) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
     const foliosODS$: Observable<HttpRespuesta<any>> = this.gestionarPagoService.consultarFoliosODS(velatorio);
     const foliosPrevFun$: Observable<HttpRespuesta<any>> = this.gestionarPagoService.consultarFoliosPrevFun(velatorio);

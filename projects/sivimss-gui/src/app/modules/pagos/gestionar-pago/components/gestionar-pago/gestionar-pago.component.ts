@@ -25,12 +25,13 @@ import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/a
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 import {forkJoin, Observable} from "rxjs";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-gestionar-pago',
   templateUrl: './gestionar-pago.component.html',
   styleUrls: ['./gestionar-pago.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, AutenticacionService]
 })
 export class GestionarPagoComponent implements OnInit {
 
@@ -75,7 +76,8 @@ export class GestionarPagoComponent implements OnInit {
               private mensajesSistemaService: MensajesSistemaService,
               private readonly activatedRoute: ActivatedRoute,
               private alertaService: AlertaService,
-              private descargaArchivosService: DescargaArchivosService
+              private descargaArchivosService: DescargaArchivosService,
+              private authService: AutenticacionService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -98,7 +100,7 @@ export class GestionarPagoComponent implements OnInit {
   }
 
   inicializarForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroGestionarPagoForm = this.formBuilder.group({
       velatorio: [{
@@ -131,12 +133,12 @@ export class GestionarPagoComponent implements OnInit {
   limpiarFormulario(): void {
     if (!this.filtroGestionarPagoForm) return;
     this.tipoFolio = null;
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroFormDir.resetForm({velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)});
   }
 
   obtenerVelatorios(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null;
     this.gestionarPagoService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.cargarCatalogoVelatorios(respuesta),
