@@ -92,7 +92,7 @@
                          [consultarFormularioValido]="consultarFormularioValido"
                          [existePersona]="existePersona"
                          [escenario]="'modificar'"
-                         (guardarFormularioPrincipal)="guardarFormularioLocalStorage($event)"
+                         (guardarFormularioPrincipal)="guardarFormularioCookies($event)"
                          (formularioValido)="validarFormularioEmpresa($event)"
                          (formularioEmpresa)="datosFormularioEmpresa($event)">
         </app-por-empresa>

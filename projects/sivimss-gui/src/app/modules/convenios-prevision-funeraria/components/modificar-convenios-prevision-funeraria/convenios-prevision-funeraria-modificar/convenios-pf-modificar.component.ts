@@ -17,11 +17,16 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {ModeloGuardarPorEmpresa} from "../../../models/modelo-guardar-por-empresa.interface";
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
+import {obtenerDelegacionUsuarioLogueado} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-convenios-prevision-funeraria-modificar',
   templateUrl: './convenios-pf-modificar.component.html',
-  styleUrls: ['./convenios-pf-modificar.component.scss']
+  styleUrls: ['./convenios-pf-modificar.component.scss'],
+  providers: [CookieService, AutenticacionService]
 })
 export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
 
@@ -77,23 +82,24 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
     private loaderService: LoaderService,
     private router: Router,
     private rutaActiva: ActivatedRoute,
+    private authService: AutenticacionService,
+    private cookieService: CookieService
   ) { }
 
   ngOnInit(): void {
 
     // let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
     let flujoLocal = false;
-    localStorage.removeItem('datosConvenio');
+    this.cookieService.delete('datosConvenio');
     this.folioUnicoDelConvenio = this.rutaActiva.snapshot.queryParams.folio;
     this.velatorioUsuario= "";
     this.fecha = this.rutaActiva.snapshot.queryParams.fecha;
 
     this.inicializarModeloGuardarPersona();
-    const formularioPrevio = JSON.parse(localStorage.getItem('fomularioPrincipal') as string);
+    const formularioPrevio = JSON.parse(this.cookieService.get('fomularioPrincipal') as string);
     if(formularioPrevio)flujoLocal = true;
-    localStorage.removeItem('fomularioPrincipal')
-
-    this.personasAgregadas = JSON.parse(localStorage.getItem('persona') as string) || [];
+    this.cookieService.delete('fomularioPrincipal')
+    this.personasAgregadas = JSON.parse(this.cookieService.get('persona') as string) || [];
     if(this.personasAgregadas.length > 0){
       // localStorage.removeItem('persona')
       this.existePersona = true;
@@ -155,9 +161,10 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
   }
 
   consultaVelatorio(): void  {
-    let usuario = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.loaderService.activar();
-    this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(usuario.idDelegacion).pipe(
+    const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);
+    this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(delegacion).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
@@ -176,7 +183,7 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
       }
     })
   }
-  guardarFormularioLocalStorage(event:any): void {
+  guardarFormularioCookies(event:any): void {
     const formularioPrincipal = {
       numeroConvenio:this.ff.numeroConvenio.value,
       tipoContratacion:this.ff.tipoContratacion.value,
@@ -184,7 +191,7 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
       promotor:this.ff.promotor.value,
       listaPromotor:this.ff.listaPromotor.value,
     }
-    localStorage.setItem("fomularioPrincipal",JSON.stringify(formularioPrincipal))
+    this.cookieService.set("fomularioPrincipal",JSON.stringify(formularioPrincipal))
   }
 
   validarFormularioEmpresa(event: any): void{
@@ -193,9 +200,9 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
 
 
   validarTipoContratacion(): void{
-    localStorage.removeItem('persona');
-    localStorage.removeItem('personasAgregadas');
-    localStorage.removeItem('fomularioPrincipal');
+    this.cookieService.delete('persona');
+    this.cookieService.delete('personasAgregadas');
+    this.cookieService.delete('fomularioPrincipal');
 
     if(!this.ff.numeroConvenio.value)this.ff.numeroConvenio.reset();
     if(!this.ff.numeroConvenio.value)this.ff.numeroConvenio.reset();
@@ -214,7 +221,7 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
   }
 
   datosFormularioEmpresa(event: any): void {
-    const datosUsuario = JSON.parse(localStorage.getItem('usuario') as string);
+    const datosUsuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.indice = 2;
     this.modeloGuardarEmpresa =
       {
@@ -304,7 +311,7 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
   }
 
   datosFormularioPersona(event:any): void {
-    const datosUsuario = JSON.parse(localStorage.getItem('usuario') as string);
+    const datosUsuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.indice ++;
     this.modeloGuardarPersona = {
       folioConvenio: this.ff.numeroConvenio.value,

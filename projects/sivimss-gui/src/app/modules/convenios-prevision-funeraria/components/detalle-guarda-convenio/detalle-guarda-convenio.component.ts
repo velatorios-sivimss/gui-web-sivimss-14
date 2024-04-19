@@ -14,12 +14,15 @@ import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {PlantillaConvenioInterface} from "../../models/plantilla-convenio.interface";
 import * as moment from "moment";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {obtenerDelegacionUsuarioLogueado} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-detalle-guarda-convenio',
   templateUrl: './detalle-guarda-convenio.component.html',
   styleUrls: ['./detalle-guarda-convenio.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, AutenticacionService]
 })
 export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
 
@@ -54,6 +57,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService,
     private router: Router,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -214,7 +218,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
   }
 
   generarDatosPlantilla(idConvenio: string): PlantillaConvenioInterface {
-    let usuario = JSON.parse(localStorage.getItem('usuario') as string)
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     return {
       rutaNombreReporte: "reportes/plantilla/ANEXO5_CONVENIO_PF_NUEVO.jrxml",
       tipoReporte: "pdf",
@@ -225,9 +229,10 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
   }
 
   consultaVelatorio(): void {
-    let usuario = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.loaderService.activar();
-    this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(usuario.idDelegacion)
+    const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario)
+    this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(delegacion)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {

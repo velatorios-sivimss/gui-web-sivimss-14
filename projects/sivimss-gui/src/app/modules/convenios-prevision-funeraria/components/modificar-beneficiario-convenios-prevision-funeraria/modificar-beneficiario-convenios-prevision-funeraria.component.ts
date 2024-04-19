@@ -13,11 +13,14 @@ import {AgregarConvenioPFService} from "../../services/agregar-convenio-pf.servi
 import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-modificar-beneficiario-convenios-prevision-funeraria',
   templateUrl: './modificar-beneficiario-convenios-prevision-funeraria.component.html',
-  styleUrls: ['./modificar-beneficiario-convenios-prevision-funeraria.component.scss']
+  styleUrls: ['./modificar-beneficiario-convenios-prevision-funeraria.component.scss'],
+  providers: [AutenticacionService]
 })
 export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implements OnInit {
 
@@ -37,7 +40,7 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
 
   delegaciones!: TipoDropdown[];
 
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   constructor(
     private alertaService: AlertaService,
@@ -48,6 +51,7 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
     private agregarConvenioPFService: AgregarConvenioPFService,
     private readonly loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService
   ) { }
 
   ngOnInit(): void {
@@ -97,8 +101,8 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
     }
 
     this.beneficiarioForm = this.formBuilder.group({
-                            delegacion: [{value: +this.datosBeneficiario.delegacion, disabled:  +this.rolLocalStorage.idOficina >= 2}, [Validators.required]],
-                             velatorio: [{value: +this.datosBeneficiario.velatorio, disabled: +this.rolLocalStorage.idOficina === 3}, [Validators.required]],
+                            delegacion: [{value: +this.datosBeneficiario.delegacion, disabled:  +this.rolUsuarioEnSesion.idOficina >= 2}, [Validators.required]],
+                             velatorio: [{value: +this.datosBeneficiario.velatorio, disabled: +this.rolUsuarioEnSesion.idOficina === 3}, [Validators.required]],
                        fechaNacimiento: [{value: fecha, disabled: false}, [Validators.required]],
                                   edad: [{value: this.datosBeneficiario.edad, disabled: true}, [Validators.required]],
                                 nombre: [{value: this.datosBeneficiario.nombre, disabled: false}, [Validators.required]],
