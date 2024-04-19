@@ -1,13 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UsuarioEnSesion } from "projects/sivimss-gui/src/app/models/usuario-en-sesion.interface";
-import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
-import { Subscription } from "rxjs";
-import { NotificacionesService } from "../../services/notificaciones.service";
-import { HttpRespuesta } from "../../models/http-respuesta.interface";
-import { HttpErrorResponse } from "@angular/common/http";
-import { Router } from "@angular/router";
-import { MensajesSistemaService } from '../../services/mensajes-sistema.service';
-import { AlertaService, TipoAlerta } from "../../shared/alerta/services/alerta.service";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {UsuarioEnSesion} from "projects/sivimss-gui/src/app/models/usuario-en-sesion.interface";
+import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import {Subscription} from "rxjs";
+import {NotificacionesService} from "../../services/notificaciones.service";
+import {HttpRespuesta} from "../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {Router} from "@angular/router";
+import {MensajesSistemaService} from '../../services/mensajes-sistema.service';
+import {AlertaService, TipoAlerta} from "../../shared/alerta/services/alerta.service";
+import {CookieService} from "ngx-cookie-service";
 
 export interface NotificacionInterface {
   path?: string;
@@ -24,7 +25,7 @@ export interface NotificacionInterface {
   selector: 'app-sub-header-privado',
   templateUrl: './sub-header-privado.component.html',
   styleUrls: ['./sub-header-privado.component.scss'],
-  providers: [NotificacionesService]
+  providers: [NotificacionesService, CookieService]
 })
 export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
 
@@ -42,7 +43,8 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     private alertaService: AlertaService,
     private readonly notificacionService: NotificacionesService,
     private router: Router,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private cookieService: CookieService
   ) {
     this.existeNotificacion = false;
     this.notificacionService.consultaNotificacion().subscribe({
@@ -61,7 +63,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
           console.log('La hora actual está en el rango permitido.');
           respuesta.datos.forEach((notificacion: any) => {
             if (notificacion.cu === "69") {
-              if (!this.notificacionYaEmpujada(this.notificaciones, notificacion)){
+              if (!this.notificacionYaEmpujada(this.notificaciones, notificacion)) {
                 this.notificaciones.push(notificacion);
               }
             }
@@ -72,7 +74,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
 
         respuesta.datos.forEach((notificacion: any) => {
           if (notificacion.cu === "9") {
-            if (!this.notificacionYaEmpujada(this.notificaciones, notificacion)){
+            if (!this.notificacionYaEmpujada(this.notificaciones, notificacion)) {
               this.notificaciones.push(notificacion);
             }
           }
@@ -81,7 +83,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
 
         respuesta.datos.forEach((notificacion: any) => {
           if (notificacion.cu === "40") {
-            if (!this.notificacionYaEmpujada(this.notificaciones, notificacion)){
+            if (!this.notificacionYaEmpujada(this.notificaciones, notificacion)) {
               this.notificaciones.push(notificacion);
             }
           }
@@ -106,13 +108,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     this.subs = this.autenticacionService.usuarioEnSesion$.subscribe(
       (usuarioEnSesion: UsuarioEnSesion | null) => {
         this.usuarioEnSesion = usuarioEnSesion;
-        localStorage.setItem('usuario', JSON.stringify(
-          {
-            'idRol': this.usuarioEnSesion?.idRol,
-            'idDelegacion': this.usuarioEnSesion?.idDelegacion,
-            'idVelatorio': this.usuarioEnSesion?.idVelatorio,
-            'idOficina': this.usuarioEnSesion?.idOficina
-          }));
+        this.cookieService.set('usuario', JSON.stringify(usuarioEnSesion));
       }
     );
   }
@@ -145,11 +141,11 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
       idSala: notificacion.botones.idSala,
       nombreSala: notificacion.botones.nombreSala
     }
-    localStorage.setItem('reserva-sala', JSON.stringify(datos));
+    this.cookieService.set('reserva-sala', JSON.stringify(datos));
     if (this.router.url.includes('/reservar-salas/(salas:salas)')) {
       validacionRuta = true
     }
-    this.router.navigate(['../../', notificacion.botones.url?.toLowerCase(), { outlets: { salas: "salas" } }]).then(() => {
+    this.router.navigate(['../../', notificacion.botones.url?.toLowerCase(), {outlets: {salas: "salas"}}]).then(() => {
       if (validacionRuta) {
         window.location.reload()
       }

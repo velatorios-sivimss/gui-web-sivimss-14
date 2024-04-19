@@ -38,12 +38,12 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
   }
 
   obtenerCatalogoPais(): Observable<TipoDropdown[]> {
-    const catalogo_pais = this.authService.obtenerCatalogoDeLocalStorage('catalogo_pais');
+    const catalogo_pais = this.authService.obtenerCatalogoDeCookies('catalogo_pais');
     return of(mapearArregloTipoDropdown(catalogo_pais, 'desc', 'id'));
   }
 
   obtenerCatalogoEstados(): Observable<TipoDropdown[]> {
-    const catalogo_estados = this.authService.obtenerCatalogoDeLocalStorage('catalogo_estados');
+    const catalogo_estados = this.authService.obtenerCatalogoDeCookies('catalogo_estados');
     return of(mapearArregloTipoDropdown(catalogo_estados, 'desc', 'id'));
   }
 

@@ -33,7 +33,7 @@ export class VelatorioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+    const niveles = this.authService.obtenerCatalogoDeCookies(('catalogo_nivelOficina'));
     return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
   }
 

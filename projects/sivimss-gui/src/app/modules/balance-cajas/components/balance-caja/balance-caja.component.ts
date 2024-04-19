@@ -30,6 +30,7 @@ import {TIPO_CONVENIOS} from "../../constants/convenios";
 import {TIPO_PAGO} from "../../constants/tipos-pago";
 import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {DatePipe} from '@angular/common';
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 type ListadoBalanceCaja = Required<BalanceCaja> & { id: string }
 
@@ -37,7 +38,7 @@ type ListadoBalanceCaja = Required<BalanceCaja> & { id: string }
   selector: 'app-balance-caja',
   templateUrl: './balance-caja.component.html',
   styleUrls: ['./balance-caja.component.scss'],
-  providers: [DialogService, DescargaArchivosService, DatePipe]
+  providers: [DialogService, DescargaArchivosService, DatePipe, AutenticacionService]
 })
 export class BalanceCajaComponent implements OnInit {
 
@@ -91,14 +92,15 @@ export class BalanceCajaComponent implements OnInit {
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private descargaArchivosService: DescargaArchivosService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private authService: AutenticacionService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
 
   ngOnInit(): void {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.rol = +usuario.idRol;
     this.inicializarFiltroForm();
     this.cargarCatalogos();
@@ -136,7 +138,7 @@ export class BalanceCajaComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroFormBalanceCaja = this.formBuilder.group({
       nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
@@ -237,7 +239,7 @@ export class BalanceCajaComponent implements OnInit {
 
   limpiar(): void {
     this.filtroFormBalanceCaja.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     if (this.filtroFormBalanceCaja) {
       const formularioDefault = {
         nivel: +usuario?.idOficina,

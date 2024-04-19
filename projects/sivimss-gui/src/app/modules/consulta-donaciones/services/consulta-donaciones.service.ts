@@ -56,12 +56,12 @@ export class ConsultaDonacionesService extends BaseService<HttpRespuesta<any>, a
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const catalogo_nivelOficina = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+    const catalogo_nivelOficina = this.authService.obtenerCatalogoDeCookies(('catalogo_nivelOficina'));
     return of(mapearArregloTipoDropdown(catalogo_nivelOficina, "desc", "id"));
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
+    const delegaciones = this.authService.obtenerCatalogoDeCookies(('catalogo_delegaciones'));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 

@@ -30,7 +30,7 @@ export class ReservarSalasService extends BaseService<HttpRespuesta<any>, any> {
 
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
+    const delegaciones = this.authService.obtenerCatalogoDeCookies(('catalogo_delegaciones'));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 

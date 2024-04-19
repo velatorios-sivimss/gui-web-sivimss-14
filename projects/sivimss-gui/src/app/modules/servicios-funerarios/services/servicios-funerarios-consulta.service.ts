@@ -21,17 +21,17 @@ export class ServiciosFunerariosConsultaService extends BaseService<HttpRespuest
   readonly _plan: string = 'catalogo_estatusPlanSFPA';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage((this._nivel));
+    const niveles = this.authService.obtenerCatalogoDeCookies((this._nivel));
     return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage((this._delegacion));
+    const delegaciones = this.authService.obtenerCatalogoDeCookies((this._delegacion));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
   obtenerCatalogoEstatusPlan(): Observable<TipoDropdown[]> {
-    const plan = this.authService.obtenerCatalogoDeLocalStorage((this._plan));
+    const plan = this.authService.obtenerCatalogoDeCookies((this._plan));
     return of(mapearArregloTipoDropdown(plan, "desc", "id"));
   }
 

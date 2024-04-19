@@ -50,7 +50,7 @@ export class DatosEmpresaComponent implements OnInit {
   }
 
   cargarCatalogosLocalStorage(): void {
-    const catalogoPais = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_pais');
+    const catalogoPais = this.autenticacionService.obtenerCatalogoDeCookies('catalogo_pais');
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
   }
 

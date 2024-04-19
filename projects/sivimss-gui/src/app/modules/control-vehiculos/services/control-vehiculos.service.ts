@@ -50,12 +50,12 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+    const niveles = this.authService.obtenerCatalogoDeCookies(('catalogo_nivelOficina'));
     return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
+    const delegaciones = this.authService.obtenerCatalogoDeCookies(('catalogo_delegaciones'));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 

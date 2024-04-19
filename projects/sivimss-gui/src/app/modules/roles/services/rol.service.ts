@@ -40,7 +40,7 @@ export class RolService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerCatNivel(): Observable<TipoDropdown[]> {
-    const catalogo_nivelOficina = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+    const catalogo_nivelOficina = this.authService.obtenerCatalogoDeCookies(('catalogo_nivelOficina'));
     return of(mapearArregloTipoDropdown(catalogo_nivelOficina, "desc", "id"));
   }
 

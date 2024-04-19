@@ -57,17 +57,17 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage((this._nivel));
+    const niveles = this.authService.obtenerCatalogoDeCookies((this._nivel));
     return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage((this._delegacion));
+    const delegaciones = this.authService.obtenerCatalogoDeCookies((this._delegacion));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
   obtenerCatalogoEstados(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage((this._estados));
+    const delegaciones = this.authService.obtenerCatalogoDeCookies((this._estados));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 

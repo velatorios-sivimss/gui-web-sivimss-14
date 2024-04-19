@@ -66,7 +66,7 @@ export class ContratarPSFPAService extends BaseService<HttpRespuesta<any>, any> 
 
   obtenerCatalogoMesesPago(): Observable<TipoDropdown[]> {
     const catalogo_mesesPago =
-      this.authService.obtenerCatalogoDeLocalStorage('catalogo_mesesPago');
+      this.authService.obtenerCatalogoDeCookies('catalogo_mesesPago');
     return of(mapearArregloTipoDropdown(catalogo_mesesPago, 'desc', 'id'));
   }
 }

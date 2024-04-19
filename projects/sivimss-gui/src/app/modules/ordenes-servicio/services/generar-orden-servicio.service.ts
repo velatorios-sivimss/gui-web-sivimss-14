@@ -21,7 +21,7 @@ export class GenerarOrdenServicioService extends BaseService<HttpRespuesta<any>,
     new BehaviorSubject<MensajeSistema[] | null>(null);
 
   obtenerCatalogoParentesco(): Observable<TipoDropdown[]> {
-    const catalogo_parentesco = this.authService.obtenerCatalogoDeLocalStorage(
+    const catalogo_parentesco = this.authService.obtenerCatalogoDeCookies(
       'catalogo_parentesco'
     );
     return of(mapearArregloTipoDropdown(catalogo_parentesco, 'desc', 'id'));
@@ -29,19 +29,19 @@ export class GenerarOrdenServicioService extends BaseService<HttpRespuesta<any>,
 
   obtenerCatalogoPais(): Observable<TipoDropdown[]> {
     const catalogo_pais =
-      this.authService.obtenerCatalogoDeLocalStorage('catalogo_pais');
+      this.authService.obtenerCatalogoDeCookies('catalogo_pais');
     return of(mapearArregloTipoDropdown(catalogo_pais, 'desc', 'id'));
   }
 
   obtenerCatalogoEstado(): Observable<TipoDropdown[]> {
     const catalogo_estados =
-      this.authService.obtenerCatalogoDeLocalStorage('catalogo_estados');
+      this.authService.obtenerCatalogoDeCookies('catalogo_estados');
     return of(mapearArregloTipoDropdown(catalogo_estados, 'desc', 'id'));
   }
 
   obtenerCatalogosUnidadesMedicas(): Observable<TipoDropdown[]> {
     const catalogo_unidadesMedicas =
-      this.authService.obtenerCatalogoDeLocalStorage(
+      this.authService.obtenerCatalogoDeCookies(
         'catalogo_unidadesMedicas'
       );
     return of(
@@ -51,7 +51,7 @@ export class GenerarOrdenServicioService extends BaseService<HttpRespuesta<any>,
 
   obtenerCatalogosPenciones(): Observable<TipoDropdown[]> {
     const catalogo_unidadesMedicas =
-      this.authService.obtenerCatalogoDeLocalStorage('catalogo_tipoPension');
+      this.authService.obtenerCatalogoDeCookies('catalogo_tipoPension');
     return of(
       mapearArregloTipoDropdown(catalogo_unidadesMedicas, 'desc', 'id')
     );

@@ -95,7 +95,7 @@ export class RenovarConvenioPfService extends BaseService<HttpRespuesta<any>, an
   }
 
   obtenerCatalogoParentesco(): Observable<TipoDropdown[]> {
-    const catalogo_parentesco = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_parentesco'));
+    const catalogo_parentesco = this.authService.obtenerCatalogoDeCookies(('catalogo_parentesco'));
     return of(mapearArregloTipoDropdown(catalogo_parentesco, "desc", "id"));
   }
 }

@@ -1,26 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { BalanceCajaService } from '../../services/balance-caja.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { mensajes } from '../../../reservar-salas/constants/mensajes';
-import { ModificarPagoInterface } from '../../models/balance-caja.interface';
-import { finalize } from "rxjs/operators";
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {BalanceCajaService} from '../../services/balance-caja.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {mensajes} from '../../../reservar-salas/constants/mensajes';
+import {ModificarPagoInterface} from '../../models/balance-caja.interface';
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-modificar-pago',
   templateUrl: './modificar-pago.component.html',
-  styleUrls: ['./modificar-pago.component.scss']
+  styleUrls: ['./modificar-pago.component.scss'],
+  providers: [CookieService]
 })
 export class ModificarPagoComponent implements OnInit {
 
   modificarPagoForm!: FormGroup;
   pagoSeleccionado: ModificarPagoInterface = {}
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string) || mensajes;
   balanceSeleccionado: any;
   fechaCierre: any;
   horaCierre: any;
@@ -33,8 +35,10 @@ export class ModificarPagoComponent implements OnInit {
     private balanceCajaService: BalanceCajaService,
     private loaderService: LoaderService,
     private readonly router: Router,
-    private readonly activatedRoute: ActivatedRoute
-  ) { }
+    private readonly activatedRoute: ActivatedRoute,
+    private cookieService: CookieService
+  ) {
+  }
 
   ngOnInit(): void {
     this.balanceSeleccionado = this.balanceCajaService.balanceSeleccionado;
@@ -54,7 +58,7 @@ export class ModificarPagoComponent implements OnInit {
 
   inicializarModificarPagoForm(): void {
     this.modificarPagoForm = this.formBulder.group({
-      modificarPago: [{ value: null, disabled: false }, [Validators.maxLength(100), Validators.required]],
+      modificarPago: [{value: null, disabled: false}, [Validators.maxLength(100), Validators.required]],
     });
   }
 
@@ -68,8 +72,8 @@ export class ModificarPagoComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.datos) {
-            this.alertaService.mostrar(TipoAlerta.Exito, "El motivo de modificación será registrado");
-            void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
+          this.alertaService.mostrar(TipoAlerta.Exito, "El motivo de modificación será registrado");
+          void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
         }
       },
       error: (error: HttpErrorResponse): void => {

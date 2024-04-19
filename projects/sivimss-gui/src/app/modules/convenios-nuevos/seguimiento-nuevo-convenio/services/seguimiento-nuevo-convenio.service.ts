@@ -22,12 +22,12 @@ export class SeguimientoNuevoConvenioService extends BaseService<HttpRespuesta<a
 
   obtenerCatalogoMesesPago(): Observable<TipoDropdown[]> {
     const catalogo_mesesPago =
-      this.authService.obtenerCatalogoDeLocalStorage('catalogo_mesesPago');
+      this.authService.obtenerCatalogoDeCookies('catalogo_mesesPago');
     return of(mapearArregloTipoDropdown(catalogo_mesesPago, 'desc', 'id'));
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+    const niveles = this.authService.obtenerCatalogoDeCookies(('catalogo_nivelOficina'));
     return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
   }
 

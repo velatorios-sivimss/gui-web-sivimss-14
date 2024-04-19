@@ -7,7 +7,7 @@ import {Payload} from "projects/sivimss-gui/src/app/models/payload.interface";
 import {UsuarioEnSesion} from "projects/sivimss-gui/src/app/models/usuario-en-sesion.interface";
 import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
 import {MenuSidebarService} from "projects/sivimss-gui/src/app/shared/sidebar/services/menu-sidebar.service";
-import {SIVIMSS_TOKEN} from "projects/sivimss-gui/src/app/utils/constantes";
+import {SIVIMSS_TOKEN, SIVIMSS_TOKEN_ONLINE} from "projects/sivimss-gui/src/app/utils/constantes";
 import {existeMensajeEnEnum} from "projects/sivimss-gui/src/app/utils/funciones";
 import {MensajesRespuestaAutenticacion} from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
 import {MensajesRespuestaCodigo} from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-codigo.enum";
@@ -42,379 +42,6 @@ export interface Permiso {
   idPermiso: string;
   descPermiso: string;
 }
-
-const respuestaInicioSesionCorrecto = {
-  error: false,
-  codigo: 200,
-  mensaje: "INICIO_SESION_CORRECTO",
-  datos: {
-    "token": "eyJzaXN0ZW1hIjoic2l2aW1zcyIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJ7XCJpZFZlbGF0b3Jpb1wiOlwiMVwiLFwiaWRSb2xcIjpcIjFcIixcImRlc1JvbFwiOlwiQ09PUkRJTkFET1IgREUgQ0VOVFJcIixcImlkRGVsZWdhY2lvblwiOlwiMVwiLFwiaWRPZmljaW5hXCI6XCIxXCIsXCJpZFVzdWFyaW9cIjpcIjFcIixcImN2ZVVzdWFyaW9cIjpcIjFcIixcImN2ZU1hdHJpY3VsYVwiOlwiMVwiLFwibm9tYnJlXCI6XCIxIDEgMVwiLFwiY3VycFwiOlwiMVwifSIsImlhdCI6MTY4MzEzNzM3MiwiZXhwIjoxNjgzNzQyMTcyfQ._TKsku_zi_PMLtPYnk_ghc7fYe8eainHxy1ehvJmpfU"
-  }
-};
-
-const respuestaContraseniaProxVencer = {
-  error: false,
-  codigo: 200,
-  mensaje: "CONTRASENIA_PROXIMA_VENCER",
-  datos: {
-    "token": "eyJzaXN0ZW1hIjoic2l2aW1zcyIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJ7XCJpZFZlbGF0b3Jpb1wiOlwiMVwiLFwiaWRSb2xcIjpcIjFcIixcImRlc1JvbFwiOlwiQ09PUkRJTkFET1IgREUgQ0VOVFJcIixcImlkRGVsZWdhY2lvblwiOlwiMVwiLFwiaWRPZmljaW5hXCI6XCIxXCIsXCJpZFVzdWFyaW9cIjpcIjFcIixcImN2ZVVzdWFyaW9cIjpcIjFcIixcImN2ZU1hdHJpY3VsYVwiOlwiMVwiLFwibm9tYnJlXCI6XCIxIDEgMVwiLFwiY3VycFwiOlwiMVwifSIsImlhdCI6MTY4MzA0Mzk0OCwiZXhwIjoxNjgzNjQ4NzQ4fQ.lzgUw1U3115meofhWZXrYCDMaxP9QFAYpZ6yEbhRGZE"
-  }
-};
-
-const respuestaPreActivo = {
-  "error": false,
-  "codigo": 200,
-  "mensaje": "USUARIO_PREACTIVO",
-  "datos": null
-};
-
-const respuestaCambioContrasenia = {
-  "error": false,
-  "codigo": 200,
-  "mensaje": "Exito",
-  "datos": true
-};
-
-const respuestaCredencialesIncorrectas = {
-  "error": true,
-  "codigo": 400,
-  "mensaje": "CREDENCIALES_INCORRECTAS",
-  "datos": null
-};
-
-const respuestaFechaContraseniaVencida = {
-  "error": true,
-  "codigo": 400,
-  "mensaje": "FECHA_CONTRASENIA_VENCIDA",
-  "datos": null
-};
-
-const respuestaCantidadMaximaIntentosFallidos = {
-  "error": true,
-  "codigo": 400,
-  "mensaje": "CANTIDAD_MAX_INTENTOS_FALLIDOS",
-  "datos": null
-}
-
-const respuestaCuentaBloqueada = {
-  "error": true,
-  "codigo": 400,
-  "mensaje": "CUENTA_BLOQUEADA",
-  "datos": null
-}
-
-const respuestaPermisosUsuario = {
-  "error": false,
-  "codigo": 200,
-  "mensaje": "Exito",
-  "datos": {
-    "permisosUsuario": [
-      {
-        "idFuncionalidad": "1",
-        "permisos": [
-          {
-            "idPermiso": "1",
-            "descPermiso": "ALTA"
-          },
-          {
-            "idPermiso": "2",
-            "descPermiso": "BAJA"
-          },
-          {
-            "idPermiso": "3",
-            "descPermiso": "CONSULTA"
-          },
-          {
-            "idPermiso": "4",
-            "descPermiso": "MODIFICAR"
-          },
-          {
-            "idPermiso": "5",
-            "descPermiso": "APROBACIÓN"
-          },
-          {
-            "idPermiso": "6",
-            "descPermiso": "IMPRIMIR"
-          }
-        ]
-      },
-      {
-        "idFuncionalidad": "2",
-        "permisos": [
-          {
-            "idPermiso": "1",
-            "descPermiso": "ALTA"
-          },
-          {
-            "idPermiso": "2",
-            "descPermiso": "BAJA"
-          },
-          {
-            "idPermiso": "3",
-            "descPermiso": "CONSULTA"
-          },
-          {
-            "idPermiso": "4",
-            "descPermiso": "MODIFICAR"
-          },
-          {
-            "idPermiso": "5",
-            "descPermiso": "APROBACIÓN"
-          },
-          {
-            "idPermiso": "6",
-            "descPermiso": "IMPRIMIR"
-          }
-        ]
-      },
-      {
-        "idFuncionalidad": "3",
-        "permisos": [
-          {
-            "idPermiso": "1",
-            "descPermiso": "ALTA"
-          },
-          {
-            "idPermiso": "2",
-            "descPermiso": "BAJA"
-          },
-          {
-            "idPermiso": "3",
-            "descPermiso": "CONSULTA"
-          },
-          {
-            "idPermiso": "4",
-            "descPermiso": "MODIFICAR"
-          },
-          {
-            "idPermiso": "5",
-            "descPermiso": "APROBACIÓN"
-          },
-          {
-            "idPermiso": "6",
-            "descPermiso": "IMPRIMIR"
-          }
-        ]
-      }
-    ]
-  }
-};
-
-const respuestaCatalogos = {
-  "error": false,
-  "codigo": 200,
-  "mensaje": "Exito",
-  "datos": {
-    "catalogos": {
-      "delegaciones": [
-        {
-          "id": 1,
-          "desc": "AGUASCALIENTES"
-        },
-        {
-          "id": 2,
-          "desc": "BAJA CALIFORNIA"
-        },
-        {
-          "id": 3,
-          "desc": "BAJA CALIFORNIA SUR"
-        },
-        {
-          "id": 4,
-          "desc": "CAMPECHE"
-        },
-        {
-          "id": 5,
-          "desc": "COAHUILA"
-        },
-        {
-          "id": 6,
-          "desc": "COLIMA"
-        },
-        {
-          "id": 7,
-          "desc": "CHIAPAS"
-        },
-        {
-          "id": 8,
-          "desc": "CHIHUAHUA"
-        },
-        {
-          "id": 9,
-          "desc": "OFICINAS CENTRALES"
-        },
-        {
-          "id": 10,
-          "desc": "DURANGO"
-        },
-        {
-          "id": 11,
-          "desc": "GUANAJUATO"
-        },
-        {
-          "id": 12,
-          "desc": "GUERRERO"
-        },
-        {
-          "id": 13,
-          "desc": "HIDALGO"
-        },
-        {
-          "id": 14,
-          "desc": "JALISCO"
-        },
-        {
-          "id": 15,
-          "desc": "EDO DE MEX ORIENTE"
-        },
-        {
-          "id": 16,
-          "desc": "EDO DE MEX PONIENTE"
-        },
-        {
-          "id": 17,
-          "desc": "MICHOACAN"
-        },
-        {
-          "id": 18,
-          "desc": "MORELOS"
-        },
-        {
-          "id": 19,
-          "desc": "NAYARIT"
-        },
-        {
-          "id": 20,
-          "desc": "NUEVO LEON"
-        },
-        {
-          "id": 21,
-          "desc": "OAXACA"
-        },
-        {
-          "id": 22,
-          "desc": "PUEBLA"
-        },
-        {
-          "id": 23,
-          "desc": "QUERETARO"
-        },
-        {
-          "id": 24,
-          "desc": "QUINTANA ROO"
-        },
-        {
-          "id": 25,
-          "desc": "SAN LUIS POTOSI"
-        },
-        {
-          "id": 26,
-          "desc": "SINALOA"
-        },
-        {
-          "id": 27,
-          "desc": "SONORA"
-        },
-        {
-          "id": 28,
-          "desc": "TABASCO"
-        },
-        {
-          "id": 29,
-          "desc": "TAMAULIPAS"
-        },
-        {
-          "id": 30,
-          "desc": "TLAXCALA"
-        },
-        {
-          "id": 31,
-          "desc": "VERACRUZ NORTE"
-        },
-        {
-          "id": 32,
-          "desc": "VERACRUZ SUR"
-        },
-        {
-          "id": 33,
-          "desc": "YUCATAN"
-        },
-        {
-          "id": 34,
-          "desc": "ZACATECAS"
-        },
-        {
-          "id": 35,
-          "desc": "1 NOROESTE D.F."
-        },
-        {
-          "id": 36,
-          "desc": "2 NORESTE D.F."
-        },
-        {
-          "id": 37,
-          "desc": "3 SUROESTE D.F."
-        },
-        {
-          "id": 38,
-          "desc": "4 SURESTE D.F."
-        },
-        {
-          "id": 39,
-          "desc": "NOMINA DE MANDO"
-        }
-      ],
-      "nivelOficina": [
-        {
-          "id": 1,
-          "desc": "CENTRAL"
-        },
-        {
-          "id": 2,
-          "desc": "DELEGACIONAL"
-        },
-        {
-          "id": 3,
-          "desc": "VELATORIOS"
-        }
-      ],
-      "parentesco": [],
-      "paises": [],
-      "estados": [],
-      "tipoPension": [],
-      "unidadesMedicas": []
-    }
-  }
-};
-
-const respCodigoRestablecerContrasenia = {
-  "error": false,
-  "codigo": 200,
-  "mensaje": "Exito",
-  "datos": "Codigo enviado al correo del Usuario "
-}
-
-const respCodigoCorrecto = {
-  "error": false,
-  "codigo": 200,
-  "mensaje": "CODIGO_CORRECTO",
-  "datos": null
-}
-
-const respCodigoIncorrecto = {
-  "error": true,
-  "codigo": 400,
-  "mensaje": "CODIGO_INCORRECTO",
-  "datos": null
-}
-
-const respCodigoExpirado = {
-  "error": true,
-  "codigo": 400,
-  "mensaje": "CODIGO_EXPIRADO",
-  "datos": null
-}
-
 
 @Injectable()
 export class AutenticacionService {
@@ -452,7 +79,7 @@ export class AutenticacionService {
    * Crea la sesion nuevamente si el usuario actualiza la pagina
    */
   recuperarSesionAlActualizarPagina() {
-    const token: string | null = localStorage.getItem(SIVIMSS_TOKEN);
+    const token: string | null = this.cookieService.get(SIVIMSS_TOKEN);
     if (token) {
       try {
         const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(token);
@@ -504,7 +131,7 @@ export class AutenticacionService {
     this.breadcrumbService.limpiar();
     this.usuarioEnSesionSubject.next(usuario);
     this.permisosUsuarioSubject.next(permisosUsuario);
-    localStorage.setItem(SIVIMSS_TOKEN, token);
+    this.cookieService.set(SIVIMSS_TOKEN, token);
     this.obtenerCatalogos();
     this.iniciarTemporizadorSesion();
   }
@@ -524,8 +151,7 @@ export class AutenticacionService {
     this.usuarioEnSesionSubject.next(null);
     this.permisosUsuarioSubject.next(null);
     this.cookieService.deleteAll();
-    localStorage.removeItem(SIVIMSS_TOKEN);
-    localStorage.clear();
+    this.cookieService.delete(SIVIMSS_TOKEN);
     void this.router.navigate(['/inicio-sesion']);
     this.detenerTemporizadorSesion();
   }
@@ -611,17 +237,29 @@ export class AutenticacionService {
   procesarCatalogos(respuesta: HttpRespuesta<any>): void {
     const {datos} = respuesta;
     const {catalogos} = datos ?? {};
-    this.guardarCatalogosEnLocalStorage(catalogos);
+    this.guardarCatalogosEnCookies(catalogos);
   }
 
-  guardarCatalogosEnLocalStorage<T extends { [key: string]: T }>(obj: T): void {
+  guardarCatalogosEnCookies<T extends { [key: string]: T }>(obj: T): void {
     Object.keys(obj).forEach(propiedad => {
       this.cookieService.set(`catalogo_${propiedad}`, JSON.stringify(obj[propiedad]), 1);
     });
   }
 
-  obtenerCatalogoDeLocalStorage<T>(propiedad: string): any {
+  obtenerCatalogoDeCookies<T>(propiedad: string): any {
     const catalogo = JSON.parse(this.cookieService.get(propiedad) as string);
     return catalogo ?? [];
+  }
+
+  validarUsuarioLogueado(): boolean {
+    return !this.cookieService.get(SIVIMSS_TOKEN)
+  }
+
+  validarUsuarioLogueadoOnline(): boolean {
+    return !this.cookieService.get(SIVIMSS_TOKEN_ONLINE)
+  }
+
+  obtenerUsuarioEnSesion(): UsuarioEnSesion {
+    return JSON.parse(this.cookieService.get('usuario') as string);
   }
 }

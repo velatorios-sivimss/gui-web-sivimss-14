@@ -19,12 +19,12 @@ export class ReportesService extends BaseService<HttpRespuesta<any>, any> {
   readonly _nivel: string = 'catalogo_nivelOficina';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage((this._nivel));
+    const niveles = this.authService.obtenerCatalogoDeCookies((this._nivel));
     return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage((this._delegacion));
+    const delegaciones = this.authService.obtenerCatalogoDeCookies((this._delegacion));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 

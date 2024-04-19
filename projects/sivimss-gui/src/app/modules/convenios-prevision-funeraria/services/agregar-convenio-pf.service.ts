@@ -21,12 +21,12 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
     "consultar", "detalle", "estatus");
   }
   obtenerCatalogoPaises(): Observable<TipoDropdown[]> {
-    const paises = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_pais'));
+    const paises = this.authService.obtenerCatalogoDeCookies(('catalogo_pais'));
     return of(mapearArregloTipoDropdown(paises, "desc", "id"));
   }
 
   obtenerCatalogoEstados():Observable<TipoDropdown[]> {
-    const estados = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_estados'));
+    const estados = this.authService.obtenerCatalogoDeCookies(('catalogo_estados'));
     return of(mapearArregloTipoDropdown(estados, "desc", "id"));
   }
 
@@ -50,7 +50,7 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
   }
 
   obtenerCatalogoParentesco(): Observable<TipoDropdown[]> {
-    const catalogo_parentesco = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_parentesco'));
+    const catalogo_parentesco = this.authService.obtenerCatalogoDeCookies(('catalogo_parentesco'));
     return of(mapearArregloTipoDropdown(catalogo_parentesco, "desc", "id"));
   }
 
@@ -103,7 +103,7 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
+    const delegaciones = this.authService.obtenerCatalogoDeCookies(('catalogo_delegaciones'));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
   // consultarVelatorios(idDelegacion: number): Observable<HttpRespuesta<any>> {

@@ -33,7 +33,7 @@ export class ValidaNivelGuard implements CanActivate {
               return throwError('Los permisos aún no se han cargado');
             } else {
               const {nivel} = route.data.validaNivel;
-              const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+              const usuario: UsuarioEnSesion = this.aut.obtenerUsuarioEnSesion();
               const idNivel: number = obtenerNivelUsuarioLogueado(usuario)
               return idNivel !== nivel ? of(true) : of(this.router.parseUrl('/inicio'))
             }

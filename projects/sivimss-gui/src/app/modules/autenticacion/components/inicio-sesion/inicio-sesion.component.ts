@@ -11,11 +11,13 @@ import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autent
 import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import {MensajesRespuestaAutenticacion} from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
 import {finalize} from "rxjs/operators";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-inicio-sesion',
   templateUrl: './inicio-sesion.component.html',
-  styleUrls: ['./inicio-sesion.component.scss']
+  styleUrls: ['./inicio-sesion.component.scss'],
+  providers: [CookieService]
 })
 export class InicioSesionComponent implements OnInit, OnDestroy {
 
@@ -45,7 +47,8 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly alertaService: AlertaService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly dialogService: DialogService
+    private readonly dialogService: DialogService,
+    private cookieService: CookieService
   ) {
   }
 
@@ -122,7 +125,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
 
   empezarTemporizadorPorExcederIntentos(): void {
 
-    let duracionEnSegundos: number = this.existeTemporizadorEnCurso() ? Number(localStorage.getItem('segundos_temporizador_intentos_sivimss')) : this.SEGUNDOS_TEMPORIZADOR_INTENTOS;
+    let duracionEnSegundos: number = this.existeTemporizadorEnCurso() ? Number(this.cookieService.get('segundos_temporizador_intentos_sivimss')) : this.SEGUNDOS_TEMPORIZADOR_INTENTOS;
     let refTemporador: NodeJS.Timer = setInterval((): void => {
       let minutos: string | number = Math.floor(duracionEnSegundos / 60);
       let segundos: string | number = duracionEnSegundos % 60;
@@ -131,10 +134,10 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
       this.minutosTemporizadorIntentos = minutos as string;
       this.segundosTemporizadorIntentos = segundos as string;
       duracionEnSegundos--;
-      localStorage.setItem('segundos_temporizador_intentos_sivimss', String(duracionEnSegundos));
+      this.cookieService.set('segundos_temporizador_intentos_sivimss', String(duracionEnSegundos));
       if (duracionEnSegundos < 0) {
         clearInterval(refTemporador);
-        localStorage.removeItem('segundos_temporizador_intentos_sivimss');
+        this.cookieService.delete('segundos_temporizador_intentos_sivimss');
         this.mostrarModalIntentosFallidos = false;
       }
     }, 1000);
@@ -142,7 +145,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
   }
 
   existeTemporizadorEnCurso(): boolean {
-    return localStorage.getItem('segundos_temporizador_intentos_sivimss') !== null;
+    return this.cookieService.get('segundos_temporizador_intentos_sivimss') !== null;
   }
 
   abrirModalRestablecerContrasenia(): void {

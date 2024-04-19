@@ -136,7 +136,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
   }
 
   cargarCatalogosLocalStorage(): void {
-    const catalogoNumPagos = this.autenticacionService.obtenerCatalogoDeLocalStorage('catalogo_mesesPago');
+    const catalogoNumPagos = this.autenticacionService.obtenerCatalogoDeCookies('catalogo_mesesPago');
     this.numeroPagos = mapearArregloTipoDropdown(catalogoNumPagos, 'desc', 'id');
   }
 
