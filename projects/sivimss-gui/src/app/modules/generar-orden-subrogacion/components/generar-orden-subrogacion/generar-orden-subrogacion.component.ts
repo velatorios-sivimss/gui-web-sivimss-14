@@ -1,36 +1,39 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { OverlayPanel } from "primeng/overlaypanel";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {OverlayPanel} from "primeng/overlaypanel";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { OrdenSubrogacion } from "../../models/generar-orden-subrogacion.interface";
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { ConfirmationService, LazyLoadEvent } from "primeng/api";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { GenerarOrdenSubrogacionService } from '../../services/generar-orden-subrogacion.service';
-import { finalize } from "rxjs/operators";
-import { of } from "rxjs";
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {OrdenSubrogacion} from "../../models/generar-orden-subrogacion.interface";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {ConfirmationService, LazyLoadEvent} from "primeng/api";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {GenerarOrdenSubrogacionService} from '../../services/generar-orden-subrogacion.service';
+import {finalize} from "rxjs/operators";
+import {of} from "rxjs";
 import * as moment from "moment/moment";
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { PrevisualizacionArchivoComponent } from '../previsualizacion-archivo/previsualizacion-archivo.component';
-import { DatePipe } from '@angular/common';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {PrevisualizacionArchivoComponent} from '../previsualizacion-archivo/previsualizacion-archivo.component';
+import {DatePipe} from '@angular/common';
 import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-generar-orden-subrogacion',
   templateUrl: './generar-orden-subrogacion.component.html',
   styleUrls: ['./generar-orden-subrogacion.component.scss'],
-  providers: [DialogService, DescargaArchivosService, ConfirmationService, DynamicDialogConfig, DatePipe]
+  providers: [DialogService, DescargaArchivosService, ConfirmationService, DynamicDialogConfig, DatePipe,
+    CookieService, AutenticacionService]
 })
 export class GenerarOrdenSubrogacionComponent implements OnInit {
 
@@ -70,7 +73,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   filtroForm!: FormGroup;
   modificarRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
 
   constructor(
     public config: DynamicDialogConfig,
@@ -86,7 +89,9 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private descargaArchivosService: DescargaArchivosService,
     private confirmationService: ConfirmationService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private authService: AutenticacionService,
+    private cookieService: CookieService
   ) {
   }
 
@@ -102,14 +107,14 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   inicializarFormulario(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +usuario.idOficina, disabled: true }, []],
+      nivel: [{value: +usuario.idOficina, disabled: true}, []],
       delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina != 1}, []],
-      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, []],
-      folio: new FormControl({ value: null, disabled: false }, []),
-      proveedor: new FormControl({ value: null, disabled: false }, []),
-      fecha: new FormControl({ value: null, disabled: false }, []),
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, []],
+      folio: new FormControl({value: null, disabled: false}, []),
+      proveedor: new FormControl({value: null, disabled: false}, []),
+      fecha: new FormControl({value: null, disabled: false}, []),
     });
   }
 
@@ -120,7 +125,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     if (!cargaInicial) {
       this.catalogoVelatorios = [];
       this.filtroForm.get('velatorio')?.patchValue("");
@@ -136,6 +141,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
       }
     });
   }
+
   cambiarDelegacion(): void {
     this.loaderService.activar();
     this.generarOrdenSubrogacionService.obtenerCatalogoVelatoriosPorDelegacion(this.f.delegacion.value).pipe(
@@ -146,7 +152,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
           this.catalogoVelatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
             {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
         },
-        error: (error:HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.mensajesSistemaService.mostrarMensajeError(error);
         }
       }
@@ -156,7 +162,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   validarNombre(posicion: number): void {
     let formularios = [this.f.folio];
     let value = formularios[posicion].value ? formularios[posicion].value.trim() : '';
-    let nuevoValor = value.replace(/[^a-zA-Z0-9ñÑ-\s]+/g, '');
+    let nuevoValor = value.replace(/[^a-zA-Z0-9ñÑ\s]+/g, '');
     nuevoValor = nuevoValor.replace(/\s+/g, ' ');
     formularios[posicion].setValue(nuevoValor)
   }
@@ -184,7 +190,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   consultarFoliosODS(event: any): void {
-    let usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    let usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.loaderService.activar();
     this.generarOrdenSubrogacionService.consultarFolios(this.f.folio.value, usuario.idVelatorio).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -206,7 +212,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   consultarProveedor(event: any): void {
-    let usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    let usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.loaderService.activar();
     this.generarOrdenSubrogacionService.consultarProveedor(usuario.idVelatorio, this.f.proveedor.value).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -251,15 +257,15 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     this.loaderService.activar();
     this.generarOrdenSubrogacionService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.ordenes = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error("ERROR: ", error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.ordenes = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
   paginarConFiltros(): void {
@@ -267,16 +273,16 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     this.loaderService.activar();
     this.generarOrdenSubrogacionService.buscarPorFiltros(0, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.ordenes = [];
-          this.ordenes = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error("ERROR: ", error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.ordenes = [];
+        this.ordenes = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
   validarFechaFinal(): void {
@@ -301,8 +307,8 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         const file = new Blob([this.descargaArchivosService.base64_2Blob(
-          respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
+            respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)}
         );
         configuracionArchivo.nombreArchivo = "Orden De Subrogación";
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
@@ -337,7 +343,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   // }
 
   vistaPreviaOrdenSubrogacion(): void {
-    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Orden de subrogación de servicios' };
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: 'Orden de subrogación de servicios'};
     this.loaderService.activar();
     let datos = {
       idHojaSubrogacion: this.ordenSeleccionada.idHojaSubrogacion
@@ -346,7 +352,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        const file = new Blob([respuesta], { type: 'application/pdf' });
+        const file = new Blob([respuesta], {type: 'application/pdf'});
         const url = window.URL.createObjectURL(file);
         let archivoRef: DynamicDialogRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
           data: url,
@@ -380,13 +386,14 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   modalConfirmacion() {
     this.confirmationService.confirm({
       message: this.mensajeArchivoConfirmacion,
-      accept: () => { },
+      accept: () => {
+      },
     });
   }
 
 
   generarOrdenSubrogacion(esModificacion: boolean): void {
-    void this.router.navigate([`formato/${esModificacion}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`formato/${esModificacion}`], {relativeTo: this.activatedRoute});
   }
 
   mapearFiltrosBusqueda(): any {
@@ -431,7 +438,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     this.paginar();
   }
 
-  validarRegistro(orden:any): boolean {
+  validarRegistro(orden: any): boolean {
     return !(orden.puedeRegistrar.includes('false') && orden.idHojaSubrogacion === '');
   }
 

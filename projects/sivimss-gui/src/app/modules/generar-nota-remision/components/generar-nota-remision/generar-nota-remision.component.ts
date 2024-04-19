@@ -33,12 +33,14 @@ import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {switchMap} from "rxjs/operators";
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-generar-nota-remision',
   templateUrl: './generar-nota-remision.component.html',
   styleUrls: ['./generar-nota-remision.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, CookieService, AutenticacionService]
 })
 export class GenerarNotaRemisionComponent implements OnInit {
   readonly POSICION_NIVELES: number = 0;
@@ -73,8 +75,8 @@ export class GenerarNotaRemisionComponent implements OnInit {
     3: 'Cancelada',
   };
 
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string) || mensajes;
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
   mostrarModalDescargaExitosa: boolean = false;
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
@@ -89,7 +91,9 @@ export class GenerarNotaRemisionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private descargaArchivosService: DescargaArchivosService,
     private readonly cargadorService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private cookieService: CookieService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -113,11 +117,11 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
-      delegacion: [{value: obtenerDelegacionUsuarioLogueado(usuario), disabled: +this.rolLocalStorage.idOficina >= 2}],
-      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: +this.rolLocalStorage.idOficina === 3}],
+      delegacion: [{value: obtenerDelegacionUsuarioLogueado(usuario), disabled: +this.rolUsuarioEnSesion.idOficina >= 2}],
+      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: +this.rolUsuarioEnSesion.idOficina === 3}],
       folio: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
@@ -159,7 +163,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   obtenerFiltrosBasicos(): FiltrosBasicos {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     return {
       idNivel: obtenerNivelUsuarioLogueado(usuario),
       idVelatorio: obtenerVelatorioUsuarioLogueado(usuario),
@@ -237,7 +241,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   limpiarFormulario(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
     const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);

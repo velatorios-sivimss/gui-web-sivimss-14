@@ -22,12 +22,14 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import { finalize } from 'rxjs';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-reporte-encargado',
   templateUrl: './reporte-encargado.component.html',
   styleUrls: ['./reporte-encargado.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, CookieService, AutenticacionService]
 })
 export class ReporteEncargadoComponent implements OnInit {
   dataDetalle = tablaRin;
@@ -67,7 +69,7 @@ export class ReporteEncargadoComponent implements OnInit {
   fechaValida: boolean = false;
   tipoBusqueda: number = 0;
 
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
 
   constructor(
     private formBuilder: FormBuilder,
@@ -80,6 +82,8 @@ export class ReporteEncargadoComponent implements OnInit {
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService,
+    private cookieService: CookieService
   ) {
   }
 
@@ -107,11 +111,11 @@ export class ReporteEncargadoComponent implements OnInit {
     if (this.filtroForm.get('nivel')?.value === 1) {
       this.filtroForm.get('delegacion')?.setValue('');
       this.filtroForm.get('velatorio')?.setValue('');
-    } 
+    }
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm = this.formBuilder.group({
       nivel: [{ value: +usuario.idOficina, disabled: true }],
       delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
@@ -173,7 +177,7 @@ export class ReporteEncargadoComponent implements OnInit {
   }
 
   crearSolicitudFiltrosPrograma(): FiltrosReporteEncargado {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     switch (+usuario.idOficina) {
       case 1:
         return {
@@ -215,7 +219,7 @@ export class ReporteEncargadoComponent implements OnInit {
   }
 
   crearSolicitudFiltrosVerificacion(): FiltrosReporteEncargado {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     switch (+usuario.idOficina) {
       case 1:
         return {
@@ -262,7 +266,7 @@ export class ReporteEncargadoComponent implements OnInit {
   }
 
   obtenerVelatorios(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     if (usuario.idVelatorio != null) {
       this.velatorio = `#${usuario.idVelatorio}`;
     }
@@ -359,7 +363,7 @@ export class ReporteEncargadoComponent implements OnInit {
   }
 
   obtenerPlacas() {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     let datos = {
       delegacion: +usuario.idDelegacion,
       velatorio: +usuario.idVelatorio,

@@ -15,12 +15,13 @@ import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/fu
 import { HttpErrorResponse } from '@angular/common/http';
 import * as moment from 'moment';
 import {finalize} from "rxjs/operators";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-generar-orden-formato',
   templateUrl: './generar-orden-formato.component.html',
   styleUrls: ['./generar-orden-formato.component.scss'],
-  providers: [DatePipe, ConfirmationService, DynamicDialogConfig]
+  providers: [DatePipe, ConfirmationService, DynamicDialogConfig, AutenticacionService]
 })
 export class GenerarOrdenFormatoComponent implements OnInit {
 
@@ -50,6 +51,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
     private datePipe: DatePipe,
     private confirmationService: ConfirmationService,
     private formBuilder: FormBuilder,
+    private authService: AutenticacionService
   ) { }
 
   ngOnInit(): void {
@@ -64,7 +66,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
 
   inicializarEditForm(): void {
     let servicio = this.catalogoServicios.filter( s => s.label === this.ordenSeleccionada.tipoServicio);
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.editForm = this.formBuilder.group({
       version: new FormControl({ value: '1.0.0', disabled: true }, []),
       fecha: new FormControl({ value: new Date(), disabled: true }, []),
@@ -113,7 +115,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     if (!cargaInicial) {
       this.catalogoVelatorios = [];
       this.editForm.get('velatorio')?.patchValue("");

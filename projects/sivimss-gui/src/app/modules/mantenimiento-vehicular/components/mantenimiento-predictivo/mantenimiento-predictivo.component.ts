@@ -19,12 +19,14 @@ import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-a
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-mantenimiento-predictivo',
   templateUrl: './mantenimiento-predictivo.component.html',
   styleUrls: ['./mantenimiento-predictivo.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, CookieService, AutenticacionService]
 })
 export class MantenimientoPredictivoComponent implements OnInit {
 
@@ -50,7 +52,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
   catalogoPeriodo: TipoDropdown[] = [];
   tipoMantenimientos: TipoDropdown[] = [];
   titulos: string[] = ['Aceite', 'Agua', 'Calibración Neumáticos', 'Combustible', 'Código de Falla', 'Batería'];
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
   titulosSeleccionados: string[] = [];
   velatorio: string = '';
   niveles: any =
@@ -77,6 +79,8 @@ export class MantenimientoPredictivoComponent implements OnInit {
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private alertaService: AlertaService,
+    private cookieService: CookieService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -100,7 +104,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm = this.formBuilder.group({
       nivel: [{ value: +usuario.idOficina, disabled: true }],
       delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, [Validators.required]],
@@ -134,7 +138,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
   limpiar(): void {
     this.realizoBusqueda = false;
     this.filtroForm.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
     this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
 

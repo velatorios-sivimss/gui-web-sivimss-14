@@ -7,11 +7,13 @@ import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/aler
 import {LoaderService} from '../../../../shared/loader/services/loader.service';
 import {OrdenEntradaService} from '../../services/orden-entrada.service';
 import {finalize} from "rxjs/operators";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-devolver-articulo',
   templateUrl: './devolver-articulo.component.html',
-  styleUrls: ['./devolver-articulo.component.scss']
+  styleUrls: ['./devolver-articulo.component.scss'],
+  providers: [CookieService]
 })
 export class DevolverArticuloComponent implements OnInit {
 
@@ -25,7 +27,8 @@ export class DevolverArticuloComponent implements OnInit {
     public ordenEntradaService: OrdenEntradaService,
     private readonly loaderService: LoaderService,
     private readonly router: Router,
-    private readonly activatedRoute: ActivatedRoute
+    private readonly activatedRoute: ActivatedRoute,
+    private cookieService: CookieService
   ) {
   }
 
@@ -82,9 +85,9 @@ export class DevolverArticuloComponent implements OnInit {
     }
   }
 
-  setearLocalStorage(): void {
-    localStorage.setItem("indexOrdenEntrada","1");
-    this.router.navigate(["/orden-entrada"]);
+  setearCookies(): void {
+    this.cookieService.set("indexOrdenEntrada", "1");
+    void this.router.navigate(["/orden-entrada"]);
   }
 
   get f() {

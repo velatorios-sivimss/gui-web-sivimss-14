@@ -16,12 +16,14 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-consulta-stock',
   templateUrl: './consulta-stock.component.html',
   styleUrls: ['./consulta-stock.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, CookieService, AutenticacionService]
 })
 export class ConsultaStockComponent implements OnInit {
 
@@ -66,7 +68,7 @@ export class ConsultaStockComponent implements OnInit {
   numPaginaActual: number = 0
   totalElementos: number = 0
 
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
 
   constructor(
     private alertaService: AlertaService,
@@ -76,6 +78,8 @@ export class ConsultaStockComponent implements OnInit {
     private readonly loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService,
+    private cookieService: CookieService,
   ) {
   }
 
@@ -86,7 +90,7 @@ export class ConsultaStockComponent implements OnInit {
   }
 
   inicializarFormulario(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.formulario = this.formBuilder.group({
       nivel: [{ value: +usuario.idOficina, disabled: true }],
       velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }],
@@ -105,7 +109,7 @@ export class ConsultaStockComponent implements OnInit {
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     if (!cargaInicial) {
       this.catalogoVelatorios = [];
       this.formulario.get('velatorio')?.patchValue("");
@@ -138,7 +142,7 @@ export class ConsultaStockComponent implements OnInit {
   }
 
   consultarOrdenesEntrada(event: any): void {
-    let usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    let usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.loaderService.activar();
     this.ordenEntradaService.consultarOrdenesEntrada(this.f.ordenEntrada.value, usuario.idVelatorio).pipe(
       finalize(() => this.loaderService.desactivar())

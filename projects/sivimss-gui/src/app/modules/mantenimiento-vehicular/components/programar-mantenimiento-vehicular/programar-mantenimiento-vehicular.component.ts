@@ -1,33 +1,35 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
-import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes'
-import { FormBuilder, FormGroup } from '@angular/forms'
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
-import { ActivatedRoute, Router } from '@angular/router'
-import { NuevaVerificacionComponent } from '../nueva-verificacion/nueva-verificacion.component'
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core'
+import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes'
+import {FormBuilder, FormGroup} from '@angular/forms'
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
+import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
+import {ActivatedRoute, Router} from '@angular/router'
+import {NuevaVerificacionComponent} from '../nueva-verificacion/nueva-verificacion.component'
 import {
   RegistroMantenimientoComponent
 } from '../registro-mantenimiento/registro-mantenimiento.component'
 import {
   SolicitudMantenimientoComponent
 } from '../solicitud-mantenimiento/solicitud-mantenimiento.component'
-import { finalize } from "rxjs/operators";
-import { HttpErrorResponse } from "@angular/common/http";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { MantenimientoVehicularService } from "../../services/mantenimiento-vehicular.service";
-import { MANTENIMIENTO_VEHICULAR_BREADCRUMB } from "../../constants/breadcrumb";
-import { FiltrosMantenimientoVehicular } from "../../models/filtrosMantenimientoVehicular.interface";
-import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { LazyLoadEvent } from "primeng/api";
-import { VehiculoMantenimiento } from "../../models/vehiculoMantenimiento.interface";
-import { UsuarioEnSesion } from "../../../../models/usuario-en-sesion.interface";
-import { mapearArregloTipoDropdown, validarUsuarioLogueado } from "../../../../utils/funciones";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface'
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service'
+import {finalize} from "rxjs/operators";
+import {HttpErrorResponse} from "@angular/common/http";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
+import {MANTENIMIENTO_VEHICULAR_BREADCRUMB} from "../../constants/breadcrumb";
+import {FiltrosMantenimientoVehicular} from "../../models/filtrosMantenimientoVehicular.interface";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {LazyLoadEvent} from "primeng/api";
+import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface'
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service'
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 type OpcionMtto = 'registroMtto' | 'mtto' | 'verificacion';
 
@@ -35,7 +37,7 @@ type OpcionMtto = 'registroMtto' | 'mtto' | 'verificacion';
   selector: 'app-programar-mantenimiento-vehicular',
   templateUrl: './programar-mantenimiento-vehicular.component.html',
   styleUrls: ['./programar-mantenimiento-vehicular.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, CookieService, AutenticacionService]
 })
 export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestroy {
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
@@ -70,8 +72,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   catalogoVelatorios: TipoDropdown[] = [];
   catalogoPlacas: TipoDropdown[] = [];
 
-  usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -85,6 +87,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     private mensajesSistemaService: MensajesSistemaService,
     private alertaService: AlertaService,
     private descargaArchivosService: DescargaArchivosService,
+    private authService: AutenticacionService,
+    private cookieService: CookieService
   ) {
   }
 
@@ -120,12 +124,12 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroFormProgramarMantenimiento = this.formBuilder.group({
-      nivel: [{ value: +usuario?.idOficina, disabled: true }],
-      delegacion: [{ value: +usuario?.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
-      velatorio: [{ value: +usuario?.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
-      placa: [{ value: null, disabled: false }, []],
+      nivel: [{value: +usuario?.idOficina, disabled: true}],
+      delegacion: [{value: +usuario?.idDelegacion, disabled: +usuario.idOficina >= 2}, []],
+      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario.idOficina === 3}, []],
+      placa: [{value: null, disabled: false}, []],
     });
 
     this.obtenerPlacas();
@@ -150,7 +154,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
     this.paginacionConFiltrado = false;
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
@@ -162,27 +166,27 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   paginar(): void {
-    if (!localStorage.getItem('sivimss_token')) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     this.loaderService.activar();
     this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, this.crearSolicitudFiltros())
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.vehiculos = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-          this.realizoBusqueda = true;
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.vehiculos = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+        this.realizoBusqueda = true;
 
-          const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-          if (usuario?.idRol == '17' && this.vehiculos.length > 0 && this.once) {
-            this.vehiculoSeleccionado = this.vehiculos[0];
-            this.abrirModalnuevaVerificacion();
-            this.once = false;
-          }
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
+        const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
+        if (usuario?.idRol == '17' && this.vehiculos.length > 0 && this.once) {
+          this.vehiculoSeleccionado = this.vehiculos[0];
+          this.abrirModalnuevaVerificacion();
+          this.once = false;
         }
-      });
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
   paginarConFiltros(): void {
@@ -197,16 +201,16 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       this.loaderService.activar();
       this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
         .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-          next: (respuesta: HttpRespuesta<any>): void => {
-            this.vehiculos = respuesta.datos.content;
-            this.totalElementos = respuesta.datos.totalElements;
-            this.realizoBusqueda = true;
-          },
-          error: (error: HttpErrorResponse): void => {
-            console.error(error);
-            this.mensajesSistemaService.mostrarMensajeError(error);
-          }
-        });
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.vehiculos = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+          this.realizoBusqueda = true;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
     }
   }
 
@@ -217,7 +221,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   crearSolicitudFiltrosPorNivel(): FiltrosMantenimientoVehicular | null {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     switch (+usuario.idOficina) {
       case 1:
         return {
@@ -251,7 +255,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   limpiar(): void {
     this.realizoBusqueda = false;
     this.filtroFormProgramarMantenimiento.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idOficina);
 
     if (+usuario.idOficina >= 2) {
@@ -272,7 +276,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   abrirModalnuevaVerificacion(): void {
     this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
-      data: { vehiculo: this.vehiculoSeleccionado, cicloCompleto: this.cicloCompleto },
+      data: {vehiculo: this.vehiculoSeleccionado, cicloCompleto: this.cicloCompleto},
       header: "Verificar al inicio de la jornada",
       width: "920px"
     });
@@ -282,7 +286,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.solicitudMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Solicitud de mantenimiento vehicular",
       width: "920px",
-      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create', cicloCompleto: this.cicloCompleto },
+      data: {vehiculo: this.vehiculoSeleccionado, mode: 'create', cicloCompleto: this.cicloCompleto},
     })
   }
 
@@ -290,7 +294,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Registro de mantenimiento vehicular",
       width: "920px",
-      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create', cicloCompleto: this.cicloCompleto },
+      data: {vehiculo: this.vehiculoSeleccionado, mode: 'create', cicloCompleto: this.cicloCompleto},
     });
   }
 
@@ -298,25 +302,25 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     if (opcion === 'mtto') {
       void this.router.navigate(['./detalle-solicitud'], {
         relativeTo: this.route,
-        queryParams: { id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD }
+        queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD}
       });
       return;
     }
     if (opcion === 'registroMtto') {
       void this.router.navigate(['./detalle-registro'],
-        { relativeTo: this.route, queryParams: { id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO } });
+        {relativeTo: this.route, queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO}});
       return;
     }
     void this.router.navigate(['./detalle-verificacion'], {
       relativeTo: this.route,
-      queryParams: { id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO }
+      queryParams: {id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO}
     });
   }
 
   abrirModalModificarVerificacion(): void {
     this.modificarModal = !this.modificarModal;
     this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
-      data: { id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO },
+      data: {id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO},
       header: "Modificar verificación",
       width: "920px"
     });
@@ -327,7 +331,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Modificar solicitud de mantenimiento",
       width: "920px",
-      data: { id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD, vehiculo: this.vehiculoSeleccionado },
+      data: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD, vehiculo: this.vehiculoSeleccionado},
     });
   }
 
@@ -336,7 +340,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Modificar registro de mantenimiento vehicular",
       width: "920px",
-      data: { id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO, vehiculo: this.vehiculoSeleccionado },
+      data: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO, vehiculo: this.vehiculoSeleccionado},
     });
   }
 
@@ -352,7 +356,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   irADetalle(vehiculo: any): void {
     if (vehiculo?.ID_MTTOVEHICULAR) {
       void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', vehiculo.ID_MTTOVEHICULAR],
-        { queryParams: { tabview: 0 } });
+        {queryParams: {tabview: 0}});
     }
   }
 
