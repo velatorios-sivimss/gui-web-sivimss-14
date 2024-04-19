@@ -1,40 +1,42 @@
 import {Component, Input, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { ModalEliminarPagoComponent } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-eliminar-pago/modal-eliminar-pago.component';
-import { ModalRealizarPagoComponent } from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-realizar-pago/modal-realizar-pago.component';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {
+  ModalEliminarPagoComponent
+} from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-eliminar-pago/modal-eliminar-pago.component';
+import {
+  ModalRealizarPagoComponent
+} from 'projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-realizar-pago/modal-realizar-pago.component';
 import {
   ServiciosFunerariosInterface,
   DetallePago,
 } from '../../models/servicios-funerarios.interface';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from '../../../../utils/constantes';
-import { LazyLoadEvent } from 'primeng/api';
-import { ActivatedRoute } from '@angular/router';
-import { DetallePagoService } from '../../services/detalle-pago.service';
-import { TipoDropdown } from '../../../../models/tipo-dropdown';
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from '../../../../utils/funciones';
-import { LoaderService } from '../../../../shared/loader/services/loader.service';
-import { finalize } from 'rxjs/operators';
-import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from '../../../../utils/constantes';
+import {ActivatedRoute} from '@angular/router';
+import {DetallePagoService} from '../../services/detalle-pago.service';
+import {TipoDropdown} from '../../../../models/tipo-dropdown';
+import {mapearArregloTipoDropdown} from '../../../../utils/funciones';
+import {LoaderService} from '../../../../shared/loader/services/loader.service';
+import {finalize} from 'rxjs/operators';
+import {HttpRespuesta} from '../../../../models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
 import {
   AlertaService,
   TipoAlerta,
 } from '../../../../shared/alerta/services/alerta.service';
-import { MensajesSistemaService } from '../../../../services/mensajes-sistema.service';
+import {MensajesSistemaService} from '../../../../services/mensajes-sistema.service';
 import {
   DetalleServicios,
   PagosBitacora,
   PagosRealizados,
 } from '../../models/detalle-servicios.interface';
-import { ModalModificarPagosComponent } from '../modal-modificar-pagos/modal-modificar-pagos.component';
-import { of } from 'rxjs';
-import { OpcionesArchivos } from '../../../../models/opciones-archivos.interface';
-import { DescargaArchivosService } from '../../../../services/descarga-archivos.service';
+import {ModalModificarPagosComponent} from '../modal-modificar-pagos/modal-modificar-pagos.component';
+import {of} from 'rxjs';
+import {OpcionesArchivos} from '../../../../models/opciones-archivos.interface';
+import {DescargaArchivosService} from '../../../../services/descarga-archivos.service';
 import * as moment from "moment";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
-
 
 @Component({
   selector: ' app-detalle-servicios-funerarios',
@@ -92,7 +94,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
     private descargaArchivosService: DescargaArchivosService,
     private renderer: Renderer2,
     private authService: AutenticacionService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     let respuesta = this.route.snapshot.data['respuesta'];
@@ -106,7 +109,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
   }
 
   consultarDetallePago(idPlanSfpa: number): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     this.detallePagoService
       .obtenerDetallePago(+idPlanSfpa)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -134,8 +137,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
   }
 
   abrirPanelBody(event: MouseEvent, detallePagoBitacora: PagosBitacora): void {
-    const importeActualizado = this.pagosRealizados.filter((pago:any) => {
-            return pago.idPagoSFPA == this.idPagoSFPA;
+    const importeActualizado = this.pagosRealizados.filter((pago: any) => {
+      return pago.idPagoSFPA == this.idPagoSFPA;
     });
     this.item.importeAcumulado = importeActualizado[0].importeAcumulado;
     this.detallePagoBitacora = detallePagoBitacora;
@@ -160,9 +163,9 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
         this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
-        setTimeout(()=> {
-          if(this.item.idPagoSFPA)this.buscarPagosBitacora(Number(this.item.idPagoSFPA));
-        },500)
+        setTimeout(() => {
+          if (this.item.idPagoSFPA) this.buscarPagosBitacora(Number(this.item.idPagoSFPA));
+        }, 500)
       }
     });
   }
@@ -176,14 +179,14 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
     const objetoReporte = this.generarObjetoReporte(extension);
 
     this.detallePagoService.reciboParcialidades(objetoReporte).pipe(
-      finalize(()=>this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
         if (respuesta) {
           let link = this.renderer.createElement('a');
           const file = respuesta;
           const url = window.URL.createObjectURL(file);
-          const extensionArchivo =  configuracionArchivo.ext ? 'documento.xlsx' : 'documento.pdf'
+          const extensionArchivo = configuracionArchivo.ext ? 'documento.xlsx' : 'documento.pdf'
           link.setAttribute('download', extensionArchivo);
           link.setAttribute('href', url);
           link.click();
@@ -203,7 +206,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
       folio: this.datosGenerales.folio,
       nombreContratante: this.datosGenerales.nombre,
       tipoReporte: tipoReporte,
-      idPlanSFPA : +this.route.snapshot.queryParams.idPlanSfpa
+      idPlanSFPA: +this.route.snapshot.queryParams.idPlanSfpa
     };
   }
 
@@ -246,9 +249,9 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
         this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
-        setTimeout(()=> {
-          if(this.item.idPagoSFPA)this.buscarPagosBitacora(Number(this.item.idPagoSFPA));
-        },500)
+        setTimeout(() => {
+          if (this.item.idPagoSFPA) this.buscarPagosBitacora(Number(this.item.idPagoSFPA));
+        }, 500)
         const msg: string =
           this.mensajesSistemaService.obtenerMensajeSistemaPorId(193);
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
@@ -299,11 +302,11 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
 
   validarMenuBitacora(bitacora: any): boolean {
     let fecha;
-    if(bitacora.fechaPago){
-      let [dia,mes,anio] = bitacora.fechaPago.split('/');
+    if (bitacora.fechaPago) {
+      let [dia, mes, anio] = bitacora.fechaPago.split('/');
       fecha = anio + '-' + mes + '-' + dia
-    }else{
-      let [dia,mes,anio] = bitacora.fechaValeParitario.split('/');
+    } else {
+      let [dia, mes, anio] = bitacora.fechaValeParitario.split('/');
       fecha = anio + '-' + mes + '-' + dia
     }
     return (this.fechaActual === fecha) && (bitacora.idEstatus != '0')
@@ -316,7 +319,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
 
 
     this.detallePagoService.reciboPago(objetoReporte).pipe(
-      finalize(()=>this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
         let link = this.renderer.createElement('a');
@@ -334,16 +337,16 @@ export class DetalleServiciosFunerariosComponent implements OnInit, OnDestroy {
     })
   }
 
-  validarMostrarBotonHamburguesa(item:PagosRealizados): boolean {
+  validarMostrarBotonHamburguesa(item: PagosRealizados): boolean {
     return item.idEstatus == 8 || item.idEstatus == 5;
   }
 
-  generarObjetoReciboPago():any {
-    let [parcialidad,total] = this.item.noPagos?.split('/')
+  generarObjetoReciboPago(): any {
+    let [parcialidad, total] = this.item.noPagos?.split('/')
     return {
-      idPagoSfpa:this.item.idPagoSFPA,
-      "parcialidad":`${parcialidad} de ${total}`,
-      "importeRecibo":this.item.importePagado.toString()
+      idPagoSfpa: this.item.idPagoSFPA,
+      "parcialidad": `${parcialidad} de ${total}`,
+      "importeRecibo": this.item.importePagado.toString()
     }
   }
 

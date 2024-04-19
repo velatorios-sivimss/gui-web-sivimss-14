@@ -54,10 +54,6 @@ export function existeMensajeEnEnum(enumObj: { [s: string]: string }, valor: str
   return valores.includes(valor);
 }
 
-export function validarUsuarioLogueado(): boolean {
-  return !localStorage.getItem('sivimss_token');
-}
-
 export function validarUsuarioLogueadoOnline(): boolean {
   return !localStorage.getItem('sivimss_token_online');
 }

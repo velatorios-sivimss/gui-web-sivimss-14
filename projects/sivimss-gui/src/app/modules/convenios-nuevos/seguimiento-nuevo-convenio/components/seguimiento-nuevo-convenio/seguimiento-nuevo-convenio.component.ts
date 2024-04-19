@@ -14,7 +14,7 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {
   mapearArregloTipoDropdown,
   obtenerNivelUsuarioLogueado,
-  obtenerVelatorioUsuarioLogueado, validarUsuarioLogueado
+  obtenerVelatorioUsuarioLogueado
 } from "../../../../../utils/funciones";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
@@ -120,7 +120,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

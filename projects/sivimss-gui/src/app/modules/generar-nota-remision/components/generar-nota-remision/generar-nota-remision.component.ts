@@ -13,7 +13,7 @@ import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {
   mapearArregloTipoDropdown,
   obtenerDelegacionUsuarioLogueado, obtenerFechaYHoraActual,
-  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado, validarUsuarioLogueado
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado
 } from 'projects/sivimss-gui/src/app/utils/funciones';
 import {
   BusquedaFiltro,
@@ -120,8 +120,14 @@ export class GenerarNotaRemisionComponent implements OnInit {
     const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
-      delegacion: [{value: obtenerDelegacionUsuarioLogueado(usuario), disabled: +this.rolUsuarioEnSesion.idOficina >= 2}],
-      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: +this.rolUsuarioEnSesion.idOficina === 3}],
+      delegacion: [{
+        value: obtenerDelegacionUsuarioLogueado(usuario),
+        disabled: +this.rolUsuarioEnSesion.idOficina >= 2
+      }],
+      velatorio: [{
+        value: obtenerVelatorioUsuarioLogueado(usuario),
+        disabled: +this.rolUsuarioEnSesion.idOficina === 3
+      }],
       folio: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
@@ -146,7 +152,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

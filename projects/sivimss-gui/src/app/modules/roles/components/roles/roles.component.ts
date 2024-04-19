@@ -18,19 +18,20 @@ import {MensajesSistemaService} from "../../../../services/mensajes-sistema.serv
 import {
   ConfirmacionMovimientoComponent
 } from "../confirmacion-movimiento/confirmacion-movimiento.component";
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {ROLES_BREADCRUMB} from "../../constants/breadcrumb";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {ESTATUS_ROL} from "../../constants/estatus";
 import {SolicitudCambioEstatus} from "../../models/solicitudCambioEstatus.interface";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-roles',
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, AutenticacionService]
 })
 export class RolesComponent implements OnInit {
   @ViewChild(OverlayPanel)
@@ -66,7 +67,8 @@ export class RolesComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
     private cargadorService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -84,7 +86,7 @@ export class RolesComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

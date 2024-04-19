@@ -16,7 +16,6 @@ import {PagoEspecifico} from "../../../modelos/pagoEspecifico.interface";
 import {
   obtenerNivelUsuarioLogueado,
   obtenerVelatorioUsuarioLogueado,
-  validarUsuarioLogueado
 } from "../../../../../../utils/funciones";
 import {UsuarioEnSesion} from "../../../../../../models/usuario-en-sesion.interface";
 import {AutenticacionService} from "../../../../../../services/autenticacion.service";
@@ -61,7 +60,7 @@ export class PagoConvenioComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
@@ -72,7 +71,7 @@ export class PagoConvenioComponent implements OnInit {
     this.cargadorService.activar();
     const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const idVelatorio: number | null = obtenerNivelUsuarioLogueado(usuario) === 1 ? null : obtenerVelatorioUsuarioLogueado(usuario);
-    this.realizarPagoService.consultarPagosConvenio({ idVelatorio },this.numPaginaActual, this.cantElementosPorPagina)
+    this.realizarPagoService.consultarPagosConvenio({idVelatorio}, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusqueda(respuesta),
       error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)

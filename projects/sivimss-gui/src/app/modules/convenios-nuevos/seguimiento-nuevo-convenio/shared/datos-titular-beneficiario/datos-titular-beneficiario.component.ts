@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
-import {diferenciaUTC, mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {UtileriaModule} from "../../../../../shared/utileria/utileria.module";
@@ -26,6 +26,7 @@ import * as moment from "moment";
   styleUrls: ['./datos-titular-beneficiario.component.scss'],
   standalone: true,
   imports: [ReactiveFormsModule, DropdownModule, UtileriaModule, CommonModule, CalendarModule],
+  providers: [AutenticacionService],
   viewProviders: [
     {
       provide: ControlContainer,
@@ -52,6 +53,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
               private mensajesSistemaService: MensajesSistemaService,
               private alertaService: AlertaService,
+              private authService: AutenticacionService
   ) {
     this.cargarCatalogosCookies();
   }
@@ -209,7 +211,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
       this.cargadorService.activar();
       this.parentContainer.control?.get('colonia')?.setValue(null);
     }
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     this.seguimientoNuevoConvenioService.consutaCP(cp).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({

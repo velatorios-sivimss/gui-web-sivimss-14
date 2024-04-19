@@ -19,7 +19,6 @@ import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/des
 import {
   mapearArregloTipoDropdown, obtenerDelegacionUsuarioLogueado,
   obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado,
-  validarUsuarioLogueado
 } from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
@@ -128,7 +127,7 @@ export class ComisionesComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

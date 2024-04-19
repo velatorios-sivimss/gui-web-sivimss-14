@@ -25,14 +25,14 @@ import {CATALOGOS_DUMMIES} from '../../../articulos/constants/dummies';
 import {ModalComisionComponent} from '../modal-comision/modal-comision.component';
 import * as moment from "moment/moment";
 import {LazyLoadEvent} from "primeng/api";
-import {validarUsuarioLogueado} from "../../../../utils/funciones";
 import {map} from "rxjs/operators";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-detalle-comision',
   templateUrl: './detalle-comision.component.html',
   styleUrls: ['./detalle-comision.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, AutenticacionService]
 })
 
 export class DetalleComisionComponent implements OnInit {
@@ -80,6 +80,7 @@ export class DetalleComisionComponent implements OnInit {
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -106,7 +107,7 @@ export class DetalleComisionComponent implements OnInit {
   }
 
   seleccionarPaginacionODS(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActualOrdenes = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
@@ -114,7 +115,7 @@ export class DetalleComisionComponent implements OnInit {
   }
 
   seleccionarPaginacionConvenios(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActualConvenios = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

@@ -7,7 +7,7 @@ import {CalendarModule} from "primeng/calendar";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {CATALOGO_SEXO} from "../../../../consulta-donaciones/constants/catalogo";
 import {CATALOGO_NACIONALIDAD} from "../../../../contratantes/constants/catalogos-complementarios";
-import {diferenciaUTC, mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AutenticacionService} from "../../../../../services/autenticacion.service";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
@@ -25,6 +25,7 @@ import * as moment from "moment/moment";
   styleUrls: ['./datos-sustituto-beneficiario.component.scss'],
   standalone: true,
   imports: [ReactiveFormsModule, DropdownModule, UtileriaModule, CommonModule, CalendarModule],
+  providers: [AutenticacionService],
   viewProviders: [
     {
       provide: ControlContainer,
@@ -49,7 +50,8 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
               private cargadorService: LoaderService,
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
               private mensajesSistemaService: MensajesSistemaService,
-              private alertaService: AlertaService,) {
+              private alertaService: AlertaService,
+              private authService: AutenticacionService) {
     this.cargarCatalogosCookies();
   }
 
@@ -234,7 +236,7 @@ export class DatosSustitutoBeneficiarioComponent implements OnInit {
       this.cargadorService.activar();
       this.parentContainer.control?.get('colonia')?.setValue(null);
     }
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     this.seguimientoNuevoConvenioService.consutaCP(cpSust).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({

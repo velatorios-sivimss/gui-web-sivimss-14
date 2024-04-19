@@ -14,7 +14,6 @@ import {PagoEspecifico} from "../../../modelos/pagoEspecifico.interface";
 import {
   obtenerNivelUsuarioLogueado,
   obtenerVelatorioUsuarioLogueado,
-  validarUsuarioLogueado
 } from "../../../../../../utils/funciones";
 import {TIPO_PAGO_CATALOGOS_ODS} from "../../../constants/catalogos";
 import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
@@ -63,7 +62,7 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

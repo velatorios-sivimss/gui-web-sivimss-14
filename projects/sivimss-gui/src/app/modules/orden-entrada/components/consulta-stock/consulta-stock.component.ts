@@ -11,7 +11,7 @@ import { LoaderService } from "../../../../shared/loader/services/loader.service
 import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
 import { finalize } from "rxjs/operators";
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
@@ -191,7 +191,7 @@ export class ConsultaStockComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

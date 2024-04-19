@@ -13,7 +13,7 @@ import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/a
 import {
   mapearArregloTipoDropdown,
   obtenerNivelUsuarioLogueado,
-  obtenerVelatorioUsuarioLogueado, validarUsuarioLogueado
+  obtenerVelatorioUsuarioLogueado
 } from "../../../../../utils/funciones";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {FacturacionService} from "../../services/facturacion.service";
@@ -158,7 +158,7 @@ export class FacturacionComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

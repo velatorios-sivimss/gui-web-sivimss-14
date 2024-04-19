@@ -14,7 +14,7 @@ import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/co
 import { BusquedaConveniosPrevision, FiltrosConveniosPrevision } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/models/convenios-prevision.interface'
 import { RenovacionExtemporaneaService } from '../../services/renovacion-extemporanea.service'
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface'
-import { mapearArregloTipoDropdown, validarUsuarioLogueado } from 'projects/sivimss-gui/src/app/utils/funciones'
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones'
 import { HttpErrorResponse } from '@angular/common/http'
 import { ActivatedRoute } from '@angular/router'
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service'
@@ -106,7 +106,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   }
 
   paginar(event: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event && !this.cargaInicial) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
       this.paginarConFiltros();

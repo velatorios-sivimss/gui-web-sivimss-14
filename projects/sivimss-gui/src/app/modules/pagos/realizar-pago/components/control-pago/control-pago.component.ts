@@ -21,8 +21,7 @@ import {forkJoin, Observable} from "rxjs";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
-import {validarUsuarioLogueado} from "../../../../../utils/funciones";
-import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 interface DialogoAGF {
   idFinado: number,
@@ -50,7 +49,7 @@ interface ParametrosModificar {
   selector: 'app-control-pago',
   templateUrl: './control-pago.component.html',
   styleUrls: ['./control-pago.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, AutenticacionService]
 })
 export class ControlPagoComponent implements OnInit {
 
@@ -76,6 +75,7 @@ export class ControlPagoComponent implements OnInit {
     private realizarPagoService: RealizarPagoService,
     public dialogService: DialogService,
     private cargadorService: LoaderService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -95,7 +95,7 @@ export class ControlPagoComponent implements OnInit {
     this.tipoPago = this.obtenerTipoPago();
     this.titulo = this.obtenerTipoPago();
     this.tipoFolio = this.obtenerFolioTipoPago();
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     this.obtenerMetodosPago();
     this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
     this.actualizarValidaciones();

@@ -14,7 +14,7 @@ import {TipoDropdown} from '../../../../models/tipo-dropdown';
 import {USUARIOS_BREADCRUMB} from '../../constants/breadcrumb';
 import {FiltrosUsuario} from '../../models/filtrosUsuario.interface';
 import {RespuestaModalUsuario} from '../../models/respuestaModal.interface';
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from '../../../../utils/funciones';
+import {mapearArregloTipoDropdown} from '../../../../utils/funciones';
 import {LazyLoadEvent} from 'primeng/api';
 import {LoaderService} from '../../../../shared/loader/services/loader.service';
 import {CambioEstatusUsuarioComponent} from '../cambio-estatus-usuario/cambio-estatus-usuario.component';
@@ -24,6 +24,7 @@ import {AgregarUsuarioComponent} from "../agregar-usuario/agregar-usuario.compon
 import {ModificarUsuarioComponent} from "../modificar-usuario/modificar-usuario.component";
 import {VerDetalleUsuarioComponent} from "../ver-detalle-usuario/ver-detalle-usuario.component";
 import {NuevoUsuario} from "../../models/nuevoUsuario.interface";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 type SolicitudEstatus = Pick<Usuario, 'id'>;
 type DetalleUsuario = Required<Usuario> & {
@@ -35,7 +36,7 @@ type DetalleUsuario = Required<Usuario> & {
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.scss'],
-  providers: [DialogService],
+  providers: [DialogService, AutenticacionService],
 })
 export class UsuariosComponent implements OnInit, OnDestroy {
   @ViewChild(OverlayPanel)
@@ -81,7 +82,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
     private cargadorService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -178,7 +180,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

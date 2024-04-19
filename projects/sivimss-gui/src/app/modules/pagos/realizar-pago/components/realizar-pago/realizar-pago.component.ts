@@ -14,7 +14,7 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {
   mapearArregloTipoDropdown, obtenerFechaYHoraActual,
-  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado, validarUsuarioLogueado
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado
 } from "../../../../../utils/funciones";
 import {Pago} from "../../modelos/pago.interface";
 import {FiltroBasico, FiltrosPago} from "../../modelos/filtrosPago.interface";
@@ -97,7 +97,7 @@ export class RealizarPagoComponent implements OnInit {
   ngOnInit(): void {
     this.breadcrumbService.actualizar(REALIZAR_PAGO_BREADCRUMB);
     this.inicializarForm();
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     this.cargarCatalogos();
   }
 
@@ -154,7 +154,7 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

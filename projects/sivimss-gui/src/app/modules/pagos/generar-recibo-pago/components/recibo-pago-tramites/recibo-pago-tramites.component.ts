@@ -7,7 +7,7 @@ import {finalize} from "rxjs/operators";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {forkJoin, Observable} from "rxjs";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ReciboPagoTramites} from "../../models/ReciboPagoTramites.interface";
 import * as moment from "moment/moment";
@@ -15,11 +15,13 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {VistaPreviaReciboPago} from "../../models/vistaPreviaReciboPago.interface";
 import {SolicitudReciboPago} from "../../models/solicitudReciboPago.interface";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-recibo-pago-tramites',
   templateUrl: './recibo-pago-tramites.component.html',
   styleUrls: ['./recibo-pago-tramites.component.scss'],
+  providers: [AutenticacionService]
 })
 export class ReciboPagoTramitesComponent implements OnInit {
 
@@ -44,6 +46,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private alertaService: AlertaService,
+    private authService: AutenticacionService
   ) {
     this.obtenerCatalogos();
   }
@@ -113,7 +116,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
   }
 
   obtenerCatalogosPorVelatorio(): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     const idVelatorio: string = this.recibo.idVelatorio.toString();
     const $tramites: Observable<HttpRespuesta<any>> = this.generarReciboService.obtenerCatalogoTramites(idVelatorio);
     const $derechos: Observable<HttpRespuesta<any>> = this.generarReciboService.obtenerCatalogoDerechos(idVelatorio);

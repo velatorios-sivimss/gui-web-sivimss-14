@@ -8,7 +8,6 @@ import {LazyLoadEvent} from "primeng/api";
 import {
   mapearArregloTipoDropdown, obtenerFechaYHoraActual, obtenerNivelUsuarioLogueado,
   obtenerVelatorioUsuarioLogueado,
-  validarUsuarioLogueado
 } from "../../../../../utils/funciones";
 import {GestionarPagoService} from "../../services/gestionar-pago.service";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
@@ -167,7 +166,7 @@ export class GestionarPagoComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

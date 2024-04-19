@@ -21,8 +21,7 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
-import {validarUsuarioLogueado} from "../../../../../utils/funciones";
-import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 interface DialogoAGF {
   idFinado: number,
@@ -50,7 +49,7 @@ interface ParametrosModificar {
   selector: 'app-modificar-metodo-pago',
   templateUrl: './modificar-metodo-pago.component.html',
   styleUrls: ['./modificar-metodo-pago.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, AutenticacionService]
 })
 export class ModificarMetodoPagoComponent implements OnInit {
 
@@ -75,6 +74,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
     public dialogService: DialogService,
     private cargadorService: LoaderService,
     private realizarPagoService: RealizarPagoService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -93,7 +93,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
     this.registroPago = this.activatedRoute.snapshot.data["respuesta"].datos;
     this.tipoPago = this.obtenerTipoPago();
     this.tipoFolio = this.obtenerFolioTipoPago();
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     this.obtenerMetodosPago();
     this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
     this.actualizarValidaciones();

@@ -16,7 +16,6 @@ import {PagoEspecifico} from "../../../modelos/pagoEspecifico.interface";
 import {
   obtenerNivelUsuarioLogueado,
   obtenerVelatorioUsuarioLogueado,
-  validarUsuarioLogueado
 } from "../../../../../../utils/funciones";
 import {UsuarioEnSesion} from "../../../../../../models/usuario-en-sesion.interface";
 import {AutenticacionService} from "../../../../../../services/autenticacion.service";
@@ -62,7 +61,7 @@ export class PagoRenovacionConvenioComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (validarUsuarioLogueado()) return;
+    if (this.authService.validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
