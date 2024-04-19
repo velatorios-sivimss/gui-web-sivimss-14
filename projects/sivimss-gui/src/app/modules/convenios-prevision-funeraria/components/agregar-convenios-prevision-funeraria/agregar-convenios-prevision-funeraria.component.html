@@ -71,7 +71,7 @@
                          [consultarFormularioValido]="consultarFormularioValido"
                          [escenario]="'agregar'"
                          [existePersona]="existePersona"
-                         (guardarFormularioPrincipal)="guardarFormularioLocalStorage($event)"
+                         (guardarFormularioPrincipal)="guardarFormularioCookies($event)"
                          (formularioValido)="validarFormularioEmpresa($event)"
                          (formularioEmpresa)="datosFormularioEmpresa($event)">
         </app-por-empresa>

@@ -15,11 +15,14 @@ import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/aler
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {BeneficiarioInterface} from "../../models/beneficiario.interface";
 import * as moment from 'moment';
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-agregar-beneficiario-convenios-prevision-funeraria',
   templateUrl: './agregar-beneficiario-convenios-prevision-funeraria.component.html',
-  styleUrls: ['./agregar-beneficiario-convenios-prevision-funeraria.component.scss']
+  styleUrls: ['./agregar-beneficiario-convenios-prevision-funeraria.component.scss'],
+  providers: [AutenticacionService]
 })
 export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements OnInit {
 
@@ -35,7 +38,7 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   curpDesactivado!: boolean;
 
   delegaciones!: TipoDropdown[];
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion  = this.authService.obtenerUsuarioEnSesion();
 
   constructor(
     private alertaService: AlertaService,
@@ -45,11 +48,12 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
     private mensajesSistemaService: MensajesSistemaService,
     private route: ActivatedRoute,
     private ref: DynamicDialogRef,
+    private authService: AutenticacionService
   ) {
   }
 
   ngOnInit(): void {
-    let respuesta = this.route.snapshot.data['respuesta'];
+    const respuesta = this.route.snapshot.data['respuesta'];
     this.parentesco = respuesta[this.POSICION_PARENTESCO]!.map((parentesco: TipoDropdown) => (
       {label: parentesco.label, value: parentesco.value})) || [];
     this.delegaciones = respuesta[this.POSICION_DELEGACIONES];
@@ -60,12 +64,12 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   inicializarBeneficiarioForm(): void {
     this.beneficiarioForm = this.formBuilder.group({
       delegacion: [{
-        value: +this.rolLocalStorage.idDelegacion || null,
-        disabled: +this.rolLocalStorage.idOficina >= 2
+        value: +this.rolUsuarioEnSesion.idDelegacion || null,
+        disabled: +this.rolUsuarioEnSesion.idOficina >= 2
       }, [Validators.required]],
       velatorio: [{
-        value: +this.rolLocalStorage.idVelatorio || null,
-        disabled: +this.rolLocalStorage.idOficina === 3
+        value: +this.rolUsuarioEnSesion.idVelatorio || null,
+        disabled: +this.rolUsuarioEnSesion.idOficina === 3
       }, [Validators.required]],
       fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
       edad: [{value: null, disabled: true}, [Validators.required]],
@@ -80,7 +84,6 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
       telefono: [{value: null, disabled: false}, [Validators.required]],
       validaActaNacimientoBeneficiario: [{value: null, disabled: true}],
       validaIneBeneficiario: [{value: null, disabled: true}],
-
       matricula: [{value: '', disabled: true}],
       nss: [{value: '', disabled: true}],
       numIne: [{value: '', disabled: true}],
@@ -101,9 +104,9 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   }
 
   consultaVelatorio(): void {
-    let usuario = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.loaderService.activar();
-    this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(usuario.idDelegacion).pipe(
+    this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(+usuario.idDelegacion).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {

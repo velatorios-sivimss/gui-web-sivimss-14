@@ -19,27 +19,32 @@ import {Promotor} from "../../models/promotor.interface";
 import {Empresa} from "../../models/empresa.interface";
 import {ModeloGuardarPorEmpresa} from "../../models/modelo-guardar-por-empresa.interface";
 import {ModeloGuardarPorPersona} from "../../models/modelo-guardar-por-persona.interface";
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {obtenerDelegacionUsuarioLogueado} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-agregar-convenios-prevision-funeraria',
   templateUrl: './agregar-convenios-prevision-funeraria.component.html',
-  styleUrls: ['./agregar-convenios-prevision-funeraria.component.scss']
+  styleUrls: ['./agregar-convenios-prevision-funeraria.component.scss'],
+  providers: [CookieService, AutenticacionService]
 })
 export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
 
-  readonly POSICION_PROMOTOR:number = 4;
+  readonly POSICION_PROMOTOR: number = 4;
 
 
   filtroForm!: FormGroup;
   convenioForm!: FormGroup;
   documentacionForm!: FormGroup;
 
-  personasAgregadas!:PersonaInterface[];
+  personasAgregadas!: PersonaInterface[];
 
   menuStep: MenuItem[] = MENU_STEPPER;
   indice: number = 0;
 
-  tipoContratacion:TipoDropdown[] = [{value:1,label:'Por Persona'},{value:2,label:'Por Grupo o por Empresa'}];
+  tipoContratacion: TipoDropdown[] = [{value: 1, label: 'Por Persona'}, {value: 2, label: 'Por Grupo o por Empresa'}];
   pais: TipoDropdown[] = CATALOGOS_DUMMIES;
   estado: TipoDropdown[] = CATALOGOS_DUMMIES;
   promotores: Promotor[] = [];
@@ -66,30 +71,29 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   velatorio!: TipoDropdown[];
   velatorioDescripcion!: string;
 
-
-
-  consultarFormularioValido:boolean = false;
+  consultarFormularioValido: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
-    private agregarConvenioPFService:AgregarConvenioPFService,
+    private agregarConvenioPFService: AgregarConvenioPFService,
     private alertaService: AlertaService,
     private breadcrumbService: BreadcrumbService,
     private formBuilder: FormBuilder,
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService,
     private router: Router,
-  ) { }
+    private cookieService: CookieService,
+    private authService: AutenticacionService
+  ) {
+  }
 
   ngOnInit(): void {
-
     this.inicializarModeloGuardarPersona();
-    const formularioPrevio = JSON.parse(localStorage.getItem('fomularioPrincipal') as string);
-    localStorage.removeItem('fomularioPrincipal')
-
-    this.personasAgregadas = JSON.parse(localStorage.getItem('persona') as string) || [];
-    if(this.personasAgregadas.length > 0){
-      // localStorage.removeItem('persona')
+    const formularioPrevio = JSON.parse(this.cookieService.get('fomularioPrincipal') as string);
+    this.cookieService.delete('fomularioPrincipal')
+    this.personasAgregadas = JSON.parse(this.cookieService.get('persona') as string) || [];
+    if (this.personasAgregadas.length > 0) {
+      // this.cookieService.delete('persona')
       this.existePersona = true;
     }
 
@@ -114,21 +118,21 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
 
   inicializarFiltroForm(formularioPrevio: any): void {
     this.filtroForm = this.formBuilder.group({
-        numeroConvenio: [{value: formularioPrevio?.numeroConvenio ?? null, disabled: false}],
+      numeroConvenio: [{value: formularioPrevio?.numeroConvenio ?? null, disabled: false}],
       tipoContratacion: [{value: formularioPrevio?.tipoContratacion ?? null, disabled: false}, [Validators.required]],
-               rfcCurp: [{value: formularioPrevio?.rfcCurp ?? null, disabled: false}],
-              promotor: [{value: formularioPrevio?.promotor ?? null, disabled: false}, [Validators.required]],
-         listaPromotor: [{value: formularioPrevio?.listaPromotor ?? null, disabled: false}, [Validators.required]],
-         idContratante: [{value: null, disabled: false}],
+      rfcCurp: [{value: formularioPrevio?.rfcCurp ?? null, disabled: false}],
+      promotor: [{value: formularioPrevio?.promotor ?? null, disabled: false}, [Validators.required]],
+      listaPromotor: [{value: formularioPrevio?.listaPromotor ?? null, disabled: false}, [Validators.required]],
+      idContratante: [{value: null, disabled: false}],
     })
-      this.agregarPromotor = formularioPrevio?.promotor ?? false;
+    this.agregarPromotor = formularioPrevio?.promotor ?? false;
   }
 
   inicializarDocumentacionForm(): void {
-    this.documentacionForm = this.formBuilder.group( {
-                 ineAfiliado: [{value: null, disabled: false}],
-                   copiaCURP: [{value: null, disabled: false}],
-                    copiaRFC: [{value: null, disabled: false}],
+    this.documentacionForm = this.formBuilder.group({
+      ineAfiliado: [{value: null, disabled: false}],
+      copiaCURP: [{value: null, disabled: false}],
+      copiaRFC: [{value: null, disabled: false}],
     });
   }
 
@@ -137,10 +141,12 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     let rfc = "";
     let curp = "";
     tipo.length <= 13 ? rfc = tipo : curp = tipo;
-    if(!this.ff.rfcCurp.value){return}
+    if (!this.ff.rfcCurp.value) {
+      return
+    }
     this.loaderService.activar();
-    this.agregarConvenioPFService.consultaCURPRFC(rfc,curp).pipe(
-      finalize(()=>  this.loaderService.desactivar())
+    this.agregarConvenioPFService.consultaCURPRFC(rfc, curp).pipe(
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
       },
@@ -156,7 +162,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
   consultarConvenioPersona(): void {
-    if(!this.ff.numeroConvenio.value)return;
+    if (!this.ff.numeroConvenio.value) return;
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarFolioPersona(this.ff.numeroConvenio.value).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -169,28 +175,28 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     });
   }
 
-  consultarConvenio(): void{
-    if(this.ff.tipoContratacion.value == 1){
-      this.folioConvenioPersona="";
-      if(this.ff.numeroConvenio.value){
+  consultarConvenio(): void {
+    if (this.ff.tipoContratacion.value == 1) {
+      this.folioConvenioPersona = "";
+      if (this.ff.numeroConvenio.value) {
         this.folioConvenioPersona = this.ff.numeroConvenio.value;
         this.consultarFolioPersona();
       }
-    }
-    else{
+    } else {
       this.folioEmpresa = "";
-      if(!this.ff.numeroConvenio.value){
+      if (!this.ff.numeroConvenio.value) {
         this.deshabilitarBtnGuardarEmpresa = true;
         return;
-      }else{
+      } else {
         this.consultarFolioEmpresa();
-        if(this.filtroForm.valid && this.formularioEmpresaValido){
+        if (this.filtroForm.valid && this.formularioEmpresaValido) {
           this.deshabilitarBtnGuardarEmpresa = false;
         }
         this.folioEmpresa = this.ff.numeroConvenio.value
       }
     }
   }
+
   consultarFolioEmpresa(): void {
     this.loaderService.activar()
     this.existePromotor(false);
@@ -199,7 +205,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     this.ff.listaPromotor.patchValue(null);
 
     this.agregarConvenioPFService.consultarFolioConvenioEmpresa(this.ff.numeroConvenio.value).pipe(
-      finalize(()=> this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
@@ -213,7 +219,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       error: (error: HttpErrorResponse): void => {
         console.log(error.error);
       }
-    } )
+    })
   }
 
   consultarFolioPersona(): void {
@@ -224,7 +230,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     this.ff.listaPromotor.patchValue(null);
 
     this.agregarConvenioPFService.consultarFolioPersona(this.ff.numeroConvenio.value).pipe(
-      finalize(()=> this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
@@ -243,27 +249,27 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
 
-  validarTipoContratacion(): void{
-    localStorage.removeItem('persona');
-    localStorage.removeItem('personasAgregadas');
-    localStorage.removeItem('fomularioPrincipal');
+  validarTipoContratacion(): void {
+    this.cookieService.delete('persona');
+    this.cookieService.delete('personasAgregadas');
+    this.cookieService.delete('fomularioPrincipal');
 
-    if(!this.ff.numeroConvenio.value)this.ff.numeroConvenio.reset();
-    if(!this.ff.numeroConvenio.value)this.ff.numeroConvenio.reset();
+    if (!this.ff.numeroConvenio.value) this.ff.numeroConvenio.reset();
+    if (!this.ff.numeroConvenio.value) this.ff.numeroConvenio.reset();
     this.ff.rfcCurp.reset();
     this.ff.promotor.reset();
     this.ff.listaPromotor.reset();
     this.agregarPromotor = false;
 
     this.documentacionForm.reset();
-    if(!this.ff.numeroConvenio.value && !this.ff.tipoContratacion.value)return;
+    if (!this.ff.numeroConvenio.value && !this.ff.tipoContratacion.value) return;
     this.validarFormularioVacio();
     this.consultarConvenio();
 
   }
 
   validarEscenarioPorEmpresa(): void {
-    if(this.personasAgregadas.length > 0){
+    if (this.personasAgregadas.length > 0) {
       this.ff.tipoContratacion.setValue(2);
     }
   }
@@ -271,7 +277,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   existePromotor(existePromotor: boolean): void {
     this.agregarPromotor = existePromotor;
     this.ff.listaPromotor.reset();
-    if(existePromotor){
+    if (existePromotor) {
       this.ff.listaPromotor.enable();
       this.ff.listaPromotor.setValidators(Validators.required);
       this.ff.listaPromotor.updateValueAndValidity()
@@ -293,7 +299,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
   abrirAgregarPersona(): void {
-  this.agregarPersona = true;
+    this.agregarPersona = true;
   }
 
   aceptar(): void {
@@ -306,16 +312,16 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
   siguiente(): void {
-    if(this.indice == 0){
+    if (this.indice == 0) {
       this.confirmarGuardadoPersona = false;
       this.confirmarGuardarPersona()
       return;
     }
-    this.indice ++;
+    this.indice++;
   }
 
   regresar(): void {
-    this.indice --;
+    this.indice--;
   }
 
   confirmarGuardarEmpresa(): void {
@@ -326,28 +332,24 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     this.confirmarGuardadoPersona = true;
   }
 
-  guardarFormularioLocalStorage(event:any): void {
+  guardarFormularioCookies(event: any): void {
     const formularioPrincipal = {
-      numeroConvenio:this.ff.numeroConvenio.value,
-      tipoContratacion:this.ff.tipoContratacion.value,
-      rfcCurp:this.ff.rfcCurp.value,
-      promotor:this.ff.promotor.value,
-      listaPromotor:this.ff.listaPromotor.value,
+      numeroConvenio: this.ff.numeroConvenio.value,
+      tipoContratacion: this.ff.tipoContratacion.value,
+      rfcCurp: this.ff.rfcCurp.value,
+      promotor: this.ff.promotor.value,
+      listaPromotor: this.ff.listaPromotor.value,
     }
-    localStorage.setItem("fomularioPrincipal",JSON.stringify(formularioPrincipal))
+    this.cookieService.set("fomularioPrincipal", JSON.stringify(formularioPrincipal))
   }
 
-  validarListadoPormotores(): void{
+  validarListadoPormotores(): void {
     this.validarFormularioVacio();
   }
 
-
-
-
-
   datosEmpresa(): ModeloGuardarPorEmpresa {
-    const datosUsuario = JSON.parse(localStorage.getItem('usuario') as string);
-    return{
+    const datosUsuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
+    return {
       idVelatorio: datosUsuario.idVelatorio,
       nombreVelatorio: this.velatorioDescripcion,
       indTipoContratacion: this.ff.tipoContratacion.value,
@@ -358,57 +360,58 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
   datosFormularioEmpresa(event: any): void {
-    const datosUsuario = JSON.parse(localStorage.getItem('usuario') as string);
+    const datosUsuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.indice = 2;
     this.modeloGuardarEmpresa =
-     {
-       idVelatorio: datosUsuario.idVelatorio,
-       nombreVelatorio: this.velatorioDescripcion,
-       indTipoContratacion: this.ff.tipoContratacion.value,
-       idPromotor: this.ff.listaPromotor?.value ?? "",
-       numeroConvenio: this.ff.numeroConvenio.value,
-       rfcCurp: this.ff.rfcCurp?.value ?? "",
-       empresa:{
+      {
+        idVelatorio: datosUsuario.idVelatorio,
+        nombreVelatorio: this.velatorioDescripcion,
+        indTipoContratacion: this.ff.tipoContratacion.value,
+        idPromotor: this.ff.listaPromotor?.value ?? "",
+        numeroConvenio: this.ff.numeroConvenio.value,
+        rfcCurp: this.ff.rfcCurp?.value ?? "",
+        empresa: {
 
-         nombreEmpresa: event.nombre,
-         razonSocial: event.razonSocial,
-         rfc: event.rfc,
-         pais: event.pais,
-         cp: event.cp,
-         colonia: event.colonia,
-         estado: event.estado,
-         municipio: event.municipio,
-         calle: event.calle,
-         numeroExterior: event.numeroExterior,
-         numeroInterior: event.numeroInterior,
-         telefono: event.telefono,
-         correoElectronico: event.correoElectronico,
-         personas: event.personas
-       }
-     }
+          nombreEmpresa: event.nombre,
+          razonSocial: event.razonSocial,
+          rfc: event.rfc,
+          pais: event.pais,
+          cp: event.cp,
+          colonia: event.colonia,
+          estado: event.estado,
+          municipio: event.municipio,
+          calle: event.calle,
+          numeroExterior: event.numeroExterior,
+          numeroInterior: event.numeroInterior,
+          telefono: event.telefono,
+          correoElectronico: event.correoElectronico,
+          personas: event.personas
+        }
+      }
   }
 
 
-  datosFormularioPersona(event:any): void {
-    const datosUsuario = JSON.parse(localStorage.getItem('usuario') as string);
-    this.indice ++;
+  datosFormularioPersona(event: any): void {
+    const datosUsuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
+    this.indice++;
     this.modeloGuardarPersona = {
       idVelatorio: datosUsuario.idVelatorio,
       nombreVelatorio: this.velatorioDescripcion,
       indTipoContratacion: this.ff.tipoContratacion.value.toString(),
       idPromotor: this.ff.listaPromotor.value ? this.ff.listaPromotor.value.toString() : "",
-      idPersona :event.idPersona ? event.idPersona.toString() : null,
-      idDomicilio :null,
-      idContratante : event.idContratante ? event.idContratante : null ,
+      idPersona: event.idPersona ? event.idPersona.toString() : null,
+      idDomicilio: null,
+      idContratante: event.idContratante ? event.idContratante : null,
       persona: event,
     }
 
   }
 
-  consultaVelatorio(): void  {
-    let usuario = JSON.parse(localStorage.getItem('usuario') as string);
+  consultaVelatorio(): void {
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.loaderService.activar();
-    this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(usuario.idDelegacion).pipe(
+    const delegacion = obtenerDelegacionUsuarioLogueado(usuario)
+    this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(delegacion).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -425,59 +428,59 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       error: (error: HttpErrorResponse): void => {
         console.log(error);
       }
-    } )
+    })
   }
 
   mofificarModeloPersona(): void {
-    setTimeout(()=> {
+    setTimeout(() => {
       this.modeloGuardarPersona.persona.documentacion.validaCurp = this.fd.copiaCURP?.value ?? false;
       this.modeloGuardarPersona.persona.documentacion.validaIneContratante = this.fd.ineAfiliado?.value ?? false;
       this.modeloGuardarPersona.persona.documentacion.validaRfc = this.fd.copiaRFC?.value ?? false;
-    },200)
+    }, 200)
   }
 
   validarFormularioVacio(): void {
-    if(this.ff.tipoContratacion.value == 1){
-      this.filtroForm.valid ? this.consultarFormularioValido = true: this.consultarFormularioValido = false;
+    if (this.ff.tipoContratacion.value == 1) {
+      this.filtroForm.valid ? this.consultarFormularioValido = true : this.consultarFormularioValido = false;
     }
-    if(this.ff.tipoContratacion.value == 2){
-      if(this.ff.promotor.value){
+    if (this.ff.tipoContratacion.value == 2) {
+      if (this.ff.promotor.value) {
         this.ff.listaPromotor.enable();
         this.ff.listaPromotor.setValidators(Validators.required);
-      }else{
+      } else {
         this.ff.listaPromotor.disable();
         this.ff.listaPromotor.patchValue(null)
         this.ff.listaPromotor.updateValueAndValidity();
       }
-      this.filtroForm.valid ? this.consultarFormularioValido = true: this.consultarFormularioValido = false;
+      this.filtroForm.valid ? this.consultarFormularioValido = true : this.consultarFormularioValido = false;
     }
   }
 
   validarFormularioPersona(event: any): void {
     this.deshabilitarBtnGuardarPersona = true;
     this.formularioPersonaValido = event;
-    if(event.origen.includes('externo') && event.valido){
+    if (event.origen.includes('externo') && event.valido) {
       this.deshabilitarBtnGuardarPersona = false;
     }
-    if(event.origen.includes('local') && event.valido && this.filtroForm.valid){
+    if (event.origen.includes('local') && event.valido && this.filtroForm.valid) {
       this.deshabilitarBtnGuardarPersona = false;
     }
   }
 
-  validarFormularioEmpresa(event: any): void{
+  validarFormularioEmpresa(event: any): void {
     this.deshabilitarBtnGuardarEmpresa = !(this.filtroForm.valid && event);
   }
 
-  guardar(origen:string): void{
-    if(origen.includes('persona'))this.banderaGuardarPersona = true;
-    if(origen.includes('empresa'))this.banderaGuardarEmpresa = true;
+  guardar(origen: string): void {
+    if (origen.includes('persona')) this.banderaGuardarPersona = true;
+    if (origen.includes('empresa')) this.banderaGuardarEmpresa = true;
   }
 
   get ff() {
     return this.filtroForm.controls;
   }
 
-  get fd(){
+  get fd() {
     return this.documentacionForm.controls;
   }
 
@@ -491,31 +494,31 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       idDomicilio: null,
       idContratante: null,
       persona: {
-        matricula:"",
-        rfc:"",
-        curp:"",
-        nss:"",
-        numIne:"",
-        nombre:"",
-        primerApellido:"",
-        segundoApellido:"",
-        sexo:"",
-        otroSexo:"",
-        fechaNacimiento:"",
-        tipoPersona:"",
-        calle:"",
-        numeroExterior:"",
-        numeroInterior:"",
-        cp:"",
-        colonia:"",
-        municipio:"",
-        estado:"",
-        pais:"",
-        correoElectronico:"",
-        telefono:"",
-        enfermedadPreexistente:"",
-        otraEnfermedad:"",
-        paquete:"",
+        matricula: "",
+        rfc: "",
+        curp: "",
+        nss: "",
+        numIne: "",
+        nombre: "",
+        primerApellido: "",
+        segundoApellido: "",
+        sexo: "",
+        otroSexo: "",
+        fechaNacimiento: "",
+        tipoPersona: "",
+        calle: "",
+        numeroExterior: "",
+        numeroInterior: "",
+        cp: "",
+        colonia: "",
+        municipio: "",
+        estado: "",
+        pais: "",
+        correoElectronico: "",
+        telefono: "",
+        enfermedadPreexistente: "",
+        otraEnfermedad: "",
+        paquete: "",
         beneficiarios: [],
         documentacion: {
           validaIneContratante: false,
