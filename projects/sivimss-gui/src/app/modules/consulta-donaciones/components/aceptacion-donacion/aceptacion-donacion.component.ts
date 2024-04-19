@@ -19,12 +19,14 @@ import { GestionarDonacionesService} from "../../services/gestionar-donaciones.s
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-aceptacion-donacion',
   templateUrl: './aceptacion-donacion.component.html',
   styleUrls: ['./aceptacion-donacion.component.scss'],
-  providers: [DialogService,DescargaArchivosService]
+  providers: [DialogService,DescargaArchivosService, AutenticacionService]
 })
 export class AceptacionDonacionComponent implements OnInit {
 
@@ -53,6 +55,7 @@ export class AceptacionDonacionComponent implements OnInit {
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
     private route: ActivatedRoute,
+    private authService: AutenticacionService
   ) {
     moment.locale('es');
   }
@@ -135,10 +138,10 @@ export class AceptacionDonacionComponent implements OnInit {
   }
 
   modeloPlantillaDonacion(): PlantillaAceptarDonacion {
-    const usuario = JSON.parse(localStorage.getItem('usuario') as string)
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     return {
       version: 5.2,
-      ooadNom: this.nombreOoad(usuario.idDelegacion),
+      ooadNom: this.nombreOoad(+usuario.idDelegacion),
       velatorioId: this.datosAdministrador.nombreVelatorio,
       numContrato: this.f.folio.value,
       modeloAtaud: this.modeloAtaudes(),
@@ -151,7 +154,7 @@ export class AceptacionDonacionComponent implements OnInit {
       nomAdministrador: this.datosAdministrador.nombreAdministrador,
       claveAdministrador: this.datosAdministrador.matriculaAdministrador,
       lugar: this.datosAdministrador.lugardonacion,
-      ooadId: usuario.idDelegacion,
+      ooadId: +usuario.idDelegacion,
       dia: parseInt(moment().format('DD')),
       mes: moment().format('MMMM').toUpperCase(),
       anio: parseInt(moment().format('yyyy')),
@@ -234,9 +237,9 @@ export class AceptacionDonacionComponent implements OnInit {
 
   consultarDatosAdministrador(): void {
     this.loaderService.activar();
-    const usuario = JSON.parse(localStorage.getItem('usuario') as string)
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
-    this.consultaDonacionesService.consultarDatosAdministrador(usuario.idVelatorio).pipe(
+    this.consultaDonacionesService.consultarDatosAdministrador(+usuario.idVelatorio).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {

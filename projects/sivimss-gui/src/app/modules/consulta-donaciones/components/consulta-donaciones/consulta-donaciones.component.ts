@@ -25,12 +25,14 @@ import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-consulta-donaciones',
   templateUrl: './consulta-donaciones.component.html',
   styleUrls: ['./consulta-donaciones.component.scss'],
-  providers: [DialogService, DescargaArchivosService],
+  providers: [DialogService, DescargaArchivosService, AutenticacionService],
 })
 
 export class ConsultaDonacionesComponent implements OnInit {
@@ -42,7 +44,7 @@ export class ConsultaDonacionesComponent implements OnInit {
   overlayPanel!: OverlayPanel
 
 
-  rolLocaleStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   registrarDonacionRef!: DynamicDialogRef
   paginacionConFiltrado: boolean = false
@@ -88,6 +90,7 @@ export class ConsultaDonacionesComponent implements OnInit {
     private readonly loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -106,8 +109,8 @@ export class ConsultaDonacionesComponent implements OnInit {
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: null, disabled: true}, [Validators.required]],
-      delegacion: [{value: null, disabled: +this.rolLocaleStorage.idOficina != 1}, [Validators.required]],
-      velatorio: [{value: null, disabled: +this.rolLocaleStorage.idOficina == 3}, [Validators.required]],
+      delegacion: [{value: null, disabled: +this.rolUsuarioEnSesion.idOficina != 1}, [Validators.required]],
+      velatorio: [{value: null, disabled: +this.rolUsuarioEnSesion.idOficina == 3}, [Validators.required]],
       donadoPor: [{value: null, disabled: false}],
       fechaDesde: [{value: null, disabled: false}],
       fechaHasta: [{value: null, disabled: false}],
@@ -119,13 +122,13 @@ export class ConsultaDonacionesComponent implements OnInit {
   }
 
   validarFiltros(): void {
-    this.ff.nivel.setValue(+this.rolLocaleStorage.idOficina);
-    if (+this.rolLocaleStorage.idOficina == 1) {
+    this.ff.nivel.setValue(+this.rolUsuarioEnSesion.idOficina);
+    if (+this.rolUsuarioEnSesion.idOficina == 1) {
       return
     }
-    this.ff.delegacion.setValue(+this.rolLocaleStorage.idDelegacion);
-    if (+this.rolLocaleStorage.idOficina == 3) {
-      this.ff.velatorio.setValue(+this.rolLocaleStorage.idVelatorio);
+    this.ff.delegacion.setValue(+this.rolUsuarioEnSesion.idDelegacion);
+    if (+this.rolUsuarioEnSesion.idOficina == 3) {
+      this.ff.velatorio.setValue(+this.rolUsuarioEnSesion.idVelatorio);
     }
     this.cambiarDelegacion();
   }

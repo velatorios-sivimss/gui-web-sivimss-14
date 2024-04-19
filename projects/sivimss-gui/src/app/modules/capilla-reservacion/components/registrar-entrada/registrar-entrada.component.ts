@@ -25,6 +25,7 @@ import * as moment from 'moment'
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {CookieService} from "ngx-cookie-service";
 
 type NuevaEntrada = Omit<RegistrarEntrada, 'idRol'>
 
@@ -32,7 +33,7 @@ type NuevaEntrada = Omit<RegistrarEntrada, 'idRol'>
   selector: 'app-registrar-entrada',
   templateUrl: './registrar-entrada.component.html',
   styleUrls: ['./registrar-entrada.component.scss'],
-  providers: [DescargaArchivosService]
+  providers: [DescargaArchivosService, CookieService]
 })
 export class RegistrarEntradaComponent implements OnInit {
   @Input() entradaRegistrada!: RegistrarEntrada
@@ -40,7 +41,7 @@ export class RegistrarEntradaComponent implements OnInit {
   @Output() confirmacionAceptar = new EventEmitter<RegistrarEntrada>()
 
 
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
   acordionAbierto: boolean = false
 
   @ViewChild(OverlayPanel)
@@ -80,6 +81,7 @@ export class RegistrarEntradaComponent implements OnInit {
     private readonly loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
+    private cookieService: CookieService
   ) {
     this.entradaRegistrada = this.config.data
     this.inicializarRegistrarEntradaForm(this.entradaRegistrada)

@@ -17,12 +17,15 @@ import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
 import { HttpErrorResponse } from '@angular/common/http';
 import { mensajes } from "../../../reservar-salas/constants/mensajes";
 import { VelatorioInterface } from "../../../reservar-salas/models/velatorio.interface";
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-capilla-reservacion',
   templateUrl: './capilla-reservacion.component.html',
   styleUrls: ['./capilla-reservacion.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, CookieService, AutenticacionService]
 })
 export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
@@ -57,8 +60,8 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
   velatorios: TipoDropdown[] = [];
   // velatorioListado!: number;
 
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -68,14 +71,14 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private capillaReservacionService: CapillaReservacionService,
     private readonly loaderService: LoaderService,
+    private cookieService: CookieService,
+    private authService: AutenticacionService
   ) { }
 
 
 
   ngOnInit(): void {
-
-
-    localStorage.setItem("mensajes", JSON.stringify(mensajes));
+    this.cookieService.set("mensajes", JSON.stringify(mensajes));
     this.actualizarBreadcrumb();
     this.inicializarRegistroEntradaForm();
     this.inicializarRegistroSalidaForm();
@@ -95,8 +98,8 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }],
-      velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }],
+      delegacion: [{ value: +this.rolUsuarioEnSesion.idDelegacion || null, disabled: +this.rolUsuarioEnSesion.idOficina >= 2 }],
+      velatorio: [{ value: +this.rolUsuarioEnSesion.idVelatorio || null, disabled: +this.rolUsuarioEnSesion.idOficina === 3 }],
     });
 
     this.cambiarDelegacion();
@@ -105,7 +108,6 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
   inicializarRegistroEntradaForm(): void {
     this.registrarEntradaForm = this.formBuilder.group({
-
       fechaEntrada: [{ value: null, disabled: false }, [Validators.required]],
       horaEntrada: [{ value: null, disabled: false }, [Validators.required]],
     })
