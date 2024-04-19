@@ -42,14 +42,14 @@ export class DatosEmpresaComponent implements OnInit {
               private seguimientoNuevoConvenioService: SeguimientoNuevoConvenioService,
               private mensajesSistemaService: MensajesSistemaService,
               private alertaService: AlertaService,) {
-    this.cargarCatalogosLocalStorage();
+    this.cargarCatalogosCookies();
   }
 
   ngOnInit(): void {
     this.cargarCP(true);
   }
 
-  cargarCatalogosLocalStorage(): void {
+  cargarCatalogosCookies(): void {
     const catalogoPais = this.autenticacionService.obtenerCatalogoDeCookies('catalogo_pais');
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
   }

@@ -71,7 +71,7 @@ export class DatosPersonaComponent implements OnInit {
               private el: ElementRef,
               private renderer: Renderer2,
               private cdr: ChangeDetectorRef) {
-    this.cargarCatalogosLocalStorage();
+    this.cargarCatalogosCookies();
   }
 
   ngOnInit(): void {
@@ -122,7 +122,7 @@ export class DatosPersonaComponent implements OnInit {
     }
   }
 
-  cargarCatalogosLocalStorage(): void {
+  cargarCatalogosCookies(): void {
     const catalogoPais = this.autenticacionService.obtenerCatalogoDeCookies('catalogo_pais');
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
     const catalogoEstado = this.autenticacionService.obtenerCatalogoDeCookies('catalogo_estados');

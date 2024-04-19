@@ -26,12 +26,13 @@ import {
   FiltrosBasicosNuevoConvenio,
   FiltrosNuevoConvenio
 } from "../../models/filtros-seguimiento.interface";
+import {AutenticacionService} from "../../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-seguimiento-nuevo-convenio',
   templateUrl: './seguimiento-nuevo-convenio.component.html',
   styleUrls: ['./seguimiento-nuevo-convenio.component.scss'],
-  providers: [DialogService],
+  providers: [DialogService, AutenticacionService],
 })
 export class SeguimientoNuevoConvenioComponent implements OnInit {
   @ViewChild(OverlayPanel)
@@ -69,7 +70,8 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private cargadorService: LoaderService,
     private seguimientoConvenioService: SeguimientoNuevoConvenioService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -85,7 +87,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
@@ -100,7 +102,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   }
 
   obtenerVelatorios(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null;
     this.seguimientoConvenioService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => this.solicitudExitosaVelatorios(respuesta),
@@ -161,7 +163,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
 
   limpiarFormulario(): void {
     if (!this.filtroForm) return;
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
     const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     const velatorio: number | null = this.central ? null : obtenerVelatorioUsuarioLogueado(usuario);
     const DEFAULT: DefaultNuevoConvenio = {nivel, velatorio}

@@ -1,23 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { HttpErrorResponse } from "@angular/common/http";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {HttpErrorResponse} from "@angular/common/http";
 
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { finalize } from 'rxjs/operators';
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {finalize} from 'rxjs/operators';
 import * as moment from 'moment';
 
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { ControlVehiculosService } from "../../services/control-vehiculos.service";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { EntradaVehiculo } from "../../models/registro-vehiculo.interface";
-import { ControlVehiculoConsulta, ControlVehiculoListado } from '../../models/control-vehiculos.interface';
-import { mensajes } from '../../../reservar-salas/constants/mensajes';
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {ControlVehiculosService} from "../../services/control-vehiculos.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {EntradaVehiculo} from "../../models/registro-vehiculo.interface";
+import {ControlVehiculoConsulta, ControlVehiculoListado} from '../../models/control-vehiculos.interface';
+import {mensajes} from '../../../reservar-salas/constants/mensajes';
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-registrar-entrada',
   templateUrl: './registrar-entrada.component.html',
-  styleUrls: ['./registrar-entrada.component.scss']
+  styleUrls: ['./registrar-entrada.component.scss'],
+  providers: [CookieService]
 })
 export class RegistrarEntradaComponent implements OnInit {
 
@@ -46,7 +48,7 @@ export class RegistrarEntradaComponent implements OnInit {
   idOds!: any;
   tipoSala: number = 0;
   folioValido: boolean = false;
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string) || mensajes;
 
   constructor(
     private alertaService: AlertaService,
@@ -54,8 +56,10 @@ export class RegistrarEntradaComponent implements OnInit {
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private readonly loaderService: LoaderService,
-    private controlVehiculosService: ControlVehiculosService
-  ) { }
+    private controlVehiculosService: ControlVehiculosService,
+    private cookieService: CookieService
+  ) {
+  }
 
   ngOnInit(): void {
     this.vehiculoSeleccionado = this.config.data.vehiculo;
@@ -65,10 +69,10 @@ export class RegistrarEntradaComponent implements OnInit {
 
   iniciarFormRegistrarEntrada(): void {
     this.formRegistrarEntrada = this.formBuilder.group({
-      fecha: new FormControl({ value: (new Date()), disabled: true }, []),
-      hora: new FormControl({ value: moment().format('HH:mm'), disabled: true }, []),
-      nivelGasolina: new FormControl({ value: null, disabled: false }, [Validators.required]),
-      kilometrajeFinal: new FormControl({ value: null, disabled: false }, [Validators.required]),
+      fecha: new FormControl({value: (new Date()), disabled: true}, []),
+      hora: new FormControl({value: moment().format('HH:mm'), disabled: true}, []),
+      nivelGasolina: new FormControl({value: null, disabled: false}, [Validators.required]),
+      kilometrajeFinal: new FormControl({value: null, disabled: false}, [Validators.required]),
     });
   }
 

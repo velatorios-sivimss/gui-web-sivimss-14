@@ -1,24 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { HttpErrorResponse } from "@angular/common/http";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {HttpErrorResponse} from "@angular/common/http";
 
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { finalize } from "rxjs/operators";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {finalize} from "rxjs/operators";
 import * as moment from 'moment';
 
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { ControlVehiculoConsulta, ControlVehiculoListado } from "../../models/control-vehiculos.interface";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { SalidaVehiculo } from "../../models/registro-vehiculo.interface";
-import { ControlVehiculosService } from "../../services/control-vehiculos.service";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { mensajes } from '../../../reservar-salas/constants/mensajes';
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {ControlVehiculoConsulta, ControlVehiculoListado} from "../../models/control-vehiculos.interface";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {SalidaVehiculo} from "../../models/registro-vehiculo.interface";
+import {ControlVehiculosService} from "../../services/control-vehiculos.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {mensajes} from '../../../reservar-salas/constants/mensajes';
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-registrar-salida',
   templateUrl: './registrar-salida.component.html',
-  styleUrls: ['./registrar-salida.component.scss']
+  styleUrls: ['./registrar-salida.component.scss'],
+  providers: [CookieService]
 })
 export class RegistrarSalidaComponent implements OnInit {
 
@@ -52,7 +54,7 @@ export class RegistrarSalidaComponent implements OnInit {
   };
   delegacion: number | null = null;
   velatorio: number | null = null;
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string) || mensajes;
 
   constructor(
     private alertaService: AlertaService,
@@ -60,8 +62,10 @@ export class RegistrarSalidaComponent implements OnInit {
     private readonly loaderService: LoaderService,
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
-    private controlVehiculosService: ControlVehiculosService
-  ) { }
+    private controlVehiculosService: ControlVehiculosService,
+    private cookieService: CookieService
+  ) {
+  }
 
   ngOnInit(): void {
     this.vehiculoSeleccionado = this.config.data.vehiculo;
@@ -74,16 +78,16 @@ export class RegistrarSalidaComponent implements OnInit {
 
   inicializarFormRegistrarSalida(): void {
     this.formRegistrarSalida = this.formBuilder.group({
-      folioOds: new FormControl({ value: null, disabled: false }, []),
-      nombreContratante: new FormControl({ value: null, disabled: true }, []),
-      nombreFinado: new FormControl({ value: null, disabled: true }, []),
-      municipioOrigen: new FormControl({ value: null, disabled: true }, []),
-      municipioDestino: new FormControl({ value: null, disabled: true }, []),
-      fecha: new FormControl({ value: (new Date()), disabled: false }, [Validators.required]),
-      hora: new FormControl({ value: moment().format('HH:mm'), disabled: false }, [Validators.required]),
-      nivelGasolinaInicial: new FormControl({ value: null, disabled: false }, [Validators.required]),
-      kilometrajeInicial: new FormControl({ value: null, disabled: false }, [Validators.required]),
-      nombreResponsable: new FormControl({ value: null, disabled: false }, [Validators.required]),
+      folioOds: new FormControl({value: null, disabled: false}, []),
+      nombreContratante: new FormControl({value: null, disabled: true}, []),
+      nombreFinado: new FormControl({value: null, disabled: true}, []),
+      municipioOrigen: new FormControl({value: null, disabled: true}, []),
+      municipioDestino: new FormControl({value: null, disabled: true}, []),
+      fecha: new FormControl({value: (new Date()), disabled: false}, [Validators.required]),
+      hora: new FormControl({value: moment().format('HH:mm'), disabled: false}, [Validators.required]),
+      nivelGasolinaInicial: new FormControl({value: null, disabled: false}, [Validators.required]),
+      kilometrajeInicial: new FormControl({value: null, disabled: false}, [Validators.required]),
+      nombreResponsable: new FormControl({value: null, disabled: false}, [Validators.required]),
     })
   }
 
@@ -164,6 +168,7 @@ export class RegistrarSalidaComponent implements OnInit {
       idResponsable: +this.f.nombreResponsable.value,
     }
   }
+
   obtenerFormatoHora(): string {
     return typeof this.f.hora.value === 'object' ? moment(this.f.hora.value).format('HH:mm') : this.f.hora.value
   }
@@ -175,7 +180,13 @@ export class RegistrarSalidaComponent implements OnInit {
       ).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos?.content.length > 0) {
-            const { idOds, nombreContratante, nombreDestino, nombreFinado, nombreOrigen } = respuesta.datos?.content[0] || [];
+            const {
+              idOds,
+              nombreContratante,
+              nombreDestino,
+              nombreFinado,
+              nombreOrigen
+            } = respuesta.datos?.content[0] || [];
             this.f.nombreContratante.patchValue(nombreContratante);
             this.f.nombreFinado.patchValue(nombreFinado);
             this.f.municipioOrigen.patchValue(nombreOrigen);
@@ -191,7 +202,7 @@ export class RegistrarSalidaComponent implements OnInit {
             this.f.nombreFinado.patchValue(null);
             this.f.municipioOrigen.patchValue(null);
             this.f.municipioDestino.patchValue(null);
-            this.f.folioOds.setErrors({ 'incorrect': true });
+            this.f.folioOds.setErrors({'incorrect': true});
           }
         },
         error: (error: HttpErrorResponse) => {

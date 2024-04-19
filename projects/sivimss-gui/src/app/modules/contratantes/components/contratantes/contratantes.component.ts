@@ -1,31 +1,38 @@
-import { Component, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { OverlayPanel } from "primeng/overlaypanel";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { FormBuilder, FormGroup, FormGroupDirective, Validators } from "@angular/forms";
-import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { BuscarContratantes, BusquedaContratante, ConfirmarContratante, ReporteTabla, UsuarioContratante } from "../../models/usuario-contratante.interface";
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { ConfirmationService, LazyLoadEvent } from "primeng/api";
-import { DetalleContratantesComponent } from "../detalle-contratantes/detalle-contratantes.component";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { ALERTA_ESTATUS } from "../../constants/alertas";
-import { ContratantesService } from '../../services/contratantes.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { finalize } from 'rxjs';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {Component, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {OverlayPanel} from "primeng/overlaypanel";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {
+  BuscarContratantes,
+  BusquedaContratante,
+  ConfirmarContratante,
+  ReporteTabla,
+  UsuarioContratante
+} from "../../models/usuario-contratante.interface";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {ConfirmationService, LazyLoadEvent} from "primeng/api";
+import {DetalleContratantesComponent} from "../detalle-contratantes/detalle-contratantes.component";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {ALERTA_ESTATUS} from "../../constants/alertas";
+import {ContratantesService} from '../../services/contratantes.service';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {finalize} from 'rxjs';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-contratantes',
   templateUrl: './contratantes.component.html',
   styleUrls: ['./contratantes.component.scss'],
-  providers: [DialogService, DescargaArchivosService, ConfirmationService]
+  providers: [DialogService, DescargaArchivosService, ConfirmationService, CookieService]
 })
 export class ContratantesComponent implements OnInit, OnDestroy {
 
@@ -50,7 +57,7 @@ export class ContratantesComponent implements OnInit, OnDestroy {
   detalleRef!: DynamicDialogRef;
   retorno: ConfirmarContratante = {};
   mensajeArchivoConfirmacion: string | undefined;
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
   contratantesFiltrados: TipoDropdown[] = [];
 
   estatus: TipoDropdown[] = [
@@ -75,7 +82,9 @@ export class ContratantesComponent implements OnInit, OnDestroy {
     private mensajesSistemaService: MensajesSistemaService,
     private confirmationService: ConfirmationService,
     private renderer: Renderer2,
-  ) { }
+    private cookieService: CookieService
+  ) {
+  }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
@@ -88,17 +97,18 @@ export class ContratantesComponent implements OnInit, OnDestroy {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      curp: [{ value: null, disabled: false }, Validators.maxLength(18)],
-      nss: [{ value: null, disabled: false }, Validators.maxLength(11)],
-      nombre: [{ value: null, disabled: false }, Validators.maxLength(30)],
-      estatus: [{ value: null, disabled: false }]
+      curp: [{value: null, disabled: false}, Validators.maxLength(18)],
+      nss: [{value: null, disabled: false}, Validators.maxLength(11)],
+      nombre: [{value: null, disabled: false}, Validators.maxLength(30)],
+      estatus: [{value: null, disabled: false}]
     });
   }
 
   modalConfirmacion() {
     this.confirmationService.confirm({
       message: this.mensajeArchivoConfirmacion,
-      accept: () => { },
+      accept: () => {
+      },
     });
   }
 
@@ -159,7 +169,7 @@ export class ContratantesComponent implements OnInit, OnDestroy {
     this.detalleRef = this.dialogService.open(DetalleContratantesComponent, {
       header: "Ver detalle",
       width: "920px",
-      data: { contratante: contratante, origen: "detalle" },
+      data: {contratante: contratante, origen: "detalle"},
     });
 
     this.detalleRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
@@ -173,7 +183,7 @@ export class ContratantesComponent implements OnInit, OnDestroy {
     this.detalleRef = this.dialogService.open(DetalleContratantesComponent, {
       header: contratante.estatus ? "Desactivar contratante" : "Activar contratante",
       width: "920px",
-      data: { contratante: contratante, origen: "estatus" },
+      data: {contratante: contratante, origen: "estatus"},
     });
 
     this.detalleRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
@@ -184,7 +194,7 @@ export class ContratantesComponent implements OnInit, OnDestroy {
   }
 
   descargarReporteTabla(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Listado contratantes" };
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "Listado contratantes"};
     if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
@@ -238,7 +248,7 @@ export class ContratantesComponent implements OnInit, OnDestroy {
   filtrarContratantes() {
     let nombre = this.obtenerNombreContratante();
     if (nombre?.length >= 3) {
-      this.contratantesService.consultarCatalogo({ nombre }).subscribe({
+      this.contratantesService.consultarCatalogo({nombre}).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           let filtrado: TipoDropdown[] = [];
           if (respuesta.datos && respuesta.datos.length > 0) {

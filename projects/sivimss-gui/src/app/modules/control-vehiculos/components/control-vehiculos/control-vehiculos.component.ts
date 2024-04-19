@@ -13,15 +13,19 @@ import { BuscarVehiculosDisponibles, ControlVehiculoListado } from '../../models
 import { HttpErrorResponse } from '@angular/common/http';
 import { mensajes } from '../../../reservar-salas/constants/mensajes';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {CookieService} from "ngx-cookie-service";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-control-vehiculos',
   templateUrl: './control-vehiculos.component.html',
-  styleUrls: ['./control-vehiculos.component.scss']
+  styleUrls: ['./control-vehiculos.component.scss'],
+  providers: [CookieService, AutenticacionService]
 })
 export class ControlVehiculosComponent implements OnInit {
-  readonly POSICION_CATALOGO_NIVELES = 0;
-  readonly POSICION_CATALOGO_DELEGACION = 1;
+  readonly POSICION_CATALOGO_NIVELES: number = 0;
+  readonly POSICION_CATALOGO_DELEGACION: number = 1;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -35,8 +39,8 @@ export class ControlVehiculosComponent implements OnInit {
   catalogoVelatorios: TipoDropdown[] = [];
   controlVehiculos: ControlVehiculoListado[] = [];
 
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string) || mensajes;
+  rolUsuarioEnSesion: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion();
 
   constructor(
     private route: ActivatedRoute,
@@ -44,6 +48,8 @@ export class ControlVehiculosComponent implements OnInit {
     private alertaService: AlertaService,
     private controlVehiculosService: ControlVehiculosService,
     private formBuilder: FormBuilder,
+    private authService: AutenticacionService,
+    private cookieService: CookieService
   ) { }
 
   async ngOnInit() {
@@ -61,20 +67,16 @@ export class ControlVehiculosComponent implements OnInit {
 
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, [Validators.required]),
-      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, []),
-      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, []),
+      nivel: new FormControl({ value: +this.rolUsuarioEnSesion.idOficina || null, disabled: +this.rolUsuarioEnSesion.idOficina >= 1 }, [Validators.required]),
+      delegacion: new FormControl({ value: +this.rolUsuarioEnSesion.idDelegacion || null, disabled: +this.rolUsuarioEnSesion.idOficina >= 2 }, []),
+      velatorio: new FormControl({ value: +this.rolUsuarioEnSesion.idVelatorio || null, disabled: +this.rolUsuarioEnSesion.idOficina === 3 }, []),
     });
     await this.obtenerVelatorios();
     await this.obtenerVehiculos();
   }
 
   handleCambioVista(opcion: { value: SelectButtonOptions }): void {
-    if (opcion.value.section === 'calendario') {
-      this.modoCalendario = true;
-    } else {
-      this.modoCalendario = false;
-    }
+    this.modoCalendario = opcion.value.section === 'calendario';
   }
 
   async obtenerVelatorios() {

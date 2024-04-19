@@ -53,7 +53,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
               private mensajesSistemaService: MensajesSistemaService,
               private alertaService: AlertaService,
   ) {
-    this.cargarCatalogosLocalStorage();
+    this.cargarCatalogosCookies();
   }
 
   ngOnInit(): void {
@@ -80,7 +80,7 @@ export class DatosTitularBeneficiarioComponent implements OnInit {
     }
   }
 
-  cargarCatalogosLocalStorage(): void {
+  cargarCatalogosCookies(): void {
     const catalogoPais = this.autenticacionService.obtenerCatalogoDeCookies('catalogo_pais');
     this.paises = mapearArregloTipoDropdown(catalogoPais, 'desc', 'id');
     const catalogoEstado = this.autenticacionService.obtenerCatalogoDeCookies('catalogo_estados');

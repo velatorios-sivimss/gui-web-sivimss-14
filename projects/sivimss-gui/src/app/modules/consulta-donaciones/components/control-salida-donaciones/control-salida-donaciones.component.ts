@@ -25,12 +25,15 @@ import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
+import {CookieService} from "ngx-cookie-service";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-control-salida-donaciones',
   templateUrl: './control-salida-donaciones.component.html',
   styleUrls: ['./control-salida-donaciones.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, AutenticacionService, CookieService]
 })
 export class ControlSalidaDonacionesComponent implements OnInit {
 
@@ -63,7 +66,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
 
   formDatosSolicitante!: FormGroup;
   formAtaudes!: FormGroup;
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  alertas = JSON.parse(this.cookieService.get('mensajes') as string);
   catalogoVelatorios: TipoDropdown[] = [];
   datosAdministrador!: DatosAdministrador;
   existeStock: boolean = true;
@@ -81,7 +84,9 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     private consultaDonacionesService: GestionarDonacionesService,
     private descargaArchivosService: DescargaArchivosService,
     private route: ActivatedRoute,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private authService: AutenticacionService,
+    private cookieService: CookieService
   ) {
     moment.locale('es');
   }
@@ -501,15 +506,15 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   generarDatosPlantilla(): PlantillaControlSalida {
-    let usuario = JSON.parse(localStorage.getItem('usuario') as string)
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion()
 
     return {
       nomSolicitantes: this.fds.nombre.value + " " + this.fds.primerApellido.value + " " + this.fds.segundoApellido.value,
       nomAdministrador: this.datosAdministrador.nombreAdministrador,
       claveAdministrador: this.datosAdministrador.matriculaAdministrador,
       lugar: this.datosAdministrador.lugardonacion,
-      ooadNom: this.nombreOoad(usuario.idDelegacion),
-      velatorioId: usuario.idVelatorio,
+      ooadNom: this.nombreOoad(+usuario.idDelegacion),
+      velatorioId: +usuario.idVelatorio,
       velatorioNom: this.consultaNombreVelatorio(),
       claveResponsableAlmacen: this.fa.matriculaResponsable.value,
       version: 5.2,
@@ -530,9 +535,9 @@ export class ControlSalidaDonacionesComponent implements OnInit {
 
   consultarDatosAdministrador(): void {
     this.loaderService.activar();
-    const usuario = JSON.parse(localStorage.getItem('usuario') as string)
+    const usuario: UsuarioEnSesion = this.authService.obtenerUsuarioEnSesion()
 
-    this.consultaDonacionesService.consultarDatosAdministrador(usuario.idVelatorio).pipe(
+    this.consultaDonacionesService.consultarDatosAdministrador(+usuario.idVelatorio).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
