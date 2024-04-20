@@ -9,7 +9,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {validarUsuarioLogueadoOnline} from "../../../../utils/funciones";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 declare let L: any;
 
@@ -17,6 +17,7 @@ declare let L: any;
   selector: 'app-contratar-convenio-prevision-funeraria',
   templateUrl: './mapa-contratar-convenio-prevision-funeraria.component.html',
   styleUrls: ['./mapa-contratar-convenio-prevision-funeraria.component.scss'],
+  providers: [AutenticacionService]
 })
 export class MapaContratarConvenioPrevisionFunerariaComponent
   implements OnInit {
@@ -28,7 +29,6 @@ export class MapaContratarConvenioPrevisionFunerariaComponent
 
   filtroVelatorio: any = "";
 
-
   constructor(
     private renderer: Renderer2,
     private el: ElementRef,
@@ -37,11 +37,12 @@ export class MapaContratarConvenioPrevisionFunerariaComponent
     private mapaContratatarConvenioPfService: MapaContratatarConvenioPfService,
     private loaderService: LoaderService,
     private alertaService: AlertaService,
+    private authService: AutenticacionService
   ) {
   }
 
   ngOnInit(): void {
-    if (validarUsuarioLogueadoOnline()) return;
+    if (this.authService.validarUsuarioLogueadoOnline()) return;
     this.mapaContratatarConvenioPfService.obtenerListaVelatorios().pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({

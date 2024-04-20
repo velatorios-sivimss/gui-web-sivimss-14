@@ -22,17 +22,17 @@ import {
 } from './components/modal-registrar-nuevo-beneficiario/modal-registrar-nuevo-beneficiario.component';
 import {
   mapearArregloTipoDropdown, obtenerFechaYHoraActualPagos,
-  validarUsuarioLogueadoOnline
 } from 'projects/sivimss-gui/src/app/utils/funciones';
 import {TransaccionPago} from "../../../../models/transaccion-pago.interface";
 import {SolicitudPagos} from "../../../../models/solicitud-pagos.interface";
 import {GestorCredencialesService} from "../../../../../../services/gestor-credenciales.service";
+import {AutenticacionService} from "../../../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-mi-convenio-prevision-funeraria',
   templateUrl: './mi-convenio-prevision-funeraria.component.html',
   styleUrls: ['./mi-convenio-prevision-funeraria.component.scss'],
-  providers: [GestorCredencialesService]
+  providers: [GestorCredencialesService, AutenticacionService]
 })
 export class MiConvenioPrevisionFunerariaComponent implements OnInit {
   beneficiarios: Beneficiarios[] = [];
@@ -56,6 +56,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
     private readonly router: Router,
     private renderer: Renderer2,
     private gestorCredencialesService: GestorCredencialesService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -66,7 +67,7 @@ export class MiConvenioPrevisionFunerariaComponent implements OnInit {
 
   detalleConvenio() {
     this.idPlan = this.rutaActiva.snapshot.queryParams.idpfs;
-    if (validarUsuarioLogueadoOnline()) return;
+    if (this.authService.validarUsuarioLogueadoOnline()) return;
     this.consultaConveniosService
       .detalleConvenio(this.idPlan)
       .pipe(finalize(() => this.loaderService.desactivar()))

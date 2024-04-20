@@ -22,7 +22,7 @@ import {OverlayPanel} from "primeng/overlaypanel";
 import {LazyLoadEvent} from "primeng/api";
 import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";

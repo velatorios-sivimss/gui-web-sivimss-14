@@ -54,10 +54,6 @@ export function existeMensajeEnEnum(enumObj: { [s: string]: string }, valor: str
   return valores.includes(valor);
 }
 
-export function validarUsuarioLogueadoOnline(): boolean {
-  return !localStorage.getItem('sivimss_token_online');
-}
-
 export function obtenerNivelUsuarioLogueado(usuario: UsuarioEnSesion): number {
   if (!usuario) return 0;
   return +usuario.idOficina

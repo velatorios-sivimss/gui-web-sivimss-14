@@ -17,13 +17,14 @@ import {BusquedaPrevision} from './models/BusquedaPrevision.interface';
 import {TransaccionPago} from "../../models/transaccion-pago.interface";
 import {SolicitudPagos} from "../../models/solicitud-pagos.interface";
 import {GestorCredencialesService} from "../../../../services/gestor-credenciales.service";
-import {obtenerFechaYHoraActualPagos, validarUsuarioLogueadoOnline} from "../../../../utils/funciones";
+import {obtenerFechaYHoraActualPagos} from "../../../../utils/funciones";
+import {AutenticacionService} from "../../../../services/autenticacion.service";
 
 @Component({
   selector: 'app-consulta-convenio-prevision-funeraria',
   templateUrl: './consulta-convenio-prevision-funeraria.component.html',
   styleUrls: ['./consulta-convenio-prevision-funeraria.component.scss'],
-  providers: [GestorCredencialesService]
+  providers: [GestorCredencialesService, AutenticacionService]
 })
 export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   numPaginaActual: number = 0;
@@ -58,7 +59,8 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
     private router: Router,
     private rutaActiva: ActivatedRoute,
     private renderer: Renderer2,
-    private gestorCredencialesService: GestorCredencialesService
+    private gestorCredencialesService: GestorCredencialesService,
+    private authService: AutenticacionService
   ) {
   }
 
@@ -108,7 +110,7 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
       pagina: this.numPaginaActual,
       tamanio: this.cantElementosPorPagina,
     };
-    if (validarUsuarioLogueadoOnline()) return;
+    if (this.authService.validarUsuarioLogueadoOnline()) return;
     this.consultaConveniosService
       .consultarConvenios(valores)
       .pipe(finalize(() => this.loaderService.desactivar()))

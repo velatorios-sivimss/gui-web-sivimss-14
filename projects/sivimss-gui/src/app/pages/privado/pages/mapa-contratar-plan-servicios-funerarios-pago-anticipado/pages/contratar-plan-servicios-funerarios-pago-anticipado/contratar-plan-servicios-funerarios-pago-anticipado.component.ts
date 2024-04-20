@@ -14,7 +14,6 @@ import {finalize} from 'rxjs/operators';
 import {
   mapearArregloTipoDropdown,
   obtenerFechaYHoraActualPagos,
-  validarUsuarioLogueadoOnline
 } from 'projects/sivimss-gui/src/app/utils/funciones';
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -118,7 +117,7 @@ export class ContratarPlanServiciosFunerariosPagoAnticipadoComponent implements 
         this.inicializarFormDatosTitularSubstituto();
         this.inicializarFormDatosBeneficiario1();
         this.inicializarFormDatosBeneficiario2();
-        if (validarUsuarioLogueadoOnline()) return;
+        if (this.autenticacionService.validarUsuarioLogueadoOnline()) return;
         this.obtenerPaises();
         this.obtenerEstados();
         this.obtenerPromotores();
